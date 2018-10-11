@@ -1,73 +1,5 @@
 <template>
-  <div>
-    <b-alert variant="danger"
-             dismissible
-             :show="showSaveFailed"
-             @dismissed="showSaveFailed=false">
-      Save Failed!
-    </b-alert>
-    <b-alert variant="success"
-             dismissible
-             :show="showSaveSuccess"
-             @dismissed="showSaveSuccess=false">
-      Saved!
-    </b-alert>
-    <b-container>
-        <b-row>
-            <b-col>
-                <b-form-group label="Contact Name">
-                    <b-form-input
-                      type="text"
-                      v-model="my_contact.name"
-                      required
-                      placeholder="John Smith">
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-            <b-col v-if="client_id">
-                <b-form-group label="Contact Type">
-                  <b-form-select
-                    :options="contact_types"
-                    value-field="id"
-                    text-field="name"
-                    v-model="my_contact.contact_type_id">
-                  </b-form-select>
-                </b-form-group>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col>
-                <b-form-group label="Activity Level">
-                  <b-form-select
-                    :options="activity_levels"
-                    value-field="id"
-                    text-field="name"
-                    v-model="my_contact.activity_level_id">
-                  </b-form-select>
-                </b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Contact Method">
-                  <b-form-select
-                    :options="contact_methods"
-                    value-field="id"
-                    text-field="name"
-                    v-model="my_contact.contact_method_id">
-                  </b-form-select>
-                </b-form-group>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col>
-                
-                  <EditEmails
-                    :contact_id="my_contact.id"
-                    :settings="settings"
-                    :email_types="email_types"
-                  ></EditEmails>
-                
-            </b-col>
-            <b-col>
+  
                 <b-card title="Phone Number" class="mb-2">
                 <div v-for="phone_number in contact.phone_numbers" :key="phone_number.id" class="row">
                     <div class="col">
@@ -93,32 +25,12 @@
                    </div>
                   <b-button variant="secondary" @click="newPhoneNumber(contact)">Add Phone Number</b-button>
                 </b-card>
-            </b-col>
-        </b-row>
-            <b-col>
-                <b-form-group label="Notes">
-                  <b-form-textarea
-                    v-model="my_contact.notes"
-                    :rows="3"
-                    :max-rows="6"
-                    placeholder="Notes about this contact.">
-                  </b-form-textarea>
-                </b-form-group>
-            </b-col>
-        </b-row>
-        <b-row>
-                <b-button variant="danger" size="sm" @click="removeContact(contact)">Remove Contact</b-button>
-                <b-button variant="danger" size="sm" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
-        </b-row>
-    </b-container>
-  </div>
+  
 </template>
 <script>
-import EditEmails from './EditEmails';
 export default {
-  name: 'EditContact',
+  name: 'EditPhoneNumbers',
   components: {
-    'EditEmails': EditEmails
   },
   props: {
     client_id: {default: null},
