@@ -20,21 +20,21 @@ export default {
   },
   props: {
     contact_id: {default: null},
-    settings: {required: true},
-    email_types: {required: true},
+    settings: {required: true}
   },
-  data: function () {
+  data() {
     return {
         emails: [],
-        showSaveFailed: false,
-        showSaveSuccess: false
     }
   },
-  created () {
-    if(this.contact_id !== null){
-        this.$http.get('/emails?contact_id=' + this.contact_id).
-        then( results => { this.emails = results.data })
-    }
+  created() {
+    this.$http.get('/email_types').then(response => {
+        this.email_types = response.data
+        if(this.contact_id !== null){
+          this.$http.get('/emails?contact_id=' + this.contact_id).
+          then( results => { this.emails = results.data })
+        }
+    })
   },
   methods: {
     newEmail: function(){

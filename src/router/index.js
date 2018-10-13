@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import EditClient from '@/components/EditClient'
 import ViewClients from '@/components/ViewClients'
 import ViewContacts from '@/components/ViewContacts'
+import ViewProperties from '@/components/ViewProperties'
 import LoginForm from '@/components/LoginForm'
 
 Vue.use(Router)
@@ -34,6 +35,11 @@ export default new Router({
       path: '/contacts',
       name: 'ViewContacts',
       component: ViewContacts
+    },
+    {
+      path: '/properties',
+      name: 'ViewProperties',
+      component: ViewProperties
     }
   ]
 })

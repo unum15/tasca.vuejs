@@ -1,19 +1,7 @@
 <template>
   <div>
-    <b-alert variant="danger"
-             dismissible
-             max="5"
-             @dismissed="showSaveFailed=false">
-      Save Failed!
-    </b-alert>
-    <b-alert variant="success"
-             dismissible
-             :show="showSaveSuccess"
-             @dismissed="showSaveSuccess=false">
-      Saved!
-    </b-alert>
-    <b-tabs vertical pills v-model="property_tab_index">
-      <b-tab v-for="property in properties" :key="property.id" :title="property.name==''?'New Property':property.name">
+    <b-tabs vertical pills>
+      <b-tab v-for="property in my_properties" :key="property.id" :title="property.name==''?'New Property':property.name">
         <EditProperty :property="property" :activity_levels="activity_levels" :settings="settings" :property_types="property_types"></EditProperty>
       </b-tab>
     </b-tabs>
@@ -30,33 +18,26 @@ export default {
   props: {
     client_id: {default: null},
     activity_levels: {required: true},
-    settings: {required: true}
+    settings: {required: true},
+    properties: {required: true}
   },
-  data () {
+  data() {
     return {
-        contacts: [],
         property_types: [],
-        showSaveFailed: false,
-        showSaveSuccess: false,
-        properties: [],
-        property_tab_index: 0
+        my_properties: []
     }
   },
-  created () {
+  created() {
     this.$http.get('/property_types').then(response => {
       this.property_types = response.data
     })
-    if (this.client_id !== null) {
-      console.log('/properties/' + this.client_id);
-      this.$http.get('/properties?client_id=' + this.client_id).then(response => {
-        this.properties = response.data
-      })
-    }
+    this.my_properties = this.properties;
   },
   methods: {
-    newProperty: function(){
+    newProperty() {
       var property = {
         id: null,
+        client_id: this.client_id,
         name: null,
         activity_level_id: null,
         property_type_id: null,
@@ -70,7 +51,7 @@ export default {
         zip: null,
         notes: null
       };
-      this.properties.push(property);
+      this.my_properties.push(property);
     },
   },
 }

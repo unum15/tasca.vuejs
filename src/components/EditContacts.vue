@@ -1,15 +1,13 @@
 <template>
   <div>
     <b-tabs vertical pills v-model="contact_tab_index">
-      <b-tab v-for="contact in contacts" :key="contact.id" :title="contact.name==''?'New Contact':contact.name">
+      <b-tab v-for="contact in my_contacts" :key="contact.id" :title="contact.name==''?'New Contact':contact.name">
         <EditContact
           :client_id="client_id"
           :contact_methods="contact_methods"
           :activity_levels="activity_levels"
           :settings="settings"
           :contact="contact"
-          :email_types="email_types"
-          :phone_number_types="phone_number_types"
           :contact_types="contact_types"
           ></EditContact>
       </b-tab>
@@ -39,14 +37,13 @@ export default {
     client_id: {required: true},
     contact_methods: {required: true},
     activity_levels: {required: true},
-    settings: {required: true}
+    settings: {required: true},
+    contacts: {required: true}
   },
   data () {
     return {
-      contacts: [],
+      my_contacts: [],
       all_contacts: [],
-      email_types: [],
-      phone_number_types: [],
       contact_types: [],
       existing_contact_id: null,
       contact_tab_index: 0
@@ -56,18 +53,10 @@ export default {
     this.$http.get('/contacts').then(response => {
       this.all_contacts = response.data
     })
-    this.$http.get('/email_types').then(response => {
-      this.email_types = response.data
-    })
-    this.$http.get('/phone_number_types').then(response => {
-      this.phone_number_types = response.data
-    })
     this.$http.get('/contact_types').then(response => {
       this.contact_types = response.data
     })
-    this.$http.get('/contacts?client_id=' + this.client_id).then(response => {
-      this.contacts = response.data
-    })
+    this.my_contacts = this.contacts;
   },
   methods: {
     newContact () {
@@ -80,7 +69,7 @@ export default {
         phone_numbers: [],
         notes: null
       };
-      this.contacts.push(contact);
+      this.my_contacts.push(contact);
     },
     existingContact () {
       var id = this.existing_contact_id;
@@ -91,10 +80,10 @@ export default {
       contact.emails = [];
       contact.phone_numbers = [];
       contact.key = contact.id;
-      this.contacts.push(contact);
+      this.my_contacts.push(contact);
     },
     removeContact: function(contact){
-      this.contacts = this.contacts.filter(c => c !== contact);
+      this.my_contacts = this.my_contacts.filter(c => c !== contact);
     },
   },
   watch: {
