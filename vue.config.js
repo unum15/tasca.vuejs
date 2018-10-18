@@ -2,7 +2,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://tasca/',
+        target: 'https://api.tasca.truecomputing.biz/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

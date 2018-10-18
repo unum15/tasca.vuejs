@@ -2,7 +2,7 @@
 	<div>
         <b-tabs vertical pills v-model="service_order_tab_index">
             <b-tab v-for="service_order in service_orders" :key="service_order.id" :title="'Service Order ' + service_order.id">
-                <service-order :service_order="service_order" :priorities="priorities" :types="types"  :statuses="statuses" :actions="actions" :categories="categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :settings="settings" :new_service_order_saved="newServiceOrderSaved" :project_name='project_name'></service-order>
+                <ServiceOrderForm :service_order="service_order" :priorities="priorities" :types="types"  :statuses="statuses" :actions="actions" :categories="categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings" :new_service_order_saved="newServiceOrderSaved" :project_name='project_name'></ServiceOrderForm>
             </b-tab>
         </b-tabs>
         <b-button variant="secondary" @click="newServiceOrder" :pressed="new_pressed">Add New Service Order</b-button>
@@ -10,8 +10,12 @@
 </template>
 <script>
 import moment from 'moment'
+import ServiceOrderForm from './ServiceOrderForm'
 export default {
     name: 'EditServiceOrders',
+	components: {
+		'ServiceOrderForm': ServiceOrderForm
+	},
 	props: {
 		project: {required: true},
 		types: {required: true},
@@ -22,6 +26,7 @@ export default {
 		task_categories: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
+		task_types: {required: true},
 		settings: {required: true}
 	},
 	data() {
@@ -66,7 +71,7 @@ export default {
 			this.change_tab = true;
 		},
 		deleteServiceOrder(service) {
-			this.service_orders = this.my_service_orders.filter(x => x !== service);
+			this.service_orders = this.service_orders.filter(x => x !== service);
 		},
 		createWorkOrder(service) {
 			console.log('Create work order.');
@@ -100,7 +105,7 @@ export default {
 	},
   updated() {
 		if(this.change_tab){
-			this.service_order_tab_index = this.my_service_orders.length-1;
+			this.service_order_tab_index = this.service_orders.length-1;
 			this.change_tab =  false;
 		}
   },

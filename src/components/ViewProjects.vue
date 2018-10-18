@@ -16,7 +16,7 @@
 <script>
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewWorkOrders',
+    name: 'ViewProjects',
     components: {
         'TopMenu': TopMenu,
     },

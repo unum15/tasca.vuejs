@@ -40,6 +40,26 @@ export default new Router({
       path: '/properties',
       name: 'ViewProperties',
       component: ViewProperties
-    }
+    },
+    {
+      path: '/projects',
+      name: 'ViewProjects',
+      component: ViewProperties
+    },
+    {
+      path: '/service_orders',
+      name: 'ViewServiceOrders',
+      component: ViewProperties
+    },
+    {
+      path: '/work_orders',
+      name: 'ViewWorkOrders',
+      component: ViewProperties
+    },
+    {
+      path: '/tasks',
+      name: 'ViewTasks',
+      component: ViewProperties
+    },
   ]
 })
