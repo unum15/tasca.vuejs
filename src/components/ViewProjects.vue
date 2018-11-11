@@ -2,12 +2,12 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            Properties
+            Projects
         </head>
         <main>
-            <b-table small striped hover :items="properties" :fields="fields">
+            <b-table small striped hover :items="projects" :fields="fields">
                 <template slot="name" slot-scope="data">
-                    <a :href="'#/property/' + data.item.id"> {{ data.value }} </a>
+                    <a :href="'#/project/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -22,15 +22,15 @@ export default {
     },
     data() {
         return {
-            properties: [],
+            projects: [],
             fields: [
                 {
-                    key: 'client.name',
+                    key: 'property.client.name',
                     label: 'Client Name',
                     sortable: true
                 },
                 {
-                    key: 'name',
+                    key: 'property.name',
                     label: 'Property Name',
                     sortable: true
                 },
@@ -40,13 +40,18 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'activity_level.name',
-                    label: 'Activity Level',
+                    key: 'name',
+                    label: 'Project Name',
                     sortable: true
                 },
                 {
-                    key: 'property_type.name',
-                    label: 'Type',
+                    key: 'open_date',
+                    label: 'Open Date',
+                    sortable: true,
+                },
+                {
+                    key: 'close_date',
+                    label: 'Close Date',
                     sortable: true,
                 },
                 {
@@ -58,8 +63,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/properties').then((results) => {
-            this.properties = results.data;
+        this.$http.get('/projects').then((results) => {
+            this.projects = results.data;
         });
     }
 }

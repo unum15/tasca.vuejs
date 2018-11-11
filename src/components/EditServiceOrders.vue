@@ -2,7 +2,7 @@
 	<div>
         <b-tabs vertical pills v-model="service_order_tab_index">
             <b-tab v-for="service_order in service_orders" :key="service_order.id" :title="'Service Order ' + service_order.id">
-                <ServiceOrderForm :service_order="service_order" :priorities="priorities" :types="types"  :statuses="statuses" :actions="actions" :categories="categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings" :new_service_order_saved="newServiceOrderSaved" :project_name='project_name'></ServiceOrderForm>
+                <EditServiceOrder :service_order="service_order" :priorities="priorities" :types="types"  :statuses="statuses" :actions="actions" :categories="categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings" :new_service_order_saved="newServiceOrderSaved" :project_name='project_name'></EditServiceOrder>
             </b-tab>
         </b-tabs>
         <b-button variant="secondary" @click="newServiceOrder" :pressed="new_pressed">Add New Service Order</b-button>
@@ -10,11 +10,11 @@
 </template>
 <script>
 import moment from 'moment'
-import ServiceOrderForm from './ServiceOrderForm'
+import EditServiceOrder from './EditServiceOrder'
 export default {
     name: 'EditServiceOrders',
 	components: {
-		'ServiceOrderForm': ServiceOrderForm
+		'EditServiceOrder': EditServiceOrder
 	},
 	props: {
 		project: {required: true},
@@ -39,7 +39,10 @@ export default {
 		};
 	},
 	created() {
-    },
+		this.$http.get('/service_orders?project_id=' + this.project.id).then(response => {
+      this.service_orders = response.data
+    })
+  },
 	methods: {
 		newServiceOrder(){
 			this.new_service_orders++;

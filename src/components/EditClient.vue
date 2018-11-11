@@ -198,7 +198,7 @@ export default {
   },
   watch: {
     client:{
-      handler:function(){
+      handler(new_client, old_client) {
         if(this.client.name === null){
           return;
         }
@@ -216,6 +216,9 @@ export default {
             });
         }
         else{
+          if(old_client.id == null){
+            return;
+          }
           console.log('patch');
           this.$http.patch('/client/' + this.client.id,this.client)
             .catch(error => {

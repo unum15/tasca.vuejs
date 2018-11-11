@@ -4,6 +4,10 @@ import EditClient from '@/components/EditClient'
 import ViewClients from '@/components/ViewClients'
 import ViewContacts from '@/components/ViewContacts'
 import ViewProperties from '@/components/ViewProperties'
+import ViewProjects from '@/components/ViewProjects'
+import ViewServiceOrders from '@/components/ViewServiceOrders'
+import ViewWorkOrders from '@/components/ViewWorkOrders'
+import ViewTasks from '@/components/ViewTasks'
 import LoginForm from '@/components/LoginForm'
 
 Vue.use(Router)
@@ -44,22 +48,22 @@ export default new Router({
     {
       path: '/projects',
       name: 'ViewProjects',
-      component: ViewProperties
+      component: ViewProjects
     },
     {
       path: '/service_orders',
       name: 'ViewServiceOrders',
-      component: ViewProperties
+      component: ViewServiceOrders
     },
     {
       path: '/work_orders',
       name: 'ViewWorkOrders',
-      component: ViewProperties
+      component: ViewWorkOrders
     },
     {
       path: '/tasks',
       name: 'ViewTasks',
-      component: ViewProperties
+      component: ViewTasks
     },
   ]
 })

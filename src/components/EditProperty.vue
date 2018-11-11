@@ -153,7 +153,7 @@ export default {
     },
     watch: {
         my_property:{
-          handler:function(){
+          handler(new_property, old_property) {
             if(this.my_property.name === null){
               return;
             }
@@ -165,6 +165,9 @@ export default {
                 })
             }
             else{
+                if(old_property.id === undefined){
+                    return;
+                }
                 console.log('patch property '+ this.my_property.id);
               this.$http.patch('/property/' + this.my_property.id,this.my_property)
             }

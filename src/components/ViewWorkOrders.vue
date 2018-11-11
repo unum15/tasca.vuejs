@@ -2,12 +2,12 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            Properties
+            Work Orders
         </head>
         <main>
-            <b-table small striped hover :items="properties" :fields="fields">
-                <template slot="name" slot-scope="data">
-                    <a :href="'#/property/' + data.item.id"> {{ data.value }} </a>
+            <b-table small striped hover :items="work_orders" :fields="fields">
+                <template slot="id" slot-scope="data">
+                    <a :href="'#/work_order/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -22,31 +22,46 @@ export default {
     },
     data() {
         return {
-            properties: [],
+            work_orders: [],
             fields: [
                 {
-                    key: 'client.name',
+                    key: 'id',
+                    label: '#',
+                    sortable: true
+                },
+                {
+                    key: 'project.property.client.name',
                     label: 'Client Name',
                     sortable: true
                 },
                 {
-                    key: 'name',
+                    key: 'project.name',
+                    label: 'Project Name',
+                    sortable: true
+                },
+                {
+                    key: 'project.property.name',
                     label: 'Property Name',
                     sortable: true
                 },
                 {
-                    key: 'contact.name',
+                    key: 'project.contact.name',
                     label: 'Contact Name',
                     sortable: true
                 },
                 {
-                    key: 'activity_level.name',
-                    label: 'Activity Level',
+                    key: 'description',
+                    label: 'Description',
                     sortable: true
                 },
                 {
-                    key: 'property_type.name',
-                    label: 'Type',
+                    key: 'date',
+                    label: 'Date',
+                    sortable: true
+                },
+                {
+                    key: 'expiration_date',
+                    label: 'Expires',
                     sortable: true,
                 },
                 {
@@ -58,8 +73,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/properties').then((results) => {
-            this.properties = results.data;
+        this.$http.get('/work_orders').then((results) => {
+            this.work_orders = results.data;
         });
     }
 }

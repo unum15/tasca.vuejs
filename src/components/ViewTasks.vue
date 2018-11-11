@@ -2,12 +2,12 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            Properties
+            Tasks
         </head>
         <main>
-            <b-table small striped hover :items="properties" :fields="fields">
-                <template slot="name" slot-scope="data">
-                    <a :href="'#/property/' + data.item.id"> {{ data.value }} </a>
+            <b-table small striped hover :items="tasks" :fields="fields">
+                <template slot="id" slot-scope="data">
+                    <a :href="'#/task/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -22,32 +22,42 @@ export default {
     },
     data() {
         return {
-            properties: [],
+            tasks: [],
             fields: [
+                    {
+                    key: 'id',
+                    label: '#',
+                    sortable: true
+                },
                 {
-                    key: 'client.name',
+                    key: 'service_order.project.property.client.name',
                     label: 'Client Name',
                     sortable: true
                 },
                 {
-                    key: 'name',
+                    key: 'service_order.project.name',
+                    label: 'Project Name',
+                    sortable: true
+                },
+                {
+                    key: 'service_order.project.property.name',
                     label: 'Property Name',
                     sortable: true
                 },
                 {
-                    key: 'contact.name',
+                    key: 'service_order.project.contact.name',
                     label: 'Contact Name',
                     sortable: true
                 },
                 {
-                    key: 'activity_level.name',
-                    label: 'Activity Level',
+                    key: 'description',
+                    label: 'Description',
                     sortable: true
                 },
                 {
-                    key: 'property_type.name',
-                    label: 'Type',
-                    sortable: true,
+                    key: 'date',
+                    label: 'Date',
+                    sortable: true
                 },
                 {
                     key: 'notes',
@@ -58,8 +68,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/properties').then((results) => {
-            this.properties = results.data;
+        this.$http.get('/tasks').then((results) => {
+            this.tasks = results.data;
         });
     }
 }

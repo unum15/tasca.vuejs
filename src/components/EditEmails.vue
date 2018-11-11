@@ -1,22 +1,22 @@
 <template>
     <b-card title="Email" class="mb-2">
         <div v-for="email in emails" :key="email.id">
-            <EmailForm
+            <EditEmail
                 :settings="settings"
                 :email_types="email_types"
                 :email="email"
             >
-            </EmailForm>
+            </EditEmail>
         </div>
         <b-button variant="secondary" @click="newEmail()">Add Email</b-button>
     </b-card>
 </template>
 <script>
-import EmailForm from './EmailForm';
+import EditEmail from './EditEmail';
 export default {
   name: 'EditEmails',
   components: {
-    'EmailForm': EmailForm
+    'EditEmail': EditEmail
   },
   props: {
     contact_id: {default: null},

@@ -63,13 +63,13 @@
 				</b-form-group>
 			</b-tab>
 			<b-tab title="Service Orders" active>
-				<EditServiceOrders :project="my_project" :priorities="service_order_priorities" :types="service_order_types"  :statuses="service_order_statuses" :actions="service_order_actions" :categories="service_order_categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :settings="settings"></EditServiceOrders>
+				<EditServiceOrders :project="my_project" :priorities="service_order_priorities" :types="service_order_types"  :statuses="service_order_statuses" :actions="service_order_actions" :categories="service_order_categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings"></EditServiceOrders>
 			</b-tab>
 			<b-tab title="Pending Work Orders">
-				<EditWorkOrders :work_orders="my_project.pending_work_orders" :priorities="service_order_priorities" :types="service_order_types"  :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions"></EditWorkOrders>
+				<EditWorkOrders :project="my_project" :priorities="service_order_priorities" :types="service_order_types"  :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
 			</b-tab>
 			<b-tab title="Work Orders">
-				<EditWorkOrders :work_orders="my_project.work_orders" :types="service_order_types"  :priorities="service_order_priorities" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions"></EditWorkOrders>
+				<EditWorkOrders :project="my_project" :types="service_order_types"  :priorities="service_order_priorities" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
 			</b-tab>
 		</b-tabs>
 	</b-container>
@@ -99,6 +99,7 @@ export default {
 			task_categories: [],
 			task_statuses: [],
 			task_actions: [],
+			task_types: [],
 			my_project: null
 		};
 	},
@@ -126,6 +127,9 @@ export default {
 		});
 		this.$http.get('/task_actions').then(response => {
 			this.task_actions = response.data;
+		});
+		this.$http.get('/task_types').then(response => {
+			this.task_types = response.data;
 		});
         this.my_project=this.project;
     },

@@ -163,7 +163,7 @@
 </template>
 <script>
 export default {
-    name: 'TaskForm',
+    name: 'EditTask',
 	props: {
 		task: {required: true},
 		task_types: {required: true},

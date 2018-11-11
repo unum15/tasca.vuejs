@@ -52,7 +52,7 @@
                 </b-form-group>
             </b-tab>
             <b-tab title="Tasks">
-                <EditTasks :tasks="work_order.tasks" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
+                <EditTasks :order="work_order" :task_types="task_types" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
             </b-tab>
             <b-tab title="Notes">
                 <b-form-group label="Location">
@@ -145,7 +145,7 @@
 <script>
 import EditTasks from './EditTasks'
 export default {
-    name: 'WorkOrderForm',
+    name: 'EditWorkOrder',
 	components: {
 		'EditTasks': EditTasks
 	},
@@ -156,6 +156,7 @@ export default {
 		task_categories: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
+		task_types: {required: true}
 	},
 	data() {
 		return {

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<b-tabs vertical pills v-model="work_order_tab_index">
-			<b-tab v-for="work_order in work_orders" :key="work_order.id" :title="work_order.id">
+			<b-tab v-for="work_order in work_orders" :key="work_order.id" :title="'Work Order #'+work_order.id">
 				<b-tabs>
 					<b-tab title="General">
 						<b-form-group label="Completion Date">
@@ -54,7 +54,7 @@
 						</b-form-group>
 					</b-tab>
 					<b-tab title="Tasks">
-						<EditTasks :tasks="work_order.tasks" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
+						<EditTasks :order="work_order" :tasks="work_order.tasks" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditTasks>
 					</b-tab>
 					<b-tab title="Notes">
 						<b-form-group label="Location">
@@ -150,11 +150,11 @@
 import EditTasks from './EditTasks'
 export default {
     name: 'EditWorkOrders',
-    	components: {
+    components: {
 		'EditTasks': EditTasks
 	},
 	props: {
-		work_orders: {required: true},
+		project: {required: true},
 		types: {required: true},
 		priorities: {required: true},
 		task_categories: {required: true},
@@ -163,13 +163,17 @@ export default {
 	},
 	data() {
 		return {
+			work_orders: [],
 			work_order_tab_index: 0,
 			new_work_orders: 0,
+			task_types: []
 		};
 	},
 	created() {
-        this.my_work_orders = this.work_orders;
-    },
+    this.$http.get('/work_orders?project_id=' + this.project.id).then(response => {
+      this.work_orders = response.data
+    })
+  },
 	methods: {
 		newWorkOrder: function(){
 			this.new_work_orders++;

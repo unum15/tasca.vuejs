@@ -1,22 +1,22 @@
 <template>
     <b-card title="Phone Number" class="mb-2">
     <div v-for="phone_number in phone_numbers" :key="phone_number.id" class="row">
-        <PhoneNumberForm
+        <EditPhoneNumber
                 :settings="settings"
                 :phone_number_types="phone_number_types"
                 :phone_number="phone_number"
             >
-        </PhoneNumberForm>
+        </EditPhoneNumber>
        </div>
       <b-button variant="secondary" @click="newPhoneNumber()">Add Phone Number</b-button>
     </b-card>
 </template>
 <script>
-import PhoneNumberForm from './PhoneNumberForm';
+import EditPhoneNumber from './EditPhoneNumber';
 export default {
   name: 'EditPhoneNumbers',
   components: {
-    'PhoneNumberForm': PhoneNumberForm
+    'EditPhoneNumber': EditPhoneNumber
   },
   props: {
     contact_id: {required: true},

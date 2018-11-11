@@ -161,7 +161,7 @@
                 </b-container>
             </b-tab>
             <b-tab title="Tasks">
-                <EditTasks :tasks="service_order.tasks" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
+                <EditTasks :order="service_order" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
             </b-tab>
             <b-tab title="Notes">
                 <b-form-group label="Location">
@@ -325,7 +325,7 @@
 import moment from 'moment'
 import EditTasks from './EditTasks'
 export default {
-    name: 'ServiceOrderForm',
+    name: 'EditServiceOrder',
 	components: {
 		'EditTasks': EditTasks
 	},
@@ -359,12 +359,20 @@ export default {
 	},
 	watch:{
 		my_service_order:{
-			handler: function(){
-				console.log("update service order");
-				console.log("post");
-				this.$http.post('/service_order',this.my_service_order).then(response => {
-					this.my_service_order.id = response.data.id;
-				})
+			handler(new_service_order, old_service_order){
+                if(this.my_service_order.id === undefined){
+                    this.$http.post('/service_order',this.my_service_order).then(response => {
+                    	this.my_service_order.id = response.data.id;
+                    })
+                }
+                else{
+                    if(old_service_order === null){
+                        return;
+                    }
+                    this.$http.patch('/service_order/'+this.my_service_order.id,this.my_service_order).then(response => {
+                    	this.my_service_order.id = response.data.id;
+                    })
+                }
 			},
 			deep: true
 		}

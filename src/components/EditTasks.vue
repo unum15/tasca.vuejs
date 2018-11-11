@@ -1,36 +1,37 @@
 <template>
 		<div>
 			<b-tabs vertical pills v-model="tasks_tab_index">
-				<b-tab v-for="task in my_tasks" :key="task.id" :title="task.id">
-					<TaskForm :task="task" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></TaskForm>
+				<b-tab v-for="task in tasks" :key="task.id" :title="'Task #'+task.id">
+					<EditTask :order="order" :task="task" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTask>
 				</b-tab>
 			</b-tabs>
 			<b-button variant="secondary" @click="newTask">Add New Task</b-button>
 		</div>
 </template>
 <script>
-import TaskForm from './TaskForm'
+import EditTask from './EditTask'
 export default {
     name: 'EditTasks',
     components: {
-        'TaskForm': TaskForm
+        'EditTask': EditTask
     },
 	props: {
-		tasks: {required: true},
+		order: {required: true},
 		task_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
 	},
 	data: function() {
 		return {
-			tasks_tab_index: 0,
-			new_tasks: 0,
-			my_tasks: []
+			tasks: [],
+			tasks_tab_index: 0
 		};
 	},
 	created() {
-        this.my_tasks = this.tasks;
-    },
+     this.$http.get('/tasks?service_order_id=' + this.order.id).then(response => {
+      this.tasks = response.data
+    })
+  },
 	methods: {
 		newTask: function(){
 			this.new_tasks++;

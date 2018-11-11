@@ -44,7 +44,7 @@ export default {
   },
   watch: {
     my_email:{
-      handler:function(){
+      handler(new_email, old_email) {
         if(this.my_email.email === null){
           return;
         }
@@ -55,6 +55,10 @@ export default {
             })
         }
         else{
+          console.log(old_email.id);
+          if(old_email.id === undefined){
+            return;
+          }
           this.$http.patch('/email/' + this.my_email.id,this.my_email)
         }
       },

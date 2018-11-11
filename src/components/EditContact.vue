@@ -113,7 +113,7 @@ export default {
   },
   watch: {
     my_contact:{
-      handler:function(){
+      handler(new_contact, old_contact) {
         if(this.my_contact.name === null){
           return;
         }
@@ -124,6 +124,9 @@ export default {
             })
         }
         else{
+          if(old_contact.id === undefined){
+            return;
+          }
           this.$http.patch('/contact/' + this.my_contact.id,this.my_contact)
         }
       },

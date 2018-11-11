@@ -44,7 +44,7 @@ export default {
   },
   watch: {
     my_phone_number:{
-      handler:function(){
+      handler(new_number, old_number) {
         if(this.my_phone_number.phone_number === null){
           return;
         }
@@ -59,6 +59,9 @@ export default {
             });
         }
         else{
+          if(old_number.id === undefined){
+            return;
+          }
           console.log('patch phone number' + this.my_phone_number.id);
           this.$http.patch('/phone_number/' + this.my_phone_number.id,this.my_phone_number);
         }
