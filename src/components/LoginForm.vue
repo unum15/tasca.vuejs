@@ -39,7 +39,7 @@ export default {
       }
       localStorage.setItem('token', req.data.api_token)
       this.error = false
-      this.$router.push('/client');
+      this.$router.push('/clients');
     },
 
     loginFailed () {
@@ -52,7 +52,6 @@ export default {
 
 <style lang="css">
 body {
-  background: #605B56;
 }
 
 .login-wrapper {
