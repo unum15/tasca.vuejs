@@ -7,7 +7,7 @@
         <main>
             <b-table small striped hover :items="tasks" :fields="fields">
                 <template slot="id" slot-scope="data">
-                    <a :href="'#/task/' + data.item.id"> {{ data.value }} </a>
+                    <a :href="'#/client/'+ data.item.service_order.project.property.client_id +'/task/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>

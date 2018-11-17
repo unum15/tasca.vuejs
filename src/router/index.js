@@ -65,5 +65,41 @@ export default new Router({
       name: 'ViewTasks',
       component: ViewTasks
     },
+    {
+      path: '/client/:client_id/contact/:contact_id',
+      name: 'EditContact',
+      component: EditClient,
+      props: true
+    },
+    {
+      path: '/client/:client_id/property/:property_id',
+      name: 'EditProperty',
+      component: EditClient,
+      props: true
+    },
+    {
+      path: '/client/:client_id/project/:project_id',
+      name: 'EditProject',
+      component: EditClient,
+      props: true
+    },
+    {
+      path: '/client/:client_id/service_order/:service_order_id',
+      name: 'EditServiceOrder',
+      component: EditClient,
+      props: true
+    },
+    {
+      path: '/client/:client_id/work_order/:work_order_id',
+      name: 'EditWorkOrder',
+      component: EditClient,
+      props: true
+    },
+    {
+      path: '/client/:client_id/task/:task_id',
+      name: 'EditTask',
+      component: EditClient,
+      props: true
+    },
   ]
 })
