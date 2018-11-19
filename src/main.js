@@ -5,6 +5,7 @@ import router from './router'
 import axios from './backend/vue-axios'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './assets/main.css'
 
 Vue.use(BootstrapVue)
 

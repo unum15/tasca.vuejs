@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-tabs vertical pills>
+    <b-tabs vertical pills v-model="current_tab">
       <b-tab v-for="project in projects" :key="project.id" :title="project.name===null?'New project':project.name">
         <EditProject
             :project="project"
@@ -30,6 +30,7 @@ export default {
   data () {
     return {
       projects: [],
+      current_tab: 0
     }
   },
   created () {
@@ -48,6 +49,11 @@ export default {
         open_date: moment().format('YYYY-MM-DD')
       };
       this.projects.push(project);
+    }
+  },
+  updated: function() {
+    if((this.projects.length>0) && (this.projects[this.projects.length-1].name === null)){
+      this.current_tab = this.projects.length-1;
     }
   },
   watch: {
