@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b-tabs vertical pills>
-      <b-tab v-for="property in my_properties" :key="property.id" :title="property.name==''?'New Property':property.name">
+    <b-tabs vertical pills v-model="current_tab">
+      <b-tab v-for="property in my_properties" :key="property.id" :title="property.name==null?'New Property':property.name">
         <EditProperty :property="property" :activity_levels="activity_levels" :settings="settings" :property_types="property_types"></EditProperty>
       </b-tab>
     </b-tabs>
@@ -24,7 +24,8 @@ export default {
   data() {
     return {
         property_types: [],
-        my_properties: []
+        my_properties: [],
+        current_tab: 0
     }
   },
   created() {
@@ -53,6 +54,11 @@ export default {
       };
       this.my_properties.push(property);
     },
+  },
+  updated: function() {
+    if((this.my_properties.length>0) && (this.my_properties[this.my_properties.length-1].name === null)){
+      this.current_tab = this.my_properties.length-1;
+    }
   },
 }
 

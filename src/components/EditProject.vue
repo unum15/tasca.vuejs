@@ -5,6 +5,7 @@
 				type="text"
 				v-model="my_project.name"
 				required
+				:class="my_project.name == null ? 'invalid' : ''"
 				placeholder="Smith's Remodel"
 				>
 			</b-form-input>
@@ -17,6 +18,7 @@
 						value-field="id"
 						text-field="name"
 						required
+						:class="my_project.property_id == null ? 'invalid' : ''"
 						v-model="my_project.property_id"
 						>
 					</b-form-select>
@@ -29,6 +31,7 @@
 						value-field="id"
 						text-field="name"
 						required
+						:class="my_project.contact_id == null ? 'invalid' : ''"
 						v-model="my_project.contact_id"
 						>
 					</b-form-select>
@@ -62,13 +65,13 @@
 					</b-form-textarea>
 				</b-form-group>
 			</b-tab>
-			<b-tab title="Service Orders" active>
+			<b-tab v-if="my_project.id != null" title="Service Orders" active>
 				<EditServiceOrders :project="my_project" :priorities="service_order_priorities" :types="service_order_types"  :statuses="service_order_statuses" :actions="service_order_actions" :categories="service_order_categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings"></EditServiceOrders>
 			</b-tab>
-			<b-tab title="Pending Work Orders">
+			<b-tab v-if="my_project.id != null" title="Pending Work Orders">
 				<EditWorkOrders :project="my_project" :priorities="service_order_priorities" :types="service_order_types"  :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
 			</b-tab>
-			<b-tab title="Work Orders">
+			<b-tab v-if="my_project.id != null" title="Work Orders">
 				<EditWorkOrders :project="my_project" :types="service_order_types"  :priorities="service_order_priorities" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
 			</b-tab>
 		</b-tabs>
@@ -138,7 +141,7 @@ export default {
 	watch: {
 		project:{
 			handler(){
-			if(this.my_project.property_id === null){
+			if((this.my_project.name === null) || (this.my_project.property_id === null) || (this.my_project.contact_id === null)){
 				return;
 			}
             if(this.my_project.id == null){

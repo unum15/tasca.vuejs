@@ -8,6 +8,7 @@
                         type="text"
                         v-model="my_property.name"
                         required
+                        :class="my_property.name == null ? 'invalid' : ''"
                         placeholder="Home">
                       </b-form-input>
                     </b-form-group>
@@ -18,6 +19,8 @@
                         :options="activity_levels"
                         value-field="id"
                         text-field="name"
+                        required
+                        :class="my_property.activity_level_id == null ? 'invalid' : ''"
                         v-model="my_property.activity_level_id">
                       </b-form-select>
                     </b-form-group>
@@ -28,6 +31,8 @@
                         :options="property_types"
                         value-field="id"
                         text-field="name"
+                        required
+                        :class="my_property.property_id == null ? 'invalid' : ''"
                         v-model="my_property.property_type_id">
                       </b-form-select>
                     </b-form-group>
@@ -154,7 +159,7 @@ export default {
     watch: {
         my_property:{
           handler(new_property, old_property) {
-            if(this.my_property.name === null){
+            if((this.my_property.name === null) || (this.my_property.activity_level_id === null) || (this.my_property.property_type_id === null)){
               return;
             }
             if(this.my_property.id === null){

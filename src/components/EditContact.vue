@@ -8,6 +8,7 @@
                       type="text"
                       v-model="my_contact.name"
                       required
+                      :class="my_contact.name == null ? 'invalid' : ''"
                       placeholder="John Smith">
                     </b-form-input>
                 </b-form-group>
@@ -18,6 +19,8 @@
                     :options="contact_types"
                     value-field="id"
                     text-field="name"
+                    required
+                    :class="my_contact.contact_type_id == null ? 'invalid' : ''"
                     v-model="my_contact.contact_type_id">
                   </b-form-select>
                 </b-form-group>
@@ -105,16 +108,16 @@ export default {
     var contact = this.contact;
     if(this.client_id !== null){
         contact.client_id = this.client_id;
-        contact.contact_type_id = this.contact.pivot.contact_type_id;
+        if(this.contact.pivot != null){
+          contact.contact_type_id = this.contact.pivot.contact_type_id;
+        }
     }
     this.my_contact = this.contact;
-  },
-  methods: {
   },
   watch: {
     my_contact:{
       handler(new_contact, old_contact) {
-        if(this.my_contact.name === null){
+        if((this.my_contact.name === null) || (this.my_contact.contact_type_id === null)){
           return;
         }
         if(this.my_contact.id === null){

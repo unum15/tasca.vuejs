@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b-tabs vertical pills v-model="contact_tab_index">
-      <b-tab v-for="contact in my_contacts" :key="contact.id" :title="contact.name==''?'New Contact':contact.name">
+    <b-tabs vertical pills v-model="current_tab">
+      <b-tab v-for="contact in my_contacts" :key="contact.id" :title="contact.name===null?'New Contact':contact.name">
         <EditContact
           :client_id="client_id"
           :contact_methods="contact_methods"
@@ -46,7 +46,7 @@ export default {
       all_contacts: [],
       contact_types: [],
       existing_contact_id: null,
-      contact_tab_index: 0
+      current_tab: 0
     }
   },
   created () {
@@ -62,6 +62,8 @@ export default {
     newContact () {
       var contact = {
         id: null,
+        client_id: this.client_id,
+        contact_type_id: null,
         name: null,
         active_level_id: null,
         contact_method_id: null,
@@ -70,6 +72,7 @@ export default {
         notes: null
       };
       this.my_contacts.push(contact);
+      this.current_tab = this.my_contacts.length;
     },
     existingContact () {
       var id = this.existing_contact_id;
@@ -85,6 +88,11 @@ export default {
     removeContact: function(contact){
       this.my_contacts = this.my_contacts.filter(c => c !== contact);
     },
+  },
+  updated: function() {
+    if((this.my_contacts.length>0) && (this.my_contacts[this.my_contacts.length-1].name === null)){
+      this.current_tab = this.my_contacts.length-1;
+    }
   },
   watch: {
   }
