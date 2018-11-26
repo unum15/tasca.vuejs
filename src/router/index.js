@@ -9,6 +9,7 @@ import ViewServiceOrders from '@/components/ViewServiceOrders'
 import ViewWorkOrders from '@/components/ViewWorkOrders'
 import ViewTasks from '@/components/ViewTasks'
 import LoginForm from '@/components/LoginForm'
+import ViewSchedule from '@/components/ViewSchedule'
 
 Vue.use(Router)
 
@@ -64,6 +65,11 @@ export default new Router({
       path: '/tasks',
       name: 'ViewTasks',
       component: ViewTasks
+    },
+    {
+      path: '/scheduler',
+      name: 'ViewSchedule',
+      component: ViewSchedule
     },
     {
       path: '/client/:client_id/contact/:contact_id',
