@@ -51,8 +51,6 @@ export default {
 </script>
 
 <style lang="css">
-body {
-}
 
 .login-wrapper {
   background: #fff;
