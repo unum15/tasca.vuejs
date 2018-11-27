@@ -17,6 +17,7 @@ export default {
     },
 	props: {
 		order: {required: true},
+		order_type: {required: true},
 		task_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
@@ -28,7 +29,7 @@ export default {
 		};
 	},
 	created() {
-     this.$http.get('/tasks?service_order_id=' + this.order.id).then(response => {
+     this.$http.get('/tasks?' +this.order_type + '_id=' + this.order.id).then(response => {
       this.tasks = response.data
     })
   },

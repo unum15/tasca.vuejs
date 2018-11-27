@@ -161,7 +161,7 @@
                 </b-container>
             </b-tab>
             <b-tab title="Tasks">
-                <EditTasks :order="service_order" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
+                <EditTasks :order="service_order" order_type="service_order" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
             </b-tab>
             <b-tab title="Notes">
                 <b-form-group label="Location">
