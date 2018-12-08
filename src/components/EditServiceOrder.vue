@@ -65,7 +65,7 @@
                                     :options="types"
                                     value-field="id"
                                     text-field="name"
-                                    v-model="my_service_order.category_id"
+                                    v-model="my_service_order.service_order_category_id"
                                     required
                                     >
                                 </b-form-select>
@@ -161,7 +161,7 @@
                 </b-container>
             </b-tab>
             <b-tab title="Tasks">
-                <EditTasks :order="service_order" order_type="service_order" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
+                <EditTasks v-if="my_service_order.id != null" :order="my_service_order" order_type="service_order" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
             </b-tab>
             <b-tab title="Notes">
                 <b-form-group label="Location">
@@ -360,7 +360,13 @@ export default {
 	watch:{
 		my_service_order:{
 			handler(new_service_order, old_service_order){
-                if(this.my_service_order.id === undefined){
+                if(this.my_service_order.description === null){
+                    return;
+                }
+                console.log(this.my_service_order.id);
+                if(this.my_service_order.id === null){
+                    console.log(this.my_service_order);
+                    console.log('post');
                     this.$http.post('/service_order',this.my_service_order).then(response => {
                     	this.my_service_order.id = response.data.id;
                     })
@@ -369,6 +375,7 @@ export default {
                     if(old_service_order === null){
                         return;
                     }
+                    console.log('patch');
                     this.$http.patch('/service_order/'+this.my_service_order.id,this.my_service_order).then(response => {
                     	this.my_service_order.id = response.data.id;
                     })

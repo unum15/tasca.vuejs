@@ -1,7 +1,7 @@
 <template>
 	<div>
         <b-tabs vertical pills v-model="service_order_tab_index">
-            <b-tab v-for="service_order in service_orders" :key="service_order.id" :title="'Service Order ' + service_order.id">
+            <b-tab v-for="service_order in service_orders" :key="service_order.id" :title="'Service Order ' + (service_order.id !== null ? service_order.id : 'New')">
                 <EditServiceOrder :service_order="service_order" :priorities="priorities" :types="types"  :statuses="statuses" :actions="actions" :categories="categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings" :new_service_order_saved="newServiceOrderSaved" :project_name='project_name'></EditServiceOrder>
             </b-tab>
         </b-tabs>
@@ -47,7 +47,8 @@ export default {
 		newServiceOrder(){
 			this.new_service_orders++;
 			var service_order = {
-				id: 'new-'+this.new_service_orders,
+				id: null,
+				project_id: this.project.id,
 				date: this.today,
 				approval_date: null,
 				completion_date: null,
