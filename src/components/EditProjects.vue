@@ -52,8 +52,8 @@ export default {
     }
   },
   updated: function() {
-    if((this.projects.length>0) && (this.projects[this.projects.length-1].name === null)){
-      this.current_tab = this.projects.length-1;
+    if((this.projects.length>0) && (this.projects[this.projects.length-1].name === null) && (this.current_tab != this.projects.length-1)){
+      //this.current_tab = this.projects.length-1;
     }
   },
   watch: {

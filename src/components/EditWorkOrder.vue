@@ -52,7 +52,7 @@
                 </b-form-group>
             </b-tab>
             <b-tab title="Tasks">
-                <EditTasks :order="work_order" :task_types="task_types" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
+                <EditTasks :order="work_order" order_type="work_order" :task_types="task_types" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
             </b-tab>
             <b-tab title="Notes">
                 <b-form-group label="Location">
