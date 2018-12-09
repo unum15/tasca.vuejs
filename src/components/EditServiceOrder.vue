@@ -342,7 +342,7 @@ export default {
 	data: function() {
 		return {
 			my_service_order: null,
-			saving: false,
+			saving: false
 		};
 	},
 	created(){
@@ -351,10 +351,15 @@ export default {
 	mounted() {
     },
 	methods: {
+        createWorkOrder() {
+            this.$http.post('/work_order',this.my_service_order).then(response => {
+                this.$emit(created_work_order);
+            });
+        }
 	},
 	computed:{
-		allowWorkOrder: function(){
-			return false;
+		allowWorkOrder() {
+			return true;
 		},
 	},
 	watch:{
