@@ -66,13 +66,13 @@
 				</b-form-group>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Service Orders" active>
-				<EditOrders :project="my_project" :priorities="order_priorities" :types="order_types"  :statuses="order_statuses" :actions="order_actions" :categories="order_categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings"></EditServiceOrders>
+				<EditOrders :project="my_project" :priorities="order_priorities" :types="order_types"  :statuses="order_statuses" :actions="order_actions" :categories="order_categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings"></EditOrders>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Pending Work Orders">
-				<EditOrders :project="my_project" :priorities="order_priorities" :types="order_types"  :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
+				<EditOrders :project="my_project" :priorities="order_priorities" :types="order_types"  :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditOrders>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Work Orders">
-				<EditOrders :project="my_project" :types="order_types"  :priorities="order_priorities" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
+				<EditOrders :project="my_project" :types="order_types"  :priorities="order_priorities" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditOrders>
 			</b-tab>
 		</b-tabs>
 	</b-container>
