@@ -5,8 +5,7 @@ import ViewClients from '@/components/ViewClients'
 import ViewContacts from '@/components/ViewContacts'
 import ViewProperties from '@/components/ViewProperties'
 import ViewProjects from '@/components/ViewProjects'
-import ViewServiceOrders from '@/components/ViewServiceOrders'
-import ViewWorkOrders from '@/components/ViewWorkOrders'
+import ViewOrders from '@/components/ViewOrders'
 import ViewTasks from '@/components/ViewTasks'
 import LoginForm from '@/components/LoginForm'
 import ViewSchedule from '@/components/ViewSchedule'
@@ -52,14 +51,9 @@ export default new Router({
       component: ViewProjects
     },
     {
-      path: '/service_orders',
-      name: 'ViewServiceOrders',
-      component: ViewServiceOrders
-    },
-    {
-      path: '/work_orders',
-      name: 'ViewWorkOrders',
-      component: ViewWorkOrders
+      path: '/orders',
+      name: 'ViewOrders',
+      component: ViewOrders
     },
     {
       path: '/tasks',

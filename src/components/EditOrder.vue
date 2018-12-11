@@ -8,7 +8,7 @@
                             <b-form-group label="Service Order Date">
                                 <b-form-input
                                     type="date"
-                                    v-model="my_service_order.date"
+                                    v-model="my_order.date"
                                     required
                                 >
                                 </b-form-input>
@@ -18,7 +18,7 @@
                             <b-form-group label="Approval Date">
                                 <b-form-input
                                     type="date"
-                                    v-model="my_service_order.approval_date"
+                                    v-model="my_order.approval_date"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -29,7 +29,7 @@
                             <b-form-group label="Completion Date">
                                 <b-form-input
                                     type="date"
-                                    v-model="my_service_order.completion_date"
+                                    v-model="my_order.completion_date"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -38,7 +38,7 @@
                             <b-form-group label="Expiration Date">
                                 <b-form-input
                                     type="date"
-                                    v-model="my_service_order.expiration_date"
+                                    v-model="my_order.expiration_date"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -48,7 +48,7 @@
                         <b-col>
                             <b-form-group label="Description">
                                 <b-form-textarea
-                                    v-model="my_service_order.description"
+                                    v-model="my_order.description"
                                     :rows="3"
                                     :max-rows="6"
                                     placeholder="What needs to be done?"
@@ -65,7 +65,7 @@
                                     :options="types"
                                     value-field="id"
                                     text-field="name"
-                                    v-model="my_service_order.service_order_category_id"
+                                    v-model="my_order.order_category_id"
                                     required
                                     >
                                 </b-form-select>
@@ -77,7 +77,7 @@
                                     :options="priorities"
                                     value-field="id"
                                     text-field="name"
-                                    v-model="my_service_order.service_order_priority_id"
+                                    v-model="my_order.order_priority_id"
                                     required
                                     >
                                 </b-form-select>
@@ -89,7 +89,7 @@
                                     :options="types"
                                     value-field="id"
                                     text-field="name"
-                                    v-model="my_service_order.service_order_type_id"
+                                    v-model="my_order.order_type_id"
                                     required
                                     >
                                 </b-form-select>
@@ -103,7 +103,7 @@
                                     :options="statuses"
                                     value-field="id"
                                     text-field="name"
-                                    v-model="my_service_order.service_order_status_id"
+                                    v-model="my_order.order_status_id"
                                     required
                                     >
                                 </b-form-select>
@@ -115,7 +115,7 @@
                                     :options="actions"
                                     value-field="id"
                                     text-field="name"
-                                    v-model="my_service_order.service_order_action_id"
+                                    v-model="my_order.order_action_id"
                                     required
                                     >
                                 </b-form-select>
@@ -131,7 +131,7 @@
                             <b-form-group label="Start Date">
                                 <b-form-input
                                     type="date"
-                                    v-model="my_service_order.start_date"
+                                    v-model="my_order.start_date"
                                     required
                                 >
                                 </b-form-input>
@@ -141,7 +141,7 @@
                             <b-form-group label="Recurrences">
                                 <b-form-input
                                     type="number"
-                                    v-model="my_service_order.recurrences"
+                                    v-model="my_order.recurrences"
                                     required
                                 >
                                 </b-form-input>
@@ -151,7 +151,7 @@
                             <b-form-group label="Service Window">
                                 <b-form-input
                                     type="number"
-                                    v-model="my_service_order.service_window"
+                                    v-model="my_order.window"
                                     required
                                 >
                                 </b-form-input>
@@ -161,12 +161,12 @@
                 </b-container>
             </b-tab>
             <b-tab title="Tasks">
-                <EditTasks v-if="my_service_order.id != null" :order="my_service_order" order_type="service_order" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
+                <EditTasks v-if="my_order.id != null" :order="my_order" order_type="order" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
             </b-tab>
             <b-tab title="Notes">
                 <b-form-group label="Location">
                     <b-form-textarea
-                        v-model="my_service_order.location"
+                        v-model="my_order.location"
                         :rows="3"
                         :max-rows="6"
                         placeholder="North west corner.">
@@ -174,7 +174,7 @@
                 </b-form-group>
                 <b-form-group label="Instructions">
                     <b-form-textarea
-                        v-model="my_service_order.instructions"
+                        v-model="my_order.instructions"
                         :rows="3"
                         :max-rows="6"
                         placeholder="Instructions service order.">
@@ -182,7 +182,7 @@
                 </b-form-group>
                 <b-form-group label="Notes">
                     <b-form-textarea
-                        v-model="my_service_order.notes"
+                        v-model="my_order.notes"
                         :rows="3"
                         :max-rows="6"
                         placeholder="Notes about this service order.">
@@ -196,7 +196,7 @@
                             <b-form-group label="PO Number">
                                 <b-form-input
                                     type="text"
-                                    v-model="my_service_order.po_number"
+                                    v-model="my_order.po_number"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -207,7 +207,7 @@
                             <b-form-group label="Budget">
                                 <b-form-input
                                     type="text"
-                                    v-model="my_service_order.budget"
+                                    v-model="my_order.budget"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -216,7 +216,7 @@
                             <b-form-group label="Budget +/-">
                                 <b-form-input
                                     type="number"
-                                    v-model="my_service_order.budget_plus_minus"
+                                    v-model="my_order.budget_plus_minus"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -225,7 +225,7 @@
                             <b-form-group label="Budget Invoice Number">
                                 <b-form-input
                                     type="text"
-                                    v-model="my_service_order.budget_invoice_number"
+                                    v-model="my_order.budget_invoice_number"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -236,7 +236,7 @@
                             <b-form-group label="Bid">
                                 <b-form-input
                                     type="text"
-                                    v-model="my_service_order.bid"
+                                    v-model="my_order.bid"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -245,7 +245,7 @@
                             <b-form-group label="Bid +/-">
                                 <b-form-input
                                     type="text"
-                                    v-model="my_service_order.bid_plus_minus"
+                                    v-model="my_order.bid_plus_minus"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -254,7 +254,7 @@
                             <b-form-group label="Invoice Number">
                                 <b-form-input
                                     type="number"
-                                    v-model="my_service_order.number"
+                                    v-model="my_order.number"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -268,7 +268,7 @@
                         <b-col>
                             <b-form-group label="Renewable">
                                 <b-form-checkbox
-                                    v-model="my_service_order.renewable"
+                                    v-model="my_order.renewable"
                                 >
                                 </b-form-checkbox>
                             </b-form-group>
@@ -277,7 +277,7 @@
                             <b-form-group label="Frequency">
                                 <b-form-input
                                     type="text"
-                                    v-model="my_service_order.frequency"
+                                    v-model="my_order.frequency"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -286,7 +286,7 @@
                             <b-form-group label="Renewal Date">
                                 <b-form-input
                                     type="date"
-                                    v-model="my_service_order.renewal_date"
+                                    v-model="my_order.renewal_date"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -295,7 +295,7 @@
                             <b-form-group label="Notification Lead(in days)">
                                 <b-form-input
                                     type="text"
-                                    v-model="my_service_order.notification_lead"
+                                    v-model="my_order.notification_lead"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -306,7 +306,7 @@
                             <b-form-group label="Client Message">
                                 <b-form-textarea
                                     type="text"
-                                    v-model="my_service_order.renewal_message"
+                                    v-model="my_order.renewal_message"
                                     placeholder="It's time to renew your service."
                                 >
                                 </b-form-textarea>
@@ -316,9 +316,9 @@
                 </b-container>
             </b-tab>
         </b-tabs>
-        <b-button variant="secondary" size="sm" @click="createWorkOrder(service_order)" :disabled="!allowWorkOrder">Create Work Order</b-button>
-        <b-button variant="secondary" size="sm" @click="createPendingWorkOrder(service_order)" :disabled="!allowWorkOrder">Create Pending Work Order</b-button>
-        <b-button variant="danger" size="sm" @click="deleteServiceOrder(service_order)">Delete Service Order</b-button>
+        <b-button variant="secondary" size="sm" @click="createWorkOrder(order)" :disabled="!allowWorkOrder">Create Work Order</b-button>
+        <b-button variant="secondary" size="sm" @click="createPendingWorkOrder(order)" :disabled="!allowWorkOrder">Create Pending Work Order</b-button>
+        <b-button variant="danger" size="sm" @click="deleteServiceOrder(order)">Delete Service Order</b-button>
 	</div>
 </template>
 <script>
@@ -330,7 +330,7 @@ export default {
 		'EditTasks': EditTasks
 	},
 	props: {
-		service_order: {required: true},
+		order: {required: true},
 		types: {required: true},
 		statuses: {required: true},
 		actions: {required: true},
@@ -341,18 +341,18 @@ export default {
 	},
 	data: function() {
 		return {
-			my_service_order: null,
+			my_order: null,
 			saving: false
 		};
 	},
 	created(){
-		this.my_service_order = this.service_order;
+		this.my_order = this.order;
 	},
 	mounted() {
     },
 	methods: {
         createWorkOrder() {
-            this.$http.post('/work_order',this.my_service_order).then(response => {
+            this.$http.post('/work_order',this.my_order).then(response => {
                 this.$emit(created_work_order);
             });
         }
@@ -363,26 +363,26 @@ export default {
 		},
 	},
 	watch:{
-		my_service_order:{
-			handler(new_service_order, old_service_order){
-                if(this.my_service_order.description === null){
+		my_order:{
+			handler(new_order, old_order){
+                if(this.my_order.description === null){
                     return;
                 }
-                console.log(this.my_service_order.id);
-                if(this.my_service_order.id === null){
-                    console.log(this.my_service_order);
+                console.log(this.my_order.id);
+                if(this.my_order.id === null){
+                    console.log(this.my_order);
                     console.log('post');
-                    this.$http.post('/service_order',this.my_service_order).then(response => {
-                    	this.my_service_order.id = response.data.id;
+                    this.$http.post('/order',this.my_order).then(response => {
+                    	this.my_order.id = response.data.id;
                     })
                 }
                 else{
-                    if(old_service_order === null){
+                    if(old_order === null){
                         return;
                     }
                     console.log('patch');
-                    this.$http.patch('/service_order/'+this.my_service_order.id,this.my_service_order).then(response => {
-                    	this.my_service_order.id = response.data.id;
+                    this.$http.patch('/order/'+this.my_order.id,this.my_order).then(response => {
+                    	this.my_order.id = response.data.id;
                     })
                 }
 			},

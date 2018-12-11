@@ -66,25 +66,23 @@
 				</b-form-group>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Service Orders" active>
-				<EditServiceOrders :project="my_project" :priorities="service_order_priorities" :types="service_order_types"  :statuses="service_order_statuses" :actions="service_order_actions" :categories="service_order_categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings"></EditServiceOrders>
+				<EditOrders :project="my_project" :priorities="order_priorities" :types="order_types"  :statuses="order_statuses" :actions="order_actions" :categories="order_categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings"></EditServiceOrders>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Pending Work Orders">
-				<EditWorkOrders :project="my_project" :priorities="service_order_priorities" :types="service_order_types"  :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
+				<EditOrders :project="my_project" :priorities="order_priorities" :types="order_types"  :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Work Orders">
-				<EditWorkOrders :project="my_project" :types="service_order_types"  :priorities="service_order_priorities" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
+				<EditOrders :project="my_project" :types="order_types"  :priorities="order_priorities" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditWorkOrders>
 			</b-tab>
 		</b-tabs>
 	</b-container>
 </template>
 <script>
-import EditServiceOrders from './EditServiceOrders'
-import EditWorkOrders from './EditWorkOrders'
+import EditOrders from './EditOrders'
 export default {
     name: 'EditProject',
     components: {
-        'EditServiceOrders': EditServiceOrders,
-        'EditWorkOrders': EditWorkOrders
+        'EditOrders': EditOrders
     },
 	props: {
         contacts: {required: true},
@@ -94,11 +92,11 @@ export default {
 	},
 	data() {
 		return {
-			service_order_types: [],
-			service_order_priorities: [],
-			service_order_actions: [],
-			service_order_statuses: [],
-			service_order_categories: [],
+			order_types: [],
+			order_priorities: [],
+			order_actions: [],
+			order_statuses: [],
+			order_categories: [],
 			task_categories: [],
 			task_statuses: [],
 			task_actions: [],
@@ -107,20 +105,20 @@ export default {
 		};
 	},
 	created() {
-		this.$http.get('/service_order_priorities').then(response => {
-			this.service_order_priorities = response.data;
+		this.$http.get('/order_priorities').then(response => {
+			this.order_priorities = response.data;
 		});
-		this.$http.get('/service_order_types').then(response => {
-			this.service_order_types = response.data;
+		this.$http.get('/order_types').then(response => {
+			this.order_types = response.data;
 		});
-		this.$http.get('/service_order_statuses').then(response => {
-			this.service_order_statuses = response.data;
+		this.$http.get('/order_statuses').then(response => {
+			this.order_statuses = response.data;
 		});
-		this.$http.get('/service_order_actions').then(response => {
-			this.service_order_actions = response.data;
+		this.$http.get('/order_actions').then(response => {
+			this.order_actions = response.data;
 		});
-		this.$http.get('/service_order_categories').then(response => {
-			this.service_order_categories = response.data;
+		this.$http.get('/order_categories').then(response => {
+			this.order_categories = response.data;
 		});
 		this.$http.get('/task_categories').then(response => {
 			this.task_categories = response.data;
