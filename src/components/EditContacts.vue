@@ -91,7 +91,7 @@ export default {
   },
   updated: function() {
     if((this.my_contacts.length>0) && (this.my_contacts[this.my_contacts.length-1].name === null)){
-      this.current_tab = this.my_contacts.length-1;
+      //this.current_tab = this.my_contacts.length-1;
     }
   },
   watch: {

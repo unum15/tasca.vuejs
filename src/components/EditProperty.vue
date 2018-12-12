@@ -71,7 +71,7 @@
                     <b-form-group label="Address Line 1">
                       <b-form-input
                         type="text"
-                        v-model="my_property.address"
+                        v-model="my_property.address1"
                         placeholder="123 Main Street">
                       </b-form-input>
                     </b-form-group>
@@ -134,7 +134,7 @@
                 </b-col>
             </b-row>
             <b-row>
-                <b-button variant="danger" size="sm" >Delete Property</b-button>
+                <b-button variant="danger" size="sm" @click="deleteProperty" >Delete Property</b-button>
             </b-row>
         </b-container>
     </div>
@@ -145,16 +145,21 @@ export default {
     props: {
         property: {required: true},
         activity_levels: {required: true},
-        property_types: {required: true}
+        property_types: {required: true},
+        contacts: {required: true}
     },
     data() {
         return {
-            contacts: [],
             my_property: []
         }
     },
     created() {
         this.my_property = this.property;
+    },
+    methods: {
+        deleteProperty() {
+            this.$http.delete('/property/' + this.my_property.id);
+        }
     },
     watch: {
         my_property:{
@@ -163,7 +168,6 @@ export default {
               return;
             }
             if(this.my_property.id === null){
-                console.log('post property');
               this.$http.post('/property',this.my_property)
                 .then((results) => {
                   this.my_property.id = results.data.id;
@@ -173,8 +177,7 @@ export default {
                 if(old_property.id === undefined){
                     return;
                 }
-                console.log('patch property '+ this.my_property.id);
-              this.$http.patch('/property/' + this.my_property.id,this.my_property)
+                this.$http.patch('/property/' + this.my_property.id,this.my_property);
             }
           },
           deep: true
