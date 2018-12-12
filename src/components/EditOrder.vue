@@ -54,7 +54,7 @@
                                     :max-rows="6"
                                     placeholder="What needs to be done?"
                                     required
-                                    :class="my_order.date === null ? 'invalid' : ''"
+                                    :class="my_order.description === null ? 'invalid' : ''"
                                     >
                                 </b-form-textarea>
                             </b-form-group>
@@ -320,7 +320,7 @@
         </b-tabs>
         <b-button variant="secondary" size="sm" @click="createWorkOrder(order)" :disabled="!allowWorkOrder">Create Work Order</b-button>
         <b-button variant="secondary" size="sm" @click="createPendingWorkOrder(order)" :disabled="!allowWorkOrder">Create Pending Work Order</b-button>
-        <b-button variant="danger" size="sm" @click="deleteServiceOrder(order)">Delete Service Order</b-button>
+        <b-button variant="danger" size="sm" @click="deleteServiceOrder(order)">Delete Order</b-button>
 	</div>
 </template>
 <script>
@@ -361,7 +361,12 @@ export default {
 	},
 	computed:{
 		allowWorkOrder() {
-			return true;
+            if(this.my_order.order_billing_type_id == 1){
+                return true;
+            }
+            else{
+                return false;
+            }
 		},
 	},
 	watch:{

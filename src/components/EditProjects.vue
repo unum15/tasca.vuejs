@@ -16,6 +16,7 @@
 						:task_statuses="task_statuses"
 						:task_actions="task_actions"
 						:task_types="task_types"
+            :order_billing_types="order_billing_types"
         ></EditProject>
       </b-tab>
     </b-tabs>
@@ -49,9 +50,13 @@ export default {
 			task_statuses: [],
 			task_actions: [],
 			task_types: [],
+      order_billing_types: []
     }
   },
   created () {
+    this.$http.get('/order_billing_types').then(response => {
+			this.order_billing_types = response.data;
+		});
     this.$http.get('/order_priorities').then(response => {
 			this.order_priorities = response.data;
 		});

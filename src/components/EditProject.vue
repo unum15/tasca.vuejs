@@ -65,45 +65,11 @@
 					</b-form-textarea>
 				</b-form-group>
 			</b-tab>
-			<b-tab v-if="my_project.id != null" title="Service Orders" active>
+			<b-tab v-for="billing_type in order_billing_types" :key="billing_type.id" :title="billing_type.name">
 				<EditOrders
 					:project="my_project"
 					:settings="settings"
-					order_billing_type_id="1"
-					:actions="order_actions"
-					:categories="order_categories"
-					:priorities="order_priorities"
-					:statuses="order_statuses"
-					:types="order_types"	
-					:task_actions="task_actions"
-					:task_categories="task_categories"
-					:task_statuses="task_statuses"
-					:task_types="task_types"
-				>
-				</EditOrders>
-			</b-tab>
-			<b-tab v-if="my_project.id != null" title="Pending Work Orders">
-				<EditOrders
-					:project="my_project"
-					:settings="settings"
-					order_billing_type_id="2"
-					:actions="order_actions"
-					:categories="order_categories"
-					:priorities="order_priorities"
-					:statuses="order_statuses"
-					:types="order_types"	
-					:task_actions="task_actions"
-					:task_categories="task_categories"
-					:task_statuses="task_statuses"
-					:task_types="task_types"
-				>
-				</EditOrders>
-			</b-tab>
-			<b-tab v-if="my_project.id != null" title="Work Orders">
-				<EditOrders
-					:project="my_project"
-					:settings="settings"
-					order_billing_type_id="3"
+					:order_billing_type="billing_type"
 					:actions="order_actions"
 					:categories="order_categories"
 					:priorities="order_priorities"
@@ -131,6 +97,7 @@ export default {
         properties: {required: true},
         settings: {required: true},
         project: {required: true},
+		order_billing_types: {required: true},
 		order_actions: {required: true},
 		order_categories: {required: true},
 		order_statuses: {required: true},

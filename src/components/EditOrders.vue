@@ -33,7 +33,7 @@ export default {
 	},
 	props: {
 		project: {required: true},
-		order_billing_type_id: {required: true},
+		order_billing_type: {required: true},
 		types: {required: true},
 		statuses: {required: true},
 		actions: {required: true},
@@ -55,7 +55,7 @@ export default {
 		};
 	},
 	created() {
-		this.$http.get('/orders?project_id=' + this.project.id + '&order_billing_type_id=' + this.order_billing_type_id).then(response => {
+		this.$http.get('/orders?project_id=' + this.project.id + '&order_billing_type_id=' + this.order_billing_type.id).then(response => {
       this.orders = response.data
     })
   },
