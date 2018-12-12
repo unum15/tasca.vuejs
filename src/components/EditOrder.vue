@@ -10,6 +10,7 @@
                                     type="date"
                                     v-model="my_order.date"
                                     required
+                                    :class="my_order.date === null ? 'invalid' : ''"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -53,6 +54,7 @@
                                     :max-rows="6"
                                     placeholder="What needs to be done?"
                                     required
+                                    :class="my_order.date === null ? 'invalid' : ''"
                                     >
                                 </b-form-textarea>
                             </b-form-group>

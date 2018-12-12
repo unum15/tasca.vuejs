@@ -18,7 +18,7 @@
 						value-field="id"
 						text-field="name"
 						required
-						:class="my_project.property_id == null ? 'invalid' : ''"
+						:class="my_project.property_id === null ? 'invalid' : ''"
 						v-model="my_project.property_id"
 						>
 					</b-form-select>
@@ -31,7 +31,7 @@
 						value-field="id"
 						text-field="name"
 						required
-						:class="my_project.contact_id == null ? 'invalid' : ''"
+						:class="my_project.contact_id === null ? 'invalid' : ''"
 						v-model="my_project.contact_id"
 						>
 					</b-form-select>
@@ -66,13 +66,55 @@
 				</b-form-group>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Service Orders" active>
-				<EditOrders :project="my_project" :priorities="order_priorities" :types="order_types"  :statuses="order_statuses" :actions="order_actions" :categories="order_categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings"></EditOrders>
+				<EditOrders
+					:project="my_project"
+					:settings="settings"
+					order_billing_type_id="1"
+					:actions="order_actions"
+					:categories="order_categories"
+					:priorities="order_priorities"
+					:statuses="order_statuses"
+					:types="order_types"	
+					:task_actions="task_actions"
+					:task_categories="task_categories"
+					:task_statuses="task_statuses"
+					:task_types="task_types"
+				>
+				</EditOrders>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Pending Work Orders">
-				<EditOrders :project="my_project" :priorities="order_priorities" :types="order_types"  :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditOrders>
+				<EditOrders
+					:project="my_project"
+					:settings="settings"
+					order_billing_type_id="2"
+					:actions="order_actions"
+					:categories="order_categories"
+					:priorities="order_priorities"
+					:statuses="order_statuses"
+					:types="order_types"	
+					:task_actions="task_actions"
+					:task_categories="task_categories"
+					:task_statuses="task_statuses"
+					:task_types="task_types"
+				>
+				</EditOrders>
 			</b-tab>
 			<b-tab v-if="my_project.id != null" title="Work Orders">
-				<EditOrders :project="my_project" :types="order_types"  :priorities="order_priorities" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types"></EditOrders>
+				<EditOrders
+					:project="my_project"
+					:settings="settings"
+					order_billing_type_id="3"
+					:actions="order_actions"
+					:categories="order_categories"
+					:priorities="order_priorities"
+					:statuses="order_statuses"
+					:types="order_types"	
+					:task_actions="task_actions"
+					:task_categories="task_categories"
+					:task_statuses="task_statuses"
+					:task_types="task_types"
+				>
+				</EditOrders>
 			</b-tab>
 		</b-tabs>
 	</b-container>
@@ -88,50 +130,23 @@ export default {
         contacts: {required: true},
         properties: {required: true},
         settings: {required: true},
-        project: {required: true}
+        project: {required: true},
+		order_actions: {required: true},
+		order_categories: {required: true},
+		order_statuses: {required: true},
+		order_types: {required: true},		
+		order_priorities: {required: true},
+		task_actions: {required: true},
+		task_categories: {required: true},
+		task_statuses: {required: true},
+		task_types: {required: true}
 	},
 	data() {
 		return {
-			order_types: [],
-			order_priorities: [],
-			order_actions: [],
-			order_statuses: [],
-			order_categories: [],
-			task_categories: [],
-			task_statuses: [],
-			task_actions: [],
-			task_types: [],
 			my_project: null
 		};
 	},
 	created() {
-		this.$http.get('/order_priorities').then(response => {
-			this.order_priorities = response.data;
-		});
-		this.$http.get('/order_types').then(response => {
-			this.order_types = response.data;
-		});
-		this.$http.get('/order_statuses').then(response => {
-			this.order_statuses = response.data;
-		});
-		this.$http.get('/order_actions').then(response => {
-			this.order_actions = response.data;
-		});
-		this.$http.get('/order_categories').then(response => {
-			this.order_categories = response.data;
-		});
-		this.$http.get('/task_categories').then(response => {
-			this.task_categories = response.data;
-		});
-		this.$http.get('/task_statuses').then(response => {
-			this.task_statuses = response.data;
-		});
-		this.$http.get('/task_actions').then(response => {
-			this.task_actions = response.data;
-		});
-		this.$http.get('/task_types').then(response => {
-			this.task_types = response.data;
-		});
         this.my_project=this.project;
     },
 	methods: {

@@ -7,6 +7,15 @@
             :contacts="contacts"
             :properties="properties"
             :settings="settings"
+            :order_priorities="order_priorities"
+						:order_types="order_types"
+						:order_statuses="order_statuses"
+						:order_actions="order_actions"
+						:order_categories="order_categories"
+						:task_categories="task_categories"
+						:task_statuses="task_statuses"
+						:task_actions="task_actions"
+						:task_types="task_types"
         ></EditProject>
       </b-tab>
     </b-tabs>
@@ -30,10 +39,46 @@ export default {
   data () {
     return {
       projects: [],
-      current_tab: 0
+      current_tab: 0,
+      order_types: [],
+			order_priorities: [],
+			order_actions: [],
+			order_statuses: [],
+			order_categories: [],
+			task_categories: [],
+			task_statuses: [],
+			task_actions: [],
+			task_types: [],
     }
   },
   created () {
+    this.$http.get('/order_priorities').then(response => {
+			this.order_priorities = response.data;
+		});
+		this.$http.get('/order_types').then(response => {
+			this.order_types = response.data;
+		});
+		this.$http.get('/order_statuses').then(response => {
+			this.order_statuses = response.data;
+		});
+		this.$http.get('/order_actions').then(response => {
+			this.order_actions = response.data;
+		});
+		this.$http.get('/order_categories').then(response => {
+			this.order_categories = response.data;
+		});
+		this.$http.get('/task_categories').then(response => {
+			this.task_categories = response.data;
+		});
+		this.$http.get('/task_statuses').then(response => {
+			this.task_statuses = response.data;
+		});
+		this.$http.get('/task_actions').then(response => {
+			this.task_actions = response.data;
+		});
+		this.$http.get('/task_types').then(response => {
+			this.task_types = response.data;
+		});
     this.$http.get('/projects?client_id=' + this.client_id).then(response => {
       this.projects = response.data
     })

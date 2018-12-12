@@ -2,7 +2,22 @@
 	<div>
         <b-tabs vertical pills v-model="order_tab_index">
             <b-tab v-for="order in orders" :key="order.id" :title="'Order ' + (order.id !== null ? order.id : 'New')">
-                <EditOrder :order="order" :priorities="priorities" :types="types"  :statuses="statuses" :actions="actions" :categories="categories" :task_categories="task_categories" :task_statuses="task_statuses" :task_actions="task_actions" :task_types="task_types" :settings="settings" :new_order_saved="newOrderSaved" :project_name='project_name'></EditOrder>
+                <EditOrder
+									:order="order"
+									:priorities="priorities"
+									:types="types"
+									:statuses="statuses"
+									:actions="actions"
+									:categories="categories"
+									:task_categories="task_categories"
+									:task_statuses="task_statuses"
+									:task_actions="task_actions"
+									:task_types="task_types"
+									:settings="settings"
+									:new_order_saved="newOrderSaved"
+									:project_name='project_name'
+								>
+								</EditOrder>
             </b-tab>
         </b-tabs>
         <b-button variant="secondary" @click="newOrder" :pressed="new_pressed">Add New Order</b-button>
@@ -18,6 +33,7 @@ export default {
 	},
 	props: {
 		project: {required: true},
+		order_billing_type_id: {required: true},
 		types: {required: true},
 		statuses: {required: true},
 		actions: {required: true},
@@ -39,7 +55,7 @@ export default {
 		};
 	},
 	created() {
-		this.$http.get('/orders?project_id=' + this.project.id).then(response => {
+		this.$http.get('/orders?project_id=' + this.project.id + '&order_billing_type_id=' + this.order_billing_type_id).then(response => {
       this.orders = response.data
     })
   },

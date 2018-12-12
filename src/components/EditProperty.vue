@@ -32,7 +32,7 @@
                         value-field="id"
                         text-field="name"
                         required
-                        :class="my_property.property_id == null ? 'invalid' : ''"
+                        :class="my_property.property_type_id == null ? 'invalid' : ''"
                         v-model="my_property.property_type_id">
                       </b-form-select>
                     </b-form-group>
