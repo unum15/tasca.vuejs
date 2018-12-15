@@ -5,8 +5,7 @@ const API_URL = '/api'
 var daxios = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json',
-    'apitoken': localStorage.getItem('token') // this is static so it doesn't work
+    'Content-Type': 'application/json'
   }
 })
 
@@ -16,9 +15,16 @@ daxios.interceptors.response.use(
   },
   function (error) {
     console.log(error)
-    if (error.status === 401) {
-      this.$router.push('/')
-      return 200
+    switch (error.response.status) {
+      case 401 :
+        this.$router.push('/')
+        return 200
+      case 422 :
+        alert(error.response.request.responseText)
+        break;
+      default:
+        alert(error.response.request.statusText)
+      
     }
     return Promise.reject(error)
   })

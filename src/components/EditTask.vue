@@ -3,19 +3,31 @@
         <b-row>
             <b-col>
                 <b-form-group label="Task Type">
-                    <b-form-radio-group id="task_type" v-model="task.type" required>
-                        <b-form-radio value="service_order">Service Order</b-form-radio>
-                        <b-form-radio value="work_order">Work Order</b-form-radio>
+                    <b-form-radio-group id="task_type" v-model="my_task.task_type_id" required>
+                        <b-form-radio value="1">Service Order</b-form-radio>
+                        <b-form-radio value="2">Work Order</b-form-radio>
                     </b-form-radio-group>
                 </b-form-group>
             </b-col>
         </b-row>
         <b-row>
+			<b-col>
+                <b-form-group label="Name">
+                    <b-form-input
+                        type="text"
+                        v-model="my_task.name"
+                        required
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>
+		</b-row>
+		<b-row>
             <b-col>
                 <b-form-group label="Description">
                     <b-form-input
                         type="text"
-                        v-model="task.description"
+                        v-model="my_task.description"
                         required
                     >
                     </b-form-input>
@@ -24,24 +36,12 @@
         </b-row>
         <b-row>
             <b-col>
-                <b-form-group label="Type">
-                    <b-form-select
-                        :options="task_types"
-                        value-field="id"
-                        text-field="name"
-                        v-model="task.task_type_id"
-                        required
-                        >
-                    </b-form-select>
-                </b-form-group>
-            </b-col>
-            <b-col>
                 <b-form-group label="Status">
                     <b-form-select
                         :options="task_statuses"
                         value-field="id"
                         text-field="name"
-                        v-model="task.task_status_id"
+                        v-model="my_task.task_status_id"
                         required
                         >
                     </b-form-select>
@@ -53,7 +53,7 @@
                         :options="task_actions"
                         value-field="id"
                         text-field="name"
-                        v-model="task.task_action_id"
+                        v-model="my_task.task_action_id"
                         required
                         >
                     </b-form-select>
@@ -65,7 +65,7 @@
                 <b-form-group label="Day">
                     <b-form-input
                         type="text"
-                        v-model="task.day"
+                        v-model="my_task.day"
                         required
                     >
                     </b-form-input>
@@ -75,7 +75,7 @@
                 <b-form-group label="Date">
                     <b-form-input
                         type="date"
-                        v-model="task.date"
+                        v-model="my_task.date"
                         required
                     >
                     </b-form-input>
@@ -85,7 +85,7 @@
                 <b-form-group label="Time">
                     <b-form-input
                         type="text"
-                        v-model="task.time"
+                        v-model="my_task.time"
                         required
                     >
                     </b-form-input>
@@ -97,28 +97,18 @@
                 <b-form-group label="Group">
                     <b-form-select
                         :options="task_group_options"
-                        v-model="task.task_group"
-                        >
-                    </b-form-select>
-                </b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Sort">
-                    <b-form-select
-                        :options="task_sort_options"
-                        v-model="task.task_sort"
+                        v-model="my_task.group"
                         >
                     </b-form-select>
                 </b-form-group>
             </b-col>
             <b-col>
                 <b-form-group label="Sort Order">
-                    <b-form-input
-                        type="text"
-                        v-model="task.sort_order"
-                        required
+                    <b-form-select
+						:options="task_sort_options"
+                        v-model="my_task.sort_order"
                     >
-                    </b-form-input>
+                    </b-form-select>
                 </b-form-group>
             </b-col>
         </b-row>
@@ -129,7 +119,7 @@
                         :options="crews"
                         value-field="id"
                         text-field="name"
-                        v-model="task.crew_id"
+                        v-model="my_task.crew_id"
                         required
                         >
                     </b-form-select>
@@ -139,7 +129,7 @@
                 <b-form-group label="Job Hours">
                     <b-form-input
                         type="text"
-                        v-model="task.job_hours"
+                        v-model="my_task.job_hours"
                         required
                     >
                     </b-form-input>
@@ -149,7 +139,7 @@
                 <b-form-group label="Crew Hours">
                     <b-form-input
                         type="text"
-                        v-model="task.crew_hours"
+                        v-model="my_task.crew_hours"
                         required
                     >
                     </b-form-input>
@@ -172,6 +162,7 @@ export default {
 	},
 	data: function() {
 		return {
+			my_task: {},
             crews: []
 		};
 	},
@@ -201,6 +192,33 @@ export default {
 				options.push(String.fromCharCode(x));
 			}
 			return options;
+		}
+	},
+	watch:{
+		my_task:{
+			handler(new_task, old_task){
+				console.log(new_task);
+                if(this.my_task.billable === null){
+                    return;
+                }
+                if(this.my_task.id === null){
+                    console.log(this.my_task);
+                    console.log('post');
+                    this.$http.post('/task',this.my_task).then(response => {
+                    	this.my_task.id = response.data.id;
+                    })
+                }
+                else{
+                    if(old_task === null){
+                        return;
+                    }
+                    console.log('patch');
+                    this.$http.patch('/task/'+this.my_task.id,this.my_task).then(response => {
+                    	this.my_task.id = response.data.id;
+                    })
+                }
+			},
+			deep: true
 		}
 	}
 }

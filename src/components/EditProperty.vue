@@ -57,7 +57,7 @@
                     </b-form-group>
                 </b-col>
                 </b-col>
-                    <b-form-group label="Phone_number">
+                    <b-form-group label="Phone Number">
                       <b-form-input
                         type="text"
                         v-model="my_property.phone_number"

@@ -3,9 +3,19 @@
         <b-tabs>
             <b-tab title="General">
                 <b-container>
+                    <b-form-group label="Order Name">
+                    <b-form-input
+                        type="text"
+                        v-model="my_order.name"
+                        required
+                        :class="my_order.name == null ? 'invalid' : ''"
+                        placeholder="Bid"
+                        >
+                    </b-form-input>
+                </b-form-group>
                     <b-row>
                         <b-col>
-                            <b-form-group label="Service Order Date">
+                            <b-form-group label="Order Date">
                                 <b-form-input
                                     type="date"
                                     v-model="my_order.date"
@@ -198,7 +208,7 @@
                             <b-form-group label="PO Number">
                                 <b-form-input
                                     type="text"
-                                    v-model="my_order.po_number"
+                                    v-model="my_order.purchase_order_number"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -246,7 +256,7 @@
                         <b-col>
                             <b-form-group label="Bid +/-">
                                 <b-form-input
-                                    type="text"
+                                    type="number"
                                     v-model="my_order.bid_plus_minus"
                                 >
                                 </b-form-input>
@@ -256,7 +266,7 @@
                             <b-form-group label="Invoice Number">
                                 <b-form-input
                                     type="number"
-                                    v-model="my_order.number"
+                                    v-model="my_order.invoice_number"
                                 >
                                 </b-form-input>
                             </b-form-group>

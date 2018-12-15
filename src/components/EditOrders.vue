@@ -1,7 +1,7 @@
 <template>
 	<div>
         <b-tabs vertical pills v-model="order_tab_index">
-            <b-tab v-for="order in orders" :key="order.id" :title="'Order ' + (order.id !== null ? order.id : 'New')">
+            <b-tab v-for="order in orders" :key="order.id" :title="order.name !== null ? order.name : 'Order ' + (order.id !== null ? order.id : 'New')">
                 <EditOrder
 									:order="order"
 									:priorities="priorities"
@@ -14,7 +14,6 @@
 									:task_actions="task_actions"
 									:task_types="task_types"
 									:settings="settings"
-									:new_order_saved="newOrderSaved"
 									:project_name='project_name'
 								>
 								</EditOrder>
@@ -65,6 +64,7 @@ export default {
 			var order = {
 				id: null,
 				project_id: this.project.id,
+				order_billing_type_id: this.order_billing_type.id,
 				date: this.today,
 				approval_date: null,
 				completion_date: null,
@@ -90,24 +90,6 @@ export default {
 			this.new_pressed = false;
 			this.change_tab = true;
 		},
-		deleteOrder(service) {
-			this.orders = this.orders.filter(x => x !== service);
-		},
-		createWorkOrder(service) {
-			console.log('Create work order.');
-			this.$emit('work_order', service);
-		},
-		createPendingWorkOrder(service) {
-			console.log('Create pending work order.');
-			this.$emit('pending_work_order', service);
-		},
-		newOrderSaved(old_id, new_id) {
-			this.orders.each(function(){
-				if(this.id == old_id){
-					this.id = new_id;
-				}
-			});
-		}
 	},  
 	computed: {
 		today() {

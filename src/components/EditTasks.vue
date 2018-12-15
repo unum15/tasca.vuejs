@@ -1,7 +1,7 @@
 <template>
 		<div>
 			<b-tabs vertical pills v-model="tasks_tab_index">
-				<b-tab v-for="task in tasks" :key="task.id" :title="'Task #'+task.id">
+				<b-tab v-for="task in tasks" :key="task.id" :title="task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New')">
 					<EditTask :order="order" :task="task" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTask>
 				</b-tab>
 			</b-tabs>
@@ -37,21 +37,24 @@ export default {
 		newTask: function(){
 			this.new_tasks++;
 			var task = {
-				id: 'New Task '+this.new_tasks,
+				id: null,
+				order_id: this.order.id,
+				billable: true,
 				date: null,
+				name: null,
 				approval_date: null,
 				completion_date: null,
 				expiration_date: null,
-				description: '',
+				description: null,
 				priority_id: null,
-				notes: '',
-				job_hours: 0,
-				crew_hours: 0
+				notes: null,
+				job_hours: null,
+				crew_hours: null
 			};
-			this.my_tasks.push(task);
+			this.tasks.push(task);
 		},
 		deleteTask: function(task){
-			this.my_tasks = this.my_tasks.filter(x => x !== task);
+			this.tasks = this.my_tasks.filter(x => x !== task);
 		},
   },
 }
