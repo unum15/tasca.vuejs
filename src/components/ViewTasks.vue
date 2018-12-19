@@ -7,7 +7,7 @@
         <main>
             <b-table small striped hover :items="tasks" :fields="fields">
                 <template slot="id" slot-scope="data">
-                    <a :href="'#/client/'+ data.item.service_order.project.property.client_id +'/task/' + data.item.id"> {{ data.value }} </a>
+                    <a :href="'#/client/'+ data.item.order.project.property.client_id +'/task/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -30,22 +30,22 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'service_order.project.property.client.name',
+                    key: 'order.project.property.client.name',
                     label: 'Client Name',
                     sortable: true
                 },
                 {
-                    key: 'service_order.project.name',
+                    key: 'order.project.name',
                     label: 'Project Name',
                     sortable: true
                 },
                 {
-                    key: 'service_order.project.property.name',
+                    key: 'order.project.property.name',
                     label: 'Property Name',
                     sortable: true
                 },
                 {
-                    key: 'service_order.project.contact.name',
+                    key: 'order.project.contact.name',
                     label: 'Contact Name',
                     sortable: true
                 },

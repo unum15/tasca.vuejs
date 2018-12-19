@@ -65,7 +65,7 @@
 					</b-form-textarea>
 				</b-form-group>
 			</b-tab>
-			<b-tab v-for="billing_type in order_billing_types" :key="billing_type.id" :title="billing_type.name">
+			<b-tab v-if="my_project.id" v-for="billing_type in order_billing_types" :key="billing_type.id" :title="billing_type.name">
 				<EditOrders
 					:project="my_project"
 					:settings="settings"

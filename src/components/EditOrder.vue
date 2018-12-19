@@ -13,6 +13,19 @@
                         >
                     </b-form-input>
                 </b-form-group>
+                     <b-row>
+                        <b-col>
+                            <b-form-group label="Description">
+                                <b-form-input
+                                    v-model="my_order.description"
+                                    placeholder="What needs to be done?"
+                                    required
+                                    :class="my_order.description === null ? 'invalid' : ''"
+                                    >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
                     <b-row>
                         <b-col>
                             <b-form-group label="Order Date">
@@ -52,21 +65,6 @@
                                     v-model="my_order.expiration_date"
                                 >
                                 </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col>
-                            <b-form-group label="Description">
-                                <b-form-textarea
-                                    v-model="my_order.description"
-                                    :rows="3"
-                                    :max-rows="6"
-                                    placeholder="What needs to be done?"
-                                    required
-                                    :class="my_order.description === null ? 'invalid' : ''"
-                                    >
-                                </b-form-textarea>
                             </b-form-group>
                         </b-col>
                     </b-row>
@@ -274,7 +272,7 @@
                     </b-row>
                 </b-container>
             </b-tab>
-            <b-tab title="Renewing">
+            <b-tab title="Renewing" v-if="isServiceOrder">
                 <b-container>
                     <b-row>
                         <b-col>
@@ -328,8 +326,8 @@
                 </b-container>
             </b-tab>
         </b-tabs>
-        <b-button variant="secondary" size="sm" @click="createWorkOrder(order)" :disabled="!allowWorkOrder">Create Work Order</b-button>
-        <b-button variant="secondary" size="sm" @click="createPendingWorkOrder(order)" :disabled="!allowWorkOrder">Create Pending Work Order</b-button>
+        <b-button variant="secondary" size="sm" @click="createWorkOrder(order)" :disabled="!allowWorkOrder" v-if="isServiceOrder">Create Work Order</b-button>
+        <b-button variant="secondary" size="sm" @click="createPendingWorkOrder(order)" :disabled="!allowWorkOrder" v-if="isServiceOrder">Create Pending Work Order</b-button>
         <b-button variant="danger" size="sm" @click="deleteServiceOrder(order)">Delete Order</b-button>
 	</div>
 </template>
@@ -378,6 +376,10 @@ export default {
                 return false;
             }
 		},
+        isServiceOrder() {
+            console.log(this.my_order.order_billing_type_id == 1);
+            return this.my_order.order_billing_type_id == 1;
+        }
 	},
 	watch:{
 		my_order:{

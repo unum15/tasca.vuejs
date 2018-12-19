@@ -1,7 +1,22 @@
 <template>
   <div>
+    <div style="width:10%;text-align:center;">
+          <b-form-group label="Show Completed" @change="getProjects">
+            <b-form-checkbox
+              v-model="filter.completed"
+            >
+            </b-form-checkbox>
+          </b-form-group>
+          <b-form-group label="Filter">
+            <b-form-input
+                    type="text"
+                    v-model="filter.name"
+                >
+              </b-form-input>
+           </b-form-group>
+    </div>
     <b-tabs vertical pills v-model="current_tab">
-      <b-tab v-for="project in projects" :key="project.id" :title="project.name===null?'New project':project.name">
+      <b-tab v-for="project,index in projects" :key="project.id" :title="project.name===null?'New project':project.name" v-if="showTab(index)">
         <EditProject
             :project="project"
             :contacts="contacts"
@@ -50,7 +65,12 @@ export default {
 			task_statuses: [],
 			task_actions: [],
 			task_types: [],
-      order_billing_types: []
+      order_billing_types: [],
+      filter: {
+        completed : false,
+        name: null,
+        client_id: this.client_id
+      }
     }
   },
   created () {
@@ -84,9 +104,7 @@ export default {
 		this.$http.get('/task_types').then(response => {
 			this.task_types = response.data;
 		});
-    this.$http.get('/projects?client_id=' + this.client_id).then(response => {
-      this.projects = response.data
-    })
+    this.getProjects()
   },
   methods: {
     newProject () {
@@ -99,9 +117,25 @@ export default {
         open_date: moment().format('YYYY-MM-DD')
       };
       this.projects.push(project);
+    },
+    getProjects(){
+      this.$http.get('/projects?client_id=' + this.client_id+ '&completed=' + this.filter.completed).then(response => {
+        this.projects = response.data
+      })
+    },
+    showTab (index) {
+      console.log(index);
+      console.log(this.projects[index].name);
+      if((this.filter.name ==  null) || (this.filter.name == "")){
+        return true;
+      }
+      if(this.projects[index].name.toLowerCase().includes(this.filter.name.toLowerCase()) !==  false){
+        return true;
+      }
+      return false;
     }
   },
-  updated: function() {
+  updated () {
     if((this.projects.length>0) && (this.projects[this.projects.length-1].name === null) && (this.current_tab != this.projects.length-1)){
       //this.current_tab = this.projects.length-1;
     }

@@ -63,6 +63,7 @@ export default {
 			this.new_orders++;
 			var order = {
 				id: null,
+				name: null,
 				project_id: this.project.id,
 				order_billing_type_id: this.order_billing_type.id,
 				date: this.today,
