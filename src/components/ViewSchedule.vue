@@ -171,7 +171,7 @@ export default {
 		this.$http.get('/task_actions').then(response => {
 			this.task_actions = response.data;
 		});
-        this.$http.get('/tasks').then((results) => {
+        this.$http.get('/tasks?active_only=true').then((results) => {
             this.tasks = results.data;
         });
     },

@@ -3,7 +3,12 @@
         <b-row>
             <b-col>
                 <b-form-group label="Task Type">
-                    <b-form-radio-group id="task_type" v-model="my_task.task_type_id" required>
+                    <b-form-radio-group
+						@change="save"
+						v-model="my_task.task_type_id"
+						:state="my_task.task_type_id != null"
+						required
+					>
                         <b-form-radio value="1">Service Order</b-form-radio>
                         <b-form-radio value="2">Work Order</b-form-radio>
                     </b-form-radio-group>
@@ -15,7 +20,9 @@
                 <b-form-group label="Name">
                     <b-form-input
                         type="text"
+						@change="save"
                         v-model="my_task.name"
+						:state="my_task.name != null"
                         required
                     >
                     </b-form-input>
@@ -27,7 +34,9 @@
                 <b-form-group label="Description">
                     <b-form-input
                         type="text"
+						@change="save"
                         v-model="my_task.description"
+						:state="my_task.description != null"
                         required
                     >
                     </b-form-input>
@@ -39,10 +48,10 @@
                 <b-form-group label="Status">
                     <b-form-select
                         :options="task_statuses"
+						@change="save"
                         value-field="id"
                         text-field="name"
                         v-model="my_task.task_status_id"
-                        required
                         >
                     </b-form-select>
                 </b-form-group>
@@ -51,10 +60,10 @@
                 <b-form-group label="Action">
                     <b-form-select
                         :options="task_actions"
+						@change="save"
                         value-field="id"
                         text-field="name"
                         v-model="my_task.task_action_id"
-                        required
                         >
                     </b-form-select>
                 </b-form-group>
@@ -65,8 +74,8 @@
                 <b-form-group label="Day">
                     <b-form-input
                         type="text"
+						@change="save"
                         v-model="my_task.day"
-                        required
                     >
                     </b-form-input>
                 </b-form-group>
@@ -75,8 +84,8 @@
                 <b-form-group label="Date">
                     <b-form-input
                         type="date"
+						@change="save"
                         v-model="my_task.date"
-                        required
                     >
                     </b-form-input>
                 </b-form-group>
@@ -85,8 +94,8 @@
                 <b-form-group label="Time">
                     <b-form-input
                         type="text"
+						@change="save"
                         v-model="my_task.time"
-                        required
                     >
                     </b-form-input>
                 </b-form-group>
@@ -97,6 +106,7 @@
                 <b-form-group label="Group">
                     <b-form-select
                         :options="task_group_options"
+						@change="save"
                         v-model="my_task.group"
                         >
                     </b-form-select>
@@ -106,6 +116,7 @@
                 <b-form-group label="Sort Order">
                     <b-form-select
 						:options="task_sort_options"
+						@change="save"
                         v-model="my_task.sort_order"
                     >
                     </b-form-select>
@@ -117,10 +128,10 @@
                 <b-form-group label="Crew">
                     <b-form-select
                         :options="crews"
+						@change="save"
                         value-field="id"
                         text-field="name"
                         v-model="my_task.crew_id"
-                        required
                         >
                     </b-form-select>
                 </b-form-group>
@@ -129,8 +140,8 @@
                 <b-form-group label="Job Hours">
                     <b-form-input
                         type="text"
+						@change="save"
                         v-model="my_task.job_hours"
-                        required
                     >
                     </b-form-input>
                 </b-form-group>
@@ -139,8 +150,8 @@
                 <b-form-group label="Crew Hours">
                     <b-form-input
                         type="text"
+						@change="save"
                         v-model="my_task.crew_hours"
-                        required
                     >
                     </b-form-input>
                 </b-form-group>
@@ -170,9 +181,26 @@ export default {
         this.my_task = this.task;
     },
 	methods: {
-		deleteTask: function(task){
-			this.my_tasks = this.my_tasks.filter(x => x !== task);
+		deleteTask() {
+			this.$http.delete('/task/' + this.my_task.id);
+			this.$emit('remove-task', this.my_task);
 		},
+		save() {
+			console.log('save');
+			if(this.my_task.billable === null){
+				return;
+			}
+			if(this.my_task.id === null){
+				this.$http.post('/task',this.my_task).then(response => {
+					this.my_task.id = response.data.id;
+				})
+			}
+			else{
+				this.$http.patch('/task/'+this.my_task.id,this.my_task).then(response => {
+					this.my_task.id = response.data.id;
+				})
+			}
+		}
 	},
 	computed: {
 		task_sort_options : function (){
@@ -192,33 +220,6 @@ export default {
 				options.push(String.fromCharCode(x));
 			}
 			return options;
-		}
-	},
-	watch:{
-		my_task:{
-			handler(new_task, old_task){
-				console.log(new_task);
-                if(this.my_task.billable === null){
-                    return;
-                }
-                if(this.my_task.id === null){
-                    console.log(this.my_task);
-                    console.log('post');
-                    this.$http.post('/task',this.my_task).then(response => {
-                    	this.my_task.id = response.data.id;
-                    })
-                }
-                else{
-                    if(old_task === null){
-                        return;
-                    }
-                    console.log('patch');
-                    this.$http.patch('/task/'+this.my_task.id,this.my_task).then(response => {
-                    	this.my_task.id = response.data.id;
-                    })
-                }
-			},
-			deep: true
 		}
 	}
 }

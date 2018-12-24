@@ -2,7 +2,14 @@
 		<div>
 			<b-tabs vertical pills v-model="tasks_tab_index">
 				<b-tab v-for="task in tasks" :key="task.id" :title="task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New')">
-					<EditTask :order="order" :task="task" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTask>
+					<EditTask
+						:order="order"
+						:task="task"
+						:task_types="task_types"
+						:task_statuses="task_statuses"
+						:task_actions="task_actions"
+						@remove-task="removeTask"
+					></EditTask>
 				</b-tab>
 			</b-tabs>
 			<b-button variant="secondary" @click="newTask">Add New Task</b-button>
@@ -29,7 +36,7 @@ export default {
 		};
 	},
 	created() {
-     this.$http.get('/tasks?' +this.order_type + '_id=' + this.order.id).then(response => {
+     this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
       this.tasks = response.data
     })
   },
@@ -53,8 +60,8 @@ export default {
 			};
 			this.tasks.push(task);
 		},
-		deleteTask: function(task){
-			this.tasks = this.my_tasks.filter(x => x !== task);
+		removeTask: function(task){
+			this.tasks = this.my_tasks.filter(t => t.id !== task.id);
 		},
   },
 }

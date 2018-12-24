@@ -14,7 +14,8 @@
 									:task_actions="task_actions"
 									:task_types="task_types"
 									:settings="settings"
-									:project_name='project_name'
+									:project_name="project_name"
+									@remove-order="removeOrder"
 								>
 								</EditOrder>
             </b-tab>
@@ -91,6 +92,9 @@ export default {
 			this.new_pressed = false;
 			this.change_tab = true;
 		},
+		removeOrder(order) {
+			this.orders = this.orders.filter(o => o.id !== order.id);
+		}
 	},  
 	computed: {
 		today() {

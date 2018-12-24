@@ -5,6 +5,7 @@
                 :settings="settings"
                 :email_types="email_types"
                 :email="email"
+                @remove-email="removeEmail"
             >
             </EditEmail>
         </div>
@@ -46,11 +47,9 @@ export default {
       };
       this.emails.push(email);
     },
-    removeEmail () {
-      
+    removeEmail (email) {
+      this.emails = this.emails.filter(e => e.id !== email.id);
     },
-  },
-  watch: {
   }
 }
 

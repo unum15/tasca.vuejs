@@ -1,24 +1,34 @@
 <template>
     <b-row>
         <b-col>
-            <b-form-group label="Phone Number Type">
+            <b-form-group label="Type">
               <b-form-select
+                @change="save"
                 :options="phone_number_types"
                 value-field="id"
                 text-field="name"
-                v-model="phone_number.phone_number_type_id">
+                :state="my_phone_number.phone_number_type_id != null"
+                v-model="my_phone_number.phone_number_type_id"
+              >
               </b-form-select>
             </b-form-group>
         </b-col>
         <b-col>
             <b-form-group label="Phone Number">
               <b-form-input
-                type="text"
-                v-model="phone_number.phone_number"
+                type="tel"
+                @change="save"
+                :state="verifyPhoneNumber"
+                v-model="my_phone_number.phone_number"
                 required
-                placeholder="5555555555">
+                placeholder="555-555-5555"
+                :formatter="formatPhoneNumber"
+                >
               </b-form-input>
             </b-form-group>
+        </b-col>
+        <b-col>
+          <b-button variant="danger" size="sm" @click="deletePhoneNumber">Delete</b-button>
         </b-col>
     </b-row>
 </template>
@@ -41,32 +51,34 @@ export default {
     this.my_phone_number = this.phone_number;
   },
   methods: {
+    save () {
+      if(!this.verify_phone_number){
+        return;
+      }
+      if(this.my_phone_number.id === null){
+        this.$http.post('/phone_number',this.my_phone_number)
+          .then((results) => {
+            this.my_phone_number.id = results.data.id;
+          })
+      }
+      else{
+        this.$http.patch('/phone_number/' + this.my_phone_number.id,this.my_phone_number);
+      }
+    },
+    deletePhoneNumber () {
+      this.$http.delete('/phone_number/' + this.my_phone_number.id);
+      this.$emit('remove-phone_number', this.my_phone_number);
+    },
+    formatPhoneNumber (value, event) {
+      value = value.replace(/[A-Za-z]/g, '');
+      //value = value.replace(/^\d{3}/g, '$1-');
+      return value;
+    },
   },
-  watch: {
-    my_phone_number:{
-      handler(new_number, old_number) {
-        if(this.my_phone_number.phone_number === null){
-          return;
-        }
-        if(this.my_phone_number.id === null){
-          console.log('post phone number');
-          this.$http.post('/phone_number',this.my_phone_number)
-            .then((results) => {
-              this.my_phone_number.id = results.data.id;
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        }
-        else{
-          if(old_number.id === undefined){
-            return;
-          }
-          console.log('patch phone number' + this.my_phone_number.id);
-          this.$http.patch('/phone_number/' + this.my_phone_number.id,this.my_phone_number);
-        }
-      },
-      deep: true
+  computed: {
+    verifyPhoneNumber () {
+      var regex = /^\d\d\d-\d\d\d-\d\d\d\d$/;
+      return regex.test(this.my_phone_number.phone_number);
     }
   }
 }

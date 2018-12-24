@@ -3,9 +3,10 @@
 		<b-form-group label="Project Name">
 			<b-form-input
 				type="text"
+				@change="save"
 				v-model="my_project.name"
 				required
-				:class="my_project.name == null ? 'invalid' : ''"
+				:state="my_project.name != null"
 				placeholder="Smith's Remodel"
 				>
 			</b-form-input>
@@ -14,11 +15,12 @@
 			<div class="col">
 				<b-form-group label="Property">
 					<b-form-select
+						@change="save"
 						:options="properties"
 						value-field="id"
 						text-field="name"
 						required
-						:class="my_project.property_id === null ? 'invalid' : ''"
+						:state="my_project.property_id != null"
 						v-model="my_project.property_id"
 						>
 					</b-form-select>
@@ -27,11 +29,12 @@
 			<div class="col">
 				<b-form-group label="Contact">
 					<b-form-select
+						@change="save"
 						:options="contacts"
 						value-field="id"
 						text-field="name"
 						required
-						:class="my_project.contact_id === null ? 'invalid' : ''"
+						:state="my_project.contact_id != null"
 						v-model="my_project.contact_id"
 						>
 					</b-form-select>
@@ -44,6 +47,7 @@
 				<b-form-group label="Open Date">
 					<b-form-input
 						type="date"
+						@change="save"
 						v-model="my_project.open_date"
 						>
 					</b-form-input>
@@ -51,12 +55,14 @@
 				<b-form-group label="Close Date">
 					<b-form-input
 						type="date"
+						@change="save"
 						v-model="my_project.close_date"
 						>
 					</b-form-input>
 				</b-form-group>
 				<b-form-group label="Notes">
 					<b-form-textarea
+						@input="save"
 						v-model="my_project.notes"
 						:rows="3"
 						:max-rows="6"
@@ -83,6 +89,9 @@
 				</EditOrders>
 			</b-tab>
 		</b-tabs>
+		<b-row>
+			<b-button variant="danger" size="sm" @click="deleteProject" v-if="my_project.id">Delete Project</b-button>
+        </b-row>
 	</b-container>
 </template>
 <script>
@@ -117,27 +126,23 @@ export default {
         this.my_project=this.project;
     },
 	methods: {
-	},
-	watch: {
-		project:{
-			handler(){
+		deleteProject () {
+		  this.$http.delete('/project/' + this.my_project.id);
+		  this.$emit('remove-project', this.my_project);
+		},
+		save() {
 			if((this.my_project.name === null) || (this.my_project.property_id === null) || (this.my_project.contact_id === null)){
 				return;
 			}
             if(this.my_project.id == null){
-                console.log('post project');
                 this.$http.post('/project',this.my_project).then(response => {
                     this.project.id = response.data.id;
                 })
             }
             else{
-                console.log('patch project ' + this.my_project.id)
                 this.$http.patch('/project/' + this.my_project.id, this.my_project)
             }
-		},
-		deep: true
 		}
-		
 	}
 }
 </script>

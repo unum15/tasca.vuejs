@@ -1,11 +1,13 @@
 <template>
   <b-row>
     <b-col>
-        <b-form-group label="Email Type">
+        <b-form-group label="Type">
             <b-form-select
+              @change="save"
               :options="email_types"
               value-field="id"
               text-field="name"
+              :state="my_email.email_type_id != null"
               v-model="my_email.email_type_id">
             </b-form-select>
         </b-form-group>
@@ -13,12 +15,17 @@
     <b-col>
         <b-form-group label="Email">
             <b-form-input
-              type="text"
+              type="email"
+              @change="save"
+              :state="verifyEmail"
               v-model="my_email.email"
               required
               placeholder="admin@truecomputing.biz">
             </b-form-input>
         </b-form-group>
+    </b-col>
+    <b-col>
+      <b-button variant="danger" size="sm" @click="deleteEmail">Delete</b-button>
     </b-col>
   </b-row>
 </template>
@@ -41,28 +48,30 @@ export default {
     this.my_email = this.email;
   },
   methods: {
-  },
-  watch: {
-    my_email:{
-      handler(new_email, old_email) {
-        if(this.my_email.email === null){
-          return;
-        }
-        if(this.my_email.id === null){
+    deleteEmail(){
+      this.$http.delete('/email/' + this.my_email.id);
+      this.$emit('remove-email', this.my_email);
+    },
+    save(){
+      if(!this.verifyEmail){
+        return;
+      }
+      if(this.my_email.id === null){
           this.$http.post('/email',this.my_email)
             .then((results) => {
               this.my_email.id = results.data.id;
             })
-        }
-        else{
-          console.log(old_email.id);
-          if(old_email.id === undefined){
-            return;
-          }
-          this.$http.patch('/email/' + this.my_email.id,this.my_email)
-        }
-      },
-      deep: true
+      }
+      else{
+        this.$http.patch('/email/' + this.my_email.id,this.my_email)
+      }
+    }
+  }
+  ,
+  computed: {
+    verifyEmail () {
+      var regex = /\w+@\w+\.\w+/;
+      return regex.test(this.my_email.email);
     }
   }
 }

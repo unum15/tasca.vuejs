@@ -9,6 +9,8 @@
           :settings="settings"
           :contact="contact"
           :contact_types="contact_types"
+          @new-contact-mounted="newContactMounted"
+          @remove-contact="removeContact"
           ></EditContact>
       </b-tab>
     </b-tabs>
@@ -46,7 +48,8 @@ export default {
       all_contacts: [],
       contact_types: [],
       existing_contact_id: null,
-      current_tab: 0
+      current_tab: 0,
+      change_tab: false
     }
   },
   created () {
@@ -72,27 +75,31 @@ export default {
         notes: null
       };
       this.my_contacts.push(contact);
-      this.current_tab = this.my_contacts.length;
     },
     existingContact () {
       var id = this.existing_contact_id;
-      var contacts = this.all_contacts.filter(function(contacts) {
-        return contacts.id == id;
-      });
+      var contacts = this.all_contacts.filter(contacts => contacts.id == id);
       var contact = contacts[0];
       contact.emails = [];
       contact.phone_numbers = [];
       contact.key = contact.id;
+      contact.client_id = this.client_id;
       this.my_contacts.push(contact);
     },
-    removeContact: function(contact){
-      this.my_contacts = this.my_contacts.filter(c => c !== contact);
+    removeContact (contact) {
+      this.my_contacts = this.my_contacts.filter(c => c.id !== contact.id);
     },
-  },
-  updated: function() {
-    if((this.my_contacts.length>0) && (this.my_contacts[this.my_contacts.length-1].name === null)){
+    newContactMounted () {
+      console.log('change tab');
+      console.log(this.current_tab);
+      console.log(this.my_contacts.length-1);
       //this.current_tab = this.my_contacts.length-1;
+      console.log(this.current_tab);
+      this.change_tab = true;
     }
+  },
+  beforeUpdate () {
+     this.current_tab = this.my_contacts.length-1;
   },
   watch: {
   }

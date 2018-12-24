@@ -2,7 +2,14 @@
   <div>
     <b-tabs vertical pills v-model="current_tab">
       <b-tab v-for="property in my_properties" :key="property.id" :title="property.name==null?'New Property':property.name">
-        <EditProperty :property="property" :activity_levels="activity_levels" :settings="settings" :property_types="property_types" :contacts="contacts"></EditProperty>
+        <EditProperty
+          :property="property"
+          :activity_levels="activity_levels"
+          :settings="settings"
+          :property_types="property_types"
+          :contacts="contacts"
+          @remove-property="removeProperty"
+        ></EditProperty>
       </b-tab>
     </b-tabs>
     <b-button variant="secondary" @click="newProperty">Add New Property</b-button>
@@ -55,8 +62,8 @@ export default {
       };
       this.my_properties.push(property);
     },
-    deleteProperty(id){
-    
+    removeProperty(property){
+      this.my_properties = this.my_properties.filter(p => p.id !== property.id);
     }
   },
   updated: function() {

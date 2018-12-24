@@ -24,10 +24,12 @@
                 <b-col>
                   <b-form-group label="Client Type">
                     <b-form-select
+                      @change="save"
                       :options="client_types"
                       :disabled="client_types_loading"
                       value-field="id"
                       text-field="name"
+                      :state="client.client_type_id != null"
                       required
                       v-model="client.client_type_id">
                     </b-form-select>
@@ -37,7 +39,9 @@
                   <b-form-group label="Client Name">
                     <b-form-input
                       type="text"
+                      @change="save"
                       v-model="client.name"
+                      :state="client.name != null"
                       required
                       placeholder="Smith Household">
                     </b-form-input>
@@ -46,6 +50,7 @@
                 <b-col>
                   <b-form-group label="Activity Level">
                     <b-form-select
+                      @change="save"
                       :options="activity_levels"
                       :disabled="activity_levels_loading"
                       value-field="id"
@@ -57,6 +62,7 @@
                 <b-col>
                   <b-form-group label="Contact Method">
                     <b-form-select
+                      @change="save"
                       :options="contact_methods"
                       :disabled="contact_methods_loading"
                       value-field="id"
@@ -70,6 +76,7 @@
                 <b-col>
                   <b-form-group label="Billing Property">
                     <b-form-select
+                      @change="save"
                       :options="client.properties"
                       value-field="id"
                       text-field="name"
@@ -80,6 +87,7 @@
                 <b-col>
                   <b-form-group label="Billing Contact">
                     <b-form-select
+                      @change="save"
                       :options="client.contacts"
                       value-field="id"
                       text-field="name"
@@ -90,6 +98,7 @@
                 <b-col>
                   <b-form-group label="Referred By">
                     <b-form-input
+                      @change="save"
                       type="text"
                       v-model="client.referred_by"
                       placeholder="John Doe">
@@ -101,6 +110,7 @@
                 <b-col>
                 <b-form-group label="Notes">
                   <b-form-textarea
+                    @input="save"
                     v-model="client.notes"
                     :rows="3"
                     :max-rows="6"
@@ -187,47 +197,25 @@ export default {
       this.activity_levels_loading = false
     })
     if (this.client_id !== null) {
-      console.log('/client/' + this.client_id);
       this.$http.get('/client/' + this.client_id).then(response => {
         this.client = response.data
-        console.log(this.client.name)
       })
     }
   },
   methods: {
-  },
-  watch: {
-    client:{
-      handler(new_client, old_client) {
-        if(this.client.name === null){
-          return;
-        }
-        if(this.client.id === null){
-          console.log('post');
-          this.$http.post('/client',this.client)
-            .then((results) => {
-              this.showSaveFailed = false;
-              this.showSaveSuccess = true;
-              this.client.id = results.data.id;
-            })
-            .catch(error => {
-              this.showSaveFailed = true;
-              this.showSaveSuccess = false;
-            });
-        }
-        else{
-          if(old_client.id == null){
-            return;
-          }
-          console.log('patch');
-          this.$http.patch('/client/' + this.client.id,this.client)
-            .catch(error => {
-              this.showSaveSuccess = false;
-              this.showSaveFailed = true;
-            });
-        }
-      },
-      deep: true
+    save () {
+      if(this.client.name === null){
+        return;
+      }
+      if(this.client.id === null){
+        this.$http.post('/client',this.client)
+          .then((results) => {
+            this.client.id = results.data.id;
+          })
+      }
+      else{
+        this.$http.patch('/client/' + this.client.id,this.client)
+      }
     }
   }
 }

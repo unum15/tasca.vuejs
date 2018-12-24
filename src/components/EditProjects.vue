@@ -16,8 +16,14 @@
            </b-form-group>
     </div>
     <b-tabs vertical pills v-model="current_tab">
-      <b-tab v-for="project,index in projects" :key="project.id" :title="project.name===null?'New project':project.name" v-if="showTab(index)">
+      <b-tab
+        v-for="project,index in projects"
+        :key="project.id"
+        :title="project.name===null?'New project':project.name"
+        v-if="showTab(index)"
+      >
         <EditProject
+            v-if="index == current_tab"
             :project="project"
             :contacts="contacts"
             :properties="properties"
@@ -32,6 +38,7 @@
 						:task_actions="task_actions"
 						:task_types="task_types"
             :order_billing_types="order_billing_types"
+            @remove-project="removeProject"
         ></EditProject>
       </b-tab>
     </b-tabs>
@@ -124,8 +131,6 @@ export default {
       })
     },
     showTab (index) {
-      console.log(index);
-      console.log(this.projects[index].name);
       if((this.filter.name ==  null) || (this.filter.name == "")){
         return true;
       }
@@ -133,15 +138,11 @@ export default {
         return true;
       }
       return false;
+    },
+    removeProject (project) {
+      this.projects = this.projects.filter(p => p.id !== project.id);
     }
   },
-  updated () {
-    if((this.projects.length>0) && (this.projects[this.projects.length-1].name === null) && (this.current_tab != this.projects.length-1)){
-      //this.current_tab = this.projects.length-1;
-    }
-  },
-  watch: {
-  }
 }
 
 </script>

@@ -6,9 +6,10 @@
                 <b-form-group label="Contact Name">
                     <b-form-input
                       type="text"
+                      @change="save"
                       v-model="my_contact.name"
                       required
-                      :class="my_contact.name == null ? 'invalid' : ''"
+                      :state="my_contact.name != null"
                       placeholder="John Smith">
                     </b-form-input>
                 </b-form-group>
@@ -16,11 +17,12 @@
             <b-col v-if="client_id">
                 <b-form-group label="Contact Type">
                   <b-form-select
+                    @change="save"
                     :options="contact_types"
                     value-field="id"
                     text-field="name"
                     required
-                    :class="my_contact.contact_type_id == null ? 'invalid' : ''"
+                    :state="my_contact.contact_type_id != null"
                     v-model="my_contact.contact_type_id">
                   </b-form-select>
                 </b-form-group>
@@ -30,6 +32,7 @@
             <b-col>
                 <b-form-group label="Activity Level">
                   <b-form-select
+                    @change="save"
                     :options="activity_levels"
                     value-field="id"
                     text-field="name"
@@ -40,6 +43,7 @@
             <b-col>
                 <b-form-group label="Contact Method">
                   <b-form-select
+                    @change="save"
                     :options="contact_methods"
                     value-field="id"
                     text-field="name"
@@ -67,6 +71,7 @@
             <b-col>
                 <b-form-group label="Notes">
                   <b-form-textarea
+                    @input="save"
                     v-model="my_contact.notes"
                     :rows="3"
                     :max-rows="6"
@@ -76,8 +81,8 @@
             </b-col>
         </b-row>
         <b-row>
-                <b-button variant="danger" size="sm" @click="removeContact(contact)">Remove Contact</b-button>
-                <b-button variant="danger" size="sm" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
+                <b-button variant="danger" size="sm" @click="removeContact">Remove Contact</b-button>
+                <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
         </b-row>
     </b-container>
   </div>
@@ -114,10 +119,16 @@ export default {
     }
     this.my_contact = this.contact;
   },
-  watch: {
-    my_contact:{
-      handler(new_contact, old_contact) {
-        if((this.my_contact.name === null) || (this.my_contact.contact_type_id === null)){
+  methods: {
+    removeContact () {
+      this.$emit('remove-contact', this.my_contact);
+    },
+    deleteContact () {
+      this.$http.delete('/contact/' + this.my_contact.id);
+      this.$emit('remove-contact', this.my_contact);
+    },
+    save () {
+      if((this.my_contact.name === null) || (this.my_contact.contact_type_id === null)){
           return;
         }
         if(this.my_contact.id === null){
@@ -127,13 +138,13 @@ export default {
             })
         }
         else{
-          if(old_contact.id === undefined){
-            return;
-          }
           this.$http.patch('/contact/' + this.my_contact.id,this.my_contact)
         }
-      },
-      deep: true
+    }
+  },
+  mounted () {
+    if(this.my_contact.id === null){
+      this.$emit('new-contact-mounted');
     }
   }
 }

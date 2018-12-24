@@ -47,10 +47,9 @@ export default {
       };
       this.phone_numbers.push(phone_number);
     },
-    removePhoneNumber() {
+    removePhoneNumber(phone_number) {
+      this.phone_numbers = this.phone_numbers.filter(pn => pn.id !== phone_number.id);
     },
-  },
-  watch: {
   }
 }
 
