@@ -186,7 +186,6 @@ export default {
 			this.$emit('remove-task', this.my_task);
 		},
 		save() {
-			console.log('save');
 			if(this.my_task.billable === null){
 				return;
 			}

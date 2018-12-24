@@ -24,7 +24,11 @@
                 placeholder="555-555-5555"
                 :formatter="formatPhoneNumber"
                 >
-              </b-form-input>
+                </b-form-input>
+                <b-form-invalid-feedback>
+                  555-555-5555
+                </b-form-invalid-feedback>
+              
             </b-form-group>
         </b-col>
         <b-col>

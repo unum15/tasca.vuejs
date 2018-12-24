@@ -61,7 +61,7 @@ export default {
 			this.tasks.push(task);
 		},
 		removeTask: function(task){
-			this.tasks = this.my_tasks.filter(t => t.id !== task.id);
+			this.tasks = this.tasks.filter(t => t.id !== task.id);
 		},
   },
 }

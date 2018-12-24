@@ -43,13 +43,19 @@
                       v-model="client.name"
                       :state="client.name != null"
                       required
-                      placeholder="Smith Household">
+                      placeholder="Smith Household"
+                      v-b-tooltip.hover title="The client will contain contacts and properties. Put an overall inclusive name here."
+                      >
                     </b-form-input>
+                    <b-form-text>
+                      The client will contain contacts and properties. Put an overall inclusive name here.
+                    </b-form-text>
                   </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Activity Level">
                     <b-form-select
+                      v-b-tooltip.hover title="Activity level 1 means this is a current active Client. Activity Level 10 means you haven't worked with this client in years."
                       @change="save"
                       :options="activity_levels"
                       :disabled="activity_levels_loading"
@@ -57,6 +63,9 @@
                       text-field="name"
                       v-model="client.activity_level_id">
                     </b-form-select>
+                    <b-form-text>
+                        Activity level 1 means this is a current active Client. Activity Level 10 means you haven't worked with this client in years.
+                    </b-form-text>
                   </b-form-group>
                 </b-col>
                 <b-col>
