@@ -1,7 +1,20 @@
 <template>
 		<div>
+			<div style="width:10%;text-align:center;">
+						<b-form-group label="Show Completed">
+							<b-form-checkbox
+								v-model="filter.completed"
+							>
+							</b-form-checkbox>
+						</b-form-group>
+			</div>
 			<b-tabs vertical pills v-model="tasks_tab_index">
-				<b-tab v-for="task in tasks" :key="task.id" :title="task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New')">
+				<b-tab
+					v-for="task in tasks"
+					:key="task.id"
+					:title="task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New')"
+					v-if="showTab(task)"
+				>
 					<EditTask
 						:order="order"
 						:task="task"
@@ -33,8 +46,11 @@ export default {
 	data: function() {
 		return {
 			tasks: [],
-			tasks_tab_index: 0
-		};
+			tasks_tab_index: 0,
+			filter: {
+				completed: false
+			}
+		}
 	},
 	created() {
      this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
@@ -64,6 +80,13 @@ export default {
 		removeTask: function(task){
 			this.tasks = this.tasks.filter(t => t.id !== task.id);
 		},
+		showTab(task){
+			var show = true;
+			if((!this.filter.completed)&&(task.completion_date != null)){
+				show = false;
+			}
+			return show;
+		}
   },
 }
 </script>

@@ -78,13 +78,13 @@
               </b-row>
               <b-row>
                 <b-col>
-                  <b-form-group label="Billing Property">
+                  <b-form-group label="Main Mailing Property">
                     <b-form-select
                       @change="save"
                       :options="client.properties"
                       value-field="id"
                       text-field="name"
-                      v-model="client.billing_property_id">
+                      v-model="client.mailing_property_id">
                     </b-form-select>
                   </b-form-group>
                 </b-col>

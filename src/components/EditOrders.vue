@@ -1,7 +1,26 @@
 <template>
 	<div>
+		<div style="width:10%;text-align:center;">
+          <b-form-group label="Show Completed">
+            <b-form-checkbox
+              v-model="filter.completed"
+            >
+            </b-form-checkbox>
+          </b-form-group>
+					<b-form-group label="Show Expired">
+            <b-form-checkbox
+              v-model="filter.expired"
+            >
+            </b-form-checkbox>
+          </b-form-group>
+    </div>
         <b-tabs vertical pills v-model="order_tab_index">
-            <b-tab v-for="order in orders" :key="order.id" :title="order.name !== null ? order.name : 'Order ' + (order.id !== null ? order.id : 'New')">
+            <b-tab
+							v-for="order in orders"
+							:key="order.id"
+							:title="order.name !== null ? order.name : 'Order ' + (order.id !== null ? order.id : 'New')"
+							v-if="showTab(order)"
+							>
                 <EditOrder
 									:order="order"
 									:priorities="priorities"
@@ -51,7 +70,11 @@ export default {
 			order_tab_index: 0,
 			new_orders: 0,
 			new_pressed: false,
-			change_tab: false
+			change_tab: false,
+			filter: {
+				completed: false,
+				expired: false
+			}
 		};
 	},
 	created() {
@@ -94,6 +117,16 @@ export default {
 		},
 		removeOrder(order) {
 			this.orders = this.orders.filter(o => o.id !== order.id);
+		},
+		showTab(order){
+			var show = true;
+			if((!this.filter.completed)&&(order.completion_date != null)){
+				show = false;
+			}
+			if((!this.filter.expired)&&(order.expiration_date != null)&&(order.expiration_date < this.today)){
+				show = false;
+			}
+			return show;
 		}
 	},  
 	computed: {

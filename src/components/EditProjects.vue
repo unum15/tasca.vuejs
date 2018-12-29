@@ -1,8 +1,9 @@
 <template>
   <div>
     <div style="width:10%;text-align:center;">
-          <b-form-group label="Show Completed" @change="getProjects">
+          <b-form-group label="Show Completed">
             <b-form-checkbox
+              @input="getProjects"
               v-model="filter.completed"
             >
             </b-form-checkbox>
@@ -126,6 +127,7 @@ export default {
       this.projects.push(project);
     },
     getProjects(){
+      this.projects = [];
       this.$http.get('/projects?client_id=' + this.client_id+ '&completed=' + this.filter.completed).then(response => {
         this.projects = response.data
       })

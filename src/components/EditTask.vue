@@ -114,6 +114,16 @@
             </b-col>
         </b-row>
         <b-row>
+			<b-col>
+                <b-form-group label="Completion Date">
+                    <b-form-input
+                        type="date"
+						@change="save"
+                        v-model="my_task.completion_date"
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>
             <b-col>
                 <b-form-group label="Group">
                     <b-form-select
