@@ -5,11 +5,40 @@
             Tasks
         </head>
         <main>
-            <b-table small striped hover :items="tasks" :fields="fields">
+            <b-container fluid>
+                <b-row>
+                  <b-col md="6" class="my-1">
+                    <b-form-group horizontal label="Filter" class="mb-0">
+                      <b-input-group>
+                        <b-form-input v-model="filter" placeholder="Type to Search" />
+                        <b-input-group-append>
+                          <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
+                        </b-input-group-append>
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+            </b-container fluid>
+            <b-table
+                small
+                striped
+                hover
+                :filter="filter"
+                :items="tasks"
+                :fields="fields"
+                :per-page="perPage"
+                @filtered="onFiltered"
+            >
                 <template slot="id" slot-scope="data">
                     <a :href="'#/client/'+ data.item.order.project.property.client_id +'/task/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
+            <b-row>
+                <b-col md="6" class="my-1">
+                  <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
+                </b-col>
+            </b-row>
+
         </main>
     </div>
 </template>
@@ -23,6 +52,10 @@ export default {
     data() {
         return {
             tasks: [],
+            filter: null,
+            totalRows: 0,
+            currentPage: 1,
+            perPage: 20,
             fields: [
                     {
                     key: 'id',
@@ -70,7 +103,14 @@ export default {
     created() {
         this.$http.get('/tasks').then((results) => {
             this.tasks = results.data;
+            this.totalRows = this.tasks.length;
         });
+    },
+    methods: {
+        onFiltered (filteredItems) {
+          this.totalRows = filteredItems.length
+          this.currentPage = 1
+        }
     }
 }
 </script>

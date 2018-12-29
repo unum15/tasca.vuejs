@@ -44,6 +44,18 @@
             </b-col>
         </b-row>
         <b-row>
+			<b-col>
+                <b-form-group label="Category">
+                    <b-form-select
+                        :options="task_categories"
+						@change="save"
+                        value-field="id"
+                        text-field="name"
+                        v-model="my_task.task_category_id"
+                        >
+                    </b-form-select>
+                </b-form-group>
+            </b-col>
             <b-col>
                 <b-form-group label="Status">
                     <b-form-select
@@ -93,7 +105,7 @@
             <b-col>
                 <b-form-group label="Time">
                     <b-form-input
-                        type="text"
+                        type="time"
 						@change="save"
                         v-model="my_task.time"
                     >
@@ -170,6 +182,7 @@ export default {
 		task_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
+		task_categories: {required: true},
 	},
 	data: function() {
 		return {

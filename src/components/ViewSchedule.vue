@@ -8,11 +8,16 @@
              <el-table
                 :data="tasks"
                 border
-                style="width: 100%">
+                style="width: 100%"
+                empty-text="Loading..."
+                >
                 <el-table-column
                   prop="order.approval_date"
                   sortable
-                  label="App Date">
+                  label="App Date"
+                  :filters="getUniqueValues('approval_date')"
+                  :filter-method="filterHandler"
+                  >
                 </el-table-column>
                 <el-table-column
                   prop="order_id"
@@ -23,7 +28,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="category.name"
+                  prop="order.order_category.name"
                   sortable
                   label="C">
                 </el-table-column>
@@ -47,14 +52,17 @@
                   label="Description">
                 </el-table-column>
                 <el-table-column
-                  prop="priority.name"
+                  prop="order.order_priority.name"
                   sortable
                   label="Pri">
                 </el-table-column>
                 <el-table-column
                   prop="task_category_id"
                   sortable
-                  label="Category">
+                  label="Category"
+                  :filters="task_categories"
+                  :filter-method="filterHandler"
+                  >
                   <template slot-scope="scope">
                     <el-select v-model="scope.row.task_category_id" placeholder="Select Category">
                       <el-option
@@ -175,8 +183,28 @@ export default {
             this.tasks = results.data;
         });
     },
+    methods: {
+      filterHandler(value, row, column) {
+        console.log(value);
+        console.log(row);
+        console.log(column);
+        return value == row['order']['approval_date'];
+      },
+      getUniqueValues(column){
+        var values = [];
+        this.tasks.forEach( t => {
+            values.push(t['order'][column]);
+        });
+        values = values.filter( (value, index, self) => self.indexOf(value) === index )
+        var return_array = [];
+        values.forEach( v => {
+            return_array.push({ text: v, value: v });
+        });
+        return return_array;
+      }
+    },
     computed: {
-		task_sort_options : function (){
+		task_sort_options() {
 			// Chrome can't handle this yet
 			//return [for (i of Array(100).keys()) i+1];
 			var options = Array();

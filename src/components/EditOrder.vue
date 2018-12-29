@@ -127,7 +127,7 @@
                                     value-field="id"
                                     text-field="name"
                                     v-model="my_order.order_status_id"
-                                    :state="my_order.order_status_Id != null"
+                                    :state="my_order.order_status_id != null"
                                     required
                                     >
                                 </b-form-select>
@@ -187,7 +187,15 @@
                 </b-container>
             </b-tab>
             <b-tab title="Tasks">
-                <EditTasks v-if="my_order.id != null" :order="my_order" order_type="order" :task_types="task_types" :task_statuses="task_statuses" :task_actions="task_actions"></EditTasks>
+                <EditTasks
+                    v-if="my_order.id != null"
+                    :order="my_order"
+                    :task_types="task_types"
+                    :task_statuses="task_statuses"
+                    :task_actions="task_actions"
+                    :task_categories="task_categories"
+                    >
+                </EditTasks>
             </b-tab>
             <b-tab title="Notes">
                 <b-form-group label="Location">
@@ -358,7 +366,7 @@
             </b-tab>
         </b-tabs>
         <b-button variant="secondary" size="sm" @click="createWorkOrder()" :disabled="!allowWorkOrder" v-if="isServiceOrder">Create Work Order</b-button>
-        <b-button variant="secondary" size="sm" @click="createPendingWorkOrder()" :disabled="!allowWorkOrder" v-if="isServiceOrder">Create Pending Work Order</b-button>
+        <b-button variant="secondary" size="sm" @click="createPendingWorkOrder()" :disabled="!allowPendingWorkOrder" v-if="isServiceOrder">Create Pending Work Order</b-button>
         <b-button variant="danger" size="sm" @click="deleteOrder()">Delete Order</b-button>
 	</div>
 </template>
@@ -378,7 +386,8 @@ export default {
 		priorities: {required: true},
 		task_types: {required: true},
 		task_statuses: {required: true},
-		task_actions: {required: true}
+		task_actions: {required: true},
+		task_categories: {required: true}
 	},
 	data: function() {
 		return {
@@ -393,8 +402,21 @@ export default {
     },
 	methods: {
         createWorkOrder() {
-            this.$http.post('/work_order',this.my_order).then(response => {
+            var work_order = this.my_order;
+            work_order.completion_date = null;
+            work_order.order_status_id = null;
+            work_order.order_billing_type_id = 3;
+            this.$http.post('/work_order', work_order).then(response => {
                 this.$emit(created_work_order);
+            });
+        },
+        createPendingWorkOrder() {
+            var work_order = this.my_order;
+            work_order.completion_date = null;
+            work_order.order_status_id = null;
+            work_order.order_billing_type_id = 2;
+            this.$http.post('/work_order',this.my_order).then(response => {
+                this.$emit(created_pending_work_order);
             });
         },
         save(){
@@ -419,12 +441,22 @@ export default {
 	},
 	computed:{
 		allowWorkOrder() {
-            if(this.my_order.order_billing_type_id == 1){
-                return true;
-            }
-            else{
+            if(this.my_order.id === null){
                 return false;
             }
+            var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
+            return current_status[0].allow_work_order;
+            
+            
+		},
+        allowPendingWorkOrder() {
+            if(this.my_order.id === null){
+                return false;
+            }
+            var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
+            return current_status[0].allow_pending_work_order;
+            
+            
 		},
         isServiceOrder() {
             return this.my_order.order_billing_type_id == 1;

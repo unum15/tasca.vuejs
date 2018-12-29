@@ -8,6 +8,7 @@
 						:task_types="task_types"
 						:task_statuses="task_statuses"
 						:task_actions="task_actions"
+						:task_categories="task_categories"
 						@remove-task="removeTask"
 					></EditTask>
 				</b-tab>
@@ -24,10 +25,10 @@ export default {
     },
 	props: {
 		order: {required: true},
-		order_type: {required: true},
 		task_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
+		task_categories: {required: true},
 	},
 	data: function() {
 		return {

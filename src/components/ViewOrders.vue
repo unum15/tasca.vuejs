@@ -5,7 +5,21 @@
             Service Orders
         </head>
         <main>
-            <b-table small striped hover :items="service_orders" :fields="fields">
+            <b-container fluid>
+                <b-row>
+                  <b-col md="6" class="my-1">
+                    <b-form-group horizontal label="Filter" class="mb-0">
+                      <b-input-group>
+                        <b-form-input v-model="filter" placeholder="Type to Search" />
+                        <b-input-group-append>
+                          <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
+                        </b-input-group-append>
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+            </b-container fluid>
+            <b-table small striped hover :filter="filter" :items="orders" :fields="fields">
                 <template slot="id" slot-scope="data">
                     <a :href="'#/client/'+ data.item.project.property.client_id +'/service_order/' + data.item.id"> {{ data.value }} </a>
                 </template>
@@ -22,7 +36,8 @@ export default {
     },
     data() {
         return {
-            service_orders: [],
+            orders: [],
+            filter: null,
             fields: [
                 {
                     key: 'id',
@@ -73,8 +88,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/service_orders').then((results) => {
-            this.service_orders = results.data;
+        this.$http.get('/orders').then((results) => {
+            this.orders = results.data;
         });
     }
 }

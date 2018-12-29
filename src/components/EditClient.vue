@@ -17,8 +17,11 @@
       {{ client.name }}
     </header>
     <main>
-        <b-tabs>
+        <b-tabs v-model="tab_index">
           <b-tab title="General">
+            <b-container>
+            <b-row>
+            <b-col cols="8">
             <b-container>
               <b-row>
                 <b-col>
@@ -44,18 +47,13 @@
                       :state="client.name != null"
                       required
                       placeholder="Smith Household"
-                      v-b-tooltip.hover title="The client will contain contacts and properties. Put an overall inclusive name here."
                       >
                     </b-form-input>
-                    <b-form-text>
-                      The client will contain contacts and properties. Put an overall inclusive name here.
-                    </b-form-text>
                   </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Activity Level">
                     <b-form-select
-                      v-b-tooltip.hover title="Activity level 1 means this is a current active Client. Activity Level 10 means you haven't worked with this client in years."
                       @change="save"
                       :options="activity_levels"
                       :disabled="activity_levels_loading"
@@ -63,9 +61,6 @@
                       text-field="name"
                       v-model="client.activity_level_id">
                     </b-form-select>
-                    <b-form-text>
-                        Activity level 1 means this is a current active Client. Activity Level 10 means you haven't worked with this client in years.
-                    </b-form-text>
                   </b-form-group>
                 </b-col>
                 <b-col>
@@ -129,9 +124,23 @@
                 </b-col>
               </b-row>
             </b-container>
+            </b-col>
+            <b-col>
+              A client represents a household or organization that you do business with. Contact information for individuals and properties should be store on their respective pages.
+            </b-col>
+            </b-row>
+            </b-container>
           </b-tab>
           <b-tab v-if="client.id" title="Contacts">
-            <EditContacts :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditContacts>
+            <EditContacts
+              :contacts="client.contacts"
+              :properties="client.properties"
+              :client_id="client.id"
+              :contact_methods="contact_methods"
+              :activity_levels="activity_levels"
+              :settings="settings"
+            >
+            </EditContacts>
           </b-tab>
           <b-tab v-if="client.id" title="Properties">
             <EditProperties :properties="client.properties" :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditProperties>
@@ -157,7 +166,12 @@ export default {
     'EditProjects': EditProjects
   },
   props: {
-    client_id: {default: null}
+    client_id: {default: null},
+    contact_id: {default: null},
+    property_id: {default: null},
+    project_id: {default: null},
+    order_id: {default: null},
+    task_id: {default: null},
   },
   data () {
     return {
@@ -167,11 +181,13 @@ export default {
       contact_methods_loading: true,
       activity_levels_loading: true,
       client_types_loading: true,
+      tab_index: 0,
       settings: {},
       showSaveFailed: false,
       showSaveSuccess: false,
       contacts: [],
       properties: [],
+      first_update: true,
       client: {
         id: null,
         client_type_id: null,
@@ -209,7 +225,7 @@ export default {
       this.$http.get('/client/' + this.client_id).then(response => {
         this.client = response.data
       })
-    }
+    }    
   },
   methods: {
     save () {
@@ -225,6 +241,15 @@ export default {
       else{
         this.$http.patch('/client/' + this.client.id,this.client)
       }
+    }
+  },
+  updated() {
+    if(!this.first_update){
+      return;
+    }
+    if((this.client.id) && (this.order_id != null)){
+      this.tab_index = 3;
+      this.first_update = false;
     }
   }
 }

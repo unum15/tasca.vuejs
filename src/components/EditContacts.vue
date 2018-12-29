@@ -6,6 +6,7 @@
           :client_id="client_id"
           :contact_methods="contact_methods"
           :activity_levels="activity_levels"
+          :properties="properties"
           :settings="settings"
           :contact="contact"
           :contact_types="contact_types"
@@ -39,6 +40,7 @@ export default {
     client_id: {required: true},
     contact_methods: {required: true},
     activity_levels: {required: true},
+    properties: {required: true},
     settings: {required: true},
     contacts: {required: true}
   },
@@ -99,7 +101,7 @@ export default {
     }
   },
   beforeUpdate () {
-     this.current_tab = this.my_contacts.length-1;
+     //this.current_tab = this.my_contacts.length-1;
   },
   watch: {
   }

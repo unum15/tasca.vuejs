@@ -5,7 +5,21 @@
             Properties
         </head>
         <main>
-            <b-table small striped hover :items="properties" :fields="fields">
+            <b-container fluid>
+                <b-row>
+                  <b-col md="6" class="my-1">
+                    <b-form-group horizontal label="Filter" class="mb-0">
+                      <b-input-group>
+                        <b-form-input v-model="filter" placeholder="Type to Search" />
+                        <b-input-group-append>
+                          <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
+                        </b-input-group-append>
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+            </b-container fluid>
+            <b-table small striped hover :filter="filter" :items="properties" :fields="fields">
                 <template slot="name" slot-scope="data">
                     <a :href="'#/client/'+ data.item.client_id +'/property/' + data.item.id"> {{ data.value }} </a>
                 </template>
@@ -23,6 +37,7 @@ export default {
     data() {
         return {
             properties: [],
+            filter: null,
             fields: [
                 {
                     key: 'client.name',

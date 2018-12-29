@@ -27,6 +27,8 @@
                       </b-form-select>
                     </b-form-group>
                 </b-col>
+            </b-row>
+            <b-row>
                 <b-col>
                     <b-form-group label="Property Type">
                       <b-form-select
@@ -37,19 +39,6 @@
                         required
                         :state="my_property.property_type_id != null"
                         v-model="my_property.property_type_id">
-                      </b-form-select>
-                    </b-form-group>
-                </b-col>
-            </b-row>
-            <b-row>
-                <b-col>
-                    <b-form-group label="Primary Contact">
-                      <b-form-select
-                        @change="save"
-                        :options="contacts"
-                        value-field="id"
-                        text-field="name"
-                        v-model="my_property.primary_contact_id">
                       </b-form-select>
                     </b-form-group>
                 </b-col>
@@ -134,6 +123,20 @@
             </b-row>
             <b-row>
                 <b-col>
+                    <b-form-group label="Contacts">
+                        <b-form-checkbox-group
+                            @input="save"
+                            v-model="my_property.contacts"
+                            :options="contacts"
+                            value-field="id"
+                            text-field="name"
+                            >
+                        </b-form-checkbox-group>
+                    </b-form-group>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
                     <b-form-group label="Notes">
                       <b-form-textarea
                         v-model="my_property.notes"
@@ -167,6 +170,11 @@ export default {
     },
     created() {
         this.my_property = this.property;
+        var contacts = [];
+        this.my_property.contacts.forEach( c => {
+            contacts.push(c.id);
+        })
+        this.my_property.contacts = contacts;
     },
     methods: {
         deleteProperty() {
@@ -174,7 +182,6 @@ export default {
             this.$emit('remove-property', this.my_property);
         },
         save() {
-            console.log('save');
             if((this.my_property.name === null) || (this.my_property.activity_level_id === null) || (this.my_property.property_type_id === null)){
               return;
             }
@@ -187,7 +194,7 @@ export default {
             else{
                 this.$http.patch('/property/' + this.my_property.id,this.my_property);
             }
-        }
+        },
     }
 }
 </script>

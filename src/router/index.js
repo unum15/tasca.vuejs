@@ -9,6 +9,7 @@ import ViewOrders from '@/components/ViewOrders'
 import ViewTasks from '@/components/ViewTasks'
 import LoginForm from '@/components/LoginForm'
 import ViewSchedule from '@/components/ViewSchedule'
+import ViewScheduleB from '@/components/ViewScheduleB'
 
 Vue.use(Router)
 
@@ -28,7 +29,13 @@ export default new Router({
       path: '/client/:client_id',
       name: 'EditClient',
       component: EditClient,
-      props: true
+      props: true,
+      children: [
+        {
+          path: 'order/:order_id',
+          component: EditClient
+        }
+      ]
     },
     {
       path: '/clients',
@@ -64,6 +71,11 @@ export default new Router({
       path: '/scheduler',
       name: 'ViewSchedule',
       component: ViewSchedule
+    },
+    {
+      path: '/schedulerB',
+      name: 'ViewScheduleB',
+      component: ViewScheduleB
     },
     {
       path: '/client/:client_id/contact/:contact_id',

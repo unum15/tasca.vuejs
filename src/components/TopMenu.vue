@@ -10,10 +10,10 @@
                 <b-nav-item href="#/contacts">Contacts</b-nav-item>
                 <b-nav-item href="#/properties">Properties</b-nav-item>
 				<b-nav-item href="#/projects">Projects</b-nav-item>
-				<b-nav-item href="#/service_orders">Service Orders</b-nav-item>
-				<b-nav-item href="#/work_orders">Work Orders</b-nav-item>
+				<b-nav-item href="#/orders">Orders</b-nav-item>
 				<b-nav-item href="#/tasks">Tasks</b-nav-item>
                 <b-nav-item href="#/scheduler">Scheduler</b-nav-item>
+                <b-nav-item href="#/schedulerB">Scheduler B</b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item-dropdown right>

@@ -68,6 +68,21 @@
                   ></EditPhoneNumbers>
             </b-col>
         </b-row>
+        <b-row>
+          <b-col>
+              <b-form-group label="Properties">
+                  <b-form-checkbox-group
+                      @input="save"
+                      v-model="my_contact.properties"
+                      :options="properties"
+                      value-field="id"
+                      text-field="name"
+                  >
+                  </b-form-checkbox-group>
+              </b-form-group>
+          </b-col>
+        </b-row>
+        <b-row>
             <b-col>
                 <b-form-group label="Notes">
                   <b-form-textarea
@@ -101,6 +116,7 @@ export default {
     contact: {},
     contact_methods: {required: true},
     activity_levels: {required: true},
+    properties: {required: true},
     settings: {required: true},
     contact_types: {default: []}
   },
@@ -118,6 +134,11 @@ export default {
         }
     }
     this.my_contact = this.contact;
+    var properties = [];
+    this.my_contact.properties.forEach( p => {
+      properties.push(p.id);
+    })
+    this.my_contact.properties = properties;
   },
   methods: {
     removeContact () {
