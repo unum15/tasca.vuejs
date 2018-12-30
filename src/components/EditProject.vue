@@ -18,7 +18,7 @@
 			<div class="col">
 				<b-form-group label="Property">
 					<b-form-select
-						@change="save"
+						@input="save"
 						:options="properties"
 						value-field="id"
 						text-field="name"
@@ -32,7 +32,7 @@
 			<div class="col">
 				<b-form-group label="Contact">
 					<b-form-select
-						@change="save"
+						@input="save"
 						:options="contacts"
 						value-field="id"
 						text-field="name"

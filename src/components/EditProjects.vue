@@ -26,7 +26,7 @@
       <b-tab
         v-for="project,index in projects"
         :key="project.id"
-        :title="project.name===null?'New project':project.name"
+        :title="project.name===null?'New project':project.name.substr(0,20)"
         v-if="showTab(index)"
       >
         <EditProject
