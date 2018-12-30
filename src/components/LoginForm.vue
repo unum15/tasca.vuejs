@@ -24,6 +24,8 @@ export default {
   },
   created () {
     localStorage.removeItem('token')
+    localStorage.removeItem('id')
+    localStorage.removeItem('login')
   },
   methods: {
     login () {
@@ -38,6 +40,8 @@ export default {
         return
       }
       localStorage.setItem('token', req.data.api_token)
+      localStorage.setItem('id', req.data.id)
+      localStorage.setItem('login', req.data.login)
       this.error = false
       this.$router.push('/clients');
     },

@@ -9,7 +9,11 @@ import ViewOrders from '@/components/ViewOrders'
 import ViewTasks from '@/components/ViewTasks'
 import LoginForm from '@/components/LoginForm'
 import ViewSchedule from '@/components/ViewSchedule'
-import ViewScheduleB from '@/components/ViewScheduleB'
+import EditHours from '@/components/EditHours'
+import EditList from '@/components/EditList'
+import EditProfile from '@/components/EditProfile'
+import GoogleCalendar from '@/components/GoogleCalendar'
+
 
 Vue.use(Router)
 
@@ -73,11 +77,6 @@ export default new Router({
       component: ViewSchedule
     },
     {
-      path: '/schedulerB',
-      name: 'ViewScheduleB',
-      component: ViewScheduleB
-    },
-    {
       path: '/client/:client_id/contact/:contact_id',
       name: 'EditContact',
       component: EditClient,
@@ -113,5 +112,123 @@ export default new Router({
       component: EditClient,
       props: true
     },
+    
+    
+    
+    
+    
+    
+    
+    
+    {
+      path: '/hours',
+      name: 'EditHours',
+      component: EditHours
+    },
+    {
+      path: '/activity_levels',
+      name: 'EditActivityLevels',
+      component: EditList
+    },
+    {
+      path: '/client_types',
+      name: 'EditClientTypes',
+      component: EditList
+    },
+    {
+      path: '/contact_methods',
+      name: 'EditContactMethods',
+      component: EditList
+    },
+    {
+      path: '/contact_types',
+      name: 'EditContactTypes',
+      component: EditList
+    },
+    {
+      path: '/email_types',
+      name: 'EditEmailTypes',
+      component: EditList
+    },
+    {
+      path: '/order_actions',
+      name: 'EditOrderActions',
+      component: EditList
+    },
+    {
+      path: '/order_billing_types',
+      name: 'EditOrderBillingTypes',
+      component: EditList
+    },
+    {
+      path: '/order_categories',
+      name: 'EditOrderCategories',
+      component: EditList
+    },
+    {
+      path: '/order_priorities',
+      name: 'EditOrderPriorities',
+      component: EditList
+    },
+    {
+      path: '/order_statuses',
+      name: 'EditOrderStatuses',
+      component: EditList
+    },
+    {
+      path: '/order_types',
+      name: 'EditOrderTypes',
+      component: EditList
+    },
+    {
+      path: '/phone_number_types',
+      name: 'EditPhoneNumberTypes',
+      component: EditList
+    },
+    {
+      path: '/property_types',
+      name: 'EditPropertyTypes',
+      component: EditList
+    },
+    {
+      path: '/task_actions',
+      name: 'EditTaskActions',
+      component: EditList
+    },
+    {
+      path: '/task_appointment_statuses',
+      name: 'EditTaskAppointmentStatuses',
+      component: EditList
+    },
+    {
+      path: '/task_categories',
+      name: 'EditTaskCategories',
+      component: EditList
+    },
+    {
+      path: '/task_statuses',
+      name: 'EditTaskStatuses',
+      component: EditList
+    },
+    {
+      path: '/task_types',
+      name: 'EditTaskTypes',
+      component: EditList
+    },
+    {
+      path: '/work_types',
+      name: 'EditWorkTypes',
+      component: EditList
+    },
+    {
+      path: '/profile',
+      name: 'EditProfile',
+      component: EditProfile
+    },
+    {
+      path: '/calendar',
+      name: 'GoogleCalendar',
+      component: GoogleCalendar
+    }
   ]
 })
