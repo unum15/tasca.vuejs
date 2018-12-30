@@ -29,6 +29,11 @@
         :title="project.name===null?'New project':project.name.substr(0,20)"
         v-if="showTab(index)"
       >
+      <template slot="title" style="text-align:left">
+        <div style="text-align:left">
+          {{ project.name === null ? 'New project' : project.name.substr(0,20) }}
+        </div>
+      </template>
         <EditProject
             v-if="index == current_tab"
             :project="project"

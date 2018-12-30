@@ -41,6 +41,7 @@
 									:settings="settings"
 									:project_name="project_name"
 									@remove-order="removeOrder"
+									@changed-order-tab="changedOrderTab"
 								>
 								</EditOrder>
             </b-tab>
@@ -104,11 +105,11 @@ export default {
 				category_id: null,
 				location: null,
 				instructions: null,
-				order_category_id: this.settings.default_order_category_id.value,
-				order_priority_id: this.settings.default_order_priority_id.value,
-				order_type_id: this.settings.default_order_type_id.value,
-				order_status_id: this.settings.default_order_status_id.value,
-				order_action_id: this.settings.default_order_action_id.value,
+				order_category_id: this.settings.default_order_category_id,
+				order_priority_id: this.settings.default_order_priority_id,
+				order_type_id: this.settings.default_order_type_id,
+				order_status_id: this.settings.default_order_status_id,
+				order_action_id: this.settings.default_order_action_id,
 				start_date: this.today,
 				recurrences: 0,
 				renewable: false,
@@ -117,6 +118,7 @@ export default {
 				tasks: []
 				
 			};
+			console.log(this.settings.default_order_status_id);
 			this.orders.push(order);
 			this.new_pressed = false;
 			this.change_tab = true;
@@ -133,6 +135,9 @@ export default {
 				show = false;
 			}
 			return show;
+		},
+		changedOrderTab(tab_index){
+			this.$emit('changed-order-tab', tab_index);
 		}
 	},  
 	computed: {

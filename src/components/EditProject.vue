@@ -1,4 +1,8 @@
 <template>
+<div>
+<template slot="title">
+     i'm <i>Custom</i> <strong>Title</strong>
+   </template>
 <b-container>
             <b-row>
             <b-col cols="8">
@@ -87,7 +91,7 @@
 					:task_categories="task_categories"
 					:task_statuses="task_statuses"
 					:task_types="task_types"
-					@changedOrderTab="changedOrderTab"
+					@changed-order-tab="changedOrderTab"
 				>
 				</EditOrders>
 			</b-tab>
@@ -111,6 +115,7 @@
     </b-col>
     </b-row>
     </b-container>
+</div>
 </template>
 <script>
 import EditOrders from './EditOrders'
@@ -183,8 +188,8 @@ export default {
 		changedOrderTab(tab_index){
 			console.log(tab_index);
 			switch(tab_index){
-				case 1:
-					this.help_task = this.settings.help_service_order
+				case 2:
+					this.help_task = this.settings.help_task
 					break;
 				default:
 					this.help_task = ''

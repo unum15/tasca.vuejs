@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-tabs>
+        <b-tabs @input="changedTabs">
             <b-tab title="General">
                 <b-container>
                     <b-form-group label="Order Name">
@@ -437,6 +437,10 @@ export default {
         deleteOrder(){
             this.$http.delete('/order/' + this.my_order.id);
             this.$emit('remove-order', this.my_order);
+        },
+        changedTabs(tab_index){
+            console.log(tab_index);
+            this.$emit('changed-order-tab', tab_index)
         }
 	},
 	computed:{
@@ -448,9 +452,8 @@ export default {
                 return false;
             }
             var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
-            if(current_status == 0){
-                return false;
-            }
+            console.log('wo');
+            console.log(current_status);
             return current_status[0].allow_work_order;
             
             
@@ -463,6 +466,8 @@ export default {
                 return false;
             }
             var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
+            console.log('pwo');
+            console.log(current_status);
             return current_status[0].allow_pending_work_order;
             
             
