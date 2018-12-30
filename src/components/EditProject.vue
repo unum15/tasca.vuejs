@@ -44,8 +44,7 @@
 				</b-form-group>
 			</div>
 		</div>
-		</form>
-		<b-tabs v-model="tab_index">
+		<b-tabs @input="changedProjectTab">
 			<b-tab title="General">
 				<b-form-group label="Open Date">
 					<b-form-input
@@ -88,7 +87,6 @@
 					:task_categories="task_categories"
 					:task_statuses="task_statuses"
 					:task_types="task_types"
-					@changedOrderType="changedOrderType"
 					@changedOrderTab="changedOrderTab"
 				>
 				</EditOrders>
@@ -172,14 +170,14 @@ export default {
 				case 1:
 					this.help_order = this.settings.help_service_order
 					break;
-				case 1:
+				case 2:
 					this.help_order = this.settings.help_pending_work_order
 					break;
-				case 1:
-					this.elp_order = this.settings.help_work_order
+				case 3:
+					this.help_order = this.settings.help_work_order
 					break;
 				default:
-					help_order = ''
+					this.help_order = ''
 			}
 		},
 		changedOrderTab(tab_index){
@@ -189,25 +187,7 @@ export default {
 					this.help_task = this.settings.help_service_order
 					break;
 				default:
-					help_task = ''
-			}
-		}
-	},
-	watch: {
-		tab_index(){
-			console.log(this.tab_index);
-			switch(this.tab_index){
-				case 1:
-					this.help_order = this.settings.help_service_order
-					this.break;
-				case 1:
-					this.help_order = this.settings.help_pending_work_order
-					break;
-				case 1:
-					this.help_order = this.settings.help_work_order
-					break;
-				default:
-					this.help_order = ''
+					this.help_task = ''
 			}
 		}
 	}

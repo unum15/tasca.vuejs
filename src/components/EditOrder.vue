@@ -444,13 +444,22 @@ export default {
             if(this.my_order.id === null){
                 return false;
             }
+            if(this.my_order.order_status_id === null){
+                return false;
+            }
             var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
+            if(current_status == 0){
+                return false;
+            }
             return current_status[0].allow_work_order;
             
             
 		},
         allowPendingWorkOrder() {
             if(this.my_order.id === null){
+                return false;
+            }
+            if(this.my_order.order_status_id === null){
                 return false;
             }
             var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
