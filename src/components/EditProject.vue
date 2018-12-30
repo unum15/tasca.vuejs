@@ -1,4 +1,7 @@
 <template>
+<b-container>
+            <b-row>
+            <b-col cols="8">
 	<b-container>
 		<b-form-group label="Project Name">
 			<b-form-input
@@ -42,7 +45,7 @@
 			</div>
 		</div>
 		</form>
-		<b-tabs>
+		<b-tabs v-model="tab_index">
 			<b-tab title="General">
 				<b-form-group label="Open Date">
 					<b-form-input
@@ -85,6 +88,8 @@
 					:task_categories="task_categories"
 					:task_statuses="task_statuses"
 					:task_types="task_types"
+					@changedOrderType="changedOrderType"
+					@changedOrderTab="changedOrderTab"
 				>
 				</EditOrders>
 			</b-tab>
@@ -93,6 +98,21 @@
 			<b-button variant="danger" size="sm" @click="deleteProject" v-if="my_project.id">Delete Project</b-button>
         </b-row>
 	</b-container>
+	</b-col>
+    <b-col v-if="settings.help_show == 'true'">
+	  <p class="card-text">
+		{{ settings.help_project }}
+	  </p>
+	  <p class="card-text">
+		{{ help_order }}
+		</p>
+		
+		<p class="card-text">
+			{{ help_task }}
+		</p>
+    </b-col>
+    </b-row>
+    </b-container>
 </template>
 <script>
 import EditOrders from './EditOrders'
@@ -119,7 +139,10 @@ export default {
 	},
 	data() {
 		return {
-			my_project: null
+			my_project: null,
+			help_order: null,
+			help_task: null,
+			tab_index: 0
 		};
 	},
 	created() {
@@ -142,6 +165,50 @@ export default {
             else{
                 this.$http.patch('/project/' + this.my_project.id, this.my_project)
             }
+		},
+		changedProjectTab(tab_index){
+			console.log(tab_index);
+			switch(tab_index){
+				case 1:
+					this.help_order = this.settings.help_service_order
+					break;
+				case 1:
+					this.help_order = this.settings.help_pending_work_order
+					break;
+				case 1:
+					this.elp_order = this.settings.help_work_order
+					break;
+				default:
+					help_order = ''
+			}
+		},
+		changedOrderTab(tab_index){
+			console.log(tab_index);
+			switch(tab_index){
+				case 1:
+					this.help_task = this.settings.help_service_order
+					break;
+				default:
+					help_task = ''
+			}
+		}
+	},
+	watch: {
+		tab_index(){
+			console.log(this.tab_index);
+			switch(this.tab_index){
+				case 1:
+					this.help_order = this.settings.help_service_order
+					this.break;
+				case 1:
+					this.help_order = this.settings.help_pending_work_order
+					break;
+				case 1:
+					this.help_order = this.settings.help_work_order
+					break;
+				default:
+					this.help_order = ''
+			}
 		}
 	}
 }

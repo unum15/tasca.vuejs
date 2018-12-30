@@ -1,13 +1,17 @@
 <template>
 		<div>
-			<div style="width:10%;text-align:center;">
-						<b-form-group label="Show Completed">
-							<b-form-checkbox
-								v-model="filter.completed"
-							>
-							</b-form-checkbox>
-						</b-form-group>
-			</div>
+			<b-container>
+			<b-form-row>
+				<b-col>
+          <b-form-group horizontal :label-cols="10" label="Show Completed">
+            <b-form-checkbox
+              v-model="filter.completed"
+            >
+            </b-form-checkbox>
+          </b-form-group>
+				</b-col>
+			</b-form-row>
+    </b-container>
 			<b-tabs vertical pills v-model="tasks_tab_index">
 				<b-tab
 					v-for="task in tasks"

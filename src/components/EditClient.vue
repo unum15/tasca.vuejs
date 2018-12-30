@@ -84,7 +84,7 @@
                       :options="client.properties"
                       value-field="id"
                       text-field="name"
-                      v-model="client.mailing_property_id">
+                      v-model="client.main_mailing_property_id">
                     </b-form-select>
                   </b-form-group>
                 </b-col>
@@ -125,8 +125,8 @@
               </b-row>
             </b-container>
             </b-col>
-            <b-col>
-              A client represents a household or organization that you do business with. Contact information for individuals and properties should be store on their respective pages.
+            <b-col v-if="settings.help_show == 'true'">
+              {{ settings.help_client }}
             </b-col>
             </b-row>
             </b-container>

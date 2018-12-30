@@ -1,5 +1,8 @@
 <template>
   <div>
+  <b-container>
+            <b-row>
+            <b-col cols="8">
     <b-container>
         <b-row>
             <b-col>
@@ -99,6 +102,12 @@
                 <b-button variant="danger" size="sm" @click="removeContact">Remove Contact</b-button>
                 <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
         </b-row>
+    </b-container>
+    </b-col>
+    <b-col v-if="settings.help_show == 'true'">
+      {{ settings.help_contact }}
+    </b-col>
+    </b-row>
     </b-container>
   </div>
 </template>

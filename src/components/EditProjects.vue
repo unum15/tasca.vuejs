@@ -1,21 +1,27 @@
 <template>
   <div>
-    <div style="width:10%;text-align:center;">
-          <b-form-group label="Show Completed">
+    <b-container>
+      <b-row>
+        <b-col>
+          <b-form-group horizontal label="Show Completed">
             <b-form-checkbox
               @input="getProjects"
               v-model="filter.completed"
             >
             </b-form-checkbox>
           </b-form-group>
-          <b-form-group label="Filter">
+        </b-col>
+        <b-col>
+          <b-form-group horizontal label="Filter">
             <b-form-input
                     type="text"
                     v-model="filter.name"
                 >
               </b-form-input>
            </b-form-group>
-    </div>
+          </b-col>
+        </b-row>
+    </b-container>
     <b-tabs vertical pills v-model="current_tab">
       <b-tab
         v-for="project,index in projects"

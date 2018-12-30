@@ -1,19 +1,25 @@
 <template>
 	<div>
-		<div style="width:10%;text-align:center;">
-          <b-form-group label="Show Completed">
+		<b-container>
+			<b-form-row>
+				<b-col>
+          <b-form-group horizontal :label-cols="10" label="Show Completed">
             <b-form-checkbox
               v-model="filter.completed"
             >
             </b-form-checkbox>
           </b-form-group>
-					<b-form-group label="Show Expired">
+				</b-col>
+				<b-col>
+					<b-form-group horizontal :label-cols="10" label="Show Expired">
             <b-form-checkbox
               v-model="filter.expired"
             >
             </b-form-checkbox>
           </b-form-group>
-    </div>
+				</b-col>
+			</b-form-row>
+    </b-container>
         <b-tabs vertical pills v-model="order_tab_index">
             <b-tab
 							v-for="order in orders"

@@ -52,6 +52,7 @@ export default {
         property_type_id: null,
         primary_contact_id: null,
         work_property: true,
+        billing_property: true,
         phone_number: null,
         address1: null,
         address2: null,
