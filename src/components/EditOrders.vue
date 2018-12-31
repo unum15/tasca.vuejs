@@ -110,7 +110,7 @@ export default {
 				start_date: this.today,
 				recurrences: 0,
 				renewable: false,
-				window: 4,
+				window: 7,
 				notes: null,
 				tasks: []
 				

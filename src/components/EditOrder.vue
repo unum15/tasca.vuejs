@@ -115,10 +115,8 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
-                    </b-row>
-                    <b-row>
                         <b-col>
-                            <b-form-group label="Closed Date">
+                            <b-form-group label="Closed Date" v-if="order.order_billing_type_id!=2">
                                 <b-form-input
                                     type="date"
                                     @change="save"
@@ -174,7 +172,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Recurrences">
+                            <b-form-group label="Recurrences" v-if="order.order_billing_type_id!=2">
                                 <b-form-input
                                     type="number"
                                     @change="save"

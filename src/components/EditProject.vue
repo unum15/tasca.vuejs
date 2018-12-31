@@ -50,6 +50,16 @@
 		</div>
 		<b-tabs @input="changedProjectTab">
 			<b-tab title="General">
+            <b-form-group label="Notes">
+					<b-form-textarea
+						@input="save"
+						v-model="my_project.notes"
+						:rows="3"
+						:max-rows="6"
+						placeholder="Notes about this project."
+						>
+					</b-form-textarea>
+				</b-form-group>
 				<b-form-group label="Open Date">
 					<b-form-input
 						type="date"
@@ -65,16 +75,6 @@
 						v-model="my_project.close_date"
 						>
 					</b-form-input>
-				</b-form-group>
-				<b-form-group label="Notes">
-					<b-form-textarea
-						@input="save"
-						v-model="my_project.notes"
-						:rows="3"
-						:max-rows="6"
-						placeholder="Notes about this project."
-						>
-					</b-form-textarea>
 				</b-form-group>
 			</b-tab>
 			<b-tab v-if="my_project.id" v-for="billing_type in order_billing_types" :key="billing_type.id" :title="billing_type.name">
