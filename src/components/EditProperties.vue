@@ -33,7 +33,8 @@ export default {
     return {
         property_types: [],
         my_properties: [],
-        current_tab: 0
+        current_tab: 0,
+        change_tab: false
     }
   },
   created() {
@@ -59,18 +60,21 @@ export default {
         city: null,
         state: null,
         zip: null,
-        notes: null
+        notes: null,
+        contacts: []
       };
       this.my_properties.push(property);
+      this.change_tab = true;
     },
     removeProperty(property){
       this.my_properties = this.my_properties.filter(p => p.id !== property.id);
     }
   },
-  updated: function() {
-    if((this.my_properties.length>0) && (this.my_properties[this.my_properties.length-1].name === null)){
-      //this.current_tab = this.my_properties.length-1;
-    }
+  updated() {
+		if(this.change_tab){
+			this.current_tab = this.properties.length-1;
+			this.change_tab =  false;
+		}
   },
 }
 

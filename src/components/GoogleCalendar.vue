@@ -5,7 +5,19 @@
         Google Calendar
     </header>
     <main>
-        <a :href="url">Enable</a>
+      <b-container>
+        <b-row>
+          <b-col>
+            Google API Authorization Status
+          </b-col>
+          <b-col>
+            {{ status }}
+          </b-col>
+          <b-col v-if="status!='Valid'">
+            <a :href="url">Enable</a>
+          </b-col>
+        </b-row>
+      </b-container>
     </main>
   </div>
 </template>
@@ -18,10 +30,20 @@ export default {
   },
   data () {
     return {
-        url: null
+        url: null,
+        status: null,
     }
   },
   created () {
+    console.log(this.$route.query.code);
+    if(this.$route.query.code !== undefined){
+      this.$http.post('/calendar/callback', {code: this.$route.query.code}).then(response => {
+        this.status = response.data.status
+      })
+    }
+    this.$http.get('/calendar/status').then(response => {
+      this.status = response.data.status
+    })
     this.$http.get('/calendar/url').then(response => {
       this.url = response.data.url
     })

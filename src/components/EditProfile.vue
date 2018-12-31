@@ -32,13 +32,13 @@
             </b-row>
             <b-row>
                 <b-col>
-                  <b-form-group label="Show Only Activity Level Below">
+                  <b-form-group label="Show Only Activity Level At and Above">
                     <b-form-select
-                      @change="save"
+                      @input="save"
                       :options="activity_levels"
                       value-field="id"
                       text-field="name"
-                      v-model="profile.show_activity_level_id">
+                      v-model="profile.show_maximium_activity_level_id">
                     </b-form-select>
                   </b-form-group>
                 </b-col>

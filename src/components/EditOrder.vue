@@ -10,7 +10,7 @@
                         v-model="my_order.name"
                         required
                         :state="my_order.name != null"
-                        placeholder="Bid"
+                        placeholder="New Order Name"
                         >
                     </b-form-input>
                 </b-form-group>
@@ -30,56 +30,10 @@
                     </b-row>
                     <b-row>
                         <b-col>
-                            <b-form-group label="Order Date">
-                                <b-form-input
-                                    type="date"
-                                    @change="save"
-                                    v-model="my_order.date"
-                                    required
-                                    :state="my_order.date != null"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            <b-form-group label="Approval Date">
-                                <b-form-input
-                                    type="date"
-                                    @change="save"
-                                    v-model="my_order.approval_date"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col>
-                            <b-form-group label="Completion Date">
-                                <b-form-input
-                                    type="date"
-                                    @change="save"
-                                    v-model="my_order.completion_date"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            <b-form-group label="Expiration Date">
-                                <b-form-input
-                                    type="date"
-                                    @change="save"
-                                    v-model="my_order.expiration_date"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col>
                             <b-form-group label="Category">
                                 <b-form-select
                                     @change="save"
-                                    :options="types"
+                                    :options="categories"
                                     value-field="id"
                                     text-field="name"
                                     v-model="my_order.order_category_id"
@@ -148,27 +102,63 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Order Date">
+                                <b-form-input
+                                    type="date"
+                                    @change="save"
+                                    v-model="my_order.date"
+                                    required
+                                    :state="my_order.date != null"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Closed Date">
+                                <b-form-input
+                                    type="date"
+                                    @change="save"
+                                    v-model="my_order.completion_date"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Expiration Date">
+                                <b-form-input
+                                    type="date"
+                                    @change="save"
+                                    v-model="my_order.expiration_date"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
                 </b-container>
             </b-tab>
             <b-tab title="Calendar">
                 <b-container>
                     <b-row>
                         <b-col>
-                            <b-form-group label="Start Date">
+                            <b-form-group label="Approval Date">
                                 <b-form-input
                                     type="date"
                                     @change="save"
-                                    v-model="my_order.start_date"
+                                    v-model="my_order.approval_date"
                                 >
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Recurrences">
+                            <b-form-group label="Start Date">
                                 <b-form-input
-                                    type="number"
+                                    type="date"
                                     @change="save"
-                                    v-model="my_order.recurrences"
+                                    v-model="my_order.start_date"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -183,6 +173,17 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
+                        <b-col>
+                            <b-form-group label="Recurrences">
+                                <b-form-input
+                                    type="number"
+                                    @change="save"
+                                    v-model="my_order.recurrences"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        
                     </b-row>
                 </b-container>
             </b-tab>
@@ -319,21 +320,21 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Frequency">
-                                <b-form-input
-                                    type="text"
-                                    @change="save"
-                                    v-model="my_order.frequency"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
                             <b-form-group label="Renewal Date">
                                 <b-form-input
                                     type="date"
                                     @change="save"
                                     v-model="my_order.renewal_date"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Frequency">
+                                <b-form-input
+                                    type="text"
+                                    @change="save"
+                                    v-model="my_order.frequency"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -384,6 +385,7 @@ export default {
 		statuses: {required: true},
 		actions: {required: true},
 		priorities: {required: true},
+        categories: {required: true},
 		task_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},

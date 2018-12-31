@@ -12,7 +12,7 @@
 				</b-col>
 			</b-form-row>
     </b-container>
-			<b-tabs vertical pills v-model="tasks_tab_index">
+			<b-tabs vertical pills v-model="current_tab">
 				<b-tab
 					v-for="task in tasks"
 					:key="task.id"
@@ -50,7 +50,8 @@ export default {
 	data: function() {
 		return {
 			tasks: [],
-			tasks_tab_index: 0,
+			current_tab: 0,
+			change_tab: false,
 			filter: {
 				completed: false
 			}
@@ -80,6 +81,7 @@ export default {
 				crew_hours: null
 			};
 			this.tasks.push(task);
+			this.change_tab = true;
 		},
 		removeTask: function(task){
 			this.tasks = this.tasks.filter(t => t.id !== task.id);
@@ -90,6 +92,12 @@ export default {
 				show = false;
 			}
 			return show;
+		}
+  },
+	updated() {
+		if(this.change_tab){
+			this.current_tab = this.tasks.length-1;
+			this.change_tab =  false;
 		}
   },
 }

@@ -74,9 +74,11 @@ export default {
         contact_method_id: null,
         emails: [],
         phone_numbers: [],
-        notes: null
+        notes: null,
+        properties: []
       };
       this.my_contacts.push(contact);
+      this.change_tab = true;
     },
     existingContact () {
       var id = this.existing_contact_id;
@@ -100,8 +102,11 @@ export default {
       this.change_tab = true;
     }
   },
-  beforeUpdate () {
-     //this.current_tab = this.my_contacts.length-1;
+  updated() {
+		if(this.change_tab){
+			this.current_tab = this.contacts.length-1;
+			this.change_tab =  false;
+		}
   },
   watch: {
   }

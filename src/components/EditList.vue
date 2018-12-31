@@ -2,9 +2,10 @@
   <div>
     <TopMenu></TopMenu>
     <header>
+      {{ title }}
     </header>
     <main>
-      <b-table :items="items" :fields="fields">
+      <b-table :items="items" :fields="fields"   footer>
         <template slot="sort_order" slot-scope="data">
           <b-form-select
             :options="sort_options"
@@ -16,7 +17,7 @@
         <template slot="name" slot-scope="data">
           <b-form-input
             type="text"
-						@input="save(data.item)"
+						@change="save(data.item)"
             v-model="data.item.name"
           >
           </b-form-input>
@@ -24,7 +25,7 @@
         <template slot="notes" slot-scope="data">
           <b-form-input
             type="text"
-						@input="save(data.item)"
+						@change="save(data.item)"
             v-model="data.item.notes"
           >
           </b-form-input>
@@ -38,7 +39,11 @@
             />
             
         </template>
+        <template slot="delete" slot-scope="data">
+          <img src="@/assets/delete.png" @click.stop="deleteItem(data.item)" fluid alt="-" style="width:20px;cursor:pointer;"/>
+        </template>
       </b-table>
+      <img src="@/assets/add.png" @click.stop="addItem" fluid alt="-" style="width:20px;cursor:pointer;" />
     </main>
   </div>
 </template>
@@ -51,7 +56,7 @@ export default {
   },
   data () {
     return {
-      resource : null,
+      resource : 'Loading...',
       default_item: null,
       settings: {},
       items: [],
@@ -71,6 +76,10 @@ export default {
         {
           key: 'default',
           label: 'Default'
+        },
+        {
+          key: 'delete',
+          label: 'Delete'
         }
       ]
     }
@@ -90,12 +99,34 @@ export default {
       this.default_item = this.settings['default_' + this.singular + '_id'];
     },
     save (item) {
-      this.$http.patch('/'+this.singular + '/' + item.id, item);
+      if(item.name == null){
+        return;
+      }
+      if(item.id == null){
+        this.$http.post('/'+this.singular, item).then( response => {
+          item.id = response.data.id;
+        })
+      }
+      else{
+        this.$http.patch('/'+this.singular + '/' + item.id, item);
+      }
     },
     saveDefault() {
       var settings = {};
       settings['default_' + this.singular + '_id'] = this.default_item
       this.$http.patch('/settings', settings)
+    },
+    addItem(){
+      var item = {
+        id: null,
+        sort_order: null,
+        name: null
+      }
+      this.items.push(item);
+    },
+    deleteItem(item){
+      this.$http.delete('/'+this.singular + '/' + item.id);
+      this.items = this.items.filter(i => i.id !== item.id);
     }
   },
   computed: {
@@ -111,6 +142,15 @@ export default {
             return this.resource.substr(1,this.resource.length-2);
           }
         }
+    },
+    title(){
+      var title = this.resource.replace(/_/, ' ');
+      title = title.replace(/\//, '');
+      title = title.toLowerCase()
+        .split(' ')
+        .map((s) => s.charAt(0).toUpperCase() + s.substring(1))
+        .join(' ');
+      return title
     },
     sort_options() {
 			var options = [];

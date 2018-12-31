@@ -9,8 +9,8 @@
 						:state="my_task.task_type_id != null"
 						required
 					>
-                        <b-form-radio value="1">Service Order</b-form-radio>
-                        <b-form-radio value="2">Work Order</b-form-radio>
+                        <b-form-radio value="1">Non Billing</b-form-radio>
+                        <b-form-radio value="2">Billing</b-form-radio>
                     </b-form-radio-group>
                 </b-form-group>
             </b-col>

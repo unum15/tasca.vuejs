@@ -20,7 +20,7 @@
 				</b-col>
 			</b-form-row>
     </b-container>
-        <b-tabs vertical pills v-model="order_tab_index">
+        <b-tabs vertical pills v-model="current_tab">
             <b-tab
 							v-for="order in orders"
 							:key="order.id"
@@ -46,7 +46,7 @@
 								</EditOrder>
             </b-tab>
         </b-tabs>
-        <b-button variant="secondary" @click="newOrder" :pressed="new_pressed">Add New Order</b-button>
+        <b-button variant="secondary" @click="newOrder" >Add New Order</b-button>
     </div>
 </template>
 <script>
@@ -74,9 +74,7 @@ export default {
 	data() {
 		return {
 			orders: [],
-			order_tab_index: 0,
-			new_orders: 0,
-			new_pressed: false,
+			current_tab: 0,
 			change_tab: false,
 			filter: {
 				completed: false,
@@ -91,7 +89,6 @@ export default {
   },
 	methods: {
 		newOrder(){
-			this.new_orders++;
 			var order = {
 				id: null,
 				name: null,
@@ -118,9 +115,7 @@ export default {
 				tasks: []
 				
 			};
-			console.log(this.settings.default_order_status_id);
 			this.orders.push(order);
-			this.new_pressed = false;
 			this.change_tab = true;
 		},
 		removeOrder(order) {
@@ -156,16 +151,16 @@ export default {
 	},
   updated() {
 		if(this.change_tab){
-			this.order_tab_index = this.orders.length-1;
+			this.current_tab = this.orders.length-1;
 			this.change_tab =  false;
 		}
   },
   watch:{
-	settings() {
-		if(this.settings.length !== 0){
-			this.newOrder();
+		settings() {
+			if(this.settings.length !== 0){
+				this.newOrder();
+			}
 		}
-	}
   }
 }
 </script>

@@ -133,7 +133,7 @@
 import TopMenu from './TopMenu';
 import ViewOrder from './ViewOrder';
 export default {
-    name: 'ViewScheduleB',
+    name: 'ViewSchedule',
     components: {
         'TopMenu': TopMenu,
         'ViewOrder': ViewOrder

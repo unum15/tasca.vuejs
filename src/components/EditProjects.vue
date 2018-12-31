@@ -75,6 +75,7 @@ export default {
     return {
       projects: [],
       current_tab: 0,
+      change_tab: false,
       order_types: [],
 			order_priorities: [],
 			order_actions: [],
@@ -136,6 +137,7 @@ export default {
         open_date: moment().format('YYYY-MM-DD')
       };
       this.projects.push(project);
+      this.change_tab = true;
     },
     getProjects(){
       this.projects = [];
@@ -155,6 +157,12 @@ export default {
     removeProject (project) {
       this.projects = this.projects.filter(p => p.id !== project.id);
     }
+  },
+  updated() {
+		if(this.change_tab){
+			this.current_tab = this.projects.length-1;
+			this.change_tab =  false;
+		}
   },
 }
 

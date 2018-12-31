@@ -8,6 +8,7 @@ module.exports = {
           '^/api': ''
         }
       },
-    }
+    },
+    public: 'tascalocal.truecomputing.biz'
   } 
 };
