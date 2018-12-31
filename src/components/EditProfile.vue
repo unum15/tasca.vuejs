@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     save () {
-        this.$http.patch('/contact/' + id, profile)
+        this.$http.patch('/contact/' + this.profile.id, this.profile)
     }
   }
 }
