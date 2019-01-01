@@ -19,7 +19,7 @@
     <main>
         <b-tabs v-model="tab_index">
           <b-tab title="General">
-            <b-container :fluid="false">
+            <b-container :fluid="true">
             <b-row>
             <b-col cols="8">
             <b-container>
