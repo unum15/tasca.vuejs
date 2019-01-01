@@ -68,11 +68,11 @@ export default {
       fields: [
 				{
 					label: "Name",
-					key: "name"
+					key: "contact.name"
 				},
 				{
 					label: "Work Order",
-					key: "job"
+					key: "order.id"
 				},
 				{
 					label: "Client Name",
@@ -84,11 +84,11 @@ export default {
 				},
 				{
 					label: "Start",
-					key: "sign_in_time"
+					key: "sign_in"
 				},
 				{
 					label: "End",
-					key: "sign_out_time"
+					key: "sign_out"
 				},
 				{
 					label: "Total",

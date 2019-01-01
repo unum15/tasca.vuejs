@@ -19,10 +19,10 @@
     <main>
         <b-tabs v-model="tab_index">
           <b-tab title="General">
-            <b-container fluid>
+            <b-container :fluid="false">
             <b-row>
             <b-col cols="8">
-            <b-container fluid>
+            <b-container>
               <b-row>
                 <b-col>
                   <b-form-group label="Client Type">

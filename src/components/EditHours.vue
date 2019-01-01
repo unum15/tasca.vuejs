@@ -94,7 +94,7 @@ export default {
     },    
     refresh(){
       if((this.start_date !== null) && (this.stop_date !== null)){
-        this.$http.get('sign_ins',{start_date: this.start_date, stop_date: this.stop_date}).then(request => {
+        this.$http.get('/sign_ins',{start_date: this.start_date, stop_date: this.stop_date}).then(request => {
               this.sign_ins = request.data;
               this.updateGroups();
           });

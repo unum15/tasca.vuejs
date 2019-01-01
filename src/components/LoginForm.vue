@@ -23,25 +23,30 @@ export default {
     }
   },
   created () {
-    localStorage.removeItem('token')
-    localStorage.removeItem('id')
-    localStorage.removeItem('login')
+    this.$http.get('/status')
+        .then(request => {
+          if(request.data.length !== 0){
+            this.$router.push('/clients');
+          }
+        })
   },
   methods: {
     login () {
       var form = this
       this.$http.post('/auth', { login: form.userLogin, password: form.password })
-        .then(request => form.loginSuccessful(request))
+        .then(request => {
+          if (!request.data.api_token) {
+            this.loginFailed()
+            return
+          }
+          form.loginSuccessful(request)
+        })
         .catch(() => form.loginFailed())
     },
     loginSuccessful (req) {
-      if (!req.data.api_token) {
-        this.loginFailed()
-        return
+      for (var prop in req.data) {
+        localStorage.setItem(prop, req.data[prop])
       }
-      localStorage.setItem('token', req.data.api_token)
-      localStorage.setItem('id', req.data.id)
-      localStorage.setItem('login', req.data.login)
       this.error = false
       this.$router.push('/clients');
     },

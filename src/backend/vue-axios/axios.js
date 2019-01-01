@@ -31,7 +31,7 @@ daxios.interceptors.response.use(
 
 daxios.interceptors.request.use(
   function (config) {
-    config.headers.apitoken = localStorage.getItem('token')
+    config.headers.apitoken = localStorage.getItem('api_token')
     return config
   }
 )
