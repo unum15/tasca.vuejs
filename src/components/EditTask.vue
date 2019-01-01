@@ -1,5 +1,5 @@
 <template>
-	<b-container>
+	<b-container fluid-width>
         <b-row>
             <b-col>
                 <b-form-group label="Task Type">

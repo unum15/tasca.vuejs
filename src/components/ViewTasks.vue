@@ -27,6 +27,7 @@
                 :items="tasks"
                 :fields="fields"
                 :per-page="perPage"
+                :current-page="currentPage"
                 @filtered="onFiltered"
             >
                 <template slot="id" slot-scope="data">

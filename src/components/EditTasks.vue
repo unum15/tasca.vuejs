@@ -1,6 +1,6 @@
 <template>
 		<div>
-			<b-container>
+			<b-container fluid>
 			<b-form-row>
 				<b-col>
           <b-form-group horizontal :label-cols="10" label="Show Completed">

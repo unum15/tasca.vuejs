@@ -3,10 +3,10 @@
 <template slot="title">
      i'm <i>Custom</i> <strong>Title</strong>
    </template>
-<b-container>
+<b-container fluid>
             <b-row>
             <b-col cols="8">
-	<b-container>
+	<b-container fluid>
 		<b-form-group label="Project Name">
 			<b-form-input
 				type="text"

@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            Tasks
+            Scheduler
         </head>
         <main>
             <b-container fluid>
@@ -32,7 +32,7 @@
                     <a :href="'#/client/'+ data.item.order.project.property.client_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
                 <template slot="order.project.property.client.name" slot-scope="data">
-                    <a href="/#/schedulerB" @click.stop="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                    <a href="/#/scheduler" @click.stop="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template slot="task_appointment_status.name" slot-scope="data">
                     <b-form-select
@@ -107,9 +107,9 @@
                     </b-form-input>
                 </template>
                 <template slot="actions" slot-scope="row">
-                    <img src="@/assets/details.png" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
-                    <img src="@/assets/add.png" @click.stop="addTask(row.item)" fluid alt="+" style="width:20px;" />
-                    <img src="../assets/clear.png" @click.stop="clearScheduleData(row.item)" fluid alt="CS" style="width:20px;" />
+                    <img src="@/assets/details.png" v-b-tooltip.hover title="Show Details" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="Add Task To Order" @click.stop="addTask(row.item)" fluid alt="+" style="width:20px;" />
+                    <img src="../assets/clear.png" v-b-tooltip.hover title="Clear Scheduling Data" @click.stop="clearScheduleData(row.item)" fluid alt="CS" style="width:20px;" />
                   </template>
                   <template slot="row-details" slot-scope="row">
                     <b-card>

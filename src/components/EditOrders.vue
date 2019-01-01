@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<b-container>
+		<b-container fluid>
 			<b-form-row>
 				<b-col>
           <b-form-group horizontal :label-cols="10" label="Show Completed">
@@ -108,9 +108,10 @@ export default {
 				order_status_id: this.settings.default_order_status_id,
 				order_action_id: this.settings.default_order_action_id,
 				start_date: this.today,
-				recurrences: 0,
+				recurrences: 1,
 				renewable: false,
 				window: 7,
+				frequency: 0,
 				notes: null,
 				tasks: []
 				

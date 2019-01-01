@@ -1,9 +1,9 @@
 <template>
     <div>
-        <b-container>
+        <b-container fluid>
             <b-row>
                 <b-col cols="8">
-                    <b-container>
+                    <b-container fluid>
                         <b-row>
                             <b-col>
                                 <b-form-group label="Property Name">

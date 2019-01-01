@@ -2,7 +2,7 @@
     <div>
         <b-tabs @input="changedTabs">
             <b-tab title="General">
-                <b-container>
+                <b-container fluid>
                     <b-form-group label="Order Name">
                     <b-form-input
                         type="text"
@@ -139,7 +139,7 @@
                 </b-container>
             </b-tab>
             <b-tab title="Calendar">
-                <b-container>
+                <b-container fluid>
                     <b-row>
                         <b-col>
                             <b-form-group label="Approval Date">
@@ -226,7 +226,7 @@
                 </b-form-group>
             </b-tab>
             <b-tab title="Billing">
-                <b-container>
+                <b-container fluid>
                     <b-row>
                         <b-col>
                             <b-form-group label="PO Number">
@@ -306,7 +306,7 @@
                 </b-container>
             </b-tab>
             <b-tab title="Renewing" v-if="isServiceOrder">
-                <b-container>
+                <b-container fluid>
                     <b-row>
                         <b-col>
                             <b-form-group label="Renewable">
