@@ -144,12 +144,13 @@ export default {
 		  this.$emit('remove-project', this.my_project);
 		},
 		save() {
-			if((this.my_project.name === null) || (this.my_project.property_id === null) || (this.my_project.contact_id === null)){
+         
+			if((this.my_project.name === null) || (this.my_project.contact_id === null)){
 				return;
 			}
             if(this.my_project.id == null){
                 this.$http.post('/project',this.my_project).then(response => {
-                    this.project.id = response.data.id;
+                    this.my_project.id = response.data.id;
                 })
             }
             else{

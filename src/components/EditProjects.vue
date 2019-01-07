@@ -131,7 +131,7 @@ export default {
       var project = {
         id: null,
         name: null,
-        property_id: null,
+        client_id: this.client_id,
         contact_id: null,
         notes: null,
         open_date: moment().format('YYYY-MM-DD')

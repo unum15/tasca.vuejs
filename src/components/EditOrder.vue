@@ -23,8 +23,9 @@
                                     value-field="id"
                                     text-field="name"
                                     required
-                                    :state="my_order.property_id != null"
-                                    v-model="my_order.property_id"
+                                    :state="my_order.properties.length != 0"
+                                    v-model="my_order.properties"
+                                    :multiple="order.order_billing_type_id == 1"
                                     >
                                 </b-form-select>
                             </b-form-group>
@@ -48,7 +49,7 @@
                         <b-col>
                             <b-form-group label="Category">
                                 <b-form-select
-                                    @change="save"
+                                    @input="save"
                                     :options="categories"
                                     value-field="id"
                                     text-field="name"
@@ -62,7 +63,7 @@
                         <b-col>
                             <b-form-group label="Priority">
                                 <b-form-select
-                                    @change="save"
+                                    @input="save"
                                     :options="priorities"
                                     value-field="id"
                                     text-field="name"
@@ -76,7 +77,7 @@
                         <b-col>
                             <b-form-group label="Type">
                                 <b-form-select
-                                    @change="save"
+                                    @input="save"
                                     :options="types"
                                     value-field="id"
                                     text-field="name"
@@ -92,7 +93,7 @@
                         <b-col>
                             <b-form-group label="Status">
                                 <b-form-select
-                                    @change="save"
+                                    @input="save"
                                     :options="statuses"
                                     value-field="id"
                                     text-field="name"
@@ -106,7 +107,7 @@
                         <b-col>
                             <b-form-group label="Action">
                                 <b-form-select
-                                    @change="save"
+                                    @input="save"
                                     :options="actions"
                                     value-field="id"
                                     text-field="name"
@@ -414,6 +415,11 @@ export default {
 	},
 	created(){
 		this.my_order = this.order;
+        var properties = [];
+        this.my_order.properties.forEach( p => {
+            properties.push(p.id);
+        })
+        this.my_order.properties = properties;
 	},
 	mounted() {
     },

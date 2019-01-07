@@ -109,6 +109,7 @@ export default {
 				order_type_id: this.settings.default_order_type_id,
 				order_status_id: this.settings.default_order_status_id,
 				order_action_id: this.settings.default_order_action_id,
+				properties: [],
 				start_date: this.today,
 				recurrences: 1,
 				renewable: false,
