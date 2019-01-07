@@ -24,9 +24,10 @@ export default {
   },
   created () {
     this.$http.get('/status')
+        
         .then(request => {
-          if(request.data.length !== 0){
-            this.$router.push('/clients');
+          if(request.data.status == 'active'){
+            this.loginSuccessful(request)
           }
         })
   },
@@ -35,7 +36,7 @@ export default {
       var form = this
       this.$http.post('/auth', { login: form.userLogin, password: form.password })
         .then(request => {
-          if (!request.data.api_token) {
+          if (!request.data.bearer_token) {
             this.loginFailed()
             return
           }

@@ -20,20 +20,6 @@
 		</b-form-group>
 		<div class="row">
 			<div class="col">
-				<b-form-group label="Property">
-					<b-form-select
-						@input="save"
-						:options="properties"
-						value-field="id"
-						text-field="name"
-						required
-						:state="my_project.property_id != null"
-						v-model="my_project.property_id"
-						>
-					</b-form-select>
-				</b-form-group>
-			</div>
-			<div class="col">
 				<b-form-group label="Contact">
 					<b-form-select
 						@input="save"
@@ -80,6 +66,7 @@
 			<b-tab v-if="my_project.id" v-for="billing_type in order_billing_types" :key="billing_type.id" :title="billing_type.name">
 				<EditOrders
 					:project="my_project"
+               :properties="properties"
 					:settings="settings"
 					:order_billing_type="billing_type"
 					:actions="order_actions"

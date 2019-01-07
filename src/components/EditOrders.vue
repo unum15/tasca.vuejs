@@ -28,6 +28,7 @@
 							v-if="showTab(order)"
 							>
                 <EditOrder
+									:properties="properties"
 									:order="order"
 									:priorities="priorities"
 									:types="types"
@@ -65,6 +66,7 @@ export default {
 		actions: {required: true},
 		categories: {required: true},
 		priorities: {required: true},
+		properties: {required: true},
 		task_categories: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},

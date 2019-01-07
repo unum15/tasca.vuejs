@@ -14,6 +14,22 @@
                         >
                     </b-form-input>
                 </b-form-group>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Property">
+                                <b-form-select
+                                    @input="save"
+                                    :options="properties"
+                                    value-field="id"
+                                    text-field="name"
+                                    required
+                                    :state="my_order.property_id != null"
+                                    v-model="my_order.property_id"
+                                    >
+                                </b-form-select>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
                      <b-row>
                         <b-col>
                             <b-form-group label="Description">
@@ -378,6 +394,7 @@ export default {
 		'EditTasks': EditTasks
 	},
 	props: {
+        properties: {required: true},
 		order: {required: true},
 		types: {required: true},
 		statuses: {required: true},
