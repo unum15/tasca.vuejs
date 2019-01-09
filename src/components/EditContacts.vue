@@ -94,11 +94,6 @@ export default {
       this.my_contacts = this.my_contacts.filter(c => c.id !== contact.id);
     },
     newContactMounted () {
-      console.log('change tab');
-      console.log(this.current_tab);
-      console.log(this.my_contacts.length-1);
-      //this.current_tab = this.my_contacts.length-1;
-      console.log(this.current_tab);
       this.change_tab = true;
     }
   },

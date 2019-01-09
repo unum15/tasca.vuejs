@@ -462,7 +462,6 @@ export default {
             this.$emit('remove-order', this.my_order);
         },
         changedTabs(tab_index){
-            console.log(tab_index);
             this.$emit('changed-order-tab', tab_index)
         }
 	},
@@ -475,8 +474,6 @@ export default {
                 return false;
             }
             var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
-            console.log('wo');
-            console.log(current_status);
             return current_status[0].allow_work_order;
             
             
@@ -489,8 +486,6 @@ export default {
                 return false;
             }
             var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
-            console.log('pwo');
-            console.log(current_status);
             return current_status[0].allow_pending_work_order;
             
             

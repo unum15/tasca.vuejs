@@ -158,7 +158,6 @@ export default {
             }
 		},
 		changedProjectTab(tab_index){
-			console.log(tab_index);
 			switch(tab_index){
 				case 1:
 					this.help_order = this.settings.help_service_order
@@ -174,7 +173,6 @@ export default {
 			}
 		},
 		changedOrderTab(tab_index){
-			console.log(tab_index);
 			switch(tab_index){
 				case 2:
 					this.help_task = this.settings.help_task

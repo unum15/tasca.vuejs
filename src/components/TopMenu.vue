@@ -69,7 +69,6 @@
         name: 'TopMenu',
         methods: {
             signOut(){
-				console.log("signout");
 				this.$router.push('/');
 				this.$http.post('/unauth')
 				.then(request => {

@@ -149,52 +149,52 @@ export default {
             modalInfo: { title: '', content: '', order_id: null },
             fields: [
                 {
-                    key: 'order.approval_date',
+                    key: 'task.order.approval_date',
                     label: 'App Date',
                     sortable: true
                 },
                 {
-                    key: 'order_id',
+                    key: 'task.order_id',
                     label: 'S/WO#',
                     sortable: true
                 },
                 {
-                    key: 'task_appointment_status.name',
+                    key: 'task.task_appointment_status.name',
                     label: 'C',
                     sortable: true
                 },
                 {
-                    key: 'order.project.property.client.name',
+                    key: 'task.order.project.client.name',
                     label: 'Client',
                     sortable: true
                 },
                 {
-                    key: 'order.project.property.name',
+                    key: 'task.order.properties[0].name',
                     label: 'Property',
                     sortable: true
                 },
                 {
-                    key: 'description',
+                    key: 'task.description',
                     label: 'Description',
                     sortable: true
                 },
                 {
-                    key: 'order.order_priority.name',
+                    key: 'task.order.order_priority.name',
                     label: 'Pri',
                     sortable: true
                 },
                 {
-                    key: 'task_category.name',
+                    key: 'task.task_category.name',
                     label: 'Category',
                     sortable: true
                 },
                 {
-                    key: 'task_status.name',
+                    key: 'task.task_status.name',
                     label: 'Status',
                     sortable: true
                 },
                 {
-                    key: 'task_action.name',
+                    key: 'task.task_action.name',
                     label: 'Action',
                     sortable: true
                 },
@@ -209,7 +209,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'sort_order',
+                    key: 'task.sort_order',
                     label: 'Order',
                     sortable: true
                 },
@@ -219,7 +219,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'actions',
+                    key: 'task.actions',
                     label: 'Actions'
                 }
             ]
@@ -239,7 +239,7 @@ export default {
 		this.$http.get('/task_actions').then(response => {
 			this.task_actions = response.data;
 		});
-        this.$http.get('/tasks?active_only=true').then((results) => {
+        this.$http.get('/task_dates?active_only=true').then((results) => {
             this.tasks = results.data;
         });
     },

@@ -82,36 +82,7 @@
             </b-col>
         </b-row>
         <b-row>
-            <b-col>
-                <b-form-group label="Day">
-                    <b-form-input
-                        type="text"
-						@change="save"
-                        v-model="my_task.day"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Date">
-                    <b-form-input
-                        type="date"
-						@change="save"
-                        v-model="my_task.date"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Time">
-                    <b-form-input
-                        type="time"
-						@change="save"
-                        v-model="my_task.time"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
+           <EditTaskDates :task_id="my_task.id"></EditTaskDates>
         </b-row>
         <b-row>
 			<b-col>
@@ -185,8 +156,12 @@
 	</b-container>
 </template>
 <script>
+import EditTaskDates from './EditTaskDates';
 export default {
     name: 'EditTask',
+	components: {
+		'EditTaskDates': EditTaskDates
+	},	
 	props: {
 		task: {required: true},
 		task_types: {required: true},
