@@ -178,27 +178,45 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
+                    </b-row>
+                    <b-row>
                         <b-col>
                             <b-form-group label="Service Window">
                                 <b-form-input
                                     type="number"
                                     @change="save"
-                                    v-model="my_order.window"
+                                    v-model="my_order.service_window"
                                 >
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Recurrences" v-if="order.order_billing_type_id!=2">
+                            <b-form-group label="Recurrences" v-if="(order.order_billing_type_id!=2) && (!my_order.indefinite)">
                                 <b-form-input
                                     type="number"
                                     @change="save"
                                     v-model="my_order.recurrences"
                                 >
                                 </b-form-input>
+                                <b-form-select
+                                    @input="save"
+                                    :options="intervals"
+                                    v-model="my_order.order_interval"
+                                    >
+                                </b-form-select>
                             </b-form-group>
                         </b-col>
-                        
+                        <b-col>
+                            <b-form-group label="Indefinite"  v-if="order.order_billing_type_id!=2">
+                                <b-form-checkbox
+                                    @input="save"
+                                    v-model="my_order.indefinite"
+                                    :value="true"
+                                    :unchecked-value="false"
+                                >
+                                </b-form-checkbox>
+                            </b-form-group>
+                        </b-col>
                     </b-row>
                 </b-container>
             </b-tab>
@@ -328,8 +346,10 @@
                         <b-col>
                             <b-form-group label="Renewable">
                                 <b-form-checkbox
-                                    @change="save"
+                                    @input="save"
                                     v-model="my_order.renewable"
+                                    :value="true"
+                                    :unchecked-value="false"
                                 >
                                 </b-form-checkbox>
                             </b-form-group>
@@ -352,6 +372,12 @@
                                     v-model="my_order.frequency"
                                 >
                                 </b-form-input>
+                                <b-form-select
+                                    @input="save"
+                                    :options="intervals"
+                                    v-model="my_order.order_interval"
+                                    >
+                                </b-form-select>
                             </b-form-group>
                         </b-col>
                         <b-col>
@@ -410,7 +436,33 @@ export default {
 	data: function() {
 		return {
 			my_order: null,
-			saving: false
+			saving: false,
+            intervals: [
+                {
+                    value: '1 day',
+                    text: 'Daily'
+                },
+                {
+                    value: '1 week',
+                    text: 'Weekly'
+                },
+                {
+                    value: '2 weeks',
+                    text: 'Biweekly'
+                },
+                {
+                    value: '1 month',
+                    text: 'Monthly'
+                },
+                {
+                    value: '3 months',
+                    text: 'Quarterly'
+                },
+                {
+                    value: '1 year',
+                    text: 'Yearly'
+                },
+            ]
 		};
 	},
 	created(){
@@ -443,6 +495,9 @@ export default {
             });
         },
         save(){
+            if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
+                this.my_order.start_date = this.my_order.approval_date;
+            }
             if((this.my_order.date === null)||(this.my_order.name === null)||(this.my_order.description === null)){
                 return;
             }
@@ -452,6 +507,7 @@ export default {
                 })
             }
             else{
+                console.log(this.my_order);
                 this.$http.patch('/order/'+this.my_order.id,this.my_order).then(response => {
                     this.my_order.id = response.data.id;
                 })

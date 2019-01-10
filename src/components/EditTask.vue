@@ -84,17 +84,41 @@
         <b-row>
            <EditTaskDates :task_id="my_task.id"></EditTaskDates>
         </b-row>
-        <b-row>
+		<b-row>
 			<b-col>
-                <b-form-group label="Completion Date">
+                <b-form-group label="Job Hours">
                     <b-form-input
-                        type="date"
+                        type="text"
 						@change="save"
-                        v-model="my_task.completion_date"
+                        v-model="my_task.job_hours"
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>            
+            <b-col>
+                <b-form-group label="Crew Hours">
+                    <b-form-input
+                        type="text"
+						@change="save"
+                        v-model="my_task.crew_hours"
                     >
                     </b-form-input>
                 </b-form-group>
             </b-col>
+			<b-col>
+                <b-form-group label="Crew">
+                    <b-form-select
+                        :options="crews"
+						@change="save"
+                        value-field="id"
+                        text-field="name"
+                        v-model="my_task.crew_id"
+                        >
+                    </b-form-select>
+                </b-form-group>
+            </b-col>
+        </b-row>
+        <b-row>
             <b-col>
                 <b-form-group label="Group">
                     <b-form-select
@@ -115,41 +139,18 @@
                     </b-form-select>
                 </b-form-group>
             </b-col>
-        </b-row>
-        <b-row>
-            <b-col>
-                <b-form-group label="Crew">
-                    <b-form-select
-                        :options="crews"
-						@change="save"
-                        value-field="id"
-                        text-field="name"
-                        v-model="my_task.crew_id"
-                        >
-                    </b-form-select>
-                </b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Job Hours">
+			<b-col>
+                <b-form-group label="Completion Date">
                     <b-form-input
-                        type="text"
+                        type="date"
 						@change="save"
-                        v-model="my_task.job_hours"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Crew Hours">
-                    <b-form-input
-                        type="text"
-						@change="save"
-                        v-model="my_task.crew_hours"
+                        v-model="my_task.completion_date"
                     >
                     </b-form-input>
                 </b-form-group>
             </b-col>
         </b-row>
+        
         <b-row>
 			<b-button variant="danger" size="sm" @click="deleteTask(task)">Delete Task</b-button>
         </b-row>

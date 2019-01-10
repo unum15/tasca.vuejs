@@ -146,7 +146,7 @@
             <EditProperties :properties="client.properties" :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditProperties>
           </b-tab>
           <b-tab v-if="client.id" title="Projects">
-            <EditProjects :client_id="client.id" :contacts="client.contacts" :properties="client.properties" :settings="settings"></EditProjects>
+            <EditProjects :client_id="client.id" :contacts="client.contacts" :properties="client.properties" :settings="settings" :contact_id="client.billing_contact_id"></EditProjects>
           </b-tab>
         </b-tabs>
     </main>

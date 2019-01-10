@@ -110,7 +110,7 @@ export default {
 				order_status_id: this.settings.default_order_status_id,
 				order_action_id: this.settings.default_order_action_id,
 				properties: [],
-				start_date: this.today,
+				start_date: null,
 				recurrences: 1,
 				renewable: false,
 				window: 7,

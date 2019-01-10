@@ -69,7 +69,8 @@ export default {
     client_id: {required: true},
     settings: {required: true},
     contacts: {required: true},
-    properties: {required: true}
+    properties: {required: true},
+    contact_id: {default: null}
   },
   data () {
     return {
@@ -132,7 +133,7 @@ export default {
         id: null,
         name: null,
         client_id: this.client_id,
-        contact_id: null,
+        contact_id: this.contact_id,
         notes: null,
         open_date: moment().format('YYYY-MM-DD')
       };

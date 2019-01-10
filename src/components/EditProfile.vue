@@ -43,6 +43,15 @@
                   </b-form-group>
                 </b-col>
                 <b-col>
+                  <b-form-group label="Default Service Window">
+                    <b-form-input
+                      type="number"
+                      v-model="profile.default_window"
+                    >
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
                   <b-form-group label="Show Help">
                     <b-form-checkbox
                       @change="save"
