@@ -64,12 +64,11 @@ export default {
   },
 	methods: {
 		newTask: function(){
-			this.new_tasks++;
 			var task = {
 				id: null,
 				order_id: this.order.id,
 				billable: true,
-				date: null,
+				dates: [ {date: null, time:null, day: null}],
 				name: null,
 				approval_date: null,
 				completion_date: null,

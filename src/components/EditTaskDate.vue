@@ -5,9 +5,7 @@
             <b-form-input
               type="date"
               @change="save"
-              :state="my_date.date != null"
               v-model="my_date.date"
-              required
             >
             </b-form-input>
         </b-form-group>

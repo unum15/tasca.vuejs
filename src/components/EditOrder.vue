@@ -507,7 +507,6 @@ export default {
                 })
             }
             else{
-                console.log(this.my_order);
                 this.$http.patch('/order/'+this.my_order.id,this.my_order).then(response => {
                     this.my_order.id = response.data.id;
                 })

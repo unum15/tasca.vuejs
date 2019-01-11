@@ -26,8 +26,17 @@ export default {
     }
   },
   created() {
+    if(this.task_id == null){
+      this.newDate();
+      return;
+    }
     this.$http.get('/task_dates?task_id=' + this.task_id).then(response => {
-        this.dates = response.data
+        if(response.data.length > 0){
+          this.dates = response.data
+        }
+        else{
+          this.newDate();
+        }
     })
   },
   methods: {
