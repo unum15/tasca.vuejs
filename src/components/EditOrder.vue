@@ -18,7 +18,7 @@
                         <b-col>
                             <b-form-group label="Property">
                                 <b-form-select
-                                    @input="save"
+                                    @change="save"
                                     :options="properties"
                                     value-field="id"
                                     text-field="name"
@@ -49,7 +49,7 @@
                         <b-col>
                             <b-form-group label="Category">
                                 <b-form-select
-                                    @input="save"
+                                    @change="save"
                                     :options="categories"
                                     value-field="id"
                                     text-field="name"
@@ -63,7 +63,7 @@
                         <b-col>
                             <b-form-group label="Priority">
                                 <b-form-select
-                                    @input="save"
+                                    @change="save"
                                     :options="priorities"
                                     value-field="id"
                                     text-field="name"
@@ -77,7 +77,7 @@
                         <b-col>
                             <b-form-group label="Type">
                                 <b-form-select
-                                    @input="save"
+                                    @change="save"
                                     :options="types"
                                     value-field="id"
                                     text-field="name"
@@ -93,7 +93,7 @@
                         <b-col>
                             <b-form-group label="Status">
                                 <b-form-select
-                                    @input="save"
+                                    @change="save"
                                     :options="statuses"
                                     value-field="id"
                                     text-field="name"
@@ -107,8 +107,8 @@
                         <b-col>
                             <b-form-group label="Action">
                                 <b-form-select
-                                    @input="save"
-                                    :options="actions"
+                                    @change="save"
+                                    :options="current_actions"
                                     value-field="id"
                                     text-field="name"
                                     v-model="my_order.order_action_id"
@@ -462,7 +462,7 @@ export default {
                     value: '1 year',
                     text: 'Yearly'
                 },
-            ]
+            ],
 		};
 	},
 	created(){
@@ -547,7 +547,17 @@ export default {
 		},
         isServiceOrder() {
             return this.my_order.order_billing_type_id == 1;
-        }
+        },
+        current_actions() {
+			return this.actions.filter(action => {
+                for (var i=0; i < action.order_statuses.length; i++) {
+                    if (action.order_statuses[i].id === this.my_order.order_status_id) {
+                        return true;
+                    }
+                }
+				return false;
+			})
+		}
 	}
 }
 </script>

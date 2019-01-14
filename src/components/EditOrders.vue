@@ -81,13 +81,15 @@ export default {
 			filter: {
 				completed: false,
 				expired: false
-			}
+			},
+			default_service_window: 7
 		};
 	},
 	created() {
 		this.$http.get('/orders?project_id=' + this.project.id + '&order_billing_type_id=' + this.order_billing_type.id).then(response => {
       this.orders = response.data
     })
+		this.default_service_window = localStorage.getItem('default_service_window');
   },
 	methods: {
 		newOrder(){
@@ -113,7 +115,7 @@ export default {
 				start_date: null,
 				recurrences: 1,
 				renewable: false,
-				window: 7,
+				service_window: this.default_service_window,
 				frequency: 0,
 				notes: null,
 				tasks: []
@@ -151,7 +153,7 @@ export default {
 				return this.project.name;
 			}
 			return null;
-		},		
+		},
 	},
   updated() {
 		if(this.change_tab){
