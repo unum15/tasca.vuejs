@@ -47,7 +47,7 @@
 			<b-col>
                 <b-form-group label="Category">
                     <b-form-select
-                        :options="task_categories"
+                        :options="current_categories"
 						@change="save"
                         value-field="id"
                         text-field="name"
@@ -59,7 +59,7 @@
             <b-col>
                 <b-form-group label="Status">
                     <b-form-select
-                        :options="task_statuses"
+                        :options="current_statuses"
 						@change="save"
                         value-field="id"
                         text-field="name"
@@ -71,7 +71,7 @@
             <b-col>
                 <b-form-group label="Action">
                     <b-form-select
-                        :options="task_actions"
+                        :options="current_actions"
 						@change="save"
                         value-field="id"
                         text-field="name"
@@ -218,6 +218,36 @@ export default {
 				options.push(String.fromCharCode(x));
 			}
 			return options;
+		},
+		current_categories() {
+			return this.task_categories.filter(category => {
+                for (var i=0; i < category.task_types.length; i++) {
+                    if (category.task_types[i].id === this.my_task.task_type_id) {
+                        return true;
+                    }
+                }
+				return false;
+			})
+		},
+		current_statuses() {
+			return this.task_statuses.filter(status => {
+                for (var i=0; i < status.task_types.length; i++) {
+                    if (status.task_types[i].id === this.my_task.task_type_id) {
+                        return true;
+                    }
+                }
+				return false;
+			})
+		},
+		current_actions() {
+			return this.task_actions.filter(action => {
+                for (var i=0; i < action.task_types.length; i++) {
+                    if (action.task_types[i].id === this.my_task.task_type_id) {
+                        return true;
+                    }
+                }
+				return false;
+			})
 		}
 	}
 }
