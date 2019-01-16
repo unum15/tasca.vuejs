@@ -198,10 +198,24 @@
                                     v-model="my_order.recurrences"
                                 >
                                 </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Count" v-if="(order.order_billing_type_id!=2)" >
+                                <b-form-input
+                                    type="number"
+                                    @change="save"
+                                    v-model="order_interval.count"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Units" v-if="(order.order_billing_type_id!=2)" >
                                 <b-form-select
                                     @input="save"
-                                    :options="intervals"
-                                    v-model="my_order.order_interval"
+                                    :options="units"
+                                    v-model="order_interval.unit"
                                     >
                                 </b-form-select>
                             </b-form-group>
@@ -365,22 +379,6 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Frequency">
-                                <b-form-input
-                                    type="text"
-                                    @change="save"
-                                    v-model="my_order.frequency"
-                                >
-                                </b-form-input>
-                                <b-form-select
-                                    @input="save"
-                                    :options="intervals"
-                                    v-model="my_order.order_interval"
-                                    >
-                                </b-form-select>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
                             <b-form-group label="Notification Lead(in days)">
                                 <b-form-input
                                     type="text"
@@ -388,6 +386,38 @@
                                     v-model="my_order.notification_lead"
                                 >
                                 </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Frequency">
+                                <b-form-input
+                                    type="text"
+                                    @change="save"
+                                    v-model="my_order.frequency"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Count" >
+                                <b-form-input
+                                    type="number"
+                                    @change="save"
+                                    v-model="renewal_interval.count"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Units" >
+                                <b-form-select
+                                    @input="save"
+                                    :options="units"
+                                    v-model="renewal_interval.unit"
+                                    >
+                                </b-form-select>
                             </b-form-group>
                         </b-col>
                     </b-row>
@@ -413,7 +443,7 @@
 	</div>
 </template>
 <script>
-import moment from 'moment'
+//import moment from 'moment'
 import EditTasks from './EditTasks'
 export default {
     name: 'EditServiceOrder',
@@ -437,6 +467,32 @@ export default {
 		return {
 			my_order: null,
 			saving: false,
+            order_interval: {
+                count: null,
+                unit: null
+            },
+            renewal_interval: {
+                count: null,
+                unit: null
+            },
+            units: [
+                {
+                    value: 'day',
+                    text: 'Day'
+                },
+                {
+                    value: 'week',
+                    text: 'Week'
+                },
+                {
+                    value: 'mon',
+                    text: 'Month'
+                },
+                {
+                    value: 'year',
+                    text: 'Year'
+                },
+            ],
             intervals: [
                 {
                     value: '1 day',
@@ -472,6 +528,12 @@ export default {
             properties.push(p.id);
         })
         this.my_order.properties = properties;
+        if(this.my_order.order_interval != null){
+            [this.order_interval.count, this.order_interval.unit] = this.my_order.order_interval.split(' ');
+        }
+        if(this.my_order.renewal_interval != null){
+            [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
+        }
 	},
 	mounted() {
     },
@@ -481,8 +543,8 @@ export default {
             work_order.completion_date = null;
             work_order.order_status_id = null;
             work_order.order_billing_type_id = 3;
-            this.$http.post('/work_order', work_order).then(response => {
-                this.$emit(created_work_order);
+            this.$http.post('/work_order', work_order).then(() => {
+                this.$emit('created_work_order');
             });
         },
         createPendingWorkOrder() {
@@ -490,8 +552,8 @@ export default {
             work_order.completion_date = null;
             work_order.order_status_id = null;
             work_order.order_billing_type_id = 2;
-            this.$http.post('/work_order',this.my_order).then(response => {
-                this.$emit(created_pending_work_order);
+            this.$http.post('/work_order',this.my_order).then(() => {
+                this.$emit('created_pending_work_order');
             });
         },
         save(){
@@ -500,6 +562,12 @@ export default {
             }
             if((this.my_order.date === null)||(this.my_order.name === null)||(this.my_order.description === null)){
                 return;
+            }
+            if((this.order_interval.count != null) && (this.order_interval.unit != null)){
+                this.my_order.order_interval = this.order_interval.count + ' ' + this.order_interval.unit;
+            }
+            if((this.renewal_interval.count != null) && (this.renewal_interval.unit != null)){
+                this.my_order.renewal_interval = this.renewal_interval.count + ' ' + this.renewal_interval.unit;
             }
             if(this.my_order.id === null){
                 this.$http.post('/order',this.my_order).then(response => {
