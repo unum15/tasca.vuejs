@@ -222,7 +222,7 @@ export default {
 		current_categories() {
 			return this.task_categories.filter(category => {
                 for (var i=0; i < category.task_types.length; i++) {
-                    if (category.task_types[i].id === this.my_task.task_type_id) {
+                  if (category.task_types[i].id == this.my_task.task_type_id) {
                         return true;
                     }
                 }
@@ -232,7 +232,7 @@ export default {
 		current_statuses() {
 			return this.task_statuses.filter(status => {
                 for (var i=0; i < status.task_types.length; i++) {
-                    if (status.task_types[i].id === this.my_task.task_type_id) {
+                    if (status.task_types[i].id == this.my_task.task_type_id) {
                         return true;
                     }
                 }
@@ -242,7 +242,7 @@ export default {
 		current_actions() {
 			return this.task_actions.filter(action => {
                 for (var i=0; i < action.task_types.length; i++) {
-                    if (action.task_types[i].id === this.my_task.task_type_id) {
+                    if (action.task_types[i].id == this.my_task.task_type_id) {
                         return true;
                     }
                 }
