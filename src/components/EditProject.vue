@@ -89,15 +89,11 @@
 	</b-container>
 	</b-col>
     <b-col v-if="settings.help_show == 'true'">
-	  <p class="card-text">
-		{{ settings.help_project }}
-	  </p>
-	  <p class="card-text">
-		{{ help_order }}
-		</p>
-		
-		<p class="card-text">
-			{{ help_task }}
+      <p class="card-text" v-html="settings.help_project">
+      </p>
+      <p class="card-text" v-html="help_order">
+      </p>
+		<p class="card-text" v-html="help_tab">
 		</p>
     </b-col>
     </b-row>
@@ -131,7 +127,7 @@ export default {
 		return {
 			my_project: null,
 			help_order: null,
-			help_task: null,
+			help_tab: null,
 			tab_index: 0
 		};
 	},
@@ -175,10 +171,10 @@ export default {
 		changedOrderTab(tab_index){
 			switch(tab_index){
 				case 2:
-					this.help_task = this.settings.help_task
+					this.help_tab = this.settings.help_task
 					break;
 				default:
-					this.help_task = ''
+					this.help_tab = ''
 			}
 		}
 	}
