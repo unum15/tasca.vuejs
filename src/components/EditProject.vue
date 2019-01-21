@@ -63,12 +63,12 @@
 					</b-form-input>
 				</b-form-group>
 			</b-tab>
-			<b-tab v-if="my_project.id" v-for="billing_type in order_billing_types" :key="billing_type.id" :title="billing_type.name">
+			<b-tab v-if="my_project.id" v-for="status_type in order_status_types" :key="status_type.id" :title="status_type.name">
 				<EditOrders
 					:project="my_project"
                :properties="properties"
 					:settings="settings"
-					:order_billing_type="billing_type"
+					:order_status_type="status_type"
 					:actions="order_actions"
 					:categories="order_categories"
 					:priorities="order_priorities"
@@ -112,7 +112,7 @@ export default {
         properties: {required: true},
         settings: {required: true},
         project: {required: true},
-		order_billing_types: {required: true},
+		order_status_types: {required: true},
 		order_actions: {required: true},
 		order_categories: {required: true},
 		order_statuses: {required: true},
