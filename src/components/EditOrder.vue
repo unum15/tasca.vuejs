@@ -25,7 +25,7 @@
                                     required
                                     :state="my_order.properties.length != 0"
                                     v-model="my_order.properties"
-                                    :multiple="order.order_billing_type_id == 1"
+                                    :multiple="order.order_status_type_id == 1"
                                     >
                                 </b-form-select>
                             </b-form-group>
@@ -133,7 +133,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Closed Date" v-if="order.order_billing_type_id!=2">
+                            <b-form-group label="Closed Date" v-if="order.order_status_type_id!=2">
                                 <b-form-input
                                     type="date"
                                     @change="save"
@@ -191,7 +191,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Recurrences" v-if="(order.order_billing_type_id!=2) && (!my_order.indefinite)">
+                            <b-form-group label="Recurrences" v-if="(order.order_status_type_id!=2) && (!my_order.indefinite)">
                                 <b-form-input
                                     type="number"
                                     @change="save"
@@ -201,7 +201,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Count" v-if="(order.order_billing_type_id!=2)" >
+                            <b-form-group label="Count" v-if="(order.order_status_type_id!=2)" >
                                 <b-form-input
                                     type="number"
                                     @change="save"
@@ -211,7 +211,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Units" v-if="(order.order_billing_type_id!=2)" >
+                            <b-form-group label="Units" v-if="(order.order_status_type_id!=2)" >
                                 <b-form-select
                                     @input="save"
                                     :options="units"
@@ -221,7 +221,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Indefinite"  v-if="order.order_billing_type_id!=2">
+                            <b-form-group label="Indefinite"  v-if="order.order_status_type_id!=2">
                                 <b-form-checkbox
                                     @input="save"
                                     v-model="my_order.indefinite"
@@ -542,7 +542,7 @@ export default {
             var work_order = this.my_order;
             work_order.completion_date = null;
             work_order.order_status_id = null;
-            work_order.order_billing_type_id = 3;
+            work_order.order_status_type_id = 3;
             this.$http.post('/work_order', work_order).then(() => {
                 this.$emit('created_work_order');
             });
@@ -551,7 +551,7 @@ export default {
             var work_order = this.my_order;
             work_order.completion_date = null;
             work_order.order_status_id = null;
-            work_order.order_billing_type_id = 2;
+            work_order.order_status_type_id = 2;
             this.$http.post('/work_order',this.my_order).then(() => {
                 this.$emit('created_pending_work_order');
             });
@@ -614,7 +614,7 @@ export default {
             
 		},
         isServiceOrder() {
-            return this.my_order.order_billing_type_id == 1;
+            return this.my_order.order_st_type_id == 1;
         },
         current_actions() {
 			return this.actions.filter(action => {

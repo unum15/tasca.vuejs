@@ -60,7 +60,7 @@ export default {
 	},
 	props: {
 		project: {required: true},
-		order_billing_type: {required: true},
+		order_status_type: {required: true},
 		types: {required: true},
 		statuses: {required: true},
 		actions: {required: true},
@@ -86,7 +86,7 @@ export default {
 		};
 	},
 	created() {
-		this.$http.get('/orders?project_id=' + this.project.id + '&order_billing_type_id=' + this.order_billing_type.id).then(response => {
+		this.$http.get('/orders?project_id=' + this.project.id + '&order_status_type_id=' + this.order_status_type.id).then(response => {
       this.orders = response.data
     })
 		this.default_service_window = localStorage.getItem('default_service_window');
@@ -97,7 +97,7 @@ export default {
 				id: null,
 				name: null,
 				project_id: this.project.id,
-				order_billing_type_id: this.order_billing_type.id,
+				order_status_type_id: this.order_status_type.id,
 				date: this.today,
 				approval_date: null,
 				completion_date: null,
