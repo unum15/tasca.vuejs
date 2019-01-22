@@ -536,14 +536,16 @@ export default {
 		this.my_order = this.order;
         var properties = [];
         this.my_order.properties.forEach( p => {
-            properties.push(p.id);
+            if(p.id){
+                properties.push(p.id);
+            }
+            else{
+                properties.push(p);
+            }
         })
         this.my_order.properties = properties;
         if (this.my_order.properties.length > 0){
-            this.my_order.property = this.my_order.properties[0].id;
-        }
-        else{
-            this.my_order.property = null;
+            this.my_order.property = this.my_order.properties[0];
         }
         if(this.my_order.order_interval != null){
             [this.order_interval.count, this.order_interval.unit] = this.my_order.order_interval.split(' ');
@@ -552,8 +554,6 @@ export default {
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
         }
 	},
-	mounted() {
-    },
 	methods: {
         save(){
             if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
@@ -610,14 +610,15 @@ export default {
 	},
     watch: {
         approval_date(new_date, old_date){
-            if((this.my_order.order_status_type_id == 1) && (new_date != "") && (this.my_order.properties.length == 1)){
+            if((this.my_order.order_status_type_id == 1) && (new_date != "") && (new_date != null) && (this.my_order.properties.length == 1)){
+                console.log('watch:' + this.my_order.properties.length);
                 this.my_order.property = this.my_order.properties[0];
                 this.my_order.order_status_type_id = 2;
                 this.save();
                 this.$emit('reload-orders');
                 return;
             };
-            if((old_date != "") && (new_date == "")){
+            if((this.my_order.order_status_type_id > 1) && (new_date == "")){
                 this.my_order.order_status_type_id = 1
                 this.save();
                 this.$emit('reload-orders');
