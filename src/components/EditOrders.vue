@@ -43,6 +43,7 @@
 									:project_name="project_name"
 									@remove-order="removeOrder"
 									@changed-order-tab="changedOrderTab"
+									@reload-orders="reloadOrders"
 								>
 								</EditOrder>
             </b-tab>
@@ -71,7 +72,9 @@ export default {
 		task_statuses: {required: true},
 		task_actions: {required: true},
 		task_types: {required: true},
-		settings: {required: true}
+		settings: {required: true},
+		default_property_id: {required: true},
+		reload_count: {default: 0}
 	},
 	data() {
 		return {
@@ -86,9 +89,7 @@ export default {
 		};
 	},
 	created() {
-		this.$http.get('/orders?project_id=' + this.project.id + '&order_status_type_id=' + this.order_status_type.id).then(response => {
-      this.orders = response.data
-    })
+		this.loadOrders();
 		this.default_service_window = localStorage.getItem('default_service_window');
   },
 	methods: {
@@ -111,7 +112,7 @@ export default {
 				order_type_id: this.settings.default_order_type_id,
 				order_status_id: this.settings.default_order_status_id,
 				order_action_id: this.settings.default_order_action_id,
-				properties: [],
+				properties: [ { id: this.default_property_id } ],
 				start_date: null,
 				recurrences: 1,
 				renewable: false,
@@ -139,6 +140,14 @@ export default {
 		},
 		changedOrderTab(tab_index){
 			this.$emit('changed-order-tab', tab_index);
+		},
+		reloadOrders(){
+			this.$emit('reload-orders');
+		},
+		loadOrders(){
+			this.$http.get('/orders?project_id=' + this.project.id + '&order_status_type_id=' + this.order_status_type.id).then(response => {
+				this.orders = response.data
+			})
 		}
 	},  
 	computed: {
@@ -162,10 +171,8 @@ export default {
 		}
   },
   watch:{
-		settings() {
-			if(this.settings.length !== 0){
-				this.newOrder();
-			}
+		reload_count() {
+			this.loadOrders();
 		}
   }
 }

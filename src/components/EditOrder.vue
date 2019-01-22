@@ -16,16 +16,29 @@
                 </b-form-group>
                     <b-row>
                         <b-col>
-                            <b-form-group label="Property">
+                            <b-form-group label="Properties"  v-if="isServiceOrder">
                                 <b-form-select
-                                    @change="save"
+                                    @input="save"
                                     :options="properties"
                                     value-field="id"
                                     text-field="name"
                                     required
-                                    :state="my_order.properties.length != 0"
+                                    state="my_order.properties != []"
                                     v-model="my_order.properties"
-                                    :multiple="order.order_status_type_id == 1"
+                                    multiple
+                                    >
+                                </b-form-select>
+                            </b-form-group>
+                            <b-form-group label="Property"  v-if="!isServiceOrder">
+                                <b-form-select
+                                    @input="save"
+                                    :options="properties"
+                                    value-field="id"
+                                    text-field="name"
+                                    required
+                                    :state="my_order.property != null"
+                                    v-model="my_order.property"
+                                    
                                     >
                                 </b-form-select>
                             </b-form-group>
@@ -124,7 +137,7 @@
                             <b-form-group label="Order Date">
                                 <b-form-input
                                     type="date"
-                                    @change="save"
+                                    @input="save"
                                     v-model="my_order.date"
                                     required
                                     :state="my_order.date != null"
@@ -136,7 +149,7 @@
                             <b-form-group label="Closed Date" v-if="order.order_status_type_id!=2">
                                 <b-form-input
                                     type="date"
-                                    @change="save"
+                                    @input="save"
                                     v-model="my_order.completion_date"
                                 >
                                 </b-form-input>
@@ -146,7 +159,7 @@
                             <b-form-group label="Expiration Date">
                                 <b-form-input
                                     type="date"
-                                    @change="save"
+                                    @input="save"
                                     v-model="my_order.expiration_date"
                                 >
                                 </b-form-input>
@@ -162,7 +175,7 @@
                             <b-form-group label="Approval Date">
                                 <b-form-input
                                     type="date"
-                                    @change="save"
+                                    @input="save"
                                     v-model="my_order.approval_date"
                                 >
                                 </b-form-input>
@@ -172,7 +185,7 @@
                             <b-form-group label="Start Date">
                                 <b-form-input
                                     type="date"
-                                    @change="save"
+                                    @input="save"
                                     v-model="my_order.start_date"
                                 >
                                 </b-form-input>
@@ -437,13 +450,11 @@
                 </b-container>
             </b-tab>
         </b-tabs>
-        <b-button variant="secondary" size="sm" @click="createWorkOrder()" :disabled="!allowWorkOrder" v-if="isServiceOrder">Create Work Order</b-button>
-        <b-button variant="secondary" size="sm" @click="createPendingWorkOrder()" :disabled="!allowPendingWorkOrder" v-if="isServiceOrder">Create Pending Work Order</b-button>
         <b-button variant="danger" size="sm" @click="deleteOrder()">Delete Order</b-button>
 	</div>
 </template>
 <script>
-//import moment from 'moment'
+import moment from 'moment'
 import EditTasks from './EditTasks'
 export default {
     name: 'EditServiceOrder',
@@ -465,7 +476,7 @@ export default {
 	},
 	data: function() {
 		return {
-			my_order: null,
+			my_order: {},
 			saving: false,
             order_interval: {
                 count: null,
@@ -528,6 +539,12 @@ export default {
             properties.push(p.id);
         })
         this.my_order.properties = properties;
+        if (this.my_order.properties.length > 0){
+            this.my_order.property = this.my_order.properties[0].id;
+        }
+        else{
+            this.my_order.property = null;
+        }
         if(this.my_order.order_interval != null){
             [this.order_interval.count, this.order_interval.unit] = this.my_order.order_interval.split(' ');
         }
@@ -538,24 +555,6 @@ export default {
 	mounted() {
     },
 	methods: {
-        createWorkOrder() {
-            var work_order = this.my_order;
-            work_order.completion_date = null;
-            work_order.order_status_id = null;
-            work_order.order_status_type_id = 3;
-            this.$http.post('/work_order', work_order).then(() => {
-                this.$emit('created_work_order');
-            });
-        },
-        createPendingWorkOrder() {
-            var work_order = this.my_order;
-            work_order.completion_date = null;
-            work_order.order_status_id = null;
-            work_order.order_status_type_id = 2;
-            this.$http.post('/work_order',this.my_order).then(() => {
-                this.$emit('created_pending_work_order');
-            });
-        },
         save(){
             if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
                 this.my_order.start_date = this.my_order.approval_date;
@@ -589,32 +588,8 @@ export default {
         }
 	},
 	computed:{
-		allowWorkOrder() {
-            if(this.my_order.id === null){
-                return false;
-            }
-            if(this.my_order.order_status_id === null){
-                return false;
-            }
-            var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
-            return current_status[0].allow_work_order;
-            
-            
-		},
-        allowPendingWorkOrder() {
-            if(this.my_order.id === null){
-                return false;
-            }
-            if(this.my_order.order_status_id === null){
-                return false;
-            }
-            var current_status = this.statuses.filter(s => s.id == this.my_order.order_status_id);
-            return current_status[0].allow_pending_work_order;
-            
-            
-		},
         isServiceOrder() {
-            return this.my_order.order_st_type_id == 1;
+            return this.my_order.order_status_type_id == 1;
         },
         current_actions() {
 			return this.actions.filter(action => {
@@ -625,7 +600,48 @@ export default {
                 }
 				return false;
 			})
-		}
-	}
+		},
+        approval_date() {
+            return this.my_order.approval_date;
+        },
+        start_date() {
+            return this.my_order.start_date;
+        }
+	},
+    watch: {
+        approval_date(new_date, old_date){
+            if((this.my_order.order_status_type_id == 1) && (new_date != "") && (this.my_order.properties.length == 1)){
+                this.my_order.property = this.my_order.properties[0];
+                this.my_order.order_status_type_id = 2;
+                this.save();
+                this.$emit('reload-orders');
+                return;
+            };
+            if((old_date != "") && (new_date == "")){
+                this.my_order.order_status_type_id = 1
+                this.save();
+                this.$emit('reload-orders');
+            };
+        },
+        start_date(new_date, old_date){
+            if(this.my_order.approval_date == ""){
+                return;
+            }
+            var pending_days_out = localStorage.getItem('pending_days_out');
+            var today = moment();
+            var start_date = moment([new_date]);
+            var days_out = today.diff(start_date, 'days')
+            if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
+                this.my_order.order_status_type_id = 3
+                this.save();
+                this.$emit('reload-orders');
+            };
+            if((this.my_order.order_status_type_id == 3) && ((new_date == "") || (days_out > pending_days_out))){
+                this.my_order.order_status_type_id = 2
+                this.save();
+                this.$emit('reload-orders');
+            };
+        }
+    }
 }
 </script>

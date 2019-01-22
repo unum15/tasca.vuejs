@@ -50,6 +50,7 @@
 						:task_actions="task_actions"
 						:task_types="task_types"
             :order_status_types="order_status_types"
+            :default_property_id="default_property_id"
             @remove-project="removeProject"
         ></EditProject>
       </b-tab>
@@ -70,7 +71,8 @@ export default {
     settings: {required: true},
     contacts: {required: true},
     properties: {required: true},
-    contact_id: {default: null}
+    contact_id: {default: null},
+    default_property_id: {required: true}
   },
   data () {
     return {

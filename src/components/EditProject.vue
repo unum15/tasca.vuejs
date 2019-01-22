@@ -78,6 +78,9 @@
 					:task_categories="task_categories"
 					:task_statuses="task_statuses"
 					:task_types="task_types"
+               :default_property_id="default_property_id"
+               :reload_count="reload_count"
+               @reload-orders="reloadOrders"
 					@changed-order-tab="changedOrderTab"
 				>
 				</EditOrders>
@@ -121,14 +124,16 @@ export default {
 		task_actions: {required: true},
 		task_categories: {required: true},
 		task_statuses: {required: true},
-		task_types: {required: true}
+		task_types: {required: true},
+      default_property_id: {required: true}
 	},
 	data() {
 		return {
 			my_project: null,
 			help_order: null,
 			help_tab: null,
-			tab_index: 0
+			tab_index: 0,
+         reload_count: 0
 		};
 	},
 	created() {
@@ -176,7 +181,10 @@ export default {
 				default:
 					this.help_tab = ''
 			}
-		}
+		},
+      reloadOrders(){
+      
+      }
 	}
 }
 </script>
