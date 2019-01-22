@@ -74,7 +74,8 @@ export default {
 		task_types: {required: true},
 		settings: {required: true},
 		default_property_id: {required: true},
-		reload_count: {default: 0}
+		reload_count: {default: 0},
+		selected_order_id: {default: null}
 	},
 	data() {
 		return {
@@ -141,12 +142,20 @@ export default {
 		changedOrderTab(tab_index){
 			this.$emit('changed-order-tab', tab_index);
 		},
-		reloadOrders(){
-			this.$emit('reload-orders');
+		reloadOrders(order){
+			this.$emit('reload-orders', order);
 		},
 		loadOrders(){
 			this.$http.get('/orders?project_id=' + this.project.id + '&order_status_type_id=' + this.order_status_type.id).then(response => {
 				this.orders = response.data
+				if(this.selected_order_id != null){
+					var selected_index = this.orders.findIndex( o => o.id == this.selected_order_id);
+					console.log('id:' + this.selected_order_id)
+					console.log('index:' + selected_index)
+					if(selected_index != null){
+						this.current_tab = selected_index;
+					}
+				}
 			})
 		}
 	},  

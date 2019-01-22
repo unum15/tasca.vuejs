@@ -34,7 +34,7 @@
 				</b-form-group>
 			</div>
 		</div>
-		<b-tabs @input="changedProjectTab">
+		<b-tabs @input="changedProjectTab" v-model="currentTab">
 			<b-tab title="General">
             <b-form-group label="Notes">
 					<b-form-textarea
@@ -80,6 +80,7 @@
 					:task_types="task_types"
                :default_property_id="default_property_id"
                :reload_count="reload_count"
+               :selected_order_id="changeToOrderId"
                @reload-orders="reloadOrders"
 					@changed-order-tab="changedOrderTab"
 				>
@@ -133,7 +134,9 @@ export default {
 			help_order: null,
 			help_tab: null,
 			tab_index: 0,
-         reload_count: 0
+         reload_count: 0,
+         currentTab: 0,
+         changeToOrderId: null
 		};
 	},
 	created() {
@@ -182,8 +185,14 @@ export default {
 					this.help_tab = ''
 			}
 		},
-      reloadOrders(){
-      
+      reloadOrders(order){
+         console.log('reloading project');
+         console.log(order);
+         if(order){
+            this.reload_count++;
+            this.currentTab = order.order_status_type_id;
+            this.changeToOrderId = order.id;
+         }
       }
 	}
 }

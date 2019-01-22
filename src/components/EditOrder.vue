@@ -556,6 +556,7 @@ export default {
 	},
 	methods: {
         save(){
+            var reload = false;
             if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
                 this.my_order.start_date = this.my_order.approval_date;
             }
@@ -568,14 +569,46 @@ export default {
             if((this.renewal_interval.count != null) && (this.renewal_interval.unit != null)){
                 this.my_order.renewal_interval = this.renewal_interval.count + ' ' + this.renewal_interval.unit;
             }
+            
+            
+            
+            if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
+                this.my_order.property = this.my_order.properties[0];
+                this.my_order.order_status_type_id = 2;
+                reload = true;
+            };
+            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
+                this.my_order.order_status_type_id = 1
+                reload = true;
+            };
+            
+            
+            var pending_days_out = localStorage.getItem('pending_days_out');
+            var today = moment();
+            var start_date = moment([this.my_order.start_date]);
+            var days_out = today.diff(start_date, 'days')
+            if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
+                this.my_order.order_status_type_id = 3
+                reload = true;
+            };
+            if((this.my_order.order_status_type_id == 3) && ((this.my_order.start_date == "") || (days_out > pending_days_out))){
+                this.my_order.order_status_type_id = 2
+                reload = true;
+            };
+            
+            
+            
             if(this.my_order.id === null){
                 this.$http.post('/order',this.my_order).then(response => {
                     this.my_order.id = response.data.id;
                 })
             }
             else{
+                var order = this.my_order;
                 this.$http.patch('/order/'+this.my_order.id,this.my_order).then(response => {
-                    this.my_order.id = response.data.id;
+                    if(reload){
+                        this.$emit('reload-orders', order);
+                    }
                 })
             }
         },
@@ -601,48 +634,6 @@ export default {
 				return false;
 			})
 		},
-        approval_date() {
-            return this.my_order.approval_date;
-        },
-        start_date() {
-            return this.my_order.start_date;
-        }
-	},
-    watch: {
-        approval_date(new_date, old_date){
-            if((this.my_order.order_status_type_id == 1) && (new_date != "") && (new_date != null) && (this.my_order.properties.length == 1)){
-                console.log('watch:' + this.my_order.properties.length);
-                this.my_order.property = this.my_order.properties[0];
-                this.my_order.order_status_type_id = 2;
-                this.save();
-                this.$emit('reload-orders');
-                return;
-            };
-            if((this.my_order.order_status_type_id > 1) && (new_date == "")){
-                this.my_order.order_status_type_id = 1
-                this.save();
-                this.$emit('reload-orders');
-            };
-        },
-        start_date(new_date, old_date){
-            if(this.my_order.approval_date == ""){
-                return;
-            }
-            var pending_days_out = localStorage.getItem('pending_days_out');
-            var today = moment();
-            var start_date = moment([new_date]);
-            var days_out = today.diff(start_date, 'days')
-            if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
-                this.my_order.order_status_type_id = 3
-                this.save();
-                this.$emit('reload-orders');
-            };
-            if((this.my_order.order_status_type_id == 3) && ((new_date == "") || (days_out > pending_days_out))){
-                this.my_order.order_status_type_id = 2
-                this.save();
-                this.$emit('reload-orders');
-            };
-        }
-    }
+	}
 }
 </script>
