@@ -5,8 +5,15 @@
             <b-navbar-brand href="#">Tasca</b-navbar-brand>
             <b-collapse is-nav id="nav_collapse">
             <b-navbar-nav>
-                <b-nav-item href="#/client">New Client</b-nav-item>
                 <b-nav-item href="#/scheduler">Scheduler</b-nav-item>
+                <b-nav-item-dropdown>
+                    <template slot="button-content">
+                      <em>Clients</em>
+                    </template>
+                    <b-dropdown-item href="#/clients">Clients</b-dropdown-item>
+                    <b-dropdown-item href="#/quick_client">New Quick Form</b-dropdown-item>
+                    <b-dropdown-item href="#/client">New Full Form</b-dropdown-item>
+                </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
                       <em>Lists</em>

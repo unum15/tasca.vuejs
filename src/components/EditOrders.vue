@@ -181,6 +181,7 @@ export default {
   },
   watch:{
 		reload_count() {
+			this.change_tab = true;
 			this.loadOrders();
 		}
   }

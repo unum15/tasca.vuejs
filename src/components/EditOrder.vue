@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-tabs @input="changedTabs">
+        <b-tabs @input="changedTabs" v-model="my_tab_index">
             <b-tab title="General">
                 <b-container fluid>
                     <b-form-group label="Order Name">
@@ -472,12 +472,14 @@ export default {
 		task_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
-		task_categories: {required: true}
+		task_categories: {required: true},
+        tab_index: {default: 0}
 	},
 	data: function() {
 		return {
 			my_order: {},
 			saving: false,
+            my_tab_index: 0,
             order_interval: {
                 count: null,
                 unit: null
