@@ -92,7 +92,7 @@
         </b-row>
 	</b-container>
 	</b-col>
-    <b-col v-if="settings.help_show == 'true'">
+    <b-col style="text-align:left;" v-if="settings.help_show == 'true'">
       <p class="card-text" v-html="settings.help_project">
       </p>
       <p class="card-text" v-html="help_order">
@@ -178,8 +178,20 @@ export default {
 		},
 		changedOrderTab(tab_index){
 			switch(tab_index){
+            case 0:
+					this.help_tab = this.settings.help_order_general
+					break;
+            case 1:
+					this.help_tab = this.settings.help_order_calendar
+					break;
 				case 2:
 					this.help_tab = this.settings.help_task
+					break;
+            case 3:
+					this.help_tab = this.settings.help_order_notes
+					break;
+            case 4:
+					this.help_tab = this.settings.help_order_billing
 					break;
 				default:
 					this.help_tab = ''

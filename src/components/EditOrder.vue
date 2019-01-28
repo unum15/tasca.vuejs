@@ -587,7 +587,7 @@ export default {
             
             var pending_days_out = localStorage.getItem('pending_days_out');
             var today = moment();
-            var start_date = moment([this.my_order.start_date]);
+            var start_date = moment(this.my_order.start_date);
             var days_out = today.diff(start_date, 'days')
             if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
                 this.my_order.order_status_type_id = 3
@@ -597,9 +597,6 @@ export default {
                 this.my_order.order_status_type_id = 2
                 reload = true;
             };
-            
-            
-            
             if(this.my_order.id === null){
                 this.$http.post('/order',this.my_order).then(response => {
                     this.my_order.id = response.data.id;

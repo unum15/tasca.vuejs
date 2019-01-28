@@ -125,7 +125,7 @@
               </b-row>
             </b-container>
             </b-col>
-            <b-col v-if="settings.help_show == 'true'">
+            <b-col style="text-align:left;" v-if="settings.help_show == 'true'">
               {{ settings.help_client }}
             </b-col>
             </b-row>
