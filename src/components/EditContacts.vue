@@ -70,7 +70,7 @@ export default {
         client_id: this.client_id,
         contact_type_id: null,
         name: null,
-        active_level_id: null,
+        active_level_id: 1,
         contact_method_id: null,
         emails: [],
         phone_numbers: [],

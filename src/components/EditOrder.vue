@@ -451,6 +451,7 @@
             </b-tab>
         </b-tabs>
         <b-button variant="danger" size="sm" @click="deleteOrder()">Delete Order</b-button>
+        <b-button size="sm" v-show="showConvertButton" @click="convertOrder">{{ convertButtonLabel }}</b-button>
 	</div>
 </template>
 <script>
@@ -555,6 +556,7 @@ export default {
         if(this.my_order.renewal_interval != null){
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
         }
+        this.my_order.order_status_id = this.my_order.order_status_id;
 	},
 	methods: {
         save(){
@@ -574,29 +576,6 @@ export default {
             
             
             
-            if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
-                this.my_order.property = this.my_order.properties[0];
-                this.my_order.order_status_type_id = 2;
-                reload = true;
-            };
-            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
-                this.my_order.order_status_type_id = 1
-                reload = true;
-            };
-            
-            
-            var pending_days_out = localStorage.getItem('pending_days_out');
-            var today = moment();
-            var start_date = moment(this.my_order.start_date);
-            var days_out = today.diff(start_date, 'days')
-            if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
-                this.my_order.order_status_type_id = 3
-                reload = true;
-            };
-            if((this.my_order.order_status_type_id == 3) && ((this.my_order.start_date == "") || (days_out > pending_days_out))){
-                this.my_order.order_status_type_id = 2
-                reload = true;
-            };
             if(this.my_order.id === null){
                 this.$http.post('/order',this.my_order).then(response => {
                     this.my_order.id = response.data.id;
@@ -617,9 +596,52 @@ export default {
         },
         changedTabs(tab_index){
             this.$emit('changed-order-tab', tab_index)
+        },
+        convertOrder(){
+            if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
+                this.my_order.property = this.my_order.properties[0];
+                this.my_order.order_status_type_id = 2;
+                reload = true;
+            };
+            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
+                this.my_order.order_status_type_id = 1
+                reload = true;
+            };
+
+
+            var pending_days_out = localStorage.getItem('pending_days_out');
+            var today = moment();
+            var start_date = moment(this.my_order.start_date);
+            var days_out = today.diff(start_date, 'days')
+            if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
+                this.my_order.order_status_type_id = 3
+                reload = true;
+            };
+            if((this.my_order.order_status_type_id == 3) && ((this.my_order.start_date == "") || (days_out > pending_days_out))){
+                this.my_order.order_status_type_id = 2
+                reload = true;
+            };
+            this.save();
         }
 	},
 	computed:{
+        showConvertButton(){
+            if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
+                return true;
+            }
+            return false;
+        },
+        convertButtonLabel(){
+            var pending_days_out = localStorage.getItem('pending_days_out');
+            var today = moment();
+            var start_date = moment(this.my_order.start_date);
+            var days_out = start_date.diff(today, 'days')
+            if(days_out <= pending_days_out){
+                return "Convert To Work Order";
+            }
+            return "Convert To Pending Work Order";
+
+        },
         isServiceOrder() {
             return this.my_order.order_status_type_id == 1;
         },
