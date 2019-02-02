@@ -31,7 +31,7 @@
                 @filtered="onFiltered"
             >
                 <template slot="id" slot-scope="data">
-                    <a :href="'#/client/'+ data.item.order.project.property.client_id +'/task/' + data.item.id"> {{ data.value }} </a>
+                    <a :href="'#/client/'+ data.item.order.project.client_id +'/task/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
             <b-row>
@@ -64,7 +64,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'order.project.property.client.name',
+                    key: 'order.project.client.name',
                     label: 'Client Name',
                     sortable: true
                 },
@@ -74,7 +74,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'order.project.property.name',
+                    key: 'order.property.name',
                     label: 'Property Name',
                     sortable: true
                 },

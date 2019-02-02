@@ -30,37 +30,7 @@
                     </b-form-group>
                 </b-col>
             </b-row>
-            <b-row>
-                <b-col>
-                  <b-form-group label="Show Only Activity Level At and Above">
-                    <b-form-select
-                      @input="save"
-                      :options="activity_levels"
-                      value-field="id"
-                      text-field="name"
-                      v-model="profile.show_maximium_activity_level_id">
-                    </b-form-select>
-                  </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group label="Default Service Window">
-                    <b-form-input
-                      type="number"
-                      v-model="profile.default_window"
-                    >
-                    </b-form-input>
-                  </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group label="Show Help">
-                    <b-form-checkbox
-                      @change="save"
-                      v-model="profile.show_help">
-                    </b-form-checkbox>
-                  </b-form-group>
-                </b-col>
-            </b-row>
-            <b-row>
+            <b-row>           
                 <b-col>
                     <b-form-group label="Password">
                         <b-form-input
@@ -78,6 +48,45 @@
                             >
                         </b-form-input>
                     </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Show Help">
+                    <b-form-checkbox
+                      @change="save"
+                      v-model="profile.show_help">
+                    </b-form-checkbox>
+                  </b-form-group>
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col>
+                  <b-form-group label="Show Only Activity Level At and Above">
+                    <b-form-select
+                      @input="save"
+                      :options="activity_levels"
+                      value-field="id"
+                      text-field="name"
+                      v-model="profile.show_maximium_activity_level_id">
+                    </b-form-select>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Default Service Window">
+                    <b-form-input
+                      type="number"
+                      v-model="profile.default_service_window"
+                    >
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Work Order Window">
+                    <b-form-input
+                      type="number"
+                      v-model="profile.pending_days_out"
+                    >
+                    </b-form-input>
+                  </b-form-group>
                 </b-col>
             </b-row>
         </b-container>

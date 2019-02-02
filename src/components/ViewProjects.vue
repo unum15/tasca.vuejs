@@ -21,7 +21,7 @@
             </b-container fluid>
             <b-table small striped hover :filter="filter" :items="projects" :fields="fields">
                 <template slot="name" slot-scope="data">
-                    <a :href="'#/client/'+ data.item.property.client_id +'/project/' + data.item.id"> {{ data.value }} </a>
+                    <a :href="'#/client/'+ data.item.client_id +'/project/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -40,13 +40,8 @@ export default {
             filter: null,
             fields: [
                 {
-                    key: 'property.client.name',
+                    key: 'client.name',
                     label: 'Client Name',
-                    sortable: true
-                },
-                {
-                    key: 'property.name',
-                    label: 'Property Name',
                     sortable: true
                 },
                 {

@@ -44,7 +44,6 @@
                     <b-dropdown-item href="#/contact_types">Contact Types</b-dropdown-item>
                     <b-dropdown-item href="#/email_types">Email Types</b-dropdown-item>
                     <b-dropdown-item href="#/order_actions">Order Actions</b-dropdown-item>
-                    <b-dropdown-item href="#/order_billing_types">Order Billing Types</b-dropdown-item>
                     <b-dropdown-item href="#/order_categories">Order Categories</b-dropdown-item>
                     <b-dropdown-item href="#/order_priorities">Order Priorities</b-dropdown-item>
                     <b-dropdown-item href="#/order_statuses">Order Statuses</b-dropdown-item>

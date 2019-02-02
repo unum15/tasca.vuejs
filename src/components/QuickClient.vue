@@ -112,7 +112,7 @@
                     </b-form-input>
                 </b-form-group>
             </b-col>
-            <b-col v-if="client_id">
+            <b-col v-if="client.client_id">
                 <b-form-group label="Contact Type">
                   <b-form-select
                     @change="save"
@@ -126,9 +126,8 @@
                 </b-form-group>
             </b-col>
         </b-row>
-        <b-row>
+        <b-row v-if='contact.contact_id'>
             <b-col>
-                
                   <EditEmail
                     :contact_id="contact.id"
                     :settings="settings"
@@ -155,10 +154,14 @@
 </template>
 <script>
 import TopMenu from './TopMenu'
+import EditEmail from './EditEmail'
+import EditPhoneNumber from './EditPhoneNumber'
 export default {
   name: 'QuickClient',
   components: {
     'TopMenu': TopMenu,
+    'EditEmail': EditEmail,
+    'EditPhoneNumber': EditPhoneNumber
   },
   data () {
     return {
