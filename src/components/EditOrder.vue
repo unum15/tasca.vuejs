@@ -480,6 +480,7 @@ export default {
 		return {
 			my_order: {},
 			saving: false,
+            reload: false,
             my_tab_index: 0,
             order_interval: {
                 count: null,
@@ -584,8 +585,9 @@ export default {
             else{
                 var order = this.my_order;
                 this.$http.patch('/order/'+this.my_order.id,this.my_order).then(response => {
-                    if(reload){
+                    if(this.reload){
                         this.$emit('reload-orders', order);
+                        this.reload = false;
                     }
                 })
             }
@@ -601,25 +603,25 @@ export default {
             if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
                 this.my_order.property = this.my_order.properties[0];
                 this.my_order.order_status_type_id = 2;
-                reload = true;
+                this.reload = true;
             };
             if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
                 this.my_order.order_status_type_id = 1
-                reload = true;
+                this.reload = true;
             };
 
 
             var pending_days_out = localStorage.getItem('pending_days_out');
             var today = moment();
             var start_date = moment(this.my_order.start_date);
-            var days_out = today.diff(start_date, 'days')
+            var days_out = start_date.diff(today, 'days')
             if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
                 this.my_order.order_status_type_id = 3
-                reload = true;
+                this.reload = true;
             };
             if((this.my_order.order_status_type_id == 3) && ((this.my_order.start_date == "") || (days_out > pending_days_out))){
                 this.my_order.order_status_type_id = 2
-                reload = true;
+                this.reload = true;
             };
             this.save();
         }
@@ -629,7 +631,19 @@ export default {
             if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
                 return true;
             }
-            return false;
+            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
+                return true;
+            };
+            var pending_days_out = localStorage.getItem('pending_days_out');
+            var today = moment();
+            var start_date = moment(this.my_order.start_date);
+            var days_out = start_date.diff(today, 'days')
+            if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
+                return true;
+            };
+            if((this.my_order.order_status_type_id == 3) && ((this.my_order.start_date == "") || (days_out > pending_days_out))){
+                return true;
+            };
         },
         convertButtonLabel(){
             var pending_days_out = localStorage.getItem('pending_days_out');
