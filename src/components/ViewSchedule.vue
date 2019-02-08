@@ -29,10 +29,10 @@
                 :filter="filter"
                 >
                 <template slot="order_id" slot-scope="data">
-                    <a :href="'#/client/'+ data.item.order.project.property.client_id + '/order/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/client/'+ data.item.order.project.property.client_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
                 <template slot="order.project.property.client.name" slot-scope="data">
-                    <a href="/#/scheduler" @click.stop="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                    <a href="/scheduler" @click.stop="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template slot="task_appointment_status.name" slot-scope="data">
                     <b-form-select

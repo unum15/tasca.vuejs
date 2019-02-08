@@ -41,11 +41,13 @@ export default {
         this.status = response.data.status
       })
     }
-    this.$http.get('/calendar/status').then(response => {
-      this.status = response.data.status
-    })
+    else{
+      this.$http.get('/calendar/status').then(response => {
+        this.status = response.data.status
+      })
+    }
     this.$http.get('/calendar/url').then(response => {
-      this.url = response.data.url
+        this.url = response.data.url
     })
   },
   methods: {
