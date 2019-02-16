@@ -193,6 +193,9 @@ export default {
             case 4:
 					this.help_tab = this.settings.help_order_billing
 					break;
+            case 5:
+					this.help_tab = this.settings.help_order_renewing
+					break;
 				default:
 					this.help_tab = ''
 			}

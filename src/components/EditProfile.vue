@@ -29,26 +29,6 @@
                         </b-form-input>
                     </b-form-group>
                 </b-col>
-            </b-row>
-            <b-row>           
-                <b-col>
-                    <b-form-group label="Password">
-                        <b-form-input
-                            type="password"
-                            v-model="profile.password"
-                            >
-                        </b-form-input>
-                    </b-form-group>
-                </b-col>
-                <b-col>
-                    <b-form-group label="Password Again">
-                        <b-form-input
-                            type="password"
-                            v-model="profile.password_again"
-                            >
-                        </b-form-input>
-                    </b-form-group>
-                </b-col>
                 <b-col>
                   <b-form-group label="Show Help">
                     <b-form-checkbox
@@ -89,6 +69,33 @@
                   </b-form-group>
                 </b-col>
             </b-row>
+             <b-row>           
+                <b-col>
+                    <b-form-group label="Password">
+                        <b-form-input
+                            type="password"
+                            v-model="password"
+                            >
+                        </b-form-input>
+                    </b-form-group>
+                </b-col>
+                <b-col>
+                    <b-form-group label="Password Again">
+                        <b-form-input
+                            type="password"
+                            v-model="password_again"
+                            >
+                        </b-form-input>
+                    </b-form-group>
+                </b-col>
+                <b-col>
+                    <b-button
+                      @click="changePassword"
+                      >
+                      Change Password
+                    </b-button>
+                </b-col>
+            </b-row>
         </b-container>
     </main>
   </div>
@@ -103,7 +110,9 @@ export default {
   data () {
     return {
         profile: {},
-        activity_levels: []
+        activity_levels: [],
+        password: null,
+        password_again: null
     }
   },
   created () {
@@ -118,6 +127,18 @@ export default {
   methods: {
     save () {
         this.$http.patch('/contact/' + this.profile.id, this.profile)
+    },
+    changePassword (){
+      if(this.password == this.password_again){
+        this.$http.patch('/contact/' + this.profile.id, {password: this.password}).then(() => {
+          alert('Password changed!');
+          this.password = null;
+          this.password_again = null;
+        })
+      }
+      else{
+        alert('Passwords do not match!');
+      }
     }
   }
 }

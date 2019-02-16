@@ -73,12 +73,16 @@
 <script>
     export default {
         name: 'TopMenu',
+        created() {
+            //var perms = localStorage.getItem('perms');
+            //console.log(perms);
+        },
         methods: {
             signOut(){
-				this.$router.push('/');
 				this.$http.post('/unauth')
 				.then(request => {
 					localStorage.clear();
+                    this.$router.push('/');
 				})
 			},
         }
