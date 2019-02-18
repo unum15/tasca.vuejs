@@ -34,43 +34,43 @@
                 <template slot="task.order.project.client.name" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template slot="task_appointment_status.name" slot-scope="data">
+                <template slot="task.task_appointment_status.name" slot-scope="data">
                     <b-form-select
                         :options="task_appointment_statuses"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_appointment_status_id"
+                        v-model="data.item.task.task_appointment_status_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_category.name" slot-scope="data">
+                <template slot="task.task_category.name" slot-scope="data">
                     <b-form-select
                         :options="task_categories"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_category_id"
+                        v-model="data.item.task.task_category_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_status.name" slot-scope="data">
+                <template slot="task.task_status.name" slot-scope="data">
                     <b-form-select
                         :options="task_statuses"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_status_id"
+                        v-model="data.item.task.task_status_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_action.name" slot-scope="data">
+                <template slot="task.task_action.name" slot-scope="data">
                     <b-form-select
                         :options="task_actions"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_action_id"
+                        v-model="data.item.task.task_action_id"
                         >
                     </b-form-select>
                 </template>
@@ -90,11 +90,11 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="sort_order" slot-scope="data">
+                <template slot="task.sort_order" slot-scope="data">
                     <b-form-select
                         :options="task_sort_options"
 						@input="save(data.item)"
-                        v-model="data.item.sort_order"
+                        v-model="data.item.task.sort_order"
                         >
                     </b-form-select>
                 </template>
@@ -219,7 +219,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'task.actions',
+                    key: 'actions',
                     label: 'Actions'
                 }
             ]
@@ -270,11 +270,12 @@ export default {
             task.day = null;
             task.date = null;
             task.time = null;
-            task.sort_order = null;
+            task.task.sort_order = null;
             this.save(task);
         },
         save(task){
-            this.$http.patch('/task/' + task.id, task);
+            this.$http.patch('/task_date/' + task.id, task);
+            this.$http.patch('/task/' + task.task.id, task.task);
         }
     },
     computed: {
