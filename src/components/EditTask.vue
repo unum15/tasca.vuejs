@@ -94,16 +94,6 @@
                     >
                     </b-form-input>
                 </b-form-group>
-            </b-col>            
-            <b-col>
-                <b-form-group label="Crew Hours">
-                    <b-form-input
-                        type="text"
-						@change="save"
-                        v-model="my_task.crew_hours"
-                    >
-                    </b-form-input>
-                </b-form-group>
             </b-col>
 			<b-col>
                 <b-form-group label="Crew">
@@ -117,26 +107,36 @@
                     </b-form-select>
                 </b-form-group>
             </b-col>
+            <b-col>
+                <b-form-group label="Crew Hours">
+                    <b-form-input
+                        type="text"
+						@change="save"
+                        v-model="my_task.crew_hours"
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>
         </b-row>
         <b-row>
             <b-col>
                 <b-form-group label="Group">
-                    <b-form-select
-                        :options="task_group_options"
+                    <b-form-input
+						type="text"
 						@change="save"
                         v-model="my_task.group"
                         >
-                    </b-form-select>
+                    </b-form-input>
                 </b-form-group>
             </b-col>
             <b-col>
                 <b-form-group label="Sort Order">
-                    <b-form-select
-						:options="task_sort_options"
+                    <b-form-input
+						type="text"
 						@change="save"
                         v-model="my_task.sort_order"
                     >
-                    </b-form-select>
+                    </b-form-input>
                 </b-form-group>
             </b-col>
 			<b-col>
@@ -150,7 +150,6 @@
                 </b-form-group>
             </b-col>
         </b-row>
-        
         <b-row>
 			<b-button variant="danger" size="sm" @click="deleteTask(task)">Delete Task</b-button>
         </b-row>

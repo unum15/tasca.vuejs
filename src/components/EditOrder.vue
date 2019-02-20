@@ -1,5 +1,18 @@
 <template>
     <div>
+        <b-form-group label="Property"  v-if="!isServiceOrder">
+            <b-form-select
+                @input="save"
+                :options="properties"
+                value-field="id"
+                text-field="name"
+                required
+                :state="my_order.property != null"
+                v-model="my_order.property"
+                
+                >
+            </b-form-select>
+        </b-form-group>
         <b-tabs @input="changedTabs" v-model="my_tab_index">
             <b-tab title="General">
                 <b-container fluid>
@@ -26,19 +39,6 @@
                                     state="my_order.properties != []"
                                     v-model="my_order.properties"
                                     multiple
-                                    >
-                                </b-form-select>
-                            </b-form-group>
-                            <b-form-group label="Property"  v-if="!isServiceOrder">
-                                <b-form-select
-                                    @input="save"
-                                    :options="properties"
-                                    value-field="id"
-                                    text-field="name"
-                                    required
-                                    :state="my_order.property != null"
-                                    v-model="my_order.property"
-                                    
                                     >
                                 </b-form-select>
                             </b-form-group>
@@ -104,7 +104,7 @@
                     </b-row>
                     <b-row>
                         <b-col>
-                            <b-form-group label="Status">
+                            <b-form-group label="Status" v-if="(order.order_status_type_id==1)">
                                 <b-form-select
                                     @change="save"
                                     :options="statuses"
@@ -118,7 +118,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Action">
+                            <b-form-group label="Action" v-if="(order.order_status_type_id==1)">
                                 <b-form-select
                                     @change="save"
                                     :options="current_actions"
@@ -204,7 +204,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Recurrences" v-if="(order.order_status_type_id!=2) && (!my_order.indefinite)">
+                            <b-form-group label="Times" v-if="(order.order_status_type_id!=2) && (!my_order.indefinite)">
                                 <b-form-input
                                     type="number"
                                     @change="save"
@@ -214,7 +214,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Count" v-if="(order.order_status_type_id!=2)" >
+                            <b-form-group label="Every" v-if="(order.order_status_type_id!=2)" >
                                 <b-form-input
                                     type="number"
                                     @change="save"
@@ -224,7 +224,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Units" v-if="(order.order_status_type_id!=2)" >
+                            <b-form-group label="Frequency" v-if="(order.order_status_type_id!=2)" >
                                 <b-form-select
                                     @input="save"
                                     :options="units"
@@ -404,27 +404,27 @@
                     </b-row>
                     <b-row>
                         <b-col>
-                            <b-form-group label="Frequency">
+                            <b-form-group label="Times">
                                 <b-form-input
                                     type="text"
                                     @change="save"
-                                    v-model="my_order.frequency"
+                                    v-model="my_order.count"
                                 >
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Count" >
+                            <b-form-group label="Every" >
                                 <b-form-input
                                     type="number"
                                     @change="save"
-                                    v-model="renewal_interval.count"
+                                    v-model="renewal_interval.frequency"
                                 >
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Units" >
+                            <b-form-group label="Frequency" >
                                 <b-form-select
                                     @input="save"
                                     :options="units"
@@ -493,19 +493,19 @@ export default {
             units: [
                 {
                     value: 'day',
-                    text: 'Day'
+                    text: 'Days'
                 },
                 {
                     value: 'week',
-                    text: 'Week'
+                    text: 'Weeks'
                 },
                 {
                     value: 'mon',
-                    text: 'Month'
+                    text: 'Months'
                 },
                 {
                     value: 'year',
-                    text: 'Year'
+                    text: 'Years'
                 },
             ],
             intervals: [
@@ -562,6 +562,9 @@ export default {
 	methods: {
         save(){
             var reload = false;
+            if((this.my_order.name != null) && (this.my_order.description == null)){
+                this.my_order.description = this.my_order.name;
+            }
             if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
                 this.my_order.start_date = this.my_order.approval_date;
             }
