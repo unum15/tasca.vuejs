@@ -204,6 +204,17 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
+                            <b-form-group label="Indefinite"  v-if="order.order_status_type_id!=2">
+                                <b-form-checkbox
+                                    @input="save"
+                                    v-model="my_order.indefinite"
+                                    :value="true"
+                                    :unchecked-value="false"
+                                >
+                                </b-form-checkbox>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
                             <b-form-group label="Times" v-if="(order.order_status_type_id!=2) && (!my_order.indefinite)">
                                 <b-form-input
                                     type="number"
@@ -233,17 +244,7 @@
                                 </b-form-select>
                             </b-form-group>
                         </b-col>
-                        <b-col>
-                            <b-form-group label="Indefinite"  v-if="order.order_status_type_id!=2">
-                                <b-form-checkbox
-                                    @input="save"
-                                    v-model="my_order.indefinite"
-                                    :value="true"
-                                    :unchecked-value="false"
-                                >
-                                </b-form-checkbox>
-                            </b-form-group>
-                        </b-col>
+                        
                     </b-row>
                 </b-container>
             </b-tab>

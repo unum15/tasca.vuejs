@@ -141,6 +141,7 @@ export default {
 	},
 	created() {
         this.my_project=this.project;
+        this.help_order = this.settings.help_project_general;
     },
 	methods: {
 		deleteProject () {
@@ -163,6 +164,9 @@ export default {
 		},
 		changedProjectTab(tab_index){
 			switch(tab_index){
+            case 0:
+					this.help_order = this.settings.help_project_general
+					break;
 				case 1:
 					this.help_order = this.settings.help_service_order
 					break;
