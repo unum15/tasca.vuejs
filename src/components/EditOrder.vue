@@ -13,8 +13,21 @@
                 >
             </b-form-select>
         </b-form-group>
+        <b-form-group label="Properties"  v-if="isServiceOrder">
+            <b-form-select
+                @input="save"
+                :options="properties"
+                value-field="id"
+                text-field="name"
+                required
+                state="my_order.properties != []"
+                v-model="my_order.properties"
+                multiple
+                >
+            </b-form-select>
+        </b-form-group>
         <b-tabs @input="changedTabs" v-model="my_tab_index">
-            <b-tab title="General">
+            <b-tab title="Details">
                 <b-container fluid>
                     <b-form-group label="Order Name">
                     <b-form-input
@@ -27,23 +40,6 @@
                         >
                     </b-form-input>
                 </b-form-group>
-                    <b-row>
-                        <b-col>
-                            <b-form-group label="Properties"  v-if="isServiceOrder">
-                                <b-form-select
-                                    @input="save"
-                                    :options="properties"
-                                    value-field="id"
-                                    text-field="name"
-                                    required
-                                    state="my_order.properties != []"
-                                    v-model="my_order.properties"
-                                    multiple
-                                    >
-                                </b-form-select>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
                      <b-row>
                         <b-col>
                             <b-form-group label="Description">
