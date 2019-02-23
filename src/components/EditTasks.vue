@@ -26,11 +26,12 @@
 						:task_statuses="task_statuses"
 						:task_actions="task_actions"
 						:task_categories="task_categories"
+						:settings="settings"
 						@remove-task="removeTask"
 					></EditTask>
 				</b-tab>
 			</b-tabs>
-			<b-button variant="secondary" @click="newTask">Add New Task</b-button>
+			<b-button variant="secondary" @click="newTask(null)">Add New Task</b-button>
 		</div>
 </template>
 <script>
@@ -45,7 +46,8 @@ export default {
 		task_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
-		task_categories: {required: true}
+		task_categories: {required: true},
+		settings: {required: true}
 	},
 	data: function() {
 		return {
@@ -79,8 +81,9 @@ export default {
 				approval_date: null,
 				completion_date: null,
 				expiration_date: null,
-				description: null,
-				priority_id: null,
+				task_category_id: this.settings.default_billing_task_category_id,
+				task_status_id: this.settings.default_billing_task_status_id,
+				task_action_id: this.settings.default_billing_task_action_id,
 				notes: null,
 				job_hours: null,
 				crew_hours: null

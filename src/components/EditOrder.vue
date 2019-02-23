@@ -27,7 +27,7 @@
             </b-form-select>
         </b-form-group>
         <b-tabs @input="changedTabs" v-model="my_tab_index">
-            <b-tab title="Details">
+            <b-tab title="Detail">
                 <b-container fluid>
                     <b-form-group label="Order Name">
                     <b-form-input
@@ -252,6 +252,7 @@
                     :task_statuses="task_statuses"
                     :task_actions="task_actions"
                     :task_categories="task_categories"
+                    :settings="settings"
                     >
                 </EditTasks>
             </b-tab>
@@ -471,7 +472,8 @@ export default {
 		task_statuses: {required: true},
 		task_actions: {required: true},
 		task_categories: {required: true},
-        tab_index: {default: 0}
+        tab_index: {default: 0},
+        settings: {required: true}
 	},
 	data: function() {
 		return {
