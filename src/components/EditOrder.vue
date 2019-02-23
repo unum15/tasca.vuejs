@@ -183,12 +183,11 @@
                                     type="date"
                                     @input="save"
                                     v-model="my_order.start_date"
+                                    :disabled="my_order.approval_date == null"
                                 >
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
-                    </b-row>
-                    <b-row>
                         <b-col>
                             <b-form-group label="Service Window">
                                 <b-form-input
@@ -199,8 +198,11 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
+                    </b-row>
+                    <b-row v-if="(order.order_status_type_id==1)>
+                        
                         <b-col>
-                            <b-form-group label="Indefinite"  v-if="order.order_status_type_id!=2">
+                            <b-form-group label="Recurrences">
                                 <b-form-checkbox
                                     @input="save"
                                     v-model="my_order.indefinite"
@@ -211,7 +213,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Times" v-if="(order.order_status_type_id!=2) && (!my_order.indefinite)">
+                            <b-form-group label="Times">
                                 <b-form-input
                                     type="number"
                                     @change="save"
@@ -221,7 +223,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Every" v-if="(order.order_status_type_id!=2)" >
+                            <b-form-group label="Every">
                                 <b-form-input
                                     type="number"
                                     @change="save"
@@ -231,7 +233,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Frequency" v-if="(order.order_status_type_id!=2)" >
+                            <b-form-group label="Frequency">
                                 <b-form-select
                                     @input="save"
                                     :options="units"
@@ -567,6 +569,10 @@ export default {
             }
             if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
                 this.my_order.start_date = this.my_order.approval_date;
+            }
+            if(this.my_order.approval_date === '') {
+                this.my_order.approval_date = null;
+                this.my_order.start_date = null;
             }
             if((this.my_order.date === null)||(this.my_order.name === null)||(this.my_order.description === null)){
                 return;
