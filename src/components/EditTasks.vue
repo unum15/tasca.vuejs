@@ -45,7 +45,7 @@ export default {
 		task_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
-		task_categories: {required: true},
+		task_categories: {required: true}
 	},
 	data: function() {
 		return {
@@ -60,16 +60,22 @@ export default {
 	created() {
      this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
       this.tasks = response.data
+			if(this.tasks.length == 0){
+				console.log("on:"+this.order.name);
+				this.newTask(this.order.name);
+			}
     })
   },
 	methods: {
-		newTask: function(){
+		newTask(name=null){
+			console.log('name:'+name);
 			var task = {
 				id: null,
 				order_id: this.order.id,
-				billable: true,
+				task_type_id: 2,
 				dates: [ {date: null, time:null, day: null}],
-				name: null,
+				name: name,
+				description: name,
 				approval_date: null,
 				completion_date: null,
 				expiration_date: null,
@@ -99,5 +105,10 @@ export default {
 			this.change_tab =  false;
 		}
   },
+	watch:{
+		order_name(){
+			console.log(this.order_name)
+		}
+	}
 }
 </script>

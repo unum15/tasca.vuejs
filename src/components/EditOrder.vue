@@ -487,6 +487,7 @@ export default {
                 count: null,
                 unit: null
             },
+            task_name: null,
             units: [
                 {
                     value: 'day',
@@ -579,7 +580,10 @@ export default {
             
             if(this.my_order.id === null){
                 this.$http.post('/order',this.my_order).then(response => {
+                    this.task_name = this.my_order.name;
                     this.my_order.id = response.data.id;
+                    
+                    console.log('saved:'+this.task_name);
                 })
             }
             else{
