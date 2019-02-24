@@ -4,7 +4,7 @@
             <b-col>
                 <b-form-group label="Task Type">
                     <b-form-radio-group
-						@change="save"
+						@change="save();change_defaults();"
 						v-model="my_task.task_type_id"
 						:state="my_task.task_type_id != null"
 						required
@@ -94,16 +94,6 @@
                     >
                     </b-form-input>
                 </b-form-group>
-            </b-col>            
-            <b-col>
-                <b-form-group label="Crew Hours">
-                    <b-form-input
-                        type="text"
-						@change="save"
-                        v-model="my_task.crew_hours"
-                    >
-                    </b-form-input>
-                </b-form-group>
             </b-col>
 			<b-col>
                 <b-form-group label="Crew">
@@ -117,26 +107,36 @@
                     </b-form-select>
                 </b-form-group>
             </b-col>
+            <b-col>
+                <b-form-group label="Crew Hours">
+                    <b-form-input
+                        type="text"
+						@change="save"
+                        v-model="my_task.crew_hours"
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>
         </b-row>
         <b-row>
             <b-col>
                 <b-form-group label="Group">
-                    <b-form-select
-                        :options="task_group_options"
+                    <b-form-input
+						type="text"
 						@change="save"
                         v-model="my_task.group"
                         >
-                    </b-form-select>
+                    </b-form-input>
                 </b-form-group>
             </b-col>
             <b-col>
                 <b-form-group label="Sort Order">
-                    <b-form-select
-						:options="task_sort_options"
+                    <b-form-input
+						type="text"
 						@change="save"
                         v-model="my_task.sort_order"
                     >
-                    </b-form-select>
+                    </b-form-input>
                 </b-form-group>
             </b-col>
 			<b-col>
@@ -150,7 +150,6 @@
                 </b-form-group>
             </b-col>
         </b-row>
-        
         <b-row>
 			<b-button variant="danger" size="sm" @click="deleteTask(task)">Delete Task</b-button>
         </b-row>
@@ -169,6 +168,7 @@ export default {
 		task_statuses: {required: true},
 		task_actions: {required: true},
 		task_categories: {required: true},
+		settings: {required: true}
 	},
 	data: function() {
 		return {
@@ -197,6 +197,18 @@ export default {
 				this.$http.patch('/task/'+this.my_task.id,this.my_task).then(response => {
 					this.my_task.id = response.data.id;
 				})
+			}
+		},
+		change_defaults(){
+			if(this.my_task.task_type_id == 2){
+				this.my_task.task_category_id = this.settings.default_nonbilling_task_category_id;
+				this.my_task.task_status_id = this.settings.default_nonbilling_task_status_id;
+				this.my_task.task_action_id = this.settings.default_nonbilling_task_action_id;
+			}
+			else{
+				this.my_task.task_category_id = this.settings.default_billing_task_category_id;
+				this.my_task.task_status_id = this.settings.default_billing_task_status_id;
+				this.my_task.task_action_id = this.settings.default_billing_task_action_id;
 			}
 		}
 	},

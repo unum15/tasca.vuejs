@@ -18,7 +18,7 @@
                     </b-form-group>
                   </b-col>
                 </b-row>
-            </b-container fluid>
+            </b-container>
             <b-table
                 small
                 striped
@@ -31,7 +31,7 @@
                 @filtered="onFiltered"
             >
                 <template slot="id" slot-scope="data">
-                    <a :href="'#/client/'+ data.item.order.project.client_id +'/task/' + data.item.id"> {{ data.value }} </a>
+                    <a :href="'/client/'+ data.item.order.project.client_id + '/project/'+ data.item.order.project_id + '/order/'+ data.item.order_id +'/task/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
             <b-row>

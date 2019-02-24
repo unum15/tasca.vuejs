@@ -22,6 +22,16 @@
           >
           </b-form-input>
         </template>
+        <template slot="relation" slot-scope="data">
+          <b-form-select
+            multiple
+            :options="relations"
+            value-field="id"
+            text-field="name"
+            v-model="data.item.order_statuses"
+          >
+          </b-form-select>
+        </template>
         <template slot="notes" slot-scope="data">
           <b-form-input
             type="text"
@@ -60,6 +70,7 @@ export default {
       default_item: null,
       settings: {},
       items: [],
+      relations: [],
       fields: [
         {
           key: 'sort_order',
@@ -93,8 +104,26 @@ export default {
   methods: {
     load (){
       this.resource = this.$route.path;
+      if(this.resource == '/order_actions'){
+        this.$http.get('/order_statuses').then(response => {
+          this.relations = response.data
+        })
+        this.fields.push({
+          key: 'relation',
+          label: 'Statuses'
+        })
+      }
       this.$http.get(this.resource).then(response => {
         this.items = response.data
+        if(this.resource == '/order_actions'){
+          for(var i = 0; i < this.items.length; i++){
+            var statuses = [];
+            for(var s = 0; s < this.items[i].order_statuses.length; s++){
+              statuses.push(this.items[i].order_statuses[s].id);
+            }
+            this.items[i].order_statuses = statuses;
+          }
+        }
       })
       this.default_item = this.settings['default_' + this.singular + '_id'];
     },

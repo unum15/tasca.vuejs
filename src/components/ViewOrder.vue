@@ -3,31 +3,43 @@
         <b-container>
             <b-row>
                 <b-col>Client</b-col>
-                <b-col>{{ order.project.property.client.name }}</b-col>
+                <b-col>{{ order.project.client.name }}</b-col>
+                <b-col><b-button @click="signIn" v-if="!sign_in_id">Clock In</b-button></b-col>
+                <b-col><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col>Employee</b-col>
                 <b-col>Sign In</b-col>
                 <b-col>Sign Out</b-col>
+                <b-col>Hours</b-col>
                 <b-col>Notes</b-col>
+            </b-row>
+            <b-row v-for="sign_in in order.sign_ins">
+                <b-col>{{ sign_in.contact.name }}</b-col>
+                <b-col>{{ sign_in.sign_in }}</b-col>
+                <b-col>{{ sign_in.sign_out }}</b-col>
+                <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
+                <b-col><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
             </b-row>
             <b-row>
                 <b-col>Total</b-col>
+                <b-col></b-col>
+                <b-col></b-col>
+                <b-col></b-col>
+                <b-col></b-col>
             </b-row>
             <b-row>
                 <b-col>Property</b-col>
-            </b-row>
-            <b-row>
                 <b-col>
-                    <a :href="'http://maps.google.com/maps?q=' + order.project.property.address1 + '+' + order.project.property.address2 + '+' + order.project.property.city + '+' + order.project.property.state + '+' + order.project.property.zip" target="tasca_address">
-                        {{ order.project.property.name }}<br />
-                        {{ order.project.property.address1 }}<br />
-                        {{ order.project.property.address2 }}<br v-if="order.project.property.address2" />
-                        {{ order.project.property.city }},{{ order.project.property.state }} {{ order.project.property.zip }}
+                    <a :href="'http://maps.google.com/maps?q=' + order.property.address1 + '+' + order.property.address2 + '+' + order.property.city + '+' + order.property.state + '+' + order.property.zip" target="tasca_address">
+                        {{ order.property.name }}<br />
+                        {{ order.property.address1 }}<br />
+                        {{ order.property.address2 }}<br v-if="order.property.address2" />
+                        {{ order.property.city }},{{ order.property.state }} {{ order.property.zip }}
                     </a>
                 </b-col>
             </b-row>
-            <div v-for="contact in order.project.property.contacts">
+            <div v-for="contact in order.property.contacts">
                 <b-row>
                     <b-col>Contact</b-col>
                     <b-col>{{ contact.name }}</b-col>
@@ -48,7 +60,7 @@
             <b-row>
                 <b-col>Description</b-col>
             </b-row>
-                <b-col>{{ order.description }}</b-col>
+                <b-col class="bg-info">{{ order.description }}</b-col>
             </b-row>
             <b-row>
                 <b-col>Location of work</b-col>
@@ -56,10 +68,14 @@
             </b-row>
             <b-row>
                 <b-col>Instructions</b-col>
+            </b-row>
+            <b-row class="bg-info">
                 <b-col>{{ order.instructions }}</b-col>
             </b-row>
-            <b-row>
+            <b-row class="bg-info">
                 <b-col>Notes</b-col>
+            </b-row>
+            <b-row>
                 <b-col>{{ order.notes }}</b-col>
             </b-row>
             <b-row>
@@ -118,11 +134,11 @@
                                     <b-col>Description</b-col>
                                     <b-col>{{ task.description }}</b-col>
                                 </b-row>
-                                <b-row>
+                                <b-row v-if="task.task_status">
                                     <b-col>Status</b-col>
                                     <b-col>{{ task.task_status.name }}</b-col>
                                 </b-row>
-                                <b-row v-if="task.task_action">
+                                <b-row v-if="task.task_type">
                                     <b-col>Type</b-col>
                                     <b-col>{{ task.task_type.name }}</b-col>
                                 </b-row>
@@ -163,6 +179,7 @@
     </div>
 </template>
 <script>
+import moment from 'moment'
 export default {
     name: 'ViewOrder',
     props: {
@@ -172,14 +189,15 @@ export default {
         return {
             order: {
                 project: {
-                    property: {
-                        client: {
-                            name : null
-                        }
+                    client: {
+                        name : null
                     },
                     contact: {
                         name: null
                     }
+                },
+                property: {
+                    
                 },
                 order_priority: {
                 
@@ -187,7 +205,8 @@ export default {
                 approver: {
                 
                 },
-                tasks: []
+                tasks: [],
+                sign_ins: []
             }
         }
     },
@@ -199,11 +218,50 @@ export default {
             console.log('get'+this.order_id)
             this.$http.get('/order/' + this.order_id).then((results) => {
                 this.order = results.data;
-                console.log(this.order);
+                //only show first property information
+                this.order.property = this.order.properties[0];
             });
+        },
+        signIn(){
+            var sign_in
+            if(sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"))){
+                this.$http.post('/sign_in', {order_id : this.order_id, sign_in: sign_in}).then((results) => {
+                    this.getOrder()
+                });
+            }
+        },
+        signOut(){
+            var sign_out
+            if(sign_out = prompt('Sign Out Time', moment().format("YYYY-MM-DD h:mm:ss a"))){
+                this.$http.patch('/sign_in/' + this.sign_in_id, {sign_out : sign_out}).then((results) => {
+                    this.getOrder()
+                });
+            }
+        },
+        saveNotes(sign_in){
+            this.$http.patch('/sign_in/' + sign_in.id, {notes : sign_in.notes})
+        },
+        timeDiff(start_time, stop_time){
+            var start = moment(start_time)
+            var stop = moment();
+            if(stop_time){
+                stop = moment(stop_time)
+            }
+            var diff = Math.round(stop.diff(start)/36000)/100
+            
+            return diff
         }
     },
     computed: {
+        sign_in_id() {
+            var id = null
+            var my_id = localStorage.getItem('id')
+            var ids = this.order.sign_ins.filter( si => (si.contact_id == my_id && si.sign_out == null))
+            if(ids.length > 0){
+                id = ids[0].id
+            }
+            return id;
+        }
     },
     watch: {
         order_id() {

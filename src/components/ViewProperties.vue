@@ -18,10 +18,10 @@
                     </b-form-group>
                   </b-col>
                 </b-row>
-            </b-container fluid>
+            </b-container>
             <b-table small striped hover :filter="filter" :items="properties" :fields="fields">
                 <template slot="name" slot-scope="data">
-                    <a :href="'#/client/'+ data.item.client_id +'/property/' + data.item.id"> {{ data.value }} </a>
+                    <a :href="'/client/'+ data.item.client_id +'/property/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>

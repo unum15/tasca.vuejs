@@ -24,7 +24,6 @@ export default {
   },
   created () {
     this.$http.get('/status')
-        
         .then(request => {
           if(request.data.status == 'active'){
             this.loginSuccessful(request)
@@ -46,10 +45,19 @@ export default {
     },
     loginSuccessful (req) {
       for (var prop in req.data) {
+        //test for string?
         localStorage.setItem(prop, req.data[prop])
       }
+      var perms = [];
+      for (var role in req.data.roles) {
+        for (var perm in req.data.roles[role].perms) {
+          perms.push(req.data.roles[role].perms[perm].name)
+        }
+      }
+      perms = perms.filter((value, index, perms) => (perms.indexOf(value) === index))
+      localStorage.setItem('perms', perms.toString())
       this.error = false
-      this.$router.push('/clients');
+      this.$router.push('/clients')
     },
 
     loginFailed () {

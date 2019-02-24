@@ -17,7 +17,7 @@ daxios.interceptors.response.use(
     console.log(error)
     switch (error.response.status) {
       case 401 :
-        this.$router.push('/')
+        window.location='/'
         return 200
       case 422 :
         alert(error.response.request.responseText)

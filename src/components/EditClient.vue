@@ -254,8 +254,17 @@ export default {
     if(!this.first_update){
       return;
     }
-    if((this.client.id) && (this.order_id != null)){
-      this.tab_index = 3;
+    
+    if(this.client.id){
+      if(this.contact_id != null){
+        this.tab_index = 1;
+      }
+      if(this.property_id != null){
+        this.tab_index = 2;
+      }
+      if(this.order_id != null){
+        this.tab_index = 3;
+      }
       this.first_update = false;
     }
   }

@@ -1,25 +1,6 @@
 <template>
+<div>
   <b-row>
-    <b-col>
-        <b-form-group label="Date">
-            <b-form-input
-              type="date"
-              @change="save"
-              v-model="my_date.date"
-            >
-            </b-form-input>
-        </b-form-group>
-    </b-col>
-     <b-col>
-        <b-form-group label="Time">
-            <b-form-input
-              type="time"
-              @change="save"
-              v-model="my_date.time"
-            >
-            </b-form-input>
-        </b-form-group>
-    </b-col>
      <b-col>
         <b-form-group label="Day">
             <b-form-input
@@ -31,9 +12,42 @@
         </b-form-group>
     </b-col>
     <b-col>
+        <b-form-group label="Date">
+            <b-form-input
+              type="date"
+              @change="save"
+              v-model="my_date.date"
+            >
+            </b-form-input>
+        </b-form-group>
+    </b-col>
+    <b-col>
+        <b-form-group label="Time">
+            <b-form-input
+              type="time"
+              @change="save"
+              v-model="my_date.time"
+            >
+            </b-form-input>
+        </b-form-group>
+    </b-col>
+    <b-col>
       <b-button variant="danger" size="sm" @click="deleteDate">Delete</b-button>
     </b-col>
   </b-row>
+  <b-row>
+    <b-col>
+      <b-form-group label="Day Notes">
+          <b-form-input
+            type="text"
+            @change="save"
+            v-model="my_date.notes"
+          >
+          </b-form-input>
+      </b-form-group>
+    </b-col>
+  </b-row>
+</div>
 </template>
 <script>
 export default {

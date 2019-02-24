@@ -21,7 +21,7 @@
             </b-container fluid>
             <b-table small striped hover :filter="filter" :items="clients" :fields="fields">
                 <template slot="name" slot-scope="data">
-                    <a :href="'#/client/' + data.item.id"> {{ data.value }} </a>
+                    <a :href="'/client/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>

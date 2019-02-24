@@ -28,49 +28,49 @@
                 :fields="fields"
                 :filter="filter"
                 >
-                <template slot="order_id" slot-scope="data">
-                    <a :href="'#/client/'+ data.item.order.project.property.client_id + '/order/' + data.value"> {{ data.value }} </a>
+                <template slot="task.order_id" slot-scope="data">
+                    <a :href="'/client/'+ data.item.task.order.project.client_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
-                <template slot="order.project.property.client.name" slot-scope="data">
-                    <a href="/#/scheduler" @click.stop="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                <template slot="task.order.project.client.name" slot-scope="data">
+                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template slot="task_appointment_status.name" slot-scope="data">
+                <template slot="task.task_appointment_status.name" slot-scope="data">
                     <b-form-select
                         :options="task_appointment_statuses"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_appointment_status_id"
+                        v-model="data.item.task.task_appointment_status_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_category.name" slot-scope="data">
+                <template slot="task.task_category.name" slot-scope="data">
                     <b-form-select
                         :options="task_categories"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_category_id"
+                        v-model="data.item.task.task_category_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_status.name" slot-scope="data">
+                <template slot="task.task_status.name" slot-scope="data">
                     <b-form-select
                         :options="task_statuses"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_status_id"
+                        v-model="data.item.task.task_status_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_action.name" slot-scope="data">
+                <template slot="task.task_action.name" slot-scope="data">
                     <b-form-select
                         :options="task_actions"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_action_id"
+                        v-model="data.item.task.task_action_id"
                         >
                     </b-form-select>
                 </template>
@@ -90,11 +90,11 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="sort_order" slot-scope="data">
+                <template slot="task.sort_order" slot-scope="data">
                     <b-form-select
                         :options="task_sort_options"
 						@input="save(data.item)"
-                        v-model="data.item.sort_order"
+                        v-model="data.item.task.sort_order"
                         >
                     </b-form-select>
                 </template>
@@ -119,7 +119,7 @@
                     </b-card>
                   </template>
             </b-table>
-            <b-modal id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
+            <b-modal size="xl" scrollable id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
                 <ViewOrder
                     v-if="modalInfo.order_id"
                     :order_id="modalInfo.order_id"
@@ -219,7 +219,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'task.actions',
+                    key: 'actions',
                     label: 'Actions'
                 }
             ]
@@ -245,11 +245,11 @@ export default {
     },
     methods: {
         info (item, index, button) {
-            this.modalInfo.title = `Order# ${item.order.id}`
+            this.modalInfo.title = `Order# ${item.task.order.id}`
             this.modalInfo.content = JSON.stringify(item, null, 2)
             console.log(this.modalInfo.order_id);
-            this.modalInfo.order_id = item.order.id
-            console.log(item.order.id);
+            this.modalInfo.order_id = item.task.order.id
+            console.log(item.task.order.id);
             this.$root.$emit('bv::show::modal', 'modalInfo', button)
         },
         resetModal () {
@@ -270,11 +270,12 @@ export default {
             task.day = null;
             task.date = null;
             task.time = null;
-            task.sort_order = null;
+            task.task.sort_order = null;
             this.save(task);
         },
         save(task){
-            this.$http.patch('/task/' + task.id, task);
+            this.$http.patch('/task_date/' + task.id, task);
+            this.$http.patch('/task/' + task.task.id, task.task);
         }
     },
     computed: {

@@ -134,6 +134,7 @@ export default {
 			help_order: null,
 			help_tab: null,
 			tab_index: 0,
+         project_tab: 0,
          reload_count: 0,
          currentTab: 0,
          changeToOrderId: null
@@ -141,6 +142,7 @@ export default {
 	},
 	created() {
         this.my_project=this.project;
+        this.help_order = this.settings.help_project_general;
     },
 	methods: {
 		deleteProject () {
@@ -162,7 +164,11 @@ export default {
             }
 		},
 		changedProjectTab(tab_index){
+         this.project_tab=tab_index
 			switch(tab_index){
+            case 0:
+					this.help_order = this.settings.help_project_general
+					break;
 				case 1:
 					this.help_order = this.settings.help_service_order
 					break;
@@ -179,19 +185,23 @@ export default {
 		changedOrderTab(tab_index){
 			switch(tab_index){
             case 0:
-					this.help_tab = this.settings.help_order_general
+               //this.changedProjectTab(this.project_tab)
+					this.help_order = this.settings.help_order_general
 					break;
             case 1:
-					this.help_tab = this.settings.help_order_calendar
+					this.help_order = this.settings.help_order_calendar
 					break;
 				case 2:
-					this.help_tab = this.settings.help_task
+					this.help_order = this.settings.help_task
 					break;
             case 3:
-					this.help_tab = this.settings.help_order_notes
+					this.help_order = this.settings.help_order_notes
 					break;
             case 4:
-					this.help_tab = this.settings.help_order_billing
+					this.help_order = this.settings.help_order_billing
+					break;
+            case 5:
+					this.help_order = this.settings.help_order_renewing
 					break;
 				default:
 					this.help_tab = ''
