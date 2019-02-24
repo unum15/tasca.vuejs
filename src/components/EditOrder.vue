@@ -205,7 +205,7 @@
                             <b-form-group label="Recurrences">
                                 <b-form-checkbox
                                     @input="save"
-                                    v-model="my_order.indefinite"
+                                    v-model="my_order.recurring"
                                     :value="true"
                                     :unchecked-value="false"
                                 >
@@ -227,7 +227,7 @@
                                 <b-form-input
                                     type="number"
                                     @change="save"
-                                    v-model="order_interval.count"
+                                    v-model="recurring_interval.count"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -237,7 +237,7 @@
                                 <b-form-select
                                     @input="save"
                                     :options="units"
-                                    v-model="order_interval.unit"
+                                    v-model="recurring_interval.unit"
                                     >
                                 </b-form-select>
                             </b-form-group>
@@ -452,6 +452,7 @@
         </b-tabs>
         <b-button variant="danger" size="sm" @click="deleteOrder()">Delete Order</b-button>
         <b-button size="sm" v-show="showConvertButton" @click="convertOrder">{{ convertButtonLabel }}</b-button>
+        <b-button size="sm" v-show="showCreateButton" @click="createOrders">{{ createButtonLabel }}</b-button>
 	</div>
 </template>
 <script>
@@ -483,7 +484,7 @@ export default {
 			saving: false,
             reload: false,
             my_tab_index: 0,
-            order_interval: {
+            recurring_interval: {
                 count: null,
                 unit: null
             },
@@ -553,8 +554,8 @@ export default {
         if (this.my_order.properties.length > 0){
             this.my_order.property = this.my_order.properties[0];
         }
-        if(this.my_order.order_interval != null){
-            [this.order_interval.count, this.order_interval.unit] = this.my_order.order_interval.split(' ');
+        if(this.my_order.recurring_interval != null){
+            [this.recurring_interval.count, this.recurring_interval.unit] = this.my_order.recurring_interval.split(' ');
         }
         if(this.my_order.renewal_interval != null){
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
@@ -577,8 +578,8 @@ export default {
             if((this.my_order.date === null)||(this.my_order.name === null)||(this.my_order.description === null)){
                 return;
             }
-            if((this.order_interval.count != null) && (this.order_interval.unit != null)){
-                this.my_order.order_interval = this.order_interval.count + ' ' + this.order_interval.unit;
+            if((this.recurring_interval.count != null) && (this.recurring_interval.unit != null)){
+                this.my_order.recurring_interval = this.recurring_interval.count + ' ' + this.recurring_interval.unit;
             }
             if((this.renewal_interval.count != null) && (this.renewal_interval.unit != null)){
                 this.my_order.renewal_interval = this.renewal_interval.count + ' ' + this.renewal_interval.unit;
@@ -636,10 +637,20 @@ export default {
                 this.reload = true;
             };
             this.save();
+        },
+        createOrders(){
+            var order = this.my_order;
+            this.$http.post('/order/convert/'+this.my_order.id,this.my_order).then(response => {
+                this.$emit('reload-orders', response.data[0]);
+                this.reload = false;
+            })
         }
 	},
 	computed:{
         showConvertButton(){
+            if((this.my_order.renewable) || (this.my_order.recurring)){
+                return false;
+            };
             if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
                 return true;
             }
@@ -657,6 +668,21 @@ export default {
                 return true;
             };
         },
+        showCreateButton(){
+            if(this.my_order.order_status_type_id > 1){
+                return false;
+            }
+            if(this.my_order.approval_date == null){
+                return false;
+            }
+            if(this.my_order.properties.length == 0){
+                return false;
+            }
+            if((!this.my_order.renewable) && (!this.my_order.recurring)){
+                return false;
+            };
+            return true;
+        },
         convertButtonLabel(){
             var pending_days_out = localStorage.getItem('pending_days_out');
             var today = moment();
@@ -667,6 +693,9 @@ export default {
             }
             return "Convert To Pending Work Order";
 
+        },
+        createButtonLabel(){
+            return "Create Work Order(s)";
         },
         isServiceOrder() {
             return this.my_order.order_status_type_id == 1;
