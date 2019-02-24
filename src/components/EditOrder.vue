@@ -199,7 +199,7 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
-                    <b-row v-if="(order.order_status_type_id==1)>
+                    <b-row v-if="(order.order_status_type_id==1)">
                         
                         <b-col>
                             <b-form-group label="Recurrences">
