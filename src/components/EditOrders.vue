@@ -48,7 +48,7 @@
 								</EditOrder>
             </b-tab>
         </b-tabs>
-        <b-button variant="secondary" @click="newOrder" >Add New Order</b-button>
+        <b-button variant="secondary" @click="newOrder" >Add New {{ order_status_type.name }}</b-button>
     </div>
 </template>
 <script>
@@ -118,7 +118,6 @@ export default {
 				recurrences: 1,
 				renewable: false,
 				service_window: this.default_service_window,
-				frequency: 0,
 				notes: null,
 				tasks: []
 				

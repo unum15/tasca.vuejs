@@ -167,16 +167,16 @@ export default {
          this.project_tab=tab_index
 			switch(tab_index){
             case 0:
-					this.help_order = this.settings.help_project_general
+					this.help_order = this.settings.help_project_general + this.settings.help_order_general
 					break;
 				case 1:
-					this.help_order = this.settings.help_service_order
+					this.help_order = this.settings.help_service_order + this.settings.help_order_general
 					break;
 				case 2:
-					this.help_order = this.settings.help_pending_work_order
+					this.help_order = this.settings.help_pending_work_order + this.settings.help_order_general
 					break;
 				case 3:
-					this.help_order = this.settings.help_work_order
+					this.help_order = this.settings.help_work_order + this.settings.help_order_general
 					break;
 				default:
 					this.help_order = ''
@@ -185,8 +185,8 @@ export default {
 		changedOrderTab(tab_index){
 			switch(tab_index){
             case 0:
-               //this.changedProjectTab(this.project_tab)
-					this.help_order = this.settings.help_order_general
+               this.changedProjectTab(this.project_tab)
+					//this.help_order = this.settings.help_order_general
 					break;
             case 1:
 					this.help_order = this.settings.help_order_calendar

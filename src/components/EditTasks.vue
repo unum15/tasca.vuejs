@@ -63,14 +63,14 @@ export default {
      this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
       this.tasks = response.data
 			if(this.tasks.length == 0){
-				console.log("on:"+this.order.name);
+				//console.log("on:"+this.order.name);
 				this.newTask(this.order.name);
 			}
     })
   },
 	methods: {
 		newTask(name=null){
-			console.log('name:'+name);
+			//console.log('name:'+name);
 			var task = {
 				id: null,
 				order_id: this.order.id,
@@ -110,7 +110,7 @@ export default {
   },
 	watch:{
 		order_name(){
-			console.log(this.order_name)
+			//console.log(this.order_name)
 		}
 	}
 }

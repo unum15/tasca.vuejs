@@ -408,7 +408,7 @@
                                 <b-form-input
                                     type="text"
                                     @change="save"
-                                    v-model="my_order.count"
+                                    v-model="my_order.renewal_count"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -418,7 +418,7 @@
                                 <b-form-input
                                     type="number"
                                     @change="save"
-                                    v-model="renewal_interval.frequency"
+                                    v-model="renewal_interval.count"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -439,7 +439,7 @@
                             <b-form-group label="Client Message">
                                 <b-form-textarea
                                     type="text"
-                                    @change="save"
+                                    @input="save"
                                     v-model="my_order.renewal_message"
                                     placeholder="It's time to renew your service."
                                 >
@@ -495,46 +495,20 @@ export default {
             task_name: null,
             units: [
                 {
-                    value: 'day',
+                    value: 'days',
                     text: 'Days'
                 },
                 {
-                    value: 'week',
+                    value: 'weeks',
                     text: 'Weeks'
                 },
                 {
-                    value: 'mon',
+                    value: 'months',
                     text: 'Months'
                 },
                 {
-                    value: 'year',
+                    value: 'years',
                     text: 'Years'
-                },
-            ],
-            intervals: [
-                {
-                    value: '1 day',
-                    text: 'Daily'
-                },
-                {
-                    value: '1 week',
-                    text: 'Weekly'
-                },
-                {
-                    value: '2 weeks',
-                    text: 'Biweekly'
-                },
-                {
-                    value: '1 month',
-                    text: 'Monthly'
-                },
-                {
-                    value: '3 months',
-                    text: 'Quarterly'
-                },
-                {
-                    value: '1 year',
-                    text: 'Yearly'
                 },
             ],
 		};
@@ -556,9 +530,14 @@ export default {
         }
         if(this.my_order.recurring_interval != null){
             [this.recurring_interval.count, this.recurring_interval.unit] = this.my_order.recurring_interval.split(' ');
+            this.recurring_interval.unit = this.formatUnit(this.recurring_interval.unit);
         }
+        console.log(this.my_order.renewal_interval);
         if(this.my_order.renewal_interval != null){
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
+            console.log(this.renewal_interval.unit);
+            this.renewal_interval.unit = this.formatUnit(this.renewal_interval.unit);
+            console.log(this.renewal_interval.unit);
         }
         this.my_order.order_status_id = this.my_order.order_status_id;
 	},
@@ -591,8 +570,6 @@ export default {
                 this.$http.post('/order',this.my_order).then(response => {
                     this.task_name = this.my_order.name;
                     this.my_order.id = response.data.id;
-                    
-                    console.log('saved:'+this.task_name);
                 })
             }
             else{
@@ -644,6 +621,15 @@ export default {
                 this.$emit('reload-orders', response.data[0]);
                 this.reload = false;
             })
+        },
+        formatUnit(unit) {
+            if(unit.substring(0,3) == 'mon'){
+                unit = 'months'
+            }
+            if(unit.substring(unit.length - 1) != 's'){
+                unit = unit + 's'; 
+            }
+            return unit;
         }
 	},
 	computed:{

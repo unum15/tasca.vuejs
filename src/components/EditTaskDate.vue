@@ -1,6 +1,18 @@
 <template>
 <div>
   <b-row>
+    <b-col>
+      <b-form-group label="Day Notes">
+          <b-form-textarea
+            type="text"
+            @input="save"
+            v-model="my_date.notes"
+          >
+          </b-form-textarea>
+      </b-form-group>
+    </b-col>
+  </b-row>
+  <b-row>
      <b-col>
         <b-form-group label="Day">
             <b-form-input
@@ -35,18 +47,6 @@
       <b-button variant="danger" size="sm" @click="deleteDate">Delete</b-button>
     </b-col>
   </b-row>
-  <b-row>
-    <b-col>
-      <b-form-group label="Day Notes">
-          <b-form-input
-            type="text"
-            @change="save"
-            v-model="my_date.notes"
-          >
-          </b-form-input>
-      </b-form-group>
-    </b-col>
-  </b-row>
 </div>
 </template>
 <script>
@@ -75,6 +75,9 @@ export default {
       this.$emit('remove-task-date', this.my_date);
     },
     save(){
+      if(this.my_date.task_id === null){
+        return;
+      }
       if(this.my_date.id === null){
           this.$http.post('/task_date',this.my_date)
             .then((results) => {
