@@ -48,7 +48,7 @@
 								</EditOrder>
             </b-tab>
         </b-tabs>
-        <b-button variant="secondary" @click="newOrder" >Add New Order</b-button>
+        <b-button variant="secondary" @click="newOrder" >Add New {{ order_status_type.name }}</b-button>
     </div>
 </template>
 <script>
