@@ -439,7 +439,7 @@
                             <b-form-group label="Client Message">
                                 <b-form-textarea
                                     type="text"
-                                    @change="save"
+                                    @input="save"
                                     v-model="my_order.renewal_message"
                                     placeholder="It's time to renew your service."
                                 >
@@ -495,11 +495,11 @@ export default {
             task_name: null,
             units: [
                 {
-                    value: 'day',
+                    value: 'days',
                     text: 'Days'
                 },
                 {
-                    value: 'week',
+                    value: 'weeks',
                     text: 'Weeks'
                 },
                 {
@@ -507,7 +507,7 @@ export default {
                     text: 'Months'
                 },
                 {
-                    value: 'year',
+                    value: 'years',
                     text: 'Years'
                 },
             ],
@@ -532,6 +532,7 @@ export default {
             [this.recurring_interval.count, this.recurring_interval.unit] = this.my_order.recurring_interval.split(' ');
             this.recurring_interval.unit = this.formatUnit(this.recurring_interval.unit);
         }
+        console.log(this.my_order.renewal_interval);
         if(this.my_order.renewal_interval != null){
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
             console.log(this.renewal_interval.unit);

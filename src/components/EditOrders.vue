@@ -118,7 +118,6 @@ export default {
 				recurrences: 1,
 				renewable: false,
 				service_window: this.default_service_window,
-				frequency: 0,
 				notes: null,
 				tasks: []
 				
