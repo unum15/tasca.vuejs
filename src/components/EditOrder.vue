@@ -171,7 +171,8 @@
                             <b-form-group label="Approval Date">
                                 <b-form-input
                                     type="date"
-                                    @input="save"
+                                    @change="updateStartDate();"
+                                    @input="save();"
                                     v-model="my_order.approval_date"
                                 >
                                 </b-form-input>
@@ -200,9 +201,8 @@
                         </b-col>
                     </b-row>
                     <b-row v-if="(order.order_status_type_id==1)" style="border: 1px solid black;">
-                        
                         <b-col>
-                            <b-form-group label="Recurrences">
+                            <b-form-group label="">
                                 <b-form-checkbox
                                     @input="save"
                                     v-model="my_order.recurring"
@@ -210,39 +210,42 @@
                                     :unchecked-value="false"
                                 >
                                 </b-form-checkbox>
+                                <div>Recurrences</div>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Times">
+                            <b-form-group label="">
                                 <b-form-input
                                     type="number"
                                     @change="save"
                                     v-model="my_order.recurrences"
                                 >
                                 </b-form-input>
+                                <div>Times</div>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Every">
+                            <b-form-group label="">
                                 <b-form-input
                                     type="number"
                                     @change="save"
                                     v-model="recurring_interval.count"
                                 >
                                 </b-form-input>
+                                <div>Every</div>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Frequency">
+                            <b-form-group label="">
                                 <b-form-select
                                     @input="save"
                                     :options="units"
                                     v-model="recurring_interval.unit"
                                     >
                                 </b-form-select>
+                                <div>Frequency</div>
                             </b-form-group>
                         </b-col>
-                        
                     </b-row>
                 </b-container>
             </b-tab>
@@ -287,7 +290,7 @@
                     </b-form-textarea>
                 </b-form-group>
             </b-tab>
-            <b-tab title="Billing" my_order.id !== null>
+            <b-tab title="Billing"  v-if="my_order.id !== null">
                 <b-container fluid>
                     <b-row>
                         <b-col>
@@ -394,7 +397,7 @@
                         <b-col>
                             <b-form-group label="Notification Lead(in days)">
                                 <b-form-input
-                                    type="text"
+                                    type="number"
                                     @change="save"
                                     v-model="my_order.notification_lead"
                                 >
@@ -406,7 +409,7 @@
                         <b-col>
                             <b-form-group label="Times">
                                 <b-form-input
-                                    type="text"
+                                    type="number"
                                     @change="save"
                                     v-model="my_order.renewal_count"
                                 >
@@ -544,13 +547,6 @@ export default {
             if((this.my_order.name != null) && (this.my_order.description == null)){
                 this.my_order.description = this.my_order.name;
             }
-            if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
-                this.my_order.start_date = this.my_order.approval_date;
-            }
-            if(this.my_order.approval_date === '') {
-                this.my_order.approval_date = null;
-                this.my_order.start_date = null;
-            }
             if((this.my_order.date === null)||(this.my_order.name === null)||(this.my_order.description === null)){
                 return;
             }
@@ -627,6 +623,15 @@ export default {
                 unit = unit + 's'; 
             }
             return unit;
+        },
+        updateStartDate(){
+            if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
+                this.my_order.start_date = this.my_order.approval_date;
+            }
+            if(this.my_order.approval_date === '') {
+                this.my_order.approval_date = null;
+                this.my_order.start_date = null;
+            }
         }
 	},
 	computed:{

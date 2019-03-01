@@ -26,7 +26,6 @@ export default {
     }
   },
   created() {
-    console.log(this.task_id);
     if(this.task_id == null){
       this.newDate();
       return;
@@ -42,7 +41,6 @@ export default {
   },
   methods: {
     newDate: function(){
-      console.log(this.task_id);
       var date = {
         id: null,
         date: null,
