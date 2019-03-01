@@ -190,13 +190,11 @@ export default {
 				return;
 			}
 			if(this.my_task.id === null){
-				console.log('save');
 				this.$http.post('/task',this.my_task).then(response => {
 					this.my_task.id = response.data.id;
 				})
 			}
 			else{
-			console.log('save');
 				this.$http.patch('/task/'+this.my_task.id,this.my_task).then(response => {
 					this.my_task.id = response.data.id;
 				})

@@ -164,7 +164,7 @@
                     </b-row>
                 </b-container>
             </b-tab>
-            <b-tab title="Calendar">
+            <b-tab title="Calendar" v-if="my_order.id !== null">
                 <b-container fluid>
                     <b-row>
                         <b-col>
@@ -199,7 +199,7 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
-                    <b-row v-if="(order.order_status_type_id==1)">
+                    <b-row v-if="(order.order_status_type_id==1)" style="border: 1px solid black;">
                         
                         <b-col>
                             <b-form-group label="Recurrences">
@@ -246,7 +246,7 @@
                     </b-row>
                 </b-container>
             </b-tab>
-            <b-tab title="Tasks">
+            <b-tab title="Tasks" v-if="my_order.id !== null">
                 <EditTasks
                     v-if="my_order.id != null"
                     :order="my_order"
@@ -258,7 +258,7 @@
                     >
                 </EditTasks>
             </b-tab>
-            <b-tab title="Notes">
+            <b-tab title="Notes" v-if="my_order.id !== null">
                 <b-form-group label="Location">
                     <b-form-textarea
                         v-model="my_order.location"
@@ -287,7 +287,7 @@
                     </b-form-textarea>
                 </b-form-group>
             </b-tab>
-            <b-tab title="Billing">
+            <b-tab title="Billing" my_order.id !== null>
                 <b-container fluid>
                     <b-row>
                         <b-col>
@@ -367,7 +367,7 @@
                     </b-row>
                 </b-container>
             </b-tab>
-            <b-tab title="Renewing" v-if="isServiceOrder">
+            <b-tab title="Renewing" v-if="isServiceOrder && (my_order.id !== null)">
                 <b-container fluid>
                     <b-row>
                         <b-col>
@@ -532,12 +532,9 @@ export default {
             [this.recurring_interval.count, this.recurring_interval.unit] = this.my_order.recurring_interval.split(' ');
             this.recurring_interval.unit = this.formatUnit(this.recurring_interval.unit);
         }
-        console.log(this.my_order.renewal_interval);
         if(this.my_order.renewal_interval != null){
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
-            console.log(this.renewal_interval.unit);
             this.renewal_interval.unit = this.formatUnit(this.renewal_interval.unit);
-            console.log(this.renewal_interval.unit);
         }
         this.my_order.order_status_id = this.my_order.order_status_id;
 	},

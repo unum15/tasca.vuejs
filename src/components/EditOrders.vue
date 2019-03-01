@@ -149,8 +149,6 @@ export default {
 				this.orders = response.data
 				if(this.selected_order_id != null){
 					var selected_index = this.orders.findIndex( o => o.id == this.selected_order_id);
-					console.log('id:' + this.selected_order_id)
-					console.log('index:' + selected_index)
 					if(selected_index != null){
 						this.current_tab = selected_index;
 					}
@@ -181,6 +179,7 @@ export default {
   watch:{
 		reload_count() {
 			this.change_tab = true;
+			console.log('load orders:' + this.order_status_type.id)
 			this.loadOrders();
 		}
   }
