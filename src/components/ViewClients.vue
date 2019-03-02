@@ -23,6 +23,9 @@
                 <template slot="name" slot-scope="data">
                     <a :href="'/client/' + data.item.id"> {{ data.value }} </a>
                 </template>
+                <template slot="projects" slot-scope="data">
+                    <a :href="'/client/' + data.item.id + '/projects'"> {{ data.value }} </a>
+                </template>
             </b-table>
         </main>
     </div>
@@ -43,6 +46,11 @@ export default {
                     key: 'name',
                     label: 'Client Name',
                     sortable: true
+                },
+                {
+                    key: 'projects',
+                    label: 'Projects',
+                    sortable: false
                 },
                 {
                     key: 'client_type.name',

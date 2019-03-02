@@ -1,5 +1,6 @@
 <template>
   <div>
+    <TopMenu v-if="this.client_id === null"></TopMenu>
     <b-container fluid>
       <b-row>
         <b-col>
@@ -61,18 +62,20 @@
 <script>
 import moment from 'moment'
 import EditProject from './EditProject';
+import TopMenu from './TopMenu'
 export default {
   name: 'EditProjects',
   components: {
     'EditProject': EditProject,
+    'TopMenu': TopMenu
   },
   props: {
-    client_id: {required: true},
-    settings: {required: true},
-    contacts: {required: true},
-    properties: {required: true},
+    client_id: {default: null},
+    settings: {default: null},
+    contacts: {default: null},
+    properties: {default: null},
     contact_id: {default: null},
-    default_property_id: {required: true}
+    default_property_id: {default: null}
   },
   data () {
     return {
@@ -144,9 +147,19 @@ export default {
     },
     getProjects(){
       this.projects = [];
-      this.$http.get('/projects?client_id=' + this.client_id+ '&completed=' + this.filter.completed).then(response => {
-        this.projects = response.data
-      })
+      if(this.client_id){
+        this.$http.get('/projects?client_id=' + this.client_id+ '&completed=' + this.filter.completed).then(response => {
+          this.projects = response.data
+        })
+      }
+      else{
+        this.$http.get('/settings').then(response => {
+          this.settings = response.data
+        })
+        this.$http.get('/projects?completed=' + this.filter.completed).then(response => {
+          this.projects = response.data
+        })
+      }
     },
     showTab (index) {
       if((this.filter.name ==  null) || (this.filter.name == "")){

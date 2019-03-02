@@ -6,6 +6,7 @@ import ViewClients from '@/components/ViewClients'
 import ViewContacts from '@/components/ViewContacts'
 import ViewProperties from '@/components/ViewProperties'
 import ViewProjects from '@/components/ViewProjects'
+import EditProjects from '@/components/EditProjects'
 import ViewOrders from '@/components/ViewOrders'
 import ViewTasks from '@/components/ViewTasks'
 import LoginForm from '@/components/LoginForm'
@@ -45,6 +46,10 @@ export default new Router({
         {
           path: 'order/:order_id',
           component: EditClient
+        },
+        {
+          path: 'projects',
+          component: EditProjects
         }
       ]
     },
@@ -64,9 +69,14 @@ export default new Router({
       component: ViewProperties
     },
     {
-      path: '/projects',
+      path: '/projects/view',
       name: 'ViewProjects',
       component: ViewProjects
+    },
+    {
+      path: '/projects/edit',
+      name: 'EditProjects',
+      component: EditProjects
     },
     {
       path: '/orders',
