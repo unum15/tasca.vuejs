@@ -23,7 +23,7 @@
 				<b-form-group label="Contact">
 					<b-form-select
 						@input="save"
-						:options="contacts"
+						:options="my_contacts"
 						value-field="id"
 						text-field="name"
 						required
@@ -66,7 +66,7 @@
 			<b-tab v-if="my_project.id" v-for="status_type in order_status_types" :key="status_type.id" :title="status_type.name">
 				<EditOrders
 					:project="my_project"
-               :properties="properties"
+               :properties="my_properties"
 					:settings="settings"
 					:order_status_type="status_type"
 					:actions="order_actions"
@@ -112,10 +112,10 @@ export default {
         'EditOrders': EditOrders
     },
 	props: {
-        contacts: {required: true},
-        properties: {required: true},
-        settings: {required: true},
-        project: {required: true},
+      contacts: {required: true},
+      properties: {required: true},
+      settings: {required: true},
+      project: {required: true},
 		order_status_types: {required: true},
 		order_actions: {required: true},
 		order_categories: {required: true},
@@ -137,12 +137,24 @@ export default {
          project_tab: 0,
          reload_count: 0,
          currentTab: 0,
-         changeToOrderId: null
+         changeToOrderId: null,
+         my_contacts: [],
+         my_properties: []
 		};
 	},
 	created() {
         this.my_project=this.project;
         this.help_order = this.settings.help_project_general;
+        if(this.contacts.length == 0){
+         this.$http.get('/contacts?client_id=' + this.my_project.client_id).then(response => {
+           this.my_contacts = response.data
+         })
+        }
+        if(this.properties.length == 0){
+         this.$http.get('/properties?client_id=' + this.my_project.client_id).then(response => {
+           this.my_properties = response.data
+         })
+        }
     },
 	methods: {
 		deleteProject () {
@@ -208,8 +220,6 @@ export default {
 			}
 		},
       reloadOrders(order){
-         console.log('reloading project');
-         console.log(order);
          if(order){
             this.reload_count++;
             this.currentTab = order.order_status_type_id;

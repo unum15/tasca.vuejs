@@ -32,6 +32,9 @@
       >
       <template slot="title" style="text-align:left">
         <div style="text-align:left">
+          <div v-if="client_id === null">
+            {{ project.client.name }}
+          </div>
           {{ project.name === null ? 'New project' : project.name.substr(0,20) }}
         </div>
       </template>
@@ -40,7 +43,7 @@
             :project="project"
             :contacts="contacts"
             :properties="properties"
-            :settings="settings"
+            :settings="my_settings"
             :order_priorities="order_priorities"
 						:order_types="order_types"
 						:order_statuses="order_statuses"
@@ -71,9 +74,9 @@ export default {
   },
   props: {
     client_id: {default: null},
-    settings: {default: null},
-    contacts: {default: null},
-    properties: {default: null},
+    settings: {default: () => {}},
+    contacts: {default: () => []},
+    properties: {default: () => []},
     contact_id: {default: null},
     default_property_id: {default: null}
   },
@@ -92,6 +95,7 @@ export default {
 			task_actions: [],
 			task_types: [],
       order_status_types: [],
+      my_settings: null,
       filter: {
         completed : false,
         name: null,
@@ -148,13 +152,14 @@ export default {
     getProjects(){
       this.projects = [];
       if(this.client_id){
+        this.my_settings = this.settings
         this.$http.get('/projects?client_id=' + this.client_id+ '&completed=' + this.filter.completed).then(response => {
           this.projects = response.data
         })
       }
       else{
         this.$http.get('/settings').then(response => {
-          this.settings = response.data
+          this.my_settings = response.data
         })
         this.$http.get('/projects?completed=' + this.filter.completed).then(response => {
           this.projects = response.data
