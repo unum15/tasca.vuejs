@@ -153,10 +153,16 @@ export default {
            this.my_contacts = response.data
          })
         }
+        else{
+         this.my_contacts = this.contacts
+        }
         if(this.properties.length == 0){
          this.$http.get('/properties?client_id=' + this.my_project.client_id).then(response => {
            this.my_properties = response.data
          })
+        }
+        else{
+         this.my_properties = this.properties
         }
     },
 	methods: {
