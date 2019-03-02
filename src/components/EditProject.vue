@@ -7,6 +7,9 @@
             <b-row>
             <b-col cols="8">
 	<b-container fluid>
+      <div v-if="contacts.length == 0" style="font-weight:bold">
+         {{ my_project.client.name }}
+      </div>
 		<b-form-group label="Project Name">
 			<b-form-input
 				type="text"

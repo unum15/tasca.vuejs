@@ -31,10 +31,7 @@
         v-if="showTab(index)"
       >
       <template slot="title" style="text-align:left">
-        <div style="text-align:left">
-          <div v-if="client_id === null">
-            {{ project.client.name }}
-          </div>
+        <div v-b-popover.hover="project.client.name" style="text-align:left">
           {{ project.name === null ? 'New project' : project.name.substr(0,20) }}
         </div>
       </template>
