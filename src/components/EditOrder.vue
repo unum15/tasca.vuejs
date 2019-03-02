@@ -171,8 +171,7 @@
                             <b-form-group label="Approval Date">
                                 <b-form-input
                                     type="date"
-                                    @change="updateStartDate();"
-                                    @input="save();"
+                                    @input="updateStartDate();save();"
                                     v-model="my_order.approval_date"
                                 >
                                 </b-form-input>
@@ -588,7 +587,7 @@ export default {
                 this.my_order.order_status_type_id = 2;
                 this.reload = true;
             };
-            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
+            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date === null)){
                 this.my_order.order_status_type_id = 1
                 this.reload = true;
             };
@@ -625,10 +624,11 @@ export default {
             return unit;
         },
         updateStartDate(){
+            console.log('update');
             if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
                 this.my_order.start_date = this.my_order.approval_date;
             }
-            if(this.my_order.approval_date === '') {
+            if((this.my_order.approval_date === '') || (this.my_order.approval_date === null)){
                 this.my_order.approval_date = null;
                 this.my_order.start_date = null;
             }
@@ -642,7 +642,7 @@ export default {
             if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
                 return true;
             }
-            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
+            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date === null)){
                 return true;
             };
             var pending_days_out = localStorage.getItem('pending_days_out');
@@ -672,6 +672,9 @@ export default {
             return true;
         },
         convertButtonLabel(){
+            if(this.my_order.approval_date === null){
+                return "Convert To Service Order";
+            }
             var pending_days_out = localStorage.getItem('pending_days_out');
             var today = moment();
             var start_date = moment(this.my_order.start_date);
