@@ -141,7 +141,8 @@ export default {
         client_id: this.client_id,
         contact_id: this.contact_id,
         notes: null,
-        open_date: moment().format('YYYY-MM-DD')
+        open_date: moment().format('YYYY-MM-DD'),
+        client: {}
       };
       this.projects.push(project);
       this.change_tab = true;

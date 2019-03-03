@@ -27,6 +27,11 @@
 							:title="order.name !== null ? order.name : 'Order ' + (order.id !== null ? order.id : 'New')"
 							v-if="showTab(order)"
 							>
+								<template slot="title" style="text-align:left">
+									<div style="text-align:left">
+										{{ order.name !== null ? order.name : 'Order ' + (order.id !== null ? order.id : 'New') }}
+									</div>
+								</template>
                 <EditOrder
 									:properties="properties"
 									:order="order"
@@ -122,6 +127,7 @@ export default {
 				tasks: []
 				
 			};
+			console.log(order.start_date);
 			this.orders.push(order);
 			this.change_tab = true;
 		},

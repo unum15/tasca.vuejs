@@ -2,6 +2,11 @@
   <div>
     <b-tabs vertical pills v-model="current_tab">
       <b-tab v-for="contact in my_contacts" :key="contact.id" :title="contact.name===null?'New Contact':contact.name">
+        <template slot="title" style="text-align:left">
+          <div style="text-align:left">
+            {{ contact.name===null?'New Contact':contact.name }}
+          </div>
+        </template>
         <EditContact
           :client_id="client_id"
           :contact_methods="contact_methods"

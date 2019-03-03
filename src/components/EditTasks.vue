@@ -19,6 +19,11 @@
 					:title="task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New')"
 					v-if="showTab(task)"
 				>
+					<template slot="title" style="text-align:left">
+						<div style="text-align:left">
+							{{ task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New') }}
+						</div>
+					</template>
 					<EditTask
 						:order="order"
 						:task="task"
