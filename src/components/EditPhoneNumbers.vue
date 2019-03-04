@@ -34,11 +34,14 @@ export default {
           this.$http.get('/phone_numbers?contact_id=' + this.contact_id).
           then( results => { this.phone_numbers = results.data })
         }
+        else{
+          this.newPhoneNumber()
+        }
     })
     
   },
   methods: {
-    newPhoneNumber: function() {
+    newPhoneNumber() {
       var phone_number = {
         id: null,
         phone_number_type_id: null,

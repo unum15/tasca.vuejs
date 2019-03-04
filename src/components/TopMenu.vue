@@ -12,8 +12,8 @@
                       <em>Clients</em>
                     </template>
                     <b-dropdown-item href="/clients">Clients</b-dropdown-item>
-                    <b-dropdown-item href="/quick_client">New Quick Form</b-dropdown-item>
-                    <b-dropdown-item href="/client">New Full Form</b-dropdown-item>
+                    <b-dropdown-item href="/quick_client">New Client Quick Form</b-dropdown-item>
+                    <b-dropdown-item href="/client">New Client Full Form</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
