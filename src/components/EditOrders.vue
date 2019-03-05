@@ -54,6 +54,7 @@
             </b-tab>
         </b-tabs>
         <b-button variant="secondary" @click="newOrder" >Add New {{ order_status_type.name }}</b-button>
+				<b-button variant="secondary" @click="changeTab" >Last</b-button>
     </div>
 </template>
 <script>
@@ -161,6 +162,9 @@ export default {
 					}
 				}
 			})
+		},
+		changeTab(){
+			this.current_tab = this.orders.length-1;
 		}
 	},  
 	computed: {
@@ -178,17 +182,24 @@ export default {
 		},
 	},
   updated() {
+		console.log('change' + this.change_tab);
+		console.log('length:' + this.orders.length);
+		console.log('tab:' + this.current_tab);
 		if(this.change_tab){
+			if(this.current_tab == this.orders.length-1){
+				this.change_tab =  false;
+			}
 			this.current_tab = this.orders.length-1;
-			this.change_tab =  false;
+			console.log(this.current_tab)
+			
 		}
   },
   watch:{
 		reload_count() {
 			this.change_tab = true;
-			console.log('load orders:' + this.order_status_type.id)
 			this.loadOrders();
-		}
+		},
+		change_tab(){}
   }
 }
 </script>
