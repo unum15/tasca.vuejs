@@ -51,17 +51,17 @@
               </b-row>
               <b-row>
                 <b-col>
+                    <EditPhoneNumbers
+                        :contact_id="contact.id"
+                        :settings="settings"
+                      ></EditPhoneNumbers>
+                </b-col>
+                <b-col>
                     <EditEmails
                         :contact_id="contact.id"
                         :settings="settings"
                      ></EditEmails>
                     
-                </b-col>
-                <b-col>
-                    <EditPhoneNumbers
-                        :contact_id="contact.id"
-                        :settings="settings"
-                      ></EditPhoneNumbers>
                 </b-col>
               </b-row>
               <b-row>
@@ -80,9 +80,21 @@
                         :options="contact_methods"
                         value-field="id"
                         text-field="name"
-                        v-model="my_contact.contact_method_id">
+                        v-model="contact.contact_method_id">
                       </b-form-select>
                     </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <b-form-group label="Referred By">
+                    <b-form-input
+                      @change="save"
+                      type="text"
+                      v-model="client.referred_by"
+                      placeholder="John Doe">
+                    </b-form-input>
+                  </b-form-group>
                 </b-col>
               </b-row>
               <b-row>
@@ -115,43 +127,274 @@
                 </b-col>
               </b-row>
               <b-row>
+                  <b-col>
+                      <b-form-group label="Property Name">
+                        <b-form-input
+                          type="text"
+                          @change="save"
+                          v-model="property.name"
+                          required
+                          :state="property.name != null"
+                          placeholder="Home">
+                        </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                      
+                  </b-col>
+              </b-row>
+              <b-row>
+                  <b-col>
+                      <b-form-group label="Property Type">
+                        <b-form-select
+                          @change="save"
+                          :options="property_types"
+                          value-field="id"
+                          text-field="name"
+                          required
+                          :state="property.property_type_id != null"
+                          v-model="property.property_type_id">
+                        </b-form-select>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                      <b-form-group label="Work Property">
+                        <b-form-checkbox
+                          @change="save"
+                          v-model="property.work_property">
+                        </b-form-checkbox>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                      <b-form-group label="Billing Property">
+                        <b-form-checkbox
+                          @change="save"
+                          v-model="property.billing_property">
+                        </b-form-checkbox>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                      <b-form-group label="Property Name">
+                        <b-form-input
+                          type="text"
+                          @change="save"
+                          v-model="property.name"
+                          placeholder="Home">
+                        </b-form-input>
+                      </b-form-group>
+                  </b-col>
+              </b-row>
+              <b-row>
+                  <b-col>
+                      <b-form-group label="Address Line 1">
+                        <b-form-input
+                          type="text"
+                          @change="save"
+                          v-model="property.address1"
+                          placeholder="123 Main Street">
+                        </b-form-input>
+                      </b-form-group>
+                  </b-col>
+              </b-row>
+              <b-row>
+                  <b-col>
+                      <b-form-group label="Address Line 2">
+                        <b-form-input
+                          type="text"
+                          @change="save"
+                          v-model="property.address2"
+                          placeholder="Suite 100">
+                        </b-form-input>
+                      </b-form-group>
+                  </b-col>
+              </b-row>
+              <b-row>
+                  <b-col>
+                      <b-form-group label="City">
+                        <b-form-input
+                          type="text"
+                          @change="save"
+                          v-model="property.city"
+                          required
+                          :state="property.city != null"
+                          placeholder="Salt Lake City">
+                        </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                      <b-form-group label="State">
+                        <b-form-input
+                          type="text"
+                          @change="save"
+                          v-model="property.state"
+                          required
+                          :state="property.state != null"
+                          placeholder="UT">
+                        </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                      <b-form-group label="Zip">
+                        <b-form-input
+                          type="text"
+                          @change="save"
+                          v-model="property.zip"
+                          placeholder="84555">
+                        </b-form-input>
+                      </b-form-group>
+                  </b-col>
+              </b-row>
+              <b-row>
                 <b-col>
-                  <b-form-group label="Referred By">
+                  <b-form-group label="Order Name">
                     <b-form-input
-                      @change="save"
-                      type="text"
-                      v-model="client.referred_by"
-                      placeholder="John Doe">
+                        type="text"
+                        @change="save"
+                        v-model="order.name"
+                        required
+                        :state="order.name != null"
+                        placeholder="New Order Name"
+                        >
                     </b-form-input>
                   </b-form-group>
                 </b-col>
               </b-row>
-              <b-row>
-                <b-col>
-                <b-form-group label="Notes">
-                  <b-form-textarea
-                    @input="save"
-                    v-model="client.notes"
-                    :rows="3"
-                    :max-rows="6"
-                    placeholder="Notes about this client.">
-                  </b-form-textarea>
-                </b-form-group>
-                </b-col>
+                <b-row>
+                   <b-col>
+                       <b-form-group label="Description">
+                           <b-form-input
+                               @change="save"
+                               v-model="order.description"
+                               placeholder="What needs to be done?"
+                               required
+                               ref='description'
+                               :state="order.description != null"
+                               >
+                           </b-form-input>
+                       </b-form-group>
+                   </b-col>
+               </b-row>
+               <b-row>
+                   <b-col>
+                       <b-form-group label="Category">
+                           <b-form-select
+                               @change="save"
+                               :options="order_categories"
+                               value-field="id"
+                               text-field="name"
+                               v-model="order.order_category_id"
+                               required
+                               :state="order.order_category_id != null"
+                               >
+                           </b-form-select>
+                       </b-form-group>
+                   </b-col>
+                   <b-col>
+                       <b-form-group label="Priority">
+                           <b-form-select
+                               @change="save"
+                               :options="order_priorities"
+                               value-field="id"
+                               text-field="name"
+                               v-model="order.order_priority_id"
+                               :state="order.order_priority_id != null"
+                               required
+                               >
+                           </b-form-select>
+                       </b-form-group>
+                   </b-col>
+                   <b-col>
+                       <b-form-group label="Type">
+                           <b-form-select
+                               @change="save"
+                               :options="order_types"
+                               value-field="id"
+                               text-field="name"
+                               v-model="order.order_type_id"
+                               :state="order.order_type_id != null"
+                               required
+                               >
+                           </b-form-select>
+                       </b-form-group>
+                   </b-col>
+               </b-row>
+               <b-row>
+                   <b-col>
+                       <b-form-group label="Approval Date">
+                           <b-form-input
+                               type="date"
+                               @change="updateStartDate();"
+                               @input="save();"
+                               v-model="order.approval_date"
+                           >
+                           </b-form-input>
+                       </b-form-group>
+                   </b-col>
+                   <b-col>
+                       <b-form-group label="Start Date">
+                           <b-form-input
+                               type="date"
+                               @input="save"
+                               v-model="order.start_date"
+                               :disabled="order.approval_date == null"
+                           >
+                           </b-form-input>
+                       </b-form-group>
+                   </b-col>
+               </b-row>
+               <b-row>
+                  <b-col>
+                      <b-form-group label="Category">
+                          <b-form-select
+                              :options="task_categories"
+                              @change="save"
+                              value-field="id"
+                              text-field="name"
+                              v-model="task.task_category_id"
+                              >
+                          </b-form-select>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                      <b-form-group label="Status">
+                          <b-form-select
+                              :options="task_statuses"
+                              @change="save"
+                              value-field="id"
+                              text-field="name"
+                              v-model="task.task_status_id"
+                              >
+                          </b-form-select>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                      <b-form-group label="Action">
+                          <b-form-select
+                              :options="task_actions"
+                              @change="save"
+                              value-field="id"
+                              text-field="name"
+                              v-model="task.task_action_id"
+                              >
+                          </b-form-select>
+                      </b-form-group>
+                  </b-col>
               </b-row>
-            
+              <b-button @click="save">New</b-button>
+              <b-button @click="save">Edit</b-button>
             </b-container>
             </b-col>
             <b-col v-if="settings.help_show == 'true'">
               {{ settings.help_client }}
             </b-col>
             </b-row>
-            
             </b-container>
+      
     </main>
   </div>
 </template>
 <script>
+import moment from 'moment'
 import TopMenu from './TopMenu'
 import EditEmails from './EditEmails'
 import EditPhoneNumbers from './EditPhoneNumbers'
@@ -168,18 +411,21 @@ export default {
       contact_methods: [],
       contact_types: [],
       activity_levels: [],
+      property_types: [],
+      order_categories: [],
+      order_priorities: [],
+      order_types: [],
+      task_categories: [],
+      task_statuses: [],
+      task_actions: [],
       contact_methods_loading: true,
       contact_types_loading: true,
-      activity_levels_loading: true,
       client_types_loading: true,
-      tab_index: 0,
+      property_types_loading: true,
       settings: {},
       billing_contact: true,
       showSaveFailed: false,
       showSaveSuccess: false,
-      contacts: [],
-      properties: [],
-      first_update: true,
       client: {
         id: null,
         client_type_id: null,
@@ -188,12 +434,22 @@ export default {
         billing_property_id: null,
         billing_contact_id: null,
         referred_by: '',
-        notes: '',
-        contacts: [],
-        properties: []
       },
       contact: {
         id: null
+      },
+      property: {
+        id: null,
+        name: 'Home',
+        billing_property: true,
+        work_property: true
+      },
+      order: {
+        id: null
+      },
+      task: {
+        id: null,
+        task_billing_type_id: 1
       }
     }
   },
@@ -204,6 +460,27 @@ export default {
       this.client.activity_level_id = this.settings.default_activity_level_id
       this.client.contact_method_id = this.settings.default_contact_method_id
       this.contact.contact_type_id = this.settings.default_contact_type_id
+      this.property.property_type_id = this.settings.default_property_type_id
+      this.client.activity_level_id = this.settings.default_activity_level_id
+      this.contact.activity_level_id = this.settings.default_activity_level_id
+      this.property.activity_level_id = this.settings.default_activity_level_id
+      this.order.order_category_id = this.settings.default_order_category_id
+      this.order.order_priority_id = this.settings.default_order_priority_id
+      this.order.order_type_id = this.settings.default_order_type_id
+      
+      this.order.order_status_id = this.settings.default_order_status_id
+      this.order.order_action_id = this.settings.default_order_action_id
+      
+      
+      this.order.approval_date = this.today
+      this.order.start_date = this.today
+      this.order.order_date = this.today
+      this.order.service_window = localStorage.getItem('default_service_window')
+      
+      
+      this.task.task_category_id = this.settings.default_billing_task_category_id
+      this.task.task_status_id = this.settings.default_billing_task_status_id
+      this.task.task_action_id = this.settings.default_billing_task_action_id
     })
     this.$http.get('/client_types').then(response => {
       this.client_types = response.data
@@ -216,6 +493,28 @@ export default {
     this.$http.get('/contact_types').then(response => {
       this.contact_types = response.data
       this.contact_types_loading = false
+    })
+    this.$http.get('/property_types').then(response => {
+      this.property_types = response.data
+      this.property_types_loading = false
+    })
+    this.$http.get('/order_categories').then(response => {
+      this.order_categories = response.data
+    })
+    this.$http.get('/order_priorities').then(response => {
+      this.order_priorities = response.data
+    })
+    this.$http.get('/order_types').then(response => {
+      this.order_types = response.data
+    })
+    this.$http.get('/task_categories').then(response => {
+      this.task_categories = response.data
+    })
+    this.$http.get('/task_statuses').then(response => {
+      this.task_statuses = response.data
+    })
+    this.$http.get('/task_actions').then(response => {
+      this.task_actions = response.data
     })
     this.$http.get('/activity_levels').then(response => {
       this.activity_levels = response.data
@@ -237,6 +536,11 @@ export default {
         this.$http.patch('/client/' + this.client.id,this.client)
       }
     }
+  },
+  computed: {
+    today() {
+			return moment().format('YYYY-MM-DD');
+		},
   },
   updated() {
     if(!this.first_update){
