@@ -1,7 +1,11 @@
 <template>
   <div>
     <b-tabs vertical pills v-model="current_tab">
-      <b-tab v-for="contact in my_contacts" :key="contact.id" :title="contact.name===null?'New Contact':contact.name">
+      <b-tab
+        v-for="(contact, index) in my_contacts"
+        :key="contact.id"
+        :active="isActive(index)"
+      >
         <template slot="title" style="text-align:left">
           <div style="text-align:left">
             {{ contact.name===null?'New Contact':contact.name }}
@@ -15,7 +19,6 @@
           :settings="settings"
           :contact="contact"
           :contact_types="contact_types"
-          @new-contact-mounted="newContactMounted"
           @remove-contact="removeContact"
           ></EditContact>
       </b-tab>
@@ -82,8 +85,9 @@ export default {
         notes: null,
         properties: []
       };
-      this.my_contacts.push(contact);
       this.change_tab = true;
+      this.my_contacts.push(contact);
+      
     },
     existingContact () {
       var id = this.existing_contact_id;
@@ -98,18 +102,13 @@ export default {
     removeContact (contact) {
       this.my_contacts = this.my_contacts.filter(c => c.id !== contact.id);
     },
-    newContactMounted () {
-      this.change_tab = true;
-    }
+    isActive (index) {
+      if((this.change_tab)&&(index == this.contacts.length -1)){
+        return true
+      }
+      return false
+    },
   },
-  updated() {
-		if(this.change_tab){
-			this.current_tab = this.contacts.length-1;
-			this.change_tab =  false;
-		}
-  },
-  watch: {
-  }
 }
 
 </script>

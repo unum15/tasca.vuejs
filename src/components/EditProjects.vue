@@ -25,10 +25,10 @@
     </b-container>
     <b-tabs vertical pills v-model="current_tab">
       <b-tab
-        v-for="project,index in projects"
+        v-for="(project,index) in projects"
         :key="project.id"
-        :title="project.name===null?'New project':project.name.substr(0,20)"
         v-if="showTab(index)"
+        :active="isActive(index)"
       >
       <template slot="title" style="text-align:left">
         <div v-b-popover.hover="project.client.name" style="text-align:left">
@@ -173,15 +173,15 @@ export default {
       }
       return false;
     },
+    isActive (index) {
+      if((this.change_tab)&&(index == this.projects.length -1)){
+        return true
+      }
+      return false
+    },
     removeProject (project) {
       this.projects = this.projects.filter(p => p.id !== project.id);
     }
-  },
-  updated() {
-		if(this.change_tab){
-			this.current_tab = this.projects.length-1;
-			this.change_tab =  false;
-		}
   },
 }
 

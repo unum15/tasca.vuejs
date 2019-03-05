@@ -22,10 +22,10 @@
     </b-container>
         <b-tabs vertical pills v-model="current_tab">
             <b-tab
-							v-for="order in orders"
+							v-for="(order, index) in orders"
 							:key="order.id"
-							:title="order.name !== null ? order.name : 'Order ' + (order.id !== null ? order.id : 'New')"
 							v-if="showTab(order)"
+							:active="isActive(index)"
 							>
 								<template slot="title" style="text-align:left">
 									<div style="text-align:left">
@@ -127,7 +127,6 @@ export default {
 				tasks: []
 				
 			};
-			console.log(order.start_date);
 			this.orders.push(order);
 			this.change_tab = true;
 		},
@@ -161,7 +160,13 @@ export default {
 					}
 				}
 			})
-		}
+		},
+		isActive (index) {
+      if((this.change_tab)&&(index == this.orders.length -1)){
+        return true
+      }
+      return false
+    },
 	},  
 	computed: {
 		today() {
@@ -177,16 +182,9 @@ export default {
 			return null;
 		},
 	},
-  updated() {
-		if(this.change_tab){
-			this.current_tab = this.orders.length-1;
-			this.change_tab =  false;
-		}
-  },
   watch:{
 		reload_count() {
 			this.change_tab = true;
-			console.log('load orders:' + this.order_status_type.id)
 			this.loadOrders();
 		}
   }

@@ -14,10 +14,10 @@
     </b-container>
 			<b-tabs vertical pills v-model="current_tab">
 				<b-tab
-					v-for="task in tasks"
+					v-for="(task, index) in tasks"
 					:key="task.id"
-					:title="task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New')"
 					v-if="showTab(task)"
+					:active="isActive(index)"
 				>
 					<template slot="title" style="text-align:left">
 						<div style="text-align:left">
@@ -105,18 +105,13 @@ export default {
 				show = false;
 			}
 			return show;
-		}
+		},
+		isActive (index) {
+      if((this.change_tab)&&(index == this.tasks.length -1)){
+        return true
+      }
+      return false
+    },
   },
-	updated() {
-		if(this.change_tab){
-			this.current_tab = this.tasks.length-1;
-			this.change_tab =  false;
-		}
-  },
-	watch:{
-		order_name(){
-			//console.log(this.order_name)
-		}
-	}
 }
 </script>
