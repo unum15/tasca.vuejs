@@ -23,13 +23,13 @@
         <b-tabs vertical pills v-model="current_tab">
             <b-tab
 							v-for="(order, index) in orders"
-							:key="order.id"
+							:key="index"
 							v-if="showTab(order)"
 							:active="isActive(index)"
 							>
 								<template slot="title" style="text-align:left">
 									<div style="text-align:left">
-										{{ order.name !== null ? order.name : 'Order ' + (order.id !== null ? order.id : 'New') }}
+										{{ order.name !== null ? order.name : 'Order New' }}
 									</div>
 								</template>
                 <EditOrder
@@ -188,6 +188,6 @@ export default {
 			this.loadOrders();
 		},
 		change_tab(){}
-  }
+  },
 }
 </script>

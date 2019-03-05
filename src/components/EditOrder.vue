@@ -48,6 +48,7 @@
                                     v-model="my_order.description"
                                     placeholder="What needs to be done?"
                                     required
+                                    ref='description'
                                     :state="my_order.description != null"
                                     >
                                 </b-form-input>
@@ -566,6 +567,7 @@ export default {
                 this.$http.post('/order',this.my_order).then(response => {
                     this.task_name = this.my_order.name;
                     this.my_order.id = response.data.id;
+                    this.$nextTick(() => this.$refs.description.$el.focus());
                 })
             }
             else{
