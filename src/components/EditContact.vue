@@ -99,8 +99,8 @@
             </b-col>
         </b-row>
         <b-row>
-                <b-button variant="danger" size="sm" @click="removeContact">Remove Contact</b-button>
-                <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
+          <b-button variant="danger" size="sm" @click="removeContact">Remove Contact</b-button>
+          <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
         </b-row>
     </b-container>
     </b-col>

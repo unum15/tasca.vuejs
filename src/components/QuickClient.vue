@@ -51,11 +51,10 @@
               </b-row>
               <b-row>
                 <b-col>
-                    
-                      <EditEmails
+                    <EditEmails
                         :contact_id="contact.id"
                         :settings="settings"
-                      ></EditEmails>
+                     ></EditEmails>
                     
                 </b-col>
                 <b-col>
@@ -63,6 +62,27 @@
                         :contact_id="contact.id"
                         :settings="settings"
                       ></EditPhoneNumbers>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                    <b-form-group label="Billing Contact">
+                      <b-form-checkbox
+                        @change="save"
+                        v-model="billing_contact">
+                      </b-form-checkbox>
+                    </b-form-group>
+                </b-col>
+                <b-col>
+                    <b-form-group label="Contact Method">
+                      <b-form-select
+                        @change="save"
+                        :options="contact_methods"
+                        value-field="id"
+                        text-field="name"
+                        v-model="my_contact.contact_method_id">
+                      </b-form-select>
+                    </b-form-group>
                 </b-col>
               </b-row>
               <b-row>
@@ -91,30 +111,6 @@
                       placeholder="Smith Household"
                       >
                     </b-form-input>
-                  </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group label="Activity Level">
-                    <b-form-select
-                      @change="save"
-                      :options="activity_levels"
-                      :disabled="activity_levels_loading"
-                      value-field="id"
-                      text-field="name"
-                      v-model="client.activity_level_id">
-                    </b-form-select>
-                  </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group label="Contact Method">
-                    <b-form-select
-                      @change="save"
-                      :options="contact_methods"
-                      :disabled="contact_methods_loading"
-                      value-field="id"
-                      text-field="name"
-                      v-model="client.contact_method_id">
-                    </b-form-select>
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -178,6 +174,7 @@ export default {
       client_types_loading: true,
       tab_index: 0,
       settings: {},
+      billing_contact: true,
       showSaveFailed: false,
       showSaveSuccess: false,
       contacts: [],

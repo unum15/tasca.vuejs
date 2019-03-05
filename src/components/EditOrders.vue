@@ -186,7 +186,8 @@ export default {
 		reload_count() {
 			this.change_tab = true;
 			this.loadOrders();
-		}
+		},
+		change_tab(){}
   }
 }
 </script>
