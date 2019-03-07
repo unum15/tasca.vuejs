@@ -20,7 +20,7 @@
                 <b-form-group label="Name">
                     <b-form-input
                         type="text"
-						@change="save"
+						@change="name_changed();save();"
                         v-model="my_task.name"
 						:state="my_task.name != null"
                         required
@@ -210,6 +210,11 @@ export default {
 				this.my_task.task_category_id = this.settings.default_billing_task_category_id;
 				this.my_task.task_status_id = this.settings.default_billing_task_status_id;
 				this.my_task.task_action_id = this.settings.default_billing_task_action_id;
+			}
+		},
+		name_changed(){
+			if(this.my_task.description === null){
+				this.my_task.description = this.my_task.name;
 			}
 		}
 	},

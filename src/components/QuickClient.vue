@@ -25,7 +25,6 @@
                 <b-col>
                     <b-form-group label="Contact Type">
                       <b-form-select
-                        @change="save"
                         :options="contact_types"
                         :disabled="client_types_loading"
                         value-field="id"
@@ -40,8 +39,8 @@
                   <b-form-group label="Contact Name">
                       <b-form-input
                         type="text"
-                        @change="save"
                         v-model="contact.name"
+                        @change="contactNameChanged"
                         required
                         :state="contact.name != null"
                         placeholder="John Smith">
@@ -68,7 +67,6 @@
                 <b-col>
                     <b-form-group label="Billing Contact">
                       <b-form-checkbox
-                        @change="save"
                         v-model="billing_contact">
                       </b-form-checkbox>
                     </b-form-group>
@@ -76,7 +74,6 @@
                 <b-col>
                     <b-form-group label="Contact Method">
                       <b-form-select
-                        @change="save"
                         :options="contact_methods"
                         value-field="id"
                         text-field="name"
@@ -89,7 +86,6 @@
                 <b-col>
                   <b-form-group label="Referred By">
                     <b-form-input
-                      @change="save"
                       type="text"
                       v-model="client.referred_by"
                       placeholder="John Doe">
@@ -101,7 +97,6 @@
                 <b-col>
                   <b-form-group label="Client Type">
                     <b-form-select
-                      @change="save"
                       :options="client_types"
                       :disabled="client_types_loading"
                       value-field="id"
@@ -116,7 +111,6 @@
                   <b-form-group label="Client Name">
                     <b-form-input
                       type="text"
-                      @change="save"
                       v-model="client.name"
                       :state="client.name != null"
                       required
@@ -131,7 +125,6 @@
                       <b-form-group label="Property Name">
                         <b-form-input
                           type="text"
-                          @change="save"
                           v-model="property.name"
                           required
                           :state="property.name != null"
@@ -147,7 +140,6 @@
                   <b-col>
                       <b-form-group label="Property Type">
                         <b-form-select
-                          @change="save"
                           :options="property_types"
                           value-field="id"
                           text-field="name"
@@ -160,7 +152,6 @@
                   <b-col>
                       <b-form-group label="Work Property">
                         <b-form-checkbox
-                          @change="save"
                           v-model="property.work_property">
                         </b-form-checkbox>
                       </b-form-group>
@@ -168,7 +159,6 @@
                   <b-col>
                       <b-form-group label="Billing Property">
                         <b-form-checkbox
-                          @change="save"
                           v-model="property.billing_property">
                         </b-form-checkbox>
                       </b-form-group>
@@ -177,7 +167,6 @@
                       <b-form-group label="Property Name">
                         <b-form-input
                           type="text"
-                          @change="save"
                           v-model="property.name"
                           placeholder="Home">
                         </b-form-input>
@@ -189,7 +178,6 @@
                       <b-form-group label="Address Line 1">
                         <b-form-input
                           type="text"
-                          @change="save"
                           v-model="property.address1"
                           placeholder="123 Main Street">
                         </b-form-input>
@@ -201,7 +189,6 @@
                       <b-form-group label="Address Line 2">
                         <b-form-input
                           type="text"
-                          @change="save"
                           v-model="property.address2"
                           placeholder="Suite 100">
                         </b-form-input>
@@ -213,7 +200,6 @@
                       <b-form-group label="City">
                         <b-form-input
                           type="text"
-                          @change="save"
                           v-model="property.city"
                           required
                           :state="property.city != null"
@@ -225,7 +211,6 @@
                       <b-form-group label="State">
                         <b-form-input
                           type="text"
-                          @change="save"
                           v-model="property.state"
                           required
                           :state="property.state != null"
@@ -237,7 +222,6 @@
                       <b-form-group label="Zip">
                         <b-form-input
                           type="text"
-                          @change="save"
                           v-model="property.zip"
                           placeholder="84555">
                         </b-form-input>
@@ -249,8 +233,8 @@
                   <b-form-group label="Order Name">
                     <b-form-input
                         type="text"
-                        @change="save"
                         v-model="order.name"
+                        @change="orderNameChanged"
                         required
                         :state="order.name != null"
                         placeholder="New Order Name"
@@ -263,7 +247,6 @@
                    <b-col>
                        <b-form-group label="Description">
                            <b-form-input
-                               @change="save"
                                v-model="order.description"
                                placeholder="What needs to be done?"
                                required
@@ -278,7 +261,6 @@
                    <b-col>
                        <b-form-group label="Category">
                            <b-form-select
-                               @change="save"
                                :options="order_categories"
                                value-field="id"
                                text-field="name"
@@ -292,7 +274,6 @@
                    <b-col>
                        <b-form-group label="Priority">
                            <b-form-select
-                               @change="save"
                                :options="order_priorities"
                                value-field="id"
                                text-field="name"
@@ -306,7 +287,6 @@
                    <b-col>
                        <b-form-group label="Type">
                            <b-form-select
-                               @change="save"
                                :options="order_types"
                                value-field="id"
                                text-field="name"
@@ -324,7 +304,6 @@
                            <b-form-input
                                type="date"
                                @change="updateStartDate();"
-                               @input="save();"
                                v-model="order.approval_date"
                            >
                            </b-form-input>
@@ -334,7 +313,6 @@
                        <b-form-group label="Start Date">
                            <b-form-input
                                type="date"
-                               @input="save"
                                v-model="order.start_date"
                                :disabled="order.approval_date == null"
                            >
@@ -347,7 +325,6 @@
                       <b-form-group label="Category">
                           <b-form-select
                               :options="task_categories"
-                              @change="save"
                               value-field="id"
                               text-field="name"
                               v-model="task.task_category_id"
@@ -359,7 +336,6 @@
                       <b-form-group label="Status">
                           <b-form-select
                               :options="task_statuses"
-                              @change="save"
                               value-field="id"
                               text-field="name"
                               v-model="task.task_status_id"
@@ -371,7 +347,6 @@
                       <b-form-group label="Action">
                           <b-form-select
                               :options="task_actions"
-                              @change="save"
                               value-field="id"
                               text-field="name"
                               v-model="task.task_action_id"
@@ -380,16 +355,15 @@
                       </b-form-group>
                   </b-col>
               </b-row>
-              <b-button @click="save">New</b-button>
-              <b-button @click="save">Edit</b-button>
+              <b-button @click="saveClient">New</b-button>
+              <b-button @click="saveClient">Edit</b-button>
             </b-container>
-            </b-col>
-            <b-col v-if="settings.help_show == 'true'">
-              {{ settings.help_client }}
-            </b-col>
-            </b-row>
-            </b-container>
-      
+          </b-col>
+          <b-col v-if="settings.help_show == 'true'">
+            {{ settings.help_client }}
+          </b-col>
+        </b-row>
+      </b-container>
     </main>
   </div>
 </template>
@@ -445,11 +419,16 @@ export default {
         work_property: true
       },
       order: {
-        id: null
+        id: null,
+        name: null,
+        description: null
       },
       task: {
         id: null,
         task_billing_type_id: 1
+      },
+      project: {
+        id: null
       }
     }
   },
@@ -522,7 +501,7 @@ export default {
     })
   },
   methods: {
-    save () {
+    saveClient() {
       if(this.client.name === null){
         return;
       }
@@ -530,10 +509,110 @@ export default {
         this.$http.post('/client',this.client)
           .then((results) => {
             this.client.id = results.data.id;
+            this.saveContact();
           })
       }
       else{
         this.$http.patch('/client/' + this.client.id,this.client)
+          .then(() => {
+            this.saveContact();
+          })
+      }
+    },
+    saveContact() {
+      if(this.contact.name === null){
+        return;
+      }
+      if(this.contact.id === null){
+        this.$http.post('/contact',this.contact)
+          .then((results) => {
+            this.contact.id = results.data.id;
+            this.saveProperty();
+          })
+      }
+      else{
+        this.$http.patch('/contact/' + this.contact.id,this.contact)
+          .then(() => {
+            this.saveProperty();
+          })
+      }
+    },
+    saveProperty() {
+      if(this.property.name === null){
+        return;
+      }
+      if(this.property.id === null){
+        this.$http.post('/property',this.property)
+          .then((results) => {
+            this.property.id = results.data.id;
+            this.saveProject();
+          })
+      }
+      else{
+        this.$http.patch('/property/' + this.property.id,this.property)
+          .then(() => {
+            this.saveProject();
+          })
+      }
+    },
+    saveProject() {
+      if(this.order.name === null){
+        return;
+      }
+      if(this.project.id === null){
+        this.$http.post('/project',this.project)
+          .then((results) => {
+            this.project.id = results.data.id;
+            this.saveOrder();
+          })
+      }
+      else{
+        this.$http.patch('/project/' + this.project.id,this.project)
+          .then(() => {
+            this.saveOrder();
+          })
+      }
+    },
+    saveOrder() {
+      if(this.order.name === null){
+        return;
+      }
+      if(this.order.id === null){
+        this.$http.post('/order',this.order)
+          .then((results) => {
+            this.order.id = results.data.id;
+            this.saveTask();
+          })
+      }
+      else{
+        this.$http.patch('/order/' + this.order.id,this.order)
+          .then(() => {
+            this.saveOrder();
+          })
+      }
+    },
+    saveTask() {
+      if(this.task.id === null){
+        this.$http.post('/task',this.task)
+          .then((results) => {
+            this.task.id = results.data.id;
+          })
+      }
+      else{
+        this.$http.patch('/task/' + this.task.id,this.task)
+      }
+    },
+    contactNameChanged() {
+      if(this.client.name === null){
+        var names = this.contact.name.split(/\s+/);
+        if(names.length > 1){
+          this.client.name = names[names.length - 1] + ', ' + names[0];
+        }
+      }
+    },
+    orderNameChanged(){
+      if(this.order.description === null){
+        this.order.description = this.order.name;
       }
     }
   },

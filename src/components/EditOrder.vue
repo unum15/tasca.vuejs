@@ -185,7 +185,6 @@
                                     type="date"
                                     @input="save"
                                     v-model="my_order.start_date"
-                                    :disabled="my_order.approval_date == null"
                                 >
                                 </b-form-input>
                             </b-form-group>
