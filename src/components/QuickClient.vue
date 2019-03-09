@@ -541,6 +541,8 @@ export default {
       if(this.property.name === null){
         return;
       }
+      this.property.client_id = this.client.id;
+      this.property.contacts = [ this.contact.id ];
       if(this.property.id === null){
         this.$http.post('/property',this.property)
           .then((results) => {
@@ -559,6 +561,10 @@ export default {
       if(this.order.name === null){
         return;
       }
+      this.project.name = this.order.name;
+      this.project.client_id = this.client.id;
+      this.project.contact_id = this.contact.id;
+      this.project.open_date = this.today;
       if(this.project.id === null){
         this.$http.post('/project',this.project)
           .then((results) => {
@@ -577,6 +583,7 @@ export default {
       if(this.order.name === null){
         return;
       }
+      this.order.project_id = this.project.id;
       if(this.order.id === null){
         this.$http.post('/order',this.order)
           .then((results) => {
@@ -592,6 +599,7 @@ export default {
       }
     },
     saveTask() {
+      this.task.order_id = this.order.id;
       if(this.task.id === null){
         this.$http.post('/task',this.task)
           .then((results) => {

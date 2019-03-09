@@ -50,6 +50,7 @@
                     :options="contact_methods"
                     value-field="id"
                     text-field="name"
+                    :state="my_contact.contact_method_id != null
                     v-model="my_contact.contact_method_id">
                   </b-form-select>
                 </b-form-group>
