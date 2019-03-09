@@ -50,6 +50,7 @@
                     :options="contact_methods"
                     value-field="id"
                     text-field="name"
+                    :state="my_contact.contact_method_id != null
                     v-model="my_contact.contact_method_id">
                   </b-form-select>
                 </b-form-group>
@@ -99,8 +100,8 @@
             </b-col>
         </b-row>
         <b-row>
-                <b-button variant="danger" size="sm" @click="removeContact">Remove Contact</b-button>
-                <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
+          <b-button variant="danger" size="sm" @click="removeContact">Remove Contact</b-button>
+          <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
         </b-row>
     </b-container>
     </b-col>

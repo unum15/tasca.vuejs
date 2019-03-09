@@ -1,5 +1,6 @@
 <template>
   <div>
+    <TopMenu v-if="this.client_id === null"></TopMenu>
     <b-container fluid>
       <b-row>
         <b-col>
@@ -24,13 +25,13 @@
     </b-container>
     <b-tabs vertical pills v-model="current_tab">
       <b-tab
-        v-for="project,index in projects"
+        v-for="(project,index) in projects"
         :key="project.id"
-        :title="project.name===null?'New project':project.name.substr(0,20)"
         v-if="showTab(index)"
+        :active="isActive(index)"
       >
       <template slot="title" style="text-align:left">
-        <div style="text-align:left">
+        <div v-b-popover.hover="project.client.name" style="text-align:left">
           {{ project.name === null ? 'New project' : project.name.substr(0,20) }}
         </div>
       </template>
@@ -39,7 +40,7 @@
             :project="project"
             :contacts="contacts"
             :properties="properties"
-            :settings="settings"
+            :settings="my_settings"
             :order_priorities="order_priorities"
 						:order_types="order_types"
 						:order_statuses="order_statuses"
@@ -61,18 +62,20 @@
 <script>
 import moment from 'moment'
 import EditProject from './EditProject';
+import TopMenu from './TopMenu'
 export default {
   name: 'EditProjects',
   components: {
     'EditProject': EditProject,
+    'TopMenu': TopMenu
   },
   props: {
-    client_id: {required: true},
-    settings: {required: true},
-    contacts: {required: true},
-    properties: {required: true},
+    client_id: {default: null},
+    settings: {default: () => {}},
+    contacts: {default: () => []},
+    properties: {default: () => []},
     contact_id: {default: null},
-    default_property_id: {required: true}
+    default_property_id: {default: null}
   },
   data () {
     return {
@@ -89,6 +92,7 @@ export default {
 			task_actions: [],
 			task_types: [],
       order_status_types: [],
+      my_settings: null,
       filter: {
         completed : false,
         name: null,
@@ -137,16 +141,28 @@ export default {
         client_id: this.client_id,
         contact_id: this.contact_id,
         notes: null,
-        open_date: moment().format('YYYY-MM-DD')
+        open_date: moment().format('YYYY-MM-DD'),
+        client: {}
       };
       this.projects.push(project);
       this.change_tab = true;
     },
     getProjects(){
       this.projects = [];
-      this.$http.get('/projects?client_id=' + this.client_id+ '&completed=' + this.filter.completed).then(response => {
-        this.projects = response.data
-      })
+      if(this.client_id){
+        this.my_settings = this.settings
+        this.$http.get('/projects?client_id=' + this.client_id+ '&completed=' + this.filter.completed).then(response => {
+          this.projects = response.data
+        })
+      }
+      else{
+        this.$http.get('/settings').then(response => {
+          this.my_settings = response.data
+        })
+        this.$http.get('/projects?completed=' + this.filter.completed).then(response => {
+          this.projects = response.data
+        })
+      }
     },
     showTab (index) {
       if((this.filter.name ==  null) || (this.filter.name == "")){
@@ -157,15 +173,15 @@ export default {
       }
       return false;
     },
+    isActive (index) {
+      if((this.change_tab)&&(index == this.projects.length -1)){
+        return true
+      }
+      return false
+    },
     removeProject (project) {
       this.projects = this.projects.filter(p => p.id !== project.id);
     }
-  },
-  updated() {
-		if(this.change_tab){
-			this.current_tab = this.projects.length-1;
-			this.change_tab =  false;
-		}
   },
 }
 

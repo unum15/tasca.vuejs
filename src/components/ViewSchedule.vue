@@ -28,49 +28,49 @@
                 :fields="fields"
                 :filter="filter"
                 >
-                <template slot="task.order_id" slot-scope="data">
-                    <a :href="'/client/'+ data.item.task.order.project.client_id + '/order/' + data.value"> {{ data.value }} </a>
+                <template slot="order_id" slot-scope="data">
+                    <a :href="'/client/'+ data.item.client_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
-                <template slot="task.order.project.client.name" slot-scope="data">
+                <template slot="client" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template slot="task.task_appointment_status.name" slot-scope="data">
+                <template slot="task_appointment_status" slot-scope="data">
                     <b-form-select
                         :options="task_appointment_statuses"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task.task_appointment_status_id"
+                        v-model="data.item.task_appointment_status_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task.task_category.name" slot-scope="data">
+                <template slot="task_category" slot-scope="data">
                     <b-form-select
                         :options="task_categories"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task.task_category_id"
+                        v-model="data.item.task_category_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task.task_status.name" slot-scope="data">
+                <template slot="task_status" slot-scope="data">
                     <b-form-select
                         :options="task_statuses"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task.task_status_id"
+                        v-model="data.item.task_status_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task.task_action.name" slot-scope="data">
+                <template slot="task_action" slot-scope="data">
                     <b-form-select
                         :options="task_actions"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task.task_action_id"
+                        v-model="data.item.task_action_id"
                         >
                     </b-form-select>
                 </template>
@@ -90,13 +90,12 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="task.sort_order" slot-scope="data">
-                    <b-form-select
-                        :options="task_sort_options"
-						@input="save(data.item)"
-                        v-model="data.item.task.sort_order"
+                <template slot="sort_order" slot-scope="data">
+                    <b-form-input
+						@change="save(data.item)"
+                        v-model="data.item.sort_order"
                         >
-                    </b-form-select>
+                    </b-form-input>
                 </template>
                 <template slot="time" slot-scope="data">
                     <b-form-input
@@ -149,52 +148,52 @@ export default {
             modalInfo: { title: '', content: '', order_id: null },
             fields: [
                 {
-                    key: 'task.order.approval_date',
+                    key: 'approval_date',
                     label: 'App Date',
                     sortable: true
                 },
                 {
-                    key: 'task.order_id',
+                    key: 'order_id',
                     label: 'S/WO#',
                     sortable: true
                 },
                 {
-                    key: 'task.task_appointment_status.name',
+                    key: 'task_appointment_status',
                     label: 'C',
                     sortable: true
                 },
                 {
-                    key: 'task.order.project.client.name',
+                    key: 'client',
                     label: 'Client',
                     sortable: true
                 },
                 {
-                    key: 'task.order.properties[0].name',
+                    key: 'property',
                     label: 'Property',
                     sortable: true
                 },
                 {
-                    key: 'task.description',
+                    key: 'description',
                     label: 'Description',
                     sortable: true
                 },
                 {
-                    key: 'task.order.order_priority.name',
+                    key: 'order_priority',
                     label: 'Pri',
                     sortable: true
                 },
                 {
-                    key: 'task.task_category.name',
+                    key: 'task_category',
                     label: 'Category',
                     sortable: true
                 },
                 {
-                    key: 'task.task_status.name',
+                    key: 'task_status',
                     label: 'Status',
                     sortable: true
                 },
                 {
-                    key: 'task.task_action.name',
+                    key: 'task_action',
                     label: 'Action',
                     sortable: true
                 },
@@ -209,7 +208,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'task.sort_order',
+                    key: 'sort_order',
                     label: 'Order',
                     sortable: true
                 },
@@ -239,17 +238,14 @@ export default {
 		this.$http.get('/task_actions').then(response => {
 			this.task_actions = response.data;
 		});
-        this.$http.get('/task_dates?active_only=true').then((results) => {
+        this.$http.get('/schedule').then((results) => {
             this.tasks = results.data;
         });
     },
     methods: {
         info (item, index, button) {
-            this.modalInfo.title = `Order# ${item.task.order.id}`
-            this.modalInfo.content = JSON.stringify(item, null, 2)
-            console.log(this.modalInfo.order_id);
-            this.modalInfo.order_id = item.task.order.id
-            console.log(item.task.order.id);
+            this.modalInfo.title = `Order# ${item.order_id}`
+            this.modalInfo.order_id = item.order_id
             this.$root.$emit('bv::show::modal', 'modalInfo', button)
         },
         resetModal () {
@@ -273,9 +269,31 @@ export default {
             task.task.sort_order = null;
             this.save(task);
         },
-        save(task){
-            this.$http.patch('/task_date/' + task.id, task);
-            this.$http.patch('/task/' + task.task.id, task.task);
+        save(item){
+            var task_date = {
+                day : item.day,
+                date : item.date,
+                time : item.time
+            }
+            if(item.id){
+                this.$http.patch('/task_date/' + item.id, task_date);
+            }
+            else{
+                this.$http.post('/task_date/', task_date).then(response =>{
+                    item.id = response.id;
+                })
+            }
+            var task = {
+                sort_order : item.sort_order,
+                task_appointment_status_id: item.task_appointment_status_id,
+                task_category_id: item.task_category_id,
+                task_status_id: item.task_status_id,
+                task_action_id: item.task_action_id
+            
+            }
+            console.log(item.task_id);
+            console.log(task);
+            this.$http.patch('/task/' + item.task_id, task);
         }
     },
     computed: {

@@ -20,7 +20,7 @@
                 <b-form-group label="Name">
                     <b-form-input
                         type="text"
-						@change="save"
+						@change="name_changed();save();"
                         v-model="my_task.name"
 						:state="my_task.name != null"
                         required
@@ -190,13 +190,11 @@ export default {
 				return;
 			}
 			if(this.my_task.id === null){
-				console.log('save');
 				this.$http.post('/task',this.my_task).then(response => {
 					this.my_task.id = response.data.id;
 				})
 			}
 			else{
-			console.log('save');
 				this.$http.patch('/task/'+this.my_task.id,this.my_task).then(response => {
 					this.my_task.id = response.data.id;
 				})
@@ -212,6 +210,11 @@ export default {
 				this.my_task.task_category_id = this.settings.default_billing_task_category_id;
 				this.my_task.task_status_id = this.settings.default_billing_task_status_id;
 				this.my_task.task_action_id = this.settings.default_billing_task_action_id;
+			}
+		},
+		name_changed(){
+			if(this.my_task.description === null){
+				this.my_task.description = this.my_task.name;
 			}
 		}
 	},

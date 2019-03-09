@@ -1,7 +1,16 @@
 <template>
   <div>
     <b-tabs vertical pills v-model="current_tab">
-      <b-tab v-for="property in my_properties" :key="property.id" :title="property.name==null?'New Property':property.name">
+      <b-tab
+        v-for="(property, index) in my_properties"
+        :key="property.id"
+        :active="isActive(index)"
+        >
+        <template slot="title" style="text-align:left">
+          <div style="text-align:left">
+            {{ property.name==null?'New Property':property.name }}
+          </div>
+        </template>
         <EditProperty
           :property="property"
           :activity_levels="activity_levels"
@@ -68,14 +77,14 @@ export default {
     },
     removeProperty(property){
       this.my_properties = this.my_properties.filter(p => p.id !== property.id);
-    }
-  },
-  updated() {
-		if(this.change_tab){
-			this.current_tab = this.properties.length-1;
-			this.change_tab =  false;
-		}
-  },
+    },
+    isActive (index) {
+      if((this.change_tab)&&(index == this.properties.length -1)){
+        return true
+      }
+      return false
+    },
+  }
 }
 
 </script>

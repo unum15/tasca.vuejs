@@ -35,10 +35,13 @@ export default {
           this.$http.get('/emails?contact_id=' + this.contact_id).
           then( results => { this.emails = results.data })
         }
+        else{
+          this.newEmail()
+        }
     })
   },
   methods: {
-    newEmail: function(){
+    newEmail(){
       var email = {
         id: null,
         email_type_id: null,

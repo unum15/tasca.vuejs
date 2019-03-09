@@ -22,11 +22,16 @@
     </b-container>
         <b-tabs vertical pills v-model="current_tab">
             <b-tab
-							v-for="order in orders"
-							:key="order.id"
-							:title="order.name !== null ? order.name : 'Order ' + (order.id !== null ? order.id : 'New')"
+							v-for="(order, index) in orders"
+							:key="index"
 							v-if="showTab(order)"
+							:active="isActive(index)"
 							>
+								<template slot="title" style="text-align:left">
+									<div style="text-align:left">
+										{{ order.name !== null ? order.name : 'Order New' }}
+									</div>
+								</template>
                 <EditOrder
 									:properties="properties"
 									:order="order"
@@ -101,7 +106,8 @@ export default {
 				project_id: this.project.id,
 				order_status_type_id: this.order_status_type.id,
 				date: this.today,
-				approval_date: null,
+				approval_date: this.order_status_type.id == 1 ? null : this.today,
+				start_date: this.order_status_type.id < 3 ? null: this.today,
 				completion_date: null,
 				expiration_date: null,
 				description: null,
@@ -114,7 +120,6 @@ export default {
 				order_status_id: this.settings.default_order_status_id,
 				order_action_id: this.settings.default_order_action_id,
 				properties: [ { id: this.default_property_id } ],
-				start_date: null,
 				recurrences: 1,
 				renewable: false,
 				service_window: this.default_service_window,
@@ -145,18 +150,23 @@ export default {
 			this.$emit('reload-orders', order);
 		},
 		loadOrders(){
+			this.orders = [];
 			this.$http.get('/orders?project_id=' + this.project.id + '&order_status_type_id=' + this.order_status_type.id).then(response => {
 				this.orders = response.data
 				if(this.selected_order_id != null){
 					var selected_index = this.orders.findIndex( o => o.id == this.selected_order_id);
-					console.log('id:' + this.selected_order_id)
-					console.log('index:' + selected_index)
 					if(selected_index != null){
 						this.current_tab = selected_index;
 					}
 				}
 			})
-		}
+		},
+		isActive (index) {
+      if((this.change_tab)&&(index == this.orders.length -1)){
+        return true
+      }
+      return false
+    },
 	},  
 	computed: {
 		today() {
@@ -172,17 +182,12 @@ export default {
 			return null;
 		},
 	},
-  updated() {
-		if(this.change_tab){
-			this.current_tab = this.orders.length-1;
-			this.change_tab =  false;
-		}
-  },
   watch:{
 		reload_count() {
 			this.change_tab = true;
 			this.loadOrders();
-		}
-  }
+		},
+		change_tab(){}
+  },
 }
 </script>

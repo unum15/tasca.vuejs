@@ -20,7 +20,7 @@
                 value-field="id"
                 text-field="name"
                 required
-                state="my_order.properties != []"
+                state="my_order.properties.length == 0"
                 v-model="my_order.properties"
                 multiple
                 >
@@ -48,6 +48,7 @@
                                     v-model="my_order.description"
                                     placeholder="What needs to be done?"
                                     required
+                                    ref='description'
                                     :state="my_order.description != null"
                                     >
                                 </b-form-input>
@@ -128,6 +129,10 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
+                </b-container>
+            </b-tab>
+            <b-tab title="Calendar" v-if="my_order.id !== null">
+                <b-container fluid>
                     <b-row>
                         <b-col>
                             <b-form-group label="Order Date">
@@ -162,16 +167,13 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
-                </b-container>
-            </b-tab>
-            <b-tab title="Calendar">
-                <b-container fluid>
                     <b-row>
                         <b-col>
                             <b-form-group label="Approval Date">
                                 <b-form-input
                                     type="date"
-                                    @input="save"
+                                    @change="updateStartDate();"
+                                    @input="save();"
                                     v-model="my_order.approval_date"
                                 >
                                 </b-form-input>
@@ -183,7 +185,6 @@
                                     type="date"
                                     @input="save"
                                     v-model="my_order.start_date"
-                                    :disabled="my_order.approval_date == null"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -199,10 +200,9 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
-                    <b-row v-if="(order.order_status_type_id==1)">
-                        
+                    <b-row v-if="(order.order_status_type_id==1)" style="border: 1px solid black;">
                         <b-col>
-                            <b-form-group label="Recurrences">
+                            <b-form-group label="">
                                 <b-form-checkbox
                                     @input="save"
                                     v-model="my_order.recurring"
@@ -210,43 +210,46 @@
                                     :unchecked-value="false"
                                 >
                                 </b-form-checkbox>
+                                <div>Recurrences</div>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Times">
+                            <b-form-group label="">
                                 <b-form-input
                                     type="number"
                                     @change="save"
                                     v-model="my_order.recurrences"
                                 >
                                 </b-form-input>
+                                <div>Times</div>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Every">
+                            <b-form-group label="">
                                 <b-form-input
                                     type="number"
                                     @change="save"
                                     v-model="recurring_interval.count"
                                 >
                                 </b-form-input>
+                                <div>Every</div>
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Frequency">
+                            <b-form-group label="">
                                 <b-form-select
                                     @input="save"
                                     :options="units"
                                     v-model="recurring_interval.unit"
                                     >
                                 </b-form-select>
+                                <div>Frequency</div>
                             </b-form-group>
                         </b-col>
-                        
                     </b-row>
                 </b-container>
             </b-tab>
-            <b-tab title="Tasks">
+            <b-tab title="Tasks" v-if="my_order.id !== null">
                 <EditTasks
                     v-if="my_order.id != null"
                     :order="my_order"
@@ -258,7 +261,7 @@
                     >
                 </EditTasks>
             </b-tab>
-            <b-tab title="Notes">
+            <b-tab title="Notes" v-if="my_order.id !== null">
                 <b-form-group label="Location">
                     <b-form-textarea
                         v-model="my_order.location"
@@ -287,7 +290,7 @@
                     </b-form-textarea>
                 </b-form-group>
             </b-tab>
-            <b-tab title="Billing">
+            <b-tab title="Billing"  v-if="my_order.id !== null">
                 <b-container fluid>
                     <b-row>
                         <b-col>
@@ -367,7 +370,7 @@
                     </b-row>
                 </b-container>
             </b-tab>
-            <b-tab title="Renewing" v-if="isServiceOrder">
+            <b-tab title="Renewing" v-if="isServiceOrder && (my_order.id !== null)">
                 <b-container fluid>
                     <b-row>
                         <b-col>
@@ -394,7 +397,7 @@
                         <b-col>
                             <b-form-group label="Notification Lead(in days)">
                                 <b-form-input
-                                    type="text"
+                                    type="number"
                                     @change="save"
                                     v-model="my_order.notification_lead"
                                 >
@@ -406,7 +409,7 @@
                         <b-col>
                             <b-form-group label="Times">
                                 <b-form-input
-                                    type="text"
+                                    type="number"
                                     @change="save"
                                     v-model="my_order.renewal_count"
                                 >
@@ -532,29 +535,22 @@ export default {
             [this.recurring_interval.count, this.recurring_interval.unit] = this.my_order.recurring_interval.split(' ');
             this.recurring_interval.unit = this.formatUnit(this.recurring_interval.unit);
         }
-        console.log(this.my_order.renewal_interval);
         if(this.my_order.renewal_interval != null){
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
-            console.log(this.renewal_interval.unit);
             this.renewal_interval.unit = this.formatUnit(this.renewal_interval.unit);
-            console.log(this.renewal_interval.unit);
         }
-        this.my_order.order_status_id = this.my_order.order_status_id;
 	},
 	methods: {
         save(){
+
             var reload = false;
             if((this.my_order.name != null) && (this.my_order.description == null)){
                 this.my_order.description = this.my_order.name;
             }
-            if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
-                this.my_order.start_date = this.my_order.approval_date;
-            }
-            if(this.my_order.approval_date === '') {
-                this.my_order.approval_date = null;
-                this.my_order.start_date = null;
-            }
             if((this.my_order.date === null)||(this.my_order.name === null)||(this.my_order.description === null)){
+                return;
+            }
+            if((this.my_order.properties.length === 0)&&(this.my_order.property_id == null)){
                 return;
             }
             if((this.recurring_interval.count != null) && (this.recurring_interval.unit != null)){
@@ -570,6 +566,7 @@ export default {
                 this.$http.post('/order',this.my_order).then(response => {
                     this.task_name = this.my_order.name;
                     this.my_order.id = response.data.id;
+                    this.$nextTick(() => this.$refs.description.$el.focus());
                 })
             }
             else{
@@ -595,7 +592,7 @@ export default {
                 this.my_order.order_status_type_id = 2;
                 this.reload = true;
             };
-            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
+            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date === null)){
                 this.my_order.order_status_type_id = 1
                 this.reload = true;
             };
@@ -630,6 +627,15 @@ export default {
                 unit = unit + 's'; 
             }
             return unit;
+        },
+        updateStartDate(){
+            if((this.my_order.approval_date != null) && (this.my_order.start_date == null)){
+                this.my_order.start_date = this.my_order.approval_date;
+            }
+            if((this.my_order.approval_date === '') || (this.my_order.approval_date === null)){
+                this.my_order.approval_date = null;
+                this.my_order.start_date = null;
+            }
         }
 	},
 	computed:{
@@ -638,9 +644,9 @@ export default {
                 return false;
             };
             if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
-                return true;
+                    return true;
             }
-            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date == "")){
+            if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date === null)){
                 return true;
             };
             var pending_days_out = localStorage.getItem('pending_days_out');
@@ -655,6 +661,9 @@ export default {
             };
         },
         showCreateButton(){
+            if(this.my_order.completed_date != null){
+                return false;
+            }
             if(this.my_order.order_status_type_id > 1){
                 return false;
             }
@@ -670,6 +679,9 @@ export default {
             return true;
         },
         convertButtonLabel(){
+            if(this.my_order.approval_date === null){
+                return "Convert To Service Order";
+            }
             var pending_days_out = localStorage.getItem('pending_days_out');
             var today = moment();
             var start_date = moment(this.my_order.start_date);
@@ -689,7 +701,7 @@ export default {
         current_actions() {
 			return this.actions.filter(action => {
                 for (var i=0; i < action.order_statuses.length; i++) {
-                    if (action.order_statuses[i].id === this.my_order.order_status_id) {
+                    if (action.order_statuses[i].id == this.my_order.order_status_id) {
                         return true;
                     }
                 }

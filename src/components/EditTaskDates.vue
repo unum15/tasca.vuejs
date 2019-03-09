@@ -12,6 +12,7 @@
 </template>
 <script>
 import EditTaskDate from './EditTaskDate';
+import moment from 'moment'
 export default {
   name: 'EditTaskDates',
   components: {
@@ -26,12 +27,11 @@ export default {
     }
   },
   created() {
-    console.log(this.task_id);
     if(this.task_id == null){
       this.newDate();
       return;
     }
-    this.$http.get('/task_dates?task_id=' + this.task_id).then(response => {
+    this.$http.get('/task_dates?min_date='+ this.today +'&task_id=' + this.task_id).then(response => {
         if(response.data.length > 0){
           this.dates = response.data
         }
@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     newDate: function(){
-      console.log(this.task_id);
       var date = {
         id: null,
         date: null,
@@ -53,6 +52,11 @@ export default {
     removeDate (date) {
       this.dates = this.dates.filter(d => d.id !== date.id);
     },
+  },
+  computed:{
+    today() {
+			return moment().format('YYYY-MM-DD');
+		},
   }
 }
 
