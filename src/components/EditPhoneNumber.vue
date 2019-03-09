@@ -45,6 +45,7 @@ export default {
     phone_number: {required: true},
     settings: {required: true},
     phone_number_types: {required: true},
+    contact_id: {default: null}
   },
   data: function () {
     return {
@@ -56,7 +57,10 @@ export default {
   },
   methods: {
     save () {
-      if(!this.verify_phone_number){
+      if(!this.my_phone_number.contact_id){
+        return;
+      }
+      if(!this.verifyPhoneNumber){
         return;
       }
       if(this.my_phone_number.id === null){
@@ -83,6 +87,12 @@ export default {
     verifyPhoneNumber () {
       var regex = /^\d\d\d-\d\d\d-\d\d\d\d$/;
       return regex.test(this.my_phone_number.phone_number);
+    }
+  },
+  watch: {
+    contact_id(){
+      this.my_phone_number.contact_id = this.contact_id;
+      this.save();
     }
   }
 }

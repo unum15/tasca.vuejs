@@ -5,6 +5,7 @@
                 :settings="settings"
                 :phone_number_types="phone_number_types"
                 :phone_number="phone_number"
+                :contact_id="contact_id"
             >
         </EditPhoneNumber>
        </div>
@@ -53,6 +54,14 @@ export default {
     removePhoneNumber(phone_number) {
       this.phone_numbers = this.phone_numbers.filter(pn => pn.id !== phone_number.id);
     },
+  },
+  watch: {
+    contact_id(){
+      if(this.contact_id === null){
+        this.phone_numbers = [];
+        this.newPhoneNumber();
+      }
+    }
   }
 }
 

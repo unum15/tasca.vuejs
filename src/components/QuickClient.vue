@@ -355,8 +355,8 @@
                       </b-form-group>
                   </b-col>
               </b-row>
-              <b-button @click="saveClient">New</b-button>
-              <b-button @click="saveClient">Edit</b-button>
+              <b-button @click="saveClient();">New</b-button>
+              <b-button @click="reroute=true;saveClient();">Edit</b-button>
             </b-container>
           </b-col>
           <b-col v-if="settings.help_show == 'true'">
@@ -400,6 +400,7 @@ export default {
       billing_contact: true,
       showSaveFailed: false,
       showSaveSuccess: false,
+      reroute: false,
       client: {
         id: null,
         client_type_id: null,
@@ -435,31 +436,7 @@ export default {
   created () {
     this.$http.get('/settings').then(response => {
       this.settings = response.data
-      this.client.client_type_id = this.settings.default_client_type_id
-      this.client.activity_level_id = this.settings.default_activity_level_id
-      this.client.contact_method_id = this.settings.default_contact_method_id
-      this.contact.contact_type_id = this.settings.default_contact_type_id
-      this.property.property_type_id = this.settings.default_property_type_id
-      this.client.activity_level_id = this.settings.default_activity_level_id
-      this.contact.activity_level_id = this.settings.default_activity_level_id
-      this.property.activity_level_id = this.settings.default_activity_level_id
-      this.order.order_category_id = this.settings.default_order_category_id
-      this.order.order_priority_id = this.settings.default_order_priority_id
-      this.order.order_type_id = this.settings.default_order_type_id
-      
-      this.order.order_status_id = this.settings.default_order_status_id
-      this.order.order_action_id = this.settings.default_order_action_id
-      
-      
-      this.order.approval_date = this.today
-      this.order.start_date = this.today
-      this.order.order_date = this.today
-      this.order.service_window = localStorage.getItem('default_service_window')
-      
-      
-      this.task.task_category_id = this.settings.default_billing_task_category_id
-      this.task.task_status_id = this.settings.default_billing_task_status_id
-      this.task.task_action_id = this.settings.default_billing_task_action_id
+      this.resetForm();
     })
     this.$http.get('/client_types').then(response => {
       this.client_types = response.data
@@ -501,7 +478,7 @@ export default {
     })
   },
   methods: {
-    saveClient() {
+    saveClient(reroute) {
       if(this.client.name === null){
         return;
       }
@@ -523,6 +500,7 @@ export default {
       if(this.contact.name === null){
         return;
       }
+      this.contact.client_id = this.client.id;
       if(this.contact.id === null){
         this.$http.post('/contact',this.contact)
           .then((results) => {
@@ -584,6 +562,7 @@ export default {
         return;
       }
       this.order.project_id = this.project.id;
+      this.order.property = this.property.id;
       if(this.order.id === null){
         this.$http.post('/order',this.order)
           .then((results) => {
@@ -600,15 +579,89 @@ export default {
     },
     saveTask() {
       this.task.order_id = this.order.id;
+			this.task.name = this.order.name;
+			this.task.description = this.order.description;
       if(this.task.id === null){
         this.$http.post('/task',this.task)
           .then((results) => {
             this.task.id = results.data.id;
+            this.nextTask();
           })
       }
       else{
         this.$http.patch('/task/' + this.task.id,this.task)
+        .then(() => {this.nextTask()})
       }
+    },
+    nextTask(){
+      if(this.reroute){
+        this.$router.push('/client/' + this.client.id);
+      }
+      else{
+        this.resetForm();
+      }
+    },
+    resetForm(){
+      this.client = {
+        id: null,
+        client_type_id: null,
+        name: null,
+        contact_method_id: null,
+        billing_property_id: null,
+        billing_contact_id: null,
+        referred_by: '',
+      };
+      this.contact = {
+        id: null,
+        name: null
+      };
+      this.property = {
+        id: null,
+        name: 'Home',
+        billing_property: true,
+        work_property: true
+      };
+      this.order = {
+        id: null,
+        name: null,
+        description: null
+      };
+      this.task= {
+        id: null,
+        task_type_id: 2,
+        task_category_id: this.settings.default_billing_task_category_id,
+        task_status_id: this.settings.default_billing_task_status_id,
+        task_action_id: this.settings.default_billing_task_action_id,
+      };
+      this.project = {
+        id: null
+      };
+      this.client.client_type_id = this.settings.default_client_type_id
+      this.client.activity_level_id = this.settings.default_activity_level_id
+      this.client.contact_method_id = this.settings.default_contact_method_id
+      this.contact.contact_type_id = this.settings.default_contact_type_id
+      this.property.property_type_id = this.settings.default_property_type_id
+      this.client.activity_level_id = this.settings.default_activity_level_id
+      this.contact.activity_level_id = this.settings.default_activity_level_id
+      this.property.activity_level_id = this.settings.default_activity_level_id
+      this.order.order_category_id = this.settings.default_order_category_id
+      this.order.order_priority_id = this.settings.default_order_priority_id
+      this.order.order_type_id = this.settings.default_order_type_id
+      
+      this.order.order_status_id = this.settings.default_order_status_id
+      this.order.order_action_id = this.settings.default_order_action_id
+      
+      
+      this.order.approval_date = this.today
+      this.order.start_date = this.today
+      this.order.order_date = this.today
+      this.order.service_window = localStorage.getItem('default_service_window')
+      
+      
+      this.task.task_category_id = this.settings.default_billing_task_category_id
+      this.task.task_status_id = this.settings.default_billing_task_status_id
+      this.task.task_action_id = this.settings.default_billing_task_action_id
+ 
     },
     contactNameChanged() {
       if(this.client.name === null){

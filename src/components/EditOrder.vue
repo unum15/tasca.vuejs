@@ -550,7 +550,7 @@ export default {
             if((this.my_order.date === null)||(this.my_order.name === null)||(this.my_order.description === null)){
                 return;
             }
-            if((this.my_order.properties.length === 0)&&(this.my_order.property_id == null)){
+            if((this.my_order.properties.length === 0)&&(this.my_order.property == null)){
                 return;
             }
             if((this.recurring_interval.count != null) && (this.recurring_interval.unit != null)){

@@ -6,6 +6,7 @@
                 :email_types="email_types"
                 :email="email"
                 @remove-email="removeEmail"
+                :contact_id="contact_id"
             >
             </EditEmail>
         </div>
@@ -53,6 +54,15 @@ export default {
     removeEmail (email) {
       this.emails = this.emails.filter(e => e.id !== email.id);
     },
+  },
+  watch: {
+    contact_id(){
+      console.log('new id:' + this.contact_id);
+      if(this.contact_id === null){
+        this.emails = [];
+        this.newEmail();
+      }
+    }
   }
 }
 
