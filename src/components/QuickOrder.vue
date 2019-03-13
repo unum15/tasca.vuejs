@@ -30,7 +30,7 @@
                         text-field="name"
                         required
                         :state="client_id != null"
-                        @change="getProperties();getProjects();"
+                        @input="getProperties();getProjects();"
                         v-model="client_id">
                       </b-form-select>
                     </b-form-group>
@@ -53,7 +53,7 @@
                     <b-form-group label="Existing Project">
                       <b-form-checkbox
                         v-model="existing_project"
-                        @change="getProjects"
+                        @input="getProjects"
                         >
                       </b-form-checkbox>
                     </b-form-group>
@@ -347,7 +347,7 @@ export default {
         this.$http.get('/properties?client_id=' + this.client_id).then(response => {
           this.properties = response.data
           if(this.properties.length == 1){
-            this.order.property_id = this.properties[0]
+             this.order.property_id = this.properties[0].id;
           }
         })
       }
