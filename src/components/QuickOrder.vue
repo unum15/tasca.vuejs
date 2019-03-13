@@ -23,194 +23,52 @@
             <b-container>
               <b-row>
                 <b-col>
-                    <b-form-group label="Contact Type">
+                    <b-form-group label="Client">
                       <b-form-select
-                        :options="contact_types"
-                        :disabled="client_types_loading"
+                        :options="clients"
                         value-field="id"
                         text-field="name"
                         required
-                        :state="contact.contact_type_id != null"
-                        v-model="contact.contact_type_id">
+                        :state="client_id != null"
+                        @change="getProperties();getProjects();"
+                        v-model="client_id">
                       </b-form-select>
                     </b-form-group>
                 </b-col>
                 <b-col>
-                  <b-form-group label="Contact Name">
-                      <b-form-input
-                        type="text"
-                        v-model="contact.name"
-                        @change="contactNameChanged"
+                  <b-form-group label="Property">
+                      <b-form-select
+                        :options="properties"
+                        value-field="id"
+                        text-field="name"
                         required
-                        :state="contact.name != null"
-                        placeholder="John Smith">
-                      </b-form-input>
-                  </b-form-group>
+                        :state="order.property_id != null"
+                        v-model="order.property_id">
+                      </b-form-select>
+                    </b-form-group>
                 </b-col>
               </b-row>
               <b-row>
                 <b-col>
-                    <EditPhoneNumbers
-                        :contact_id="contact.id"
-                        :settings="settings"
-                      ></EditPhoneNumbers>
-                </b-col>
-                <b-col>
-                    <EditEmails
-                        :contact_id="contact.id"
-                        :settings="settings"
-                     ></EditEmails>
-                    
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col>
-                    <b-form-group label="Billing Contact">
+                    <b-form-group label="Existing Project">
                       <b-form-checkbox
-                        v-model="billing_contact">
+                        v-model="existing_project"
+                        @change="getProjects"
+                        >
                       </b-form-checkbox>
                     </b-form-group>
                 </b-col>
                 <b-col>
-                    <b-form-group label="Contact Method">
+                  <b-form-group label="Project" v-show="existing_project">
                       <b-form-select
-                        :options="contact_methods"
+                        :options="projects"
                         value-field="id"
                         text-field="name"
-                        v-model="contact.contact_method_id">
+                        :state="project.project_id != null"
+                        v-model="project.project_id">
                       </b-form-select>
                     </b-form-group>
                 </b-col>
-              </b-row>
-              <b-row>
-                <b-col>
-                  <b-form-group label="Referred By">
-                    <b-form-input
-                      type="text"
-                      v-model="client.referred_by"
-                      placeholder="John Doe">
-                    </b-form-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col>
-                  <b-form-group label="Client Type">
-                    <b-form-select
-                      :options="client_types"
-                      :disabled="client_types_loading"
-                      value-field="id"
-                      text-field="name"
-                      :state="client.client_type_id != null"
-                      required
-                      v-model="client.client_type_id">
-                    </b-form-select>
-                  </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group label="Client Name">
-                    <b-form-input
-                      type="text"
-                      v-model="client.name"
-                      :state="client.name != null"
-                      required
-                      placeholder="Smith Household"
-                      >
-                    </b-form-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-              <b-row>
-                  <b-col>
-                      <b-form-group label="Property Type">
-                        <b-form-select
-                          :options="property_types"
-                          value-field="id"
-                          text-field="name"
-                          required
-                          :state="property.property_type_id != null"
-                          v-model="property.property_type_id">
-                        </b-form-select>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="Work Property">
-                        <b-form-checkbox
-                          v-model="property.work_property">
-                        </b-form-checkbox>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="Billing Property">
-                        <b-form-checkbox
-                          v-model="property.billing_property">
-                        </b-form-checkbox>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="Property Name">
-                        <b-form-input
-                          type="text"
-                          v-model="property.name"
-                          placeholder="Home">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-              </b-row>
-              <b-row>
-                  <b-col>
-                      <b-form-group label="Address Line 1">
-                        <b-form-input
-                          type="text"
-                          v-model="property.address1"
-                          placeholder="123 Main Street">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-              </b-row>
-              <b-row>
-                  <b-col>
-                      <b-form-group label="Address Line 2">
-                        <b-form-input
-                          type="text"
-                          v-model="property.address2"
-                          placeholder="Suite 100">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-              </b-row>
-              <b-row>
-                  <b-col>
-                      <b-form-group label="City">
-                        <b-form-input
-                          type="text"
-                          v-model="property.city"
-                          required
-                          :state="property.city != null"
-                          placeholder="Salt Lake City">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="State">
-                        <b-form-input
-                          type="text"
-                          v-model="property.state"
-                          required
-                          :state="property.state != null"
-                          placeholder="UT">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="Zip">
-                        <b-form-input
-                          type="text"
-                          v-model="property.zip"
-                          placeholder="84555">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
               </b-row>
               <b-row>
                 <b-col>
@@ -357,7 +215,7 @@ import TopMenu from './TopMenu'
 import EditEmails from './EditEmails'
 import EditPhoneNumbers from './EditPhoneNumbers'
 export default {
-  name: 'QuickClient',
+  name: 'QuickOrder',
   components: {
     'TopMenu': TopMenu,
     'EditEmails': EditEmails,
@@ -365,26 +223,23 @@ export default {
   },
   data () {
     return {
-      client_types: [],
+      clients: [],
       contact_methods: [],
-      contact_types: [],
       activity_levels: [],
-      property_types: [],
+      properties: [],
+      projects: [],
       order_categories: [],
       order_priorities: [],
       order_types: [],
       task_categories: [],
       task_statuses: [],
       task_actions: [],
-      contact_methods_loading: true,
-      contact_types_loading: true,
-      client_types_loading: true,
-      property_types_loading: true,
       settings: {},
-      billing_contact: true,
       showSaveFailed: false,
       showSaveSuccess: false,
       reroute: false,
+      existing_project: false,
+      client_id: null,
       client: {
         id: null,
         client_type_id: null,
@@ -422,21 +277,8 @@ export default {
       this.settings = response.data
       this.resetForm();
     })
-    this.$http.get('/client_types').then(response => {
-      this.client_types = response.data
-      this.client_types_loading = false
-    })
-    this.$http.get('/contact_methods').then(response => {
-      this.contact_methods = response.data
-      this.contact_methods_loading = false
-    })
-    this.$http.get('/contact_types').then(response => {
-      this.contact_types = response.data
-      this.contact_types_loading = false
-    })
-    this.$http.get('/property_types').then(response => {
-      this.property_types = response.data
-      this.property_types_loading = false
+    this.$http.get('/clients').then(response => {
+      this.clients = response.data
     })
     this.$http.get('/order_categories').then(response => {
       this.order_categories = response.data
@@ -462,7 +304,7 @@ export default {
     })
   },
   methods: {
-    saveClient(reroute) {
+    saveClient() {
       if(this.client.name === null){
         return;
       }
@@ -497,6 +339,30 @@ export default {
           .then(() => {
             this.saveProperty();
           })
+      }
+    },
+    getProperties() {
+      console.log(this.client_id)
+      if(this.client_id){
+        this.$http.get('/properties?client_id=' + this.client_id).then(response => {
+          this.properties = response.data
+          if(this.properties.length == 1){
+            this.order.property_id = this.properties[0]
+          }
+        })
+      }
+      else{
+        this.properties = []
+      }
+    },
+    getProjects() {
+      if((this.client_id)&&(this.existing_project)){
+        this.$http.get('/projects?client_id=' + this.client_id).then(response => {
+          this.projects = response.data
+        })
+      }
+      else{
+        this.projects = []
       }
     },
     saveProperty() {
@@ -666,11 +532,6 @@ export default {
 			return moment().format('YYYY-MM-DD');
 		},
   },
-  updated() {
-    if(!this.first_update){
-      return;
-    }
-  }
 }
 
 </script>

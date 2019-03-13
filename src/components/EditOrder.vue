@@ -138,7 +138,7 @@
                             <b-form-group label="Order Date">
                                 <b-form-input
                                     type="date"
-                                    @input="save"
+                                    @change="save"
                                     v-model="my_order.date"
                                     required
                                     :state="my_order.date != null"
@@ -150,7 +150,7 @@
                             <b-form-group label="Closed Date" v-if="order.order_status_type_id!=2">
                                 <b-form-input
                                     type="date"
-                                    @input="save"
+                                    @change="save"
                                     v-model="my_order.completion_date"
                                 >
                                 </b-form-input>
@@ -160,7 +160,7 @@
                             <b-form-group label="Expiration Date">
                                 <b-form-input
                                     type="date"
-                                    @input="save"
+                                    @change="save"
                                     v-model="my_order.expiration_date"
                                 >
                                 </b-form-input>

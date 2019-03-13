@@ -220,19 +220,19 @@ export default {
                      this.help_order += this.settings['help_' + order_type + '_order_general']
                      break;
                   case 1:
-                     this.help_order = this.settings.help_service_order_calendar
+                     this.help_order = this.settings['help_' + order_type + '_order_calendar']
                      break;
                   case 2:
-                     this.help_order = this.settings.help_service_task
+                     this.help_order = this.settings['help_' + order_type + '_order_task']
                      break;
                   case 3:
-                     this.help_order = this.settings.help_service_order_notes
+                     this.help_order = this.settings['help_' + order_type + '_order_notes']
                      break;
                   case 4:
-                     this.help_order = this.settings.help_service_order_billing
+                     this.help_order = this.settings['help_' + order_type + '_order_billing']
                      break;
                   case 5:
-                     this.help_order = this.settings.help_service_order_renewing
+                     this.help_order = this.settings['help_' + order_type + '_order_renewing']
                      break;
                   default:
                      this.help_tab = ''

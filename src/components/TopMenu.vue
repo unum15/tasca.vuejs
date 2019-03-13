@@ -5,6 +5,7 @@
             <b-navbar-brand href="/">Tasca</b-navbar-brand>
             <b-collapse is-nav id="nav_collapse">
             <b-navbar-nav>
+                <b-nav-item href="/quick_order">Quick Order Form</b-nav-item>
                 <b-nav-item href="/projects/edit">Edit Projects</b-nav-item>
                 <b-nav-item href="/scheduler">Scheduler</b-nav-item>
                 <b-nav-item-dropdown>

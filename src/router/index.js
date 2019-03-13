@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import EditClient from '@/components/EditClient'
 import QuickClient from '@/components/QuickClient'
+import QuickOrder from '@/components/QuickOrder'
 import ViewClients from '@/components/ViewClients'
 import ViewContacts from '@/components/ViewContacts'
 import ViewProperties from '@/components/ViewProperties'
@@ -36,6 +37,11 @@ export default new Router({
       path: '/quick_client',
       name: 'QuickClient',
       component: QuickClient
+    },
+    {
+      path: '/quick_order',
+      name: 'QuickOrder',
+      component: QuickOrder
     },
     {
       path: '/client/:client_id',
