@@ -14,7 +14,7 @@
       Saved!
     </b-alert>
     <header>
-      {{ client.name }}
+        New Order
     </header>
     <main>
             <b-container :fluid="true">
@@ -43,7 +43,7 @@
                         text-field="name"
                         required
                         :state="order.property_id != null"
-                        v-model="order.property_id">
+                        v-model="order.property">
                       </b-form-select>
                     </b-form-group>
                 </b-col>
@@ -64,8 +64,8 @@
                         :options="projects"
                         value-field="id"
                         text-field="name"
-                        :state="project.project_id != null"
-                        v-model="project.project_id">
+                        :state="project.id != null"
+                        v-model="project.id">
                       </b-form-select>
                     </b-form-group>
                 </b-col>
@@ -197,8 +197,8 @@
                       </b-form-group>
                   </b-col>
               </b-row>
-              <b-button @click="saveClient();">New</b-button>
-              <b-button @click="reroute=true;saveClient();">Edit</b-button>
+              <b-button @click="saveProject();">New</b-button>
+              <b-button @click="reroute=true;saveProject();">Edit</b-button>
             </b-container>
           </b-col>
           <b-col v-if="settings.help_show == 'true'">
@@ -240,28 +240,11 @@ export default {
       reroute: false,
       existing_project: false,
       client_id: null,
-      client: {
-        id: null,
-        client_type_id: null,
-        name: null,
-        contact_method_id: null,
-        billing_property_id: null,
-        billing_contact_id: null,
-        referred_by: '',
-      },
-      contact: {
-        id: null
-      },
-      property: {
-        id: null,
-        name: 'Home',
-        billing_property: true,
-        work_property: true
-      },
       order: {
         id: null,
         name: null,
-        description: null
+        description: null,
+        property: null
       },
       task: {
         id: null,
@@ -304,43 +287,6 @@ export default {
     })
   },
   methods: {
-    saveClient() {
-      if(this.client.name === null){
-        return;
-      }
-      if(this.client.id === null){
-        this.$http.post('/client',this.client)
-          .then((results) => {
-            this.client.id = results.data.id;
-            this.saveContact();
-          })
-      }
-      else{
-        this.$http.patch('/client/' + this.client.id,this.client)
-          .then(() => {
-            this.saveContact();
-          })
-      }
-    },
-    saveContact() {
-      if(this.contact.name === null){
-        return;
-      }
-      this.contact.client_id = this.client.id;
-      if(this.contact.id === null){
-        this.$http.post('/contact',this.contact)
-          .then((results) => {
-            this.contact.id = results.data.id;
-            this.saveProperty();
-          })
-      }
-      else{
-        this.$http.patch('/contact/' + this.contact.id,this.contact)
-          .then(() => {
-            this.saveProperty();
-          })
-      }
-    },
     getProperties() {
       console.log(this.client_id)
       if(this.client_id){
@@ -365,33 +311,17 @@ export default {
         this.projects = []
       }
     },
-    saveProperty() {
-      if(this.property.name === null){
-        return;
-      }
-      this.property.client_id = this.client.id;
-      this.property.contacts = [ this.contact.id ];
-      if(this.property.id === null){
-        this.$http.post('/property',this.property)
-          .then((results) => {
-            this.property.id = results.data.id;
-            this.saveProject();
-          })
-      }
-      else{
-        this.$http.patch('/property/' + this.property.id,this.property)
-          .then(() => {
-            this.saveProject();
-          })
-      }
-    },
     saveProject() {
       if(this.order.name === null){
         return;
       }
+      if(this.existing_project){
+        this.saveOrder();
+        return;
+      }
       this.project.name = this.order.name;
-      this.project.client_id = this.client.id;
-      this.project.contact_id = this.contact.id;
+      this.project.client_id = this.client_id;
+      //this.project.contact_id = this.contact.id;
       this.project.open_date = this.today;
       if(this.project.id === null){
         this.$http.post('/project',this.project)
@@ -412,7 +342,6 @@ export default {
         return;
       }
       this.order.project_id = this.project.id;
-      this.order.property = this.property.id;
       if(this.order.id === null){
         this.$http.post('/order',this.order)
           .then((results) => {
@@ -445,32 +374,13 @@ export default {
     },
     nextTask(){
       if(this.reroute){
-        this.$router.push('/client/' + this.client.id);
+        this.$router.push('/client/' + this.client_id + '/order/' + this.order.id);
       }
       else{
         this.resetForm();
       }
     },
     resetForm(){
-      this.client = {
-        id: null,
-        client_type_id: null,
-        name: null,
-        contact_method_id: null,
-        billing_property_id: null,
-        billing_contact_id: null,
-        referred_by: '',
-      };
-      this.contact = {
-        id: null,
-        name: null
-      };
-      this.property = {
-        id: null,
-        name: 'Home',
-        billing_property: true,
-        work_property: true
-      };
       this.order = {
         id: null,
         name: null,
@@ -486,14 +396,7 @@ export default {
       this.project = {
         id: null
       };
-      this.client.client_type_id = this.settings.default_client_type_id
-      this.client.activity_level_id = this.settings.default_activity_level_id
-      this.client.contact_method_id = this.settings.default_contact_method_id
-      this.contact.contact_type_id = this.settings.default_contact_type_id
-      this.property.property_type_id = this.settings.default_property_type_id
-      this.client.activity_level_id = this.settings.default_activity_level_id
-      this.contact.activity_level_id = this.settings.default_activity_level_id
-      this.property.activity_level_id = this.settings.default_activity_level_id
+      this.client_id = null;
       this.order.order_category_id = this.settings.default_order_category_id
       this.order.order_priority_id = this.settings.default_order_priority_id
       this.order.order_type_id = this.settings.default_order_type_id
@@ -512,14 +415,6 @@ export default {
       this.task.task_status_id = this.settings.default_billing_task_status_id
       this.task.task_action_id = this.settings.default_billing_task_action_id
  
-    },
-    contactNameChanged() {
-      if(this.client.name === null){
-        var names = this.contact.name.split(/\s+/);
-        if(names.length > 1){
-          this.client.name = names[names.length - 1] + ', ' + names[0];
-        }
-      }
     },
     orderNameChanged(){
       if(this.order.description === null){
