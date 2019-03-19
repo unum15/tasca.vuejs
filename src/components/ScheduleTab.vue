@@ -29,6 +29,15 @@
                 <template slot="client" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
+                <template slot="name" slot-scope="data" v-b-popover.hover="'I am popover content!'">
+                    <span :id="'name_' + data.index">{{ data.value }}</span>
+                    <b-popover
+                        :target="'name_' + data.index"
+                        triggers="hover"
+                        :content="data.item.description"
+                    />
+                </template>
+                
                 <template slot="task_appointment_status" slot-scope="data">
                     <b-form-select
                         :options="task_appointment_statuses"
@@ -140,13 +149,18 @@ export default {
     },
     data() {
         return {
-            tasks: [],			
+            tasks: [],
             filter: null,
             modalInfo: { title: '', content: '', order_id: null },
             fields: [
                 {
-                    key: 'approval_date',
-                    label: 'App Date',
+                    key: 'start_date',
+                    label: 'Start Date',
+                    sortable: true
+                },
+                {
+                    key: 'service_window',
+                    label: 'Service Window',
                     sortable: true
                 },
                 {
@@ -170,8 +184,8 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'description',
-                    label: 'Description',
+                    key: 'name',
+                    label: 'Name',
                     sortable: true
                 },
                 {
@@ -261,15 +275,16 @@ export default {
         },
         save(item){
             var task_date = {
-                day : item.day,
-                date : item.date,
-                time : item.time
+                task_id: item.task_id,
+                day: item.day,
+                date: item.date,
+                time: item.time
             }
             if(item.id){
                 this.$http.patch('/task_date/' + item.id, task_date);
             }
             else{
-                this.$http.post('/task_date/', task_date).then(response =>{
+                this.$http.post('/task_date', task_date).then(response =>{
                     item.id = response.id;
                 })
             }
@@ -281,21 +296,8 @@ export default {
                 task_action_id: item.task_action_id
             
             }
-            console.log(item.task_id);
-            console.log(task);
             this.$http.patch('/task/' + item.task_id, task);
         }
-    },
-    computed: {
-		task_sort_options() {
-			// Chrome can't handle this yet
-			//return [for (i of Array(100).keys()) i+1];
-			var options = Array();
-			for(var x=1;x<=100;x++){
-				options.push(x);
-			}
-			return options;
-		},
     }
 }
 </script>
