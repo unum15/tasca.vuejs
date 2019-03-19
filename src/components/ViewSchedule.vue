@@ -125,17 +125,6 @@ export default {
             console.log(task);
             this.$http.patch('/task/' + item.task_id, task);
         }
-    },
-    computed: {
-		task_sort_options() {
-			// Chrome can't handle this yet
-			//return [for (i of Array(100).keys()) i+1];
-			var options = Array();
-			for(var x=1;x<=100;x++){
-				options.push(x);
-			}
-			return options;
-		},
     }
 }
 </script>

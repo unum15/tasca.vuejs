@@ -22,6 +22,7 @@
                 :items="tasks"
                 :fields="fields"
                 :filter="filter"
+                :tbody-tr-class="rowClass()"
                 >
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/'+ data.item.client_id + '/order/' + data.value"> {{ data.value }} </a>
@@ -29,7 +30,7 @@
                 <template slot="client" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template slot="name" slot-scope="data" v-b-popover.hover="'I am popover content!'">
+                <template slot="name" slot-scope="data">
                     <span :id="'name_' + data.index">{{ data.value }}</span>
                     <b-popover
                         :target="'name_' + data.index"
@@ -133,6 +134,7 @@
     </div>
 </template>
 <script>
+import moment from 'moment';
 import ViewOrder from './ViewOrder';
 export default {
     name: 'ScheduleTab',
@@ -241,7 +243,6 @@ export default {
         if(this.order_status_type != null){
             params = '?order_status_type_id=' + this.order_status_type.id;
         }
-        console.log(params);
         this.$http.get('/schedule' + params).then((results) => {
             this.tasks = results.data;
         });
@@ -297,6 +298,15 @@ export default {
             
             }
             this.$http.patch('/task/' + item.task_id, task);
+        },
+        rowClass(){
+            //console.log(type);
+            //console.log(item.start_date);
+            //var today = moment();
+            //var start_date = moment(item.start_date);
+            
+            //return 'font-weight-bold';
+            return null;
         }
     }
 }
