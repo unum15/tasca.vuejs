@@ -131,7 +131,7 @@
             </b-row>
             </b-container>
           </b-tab>
-          <b-tab v-if="client.id" title="Contacts">
+          <b-tab v-if="client.id" title="Contacts" :active="contact_id != null">
             <EditContacts
               :contacts="client.contacts"
               :properties="client.properties"
@@ -142,10 +142,10 @@
             >
             </EditContacts>
           </b-tab>
-          <b-tab v-if="client.id" title="Properties">
+          <b-tab v-if="client.id" title="Properties" :active="property_id != null">
             <EditProperties :properties="client.properties" :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditProperties>
           </b-tab>
-          <b-tab v-if="client.id && (client.contacts.length > 0) && (client.properties.length > 0)" title="Projects">
+          <b-tab v-if="client.id && (client.contacts.length > 0) && (client.properties.length > 0)" title="Projects" :active="(project_id != null) || (order_id != null) || (task_id != null)">
             <EditProjects
               :client_id="client.id"
               :contacts="client.contacts"
@@ -248,24 +248,6 @@ export default {
       else{
         this.$http.patch('/client/' + this.client.id,this.client)
       }
-    }
-  },
-  updated() {
-    if(!this.first_update){
-      return;
-    }
-    
-    if(this.client.id){
-      if(this.contact_id != null){
-        this.tab_index = 1;
-      }
-      if(this.property_id != null){
-        this.tab_index = 2;
-      }
-      if(this.order_id != null){
-        this.tab_index = 3;
-      }
-      this.first_update = false;
     }
   }
 }

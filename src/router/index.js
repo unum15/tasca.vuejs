@@ -54,6 +54,22 @@ export default new Router({
           component: EditClient
         },
         {
+          path: 'contact/:contact_id',
+          component: EditClient
+        },
+        {
+          path: 'property/:property_id',
+          component: EditClient
+        },
+        {
+          path: 'project/:project_id',
+          component: EditClient
+        },
+        {
+          path: 'task/:task_id',
+          component: EditClient
+        },
+        {
           path: 'projects',
           component: EditProjects
         }
