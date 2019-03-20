@@ -22,7 +22,7 @@
                 :items="tasks"
                 :fields="fields"
                 :filter="filter"
-                :tbody-tr-class="rowClass()"
+                :tbody-tr-class="rowClass"
                 >
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/'+ data.item.client_id + '/order/' + data.value"> {{ data.value }} </a>
@@ -299,13 +299,13 @@ export default {
             }
             this.$http.patch('/task/' + item.task_id, task);
         },
-        rowClass(){
-            //console.log(type);
-            //console.log(item.start_date);
-            //var today = moment();
-            //var start_date = moment(item.start_date);
+        rowClass(item){
+            var today = moment();
+            var window_date = moment(item.start_date).add(item.service_window,'days');
             
-            //return 'font-weight-bold';
+            if(window_date < today){
+                return 'font-weight-bold';
+            }
             return null;
         }
     }
