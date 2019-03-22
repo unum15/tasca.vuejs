@@ -299,14 +299,27 @@ export default {
             }
             this.$http.patch('/task/' + item.task_id, task);
         },
-        rowClass(item, type){
-            //console.log(type);
-            console.log(item.start_date);
-            //var today = moment();
-            //var start_date = moment(item.start_date);
-            
-            //return 'font-weight-bold';
-            return null;
+        rowClass(item){
+            var today = moment();
+            var window_date = moment(item.start_date).add(item.service_window,'days');
+            var classes = [];
+            if(window_date < today){
+                classes.push('font-weight-bold');
+            }
+            if(item.task_type_id == 1){
+                switch(item.order_status_type_id){
+                    case 1:
+                        classes.push('table-danger');
+                        break;
+                    case 2:
+                        classes.push('table-warning');
+                        break;
+                    case 3:
+                        classes.push('table-success');
+                        break;
+                }
+            }
+            return classes;
         }
     }
 }

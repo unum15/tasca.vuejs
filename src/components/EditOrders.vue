@@ -33,6 +33,7 @@
 									</div>
 								</template>
                 <EditOrder
+									:crews="crews"
 									:properties="properties"
 									:order="order"
 									:priorities="priorities"
@@ -65,6 +66,7 @@ export default {
 		'EditOrder': EditOrder
 	},
 	props: {
+		crews: {required: true},
 		project: {required: true},
 		order_status_type: {required: true},
 		types: {required: true},
