@@ -177,6 +177,11 @@ export default new Router({
       component: EditList
     },
     {
+      path: '/crews',
+      name: 'EditCrews',
+      component: EditList
+    },
+    {
       path: '/email_types',
       name: 'EditEmailTypes',
       component: EditList

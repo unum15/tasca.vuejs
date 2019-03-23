@@ -119,10 +119,7 @@ export default {
                 task_category_id: item.task_category_id,
                 task_status_id: item.task_status_id,
                 task_action_id: item.task_action_id
-            
             }
-            console.log(item.task_id);
-            console.log(task);
             this.$http.patch('/task/' + item.task_id, task);
         }
     }

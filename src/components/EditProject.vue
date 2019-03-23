@@ -68,6 +68,7 @@
 			</b-tab>
 			<b-tab v-if="my_project.id" v-for="status_type in order_status_types" :key="status_type.id" :title="status_type.name">
 				<EditOrders
+               :crews="crews"
 					:project="my_project"
                :properties="my_properties"
 					:settings="settings"
@@ -116,6 +117,7 @@ export default {
     },
 	props: {
       contacts: {required: true},
+      crews: {required: true},
       properties: {required: true},
       settings: {required: true},
       project: {required: true},

@@ -31,6 +31,7 @@
 						:task_statuses="task_statuses"
 						:task_actions="task_actions"
 						:task_categories="task_categories"
+						:crews="crews"
 						:settings="settings"
 						@remove-task="removeTask"
 					></EditTask>
@@ -52,6 +53,7 @@ export default {
 		task_statuses: {required: true},
 		task_actions: {required: true},
 		task_categories: {required: true},
+		crews: {required: true},
 		settings: {required: true}
 	},
 	data: function() {
