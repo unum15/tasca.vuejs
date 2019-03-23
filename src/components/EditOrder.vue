@@ -252,6 +252,7 @@
             <b-tab title="Tasks" v-if="my_order.id !== null">
                 <EditTasks
                     v-if="my_order.id != null"
+                    :crews="crews"
                     :order="my_order"
                     :task_types="task_types"
                     :task_statuses="task_statuses"
@@ -467,6 +468,7 @@ export default {
 		'EditTasks': EditTasks
 	},
 	props: {
+        crews: {required: true},
         properties: {required: true},
 		order: {required: true},
 		types: {required: true},

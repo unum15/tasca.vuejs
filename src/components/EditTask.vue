@@ -168,12 +168,12 @@ export default {
 		task_statuses: {required: true},
 		task_actions: {required: true},
 		task_categories: {required: true},
+		crews: {required: true},
 		settings: {required: true}
 	},
 	data: function() {
 		return {
-			my_task: {},
-            crews: []
+			my_task: {}
 		};
 	},
 	created() {
@@ -219,24 +219,6 @@ export default {
 		}
 	},
 	computed: {
-		task_sort_options : function (){
-			// Chrome can't handle this yet
-			//return [for (i of Array(100).keys()) i+1];
-			var options = Array();
-			for(var x=1;x<=100;x++){
-				options.push(x);
-			}
-			return options;
-		},
-		task_group_options : function (){
-			// Chrome can't handle this yet
-			//return [for (i of Array(26).keys()) String.fromCharCode(65 + i)];
-			var options = Array();
-			for(var x=65;x<91;x++){
-				options.push(String.fromCharCode(x));
-			}
-			return options;
-		},
 		current_categories() {
 			return this.task_categories.filter(category => {
                 for (var i=0; i < category.task_types.length; i++) {
