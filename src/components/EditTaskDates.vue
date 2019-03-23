@@ -3,7 +3,7 @@
         <div v-for="date in dates" :key="date.id">
             <EditTaskDate
                 :date="date"
-                @remove-date="removeDate"
+                @remove-task-date="removeDate"
             >
             </EditTaskDate>
         </div>
