@@ -12,6 +12,7 @@ import ViewOrders from '@/components/ViewOrders'
 import ViewTasks from '@/components/ViewTasks'
 import LoginForm from '@/components/LoginForm'
 import ViewSchedule from '@/components/ViewSchedule'
+import ViewAssignments from '@/components/ViewAssignments'
 import EditHours from '@/components/EditHours'
 import EditList from '@/components/EditList'
 import EditProfile from '@/components/EditProfile'
@@ -114,6 +115,11 @@ export default new Router({
       path: '/scheduler',
       name: 'ViewSchedule',
       component: ViewSchedule
+    },
+    {
+      path: '/assignments',
+      name: 'ViewAssignments',
+      component: ViewAssignments
     },
     {
       path: '/client/:client_id/contact/:contact_id',
