@@ -24,15 +24,14 @@
               <b-row>
                 <b-col>
                     <b-form-group label="Client">
-                      <b-form-select
-                        :options="clients"
-                        value-field="id"
-                        text-field="name"
-                        required
-                        :state="client_id != null"
-                        @input="getProperties();getProjects();"
-                        v-model="client_id">
-                      </b-form-select>
+                     <el-select v-model="client_id" filterable placeholder="Select Client" @change="getProperties();getProjects();">
+                        <el-option
+                          v-for="client in clients"
+                          :key="client.id"
+                          :label="client.name"
+                          :value="client.id">
+                        </el-option>
+                      </el-select>
                     </b-form-group>
                 </b-col>
                 <b-col>
@@ -42,7 +41,7 @@
                         value-field="id"
                         text-field="name"
                         required
-                        :state="order.property_id != null"
+                        :state="order.property != null"
                         v-model="order.property">
                       </b-form-select>
                     </b-form-group>
@@ -50,21 +49,11 @@
               </b-row>
               <b-row>
                 <b-col>
-                    <b-form-group label="Existing Project">
-                      <b-form-checkbox
-                        v-model="existing_project"
-                        @input="getProjects"
-                        >
-                      </b-form-checkbox>
-                    </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group label="Project" v-show="existing_project">
+                  <b-form-group label="Project">
                       <b-form-select
                         :options="projects"
                         value-field="id"
                         text-field="name"
-                        :state="project.id != null"
                         v-model="project.id">
                       </b-form-select>
                     </b-form-group>
@@ -227,7 +216,7 @@ export default {
       contact_methods: [],
       activity_levels: [],
       properties: [],
-      projects: [],
+      projects: [ {id: null, name: 'New Project'}],
       order_categories: [],
       order_priorities: [],
       order_types: [],
@@ -238,7 +227,6 @@ export default {
       showSaveFailed: false,
       showSaveSuccess: false,
       reroute: false,
-      existing_project: false,
       client_id: null,
       order: {
         id: null,
@@ -288,12 +276,11 @@ export default {
   },
   methods: {
     getProperties() {
-      console.log(this.client_id)
       if(this.client_id){
         this.$http.get('/properties?client_id=' + this.client_id).then(response => {
           this.properties = response.data
           if(this.properties.length == 1){
-             this.order.property_id = this.properties[0].id;
+             this.order.property = this.properties[0].id;
           }
         })
       }
@@ -302,26 +289,28 @@ export default {
       }
     },
     getProjects() {
-      if((this.client_id)&&(this.existing_project)){
-        this.$http.get('/projects?client_id=' + this.client_id).then(response => {
+      if(this.client_id){
+        this.$http.get('/projects?client_id=' + this.client_id + '&completed=false').then(response => {
           this.projects = response.data
+          this.projects.unshift({id: null, name: 'New Project'})
         })
       }
       else{
-        this.projects = []
+        this.projects = [{id: null, name: 'New Project'}]
       }
     },
     saveProject() {
       if(this.order.name === null){
         return;
       }
-      if(this.existing_project){
+      if(this.project.id){
         this.saveOrder();
         return;
       }
       this.project.name = this.order.name;
       this.project.client_id = this.client_id;
-      //this.project.contact_id = this.contact.id;
+      var client = this.clients.filter(c => c.id == this.client_id);
+      this.project.contact_id = client[0].billing_contact_id;
       this.project.open_date = this.today;
       if(this.project.id === null){
         this.$http.post('/project',this.project)
@@ -342,6 +331,7 @@ export default {
         return;
       }
       this.order.project_id = this.project.id;
+      this.order.date = this.today;
       if(this.order.id === null){
         this.$http.post('/order',this.order)
           .then((results) => {
@@ -394,7 +384,8 @@ export default {
         task_action_id: this.settings.default_billing_task_action_id,
       };
       this.project = {
-        id: null
+        id: null,
+        contact_id: null
       };
       this.client_id = null;
       this.order.order_category_id = this.settings.default_order_category_id
@@ -426,7 +417,7 @@ export default {
     today() {
 			return moment().format('YYYY-MM-DD');
 		},
-  },
+  }
 }
 
 </script>
