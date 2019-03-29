@@ -3,7 +3,7 @@
             <b-container fluid>
                 <b-row>
                   <b-col md="6" class="my-1">
-                    <b-form-group horizontal label="Filter" class="mb-0">
+                    <b-form-group label="Filter" class="mb-0">
                       <b-input-group>
                         <b-form-input v-model="filter" placeholder="Type to Search" />
                         <b-input-group-append>
@@ -31,9 +31,9 @@
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template slot="name" slot-scope="data">
-                    <span :id="'name_' + data.index">{{ data.value }}</span>
+                    <span :id="'name_' + data.item.id">{{ data.value }}</span>
                     <b-popover
-                        :target="'name_' + data.index"
+                        :target="'name_' + data.item.id"
                         triggers="hover"
                         :content="data.item.description"
                     />

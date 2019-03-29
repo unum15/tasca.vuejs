@@ -7,6 +7,7 @@
             <b-navbar-nav>
                 <b-nav-item href="/quick_order">Quick Order Form</b-nav-item>
                 <b-nav-item href="/projects/edit">Edit Projects</b-nav-item>
+                <b-nav-item href="/assignments">Assignments</b-nav-item>
                 <b-nav-item href="/scheduler">Scheduler</b-nav-item>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
