@@ -13,9 +13,9 @@
              @dismissed="showSaveSuccess=false">
       Saved!
     </b-alert>
-    <header>
+    <h1>
       {{ client.name }}
-    </header>
+    </h1>
     <main>
         <b-tabs v-model="tab_index">
           <b-tab title="General">
