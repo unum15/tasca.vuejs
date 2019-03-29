@@ -39,6 +39,7 @@
             v-if="index == current_tab"
             :project="project"
             :contacts="contacts"
+            :crews="crews"
             :properties="properties"
             :settings="my_settings"
             :order_priorities="order_priorities"
@@ -82,6 +83,7 @@ export default {
       projects: [],
       current_tab: 0,
       change_tab: false,
+      crews: [],
       order_types: [],
 			order_priorities: [],
 			order_actions: [],
@@ -101,6 +103,9 @@ export default {
     }
   },
   created () {
+    this.$http.get('/crews').then(response => {
+			this.crews = response.data;
+		});
     this.$http.get('/order_status_types').then(response => {
 			this.order_status_types = response.data;
 		});

@@ -17,7 +17,6 @@ import locale from 'element-ui/lib/locale/lang/en';
 Vue.use(BootstrapVue);
 Vue.use(ElementUI, { locale });
 
-
 Vue.config.productionTip = false;
 
 new Vue({

@@ -38,6 +38,7 @@ export default {
     email: {required: true},
     settings: {required: true},
     email_types: {required: true},
+    contact_id: {default: null}
   },
   data: function () {
     return {
@@ -56,6 +57,9 @@ export default {
       if(!this.verifyEmail){
         return;
       }
+      if(!this.my_email.contact_id){
+        return;
+      }
       if(this.my_email.id === null){
           this.$http.post('/email',this.my_email)
             .then((results) => {
@@ -66,12 +70,17 @@ export default {
         this.$http.patch('/email/' + this.my_email.id,this.my_email)
       }
     }
-  }
-  ,
+  },
   computed: {
     verifyEmail () {
       var regex = /\w+@\w+\.\w+/;
       return regex.test(this.my_email.email);
+    }
+  },
+  watch: {
+    contact_id(){
+      this.my_email.contact_id = this.contact_id;
+      this.save();
     }
   }
 }

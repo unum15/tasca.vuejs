@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import EditClient from '@/components/EditClient'
 import QuickClient from '@/components/QuickClient'
+import QuickOrder from '@/components/QuickOrder'
 import ViewClients from '@/components/ViewClients'
 import ViewContacts from '@/components/ViewContacts'
 import ViewProperties from '@/components/ViewProperties'
@@ -11,6 +12,7 @@ import ViewOrders from '@/components/ViewOrders'
 import ViewTasks from '@/components/ViewTasks'
 import LoginForm from '@/components/LoginForm'
 import ViewSchedule from '@/components/ViewSchedule'
+import ViewAssignments from '@/components/ViewAssignments'
 import EditHours from '@/components/EditHours'
 import EditList from '@/components/EditList'
 import EditProfile from '@/components/EditProfile'
@@ -19,7 +21,7 @@ import GoogleCalendar from '@/components/GoogleCalendar'
 
 Vue.use(Router)
 
-export default new Router({
+var router = new Router({
   mode: 'history',
   routes: [
     {
@@ -38,13 +40,37 @@ export default new Router({
       component: QuickClient
     },
     {
+      path: '/quick_order',
+      name: 'QuickOrder',
+      component: QuickOrder
+    },
+    {
       path: '/client/:client_id',
       name: 'EditClient',
       component: EditClient,
       props: true,
+      meta: {
+        title: 'Edit Client'
+      },
       children: [
         {
           path: 'order/:order_id',
+          component: EditClient
+        },
+        {
+          path: 'contact/:contact_id',
+          component: EditClient
+        },
+        {
+          path: 'property/:property_id',
+          component: EditClient
+        },
+        {
+          path: 'project/:project_id',
+          component: EditClient
+        },
+        {
+          path: 'task/:task_id',
           component: EditClient
         },
         {
@@ -92,6 +118,11 @@ export default new Router({
       path: '/scheduler',
       name: 'ViewSchedule',
       component: ViewSchedule
+    },
+    {
+      path: '/assignments',
+      name: 'ViewAssignments',
+      component: ViewAssignments
     },
     {
       path: '/client/:client_id/contact/:contact_id',
@@ -152,6 +183,11 @@ export default new Router({
     {
       path: '/contact_types',
       name: 'EditContactTypes',
+      component: EditList
+    },
+    {
+      path: '/crews',
+      name: 'EditCrews',
       component: EditList
     },
     {
@@ -241,3 +277,14 @@ export default new Router({
     }
   ]
 })
+
+
+
+router.beforeEach((to, from, next) => {
+  const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title);
+  if(nearestWithTitle) document.title = nearestWithTitle.meta.title;
+  next();
+});
+
+
+export default router;

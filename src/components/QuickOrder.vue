@@ -14,7 +14,7 @@
       Saved!
     </b-alert>
     <header>
-      {{ client.name }}
+        New Order
     </header>
     <main>
             <b-container :fluid="true">
@@ -23,194 +23,41 @@
             <b-container>
               <b-row>
                 <b-col>
-                  <b-form-group label="Contact Name">
-                      <b-form-input
-                        type="text"
-                        v-model="contact.name"
-                        @change="contactNameChanged"
-                        required
-                        :state="contact.name != null"
-                        placeholder="John Smith">
-                      </b-form-input>
-                  </b-form-group>
+                    <b-form-group label="Client">
+                     <el-select v-model="client_id" filterable placeholder="Select Client" @change="getProperties();getProjects();">
+                        <el-option
+                          v-for="client in clients"
+                          :key="client.id"
+                          :label="client.name"
+                          :value="client.id">
+                        </el-option>
+                      </el-select>
+                    </b-form-group>
                 </b-col>
                 <b-col>
-                    <b-form-group label="Contact Type">
+                  <b-form-group label="Property">
                       <b-form-select
-                        :options="contact_types"
-                        :disabled="client_types_loading"
+                        :options="properties"
                         value-field="id"
                         text-field="name"
                         required
-                        :state="contact.contact_type_id != null"
-                        v-model="contact.contact_type_id">
+                        :state="order.property != null"
+                        v-model="order.property">
                       </b-form-select>
                     </b-form-group>
                 </b-col>
               </b-row>
               <b-row>
                 <b-col>
-                    <EditPhoneNumbers
-                        :contact_id="contact.id"
-                        :settings="settings"
-                      ></EditPhoneNumbers>
-                </b-col>
-                <b-col>
-                    <EditEmails
-                        :contact_id="contact.id"
-                        :settings="settings"
-                     ></EditEmails>
-                    
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col>
-                    <b-form-group label="Billing Contact">
-                      <b-form-checkbox
-                        v-model="billing_contact">
-                      </b-form-checkbox>
-                    </b-form-group>
-                </b-col>
-                <b-col>
-                    <b-form-group label="Contact Method">
+                  <b-form-group label="Project">
                       <b-form-select
-                        :options="contact_methods"
+                        :options="projects"
                         value-field="id"
                         text-field="name"
-                        v-model="contact.contact_method_id">
+                        v-model="project.id">
                       </b-form-select>
                     </b-form-group>
                 </b-col>
-              </b-row>
-              <b-row>
-                <b-col>
-                  <b-form-group label="Referred By">
-                    <b-form-input
-                      type="text"
-                      v-model="client.referred_by"
-                      placeholder="John Doe">
-                    </b-form-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col>
-                  <b-form-group label="Client Type">
-                    <b-form-select
-                      :options="client_types"
-                      :disabled="client_types_loading"
-                      value-field="id"
-                      text-field="name"
-                      :state="client.client_type_id != null"
-                      required
-                      v-model="client.client_type_id">
-                    </b-form-select>
-                  </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group label="Client Name">
-                    <b-form-input
-                      type="text"
-                      v-model="client.name"
-                      :state="client.name != null"
-                      required
-                      placeholder="Smith Household"
-                      >
-                    </b-form-input>
-                  </b-form-group>
-                </b-col>
-              </b-row>
-              <b-row>
-                  <b-col>
-                      <b-form-group label="Property Type">
-                        <b-form-select
-                          :options="property_types"
-                          value-field="id"
-                          text-field="name"
-                          required
-                          :state="property.property_type_id != null"
-                          v-model="property.property_type_id">
-                        </b-form-select>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="Work Property">
-                        <b-form-checkbox
-                          v-model="property.work_property">
-                        </b-form-checkbox>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="Billing Property">
-                        <b-form-checkbox
-                          v-model="property.billing_property">
-                        </b-form-checkbox>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="Property Name">
-                        <b-form-input
-                          type="text"
-                          v-model="property.name"
-                          placeholder="Home">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-              </b-row>
-              <b-row>
-                  <b-col>
-                      <b-form-group label="Address Line 1">
-                        <b-form-input
-                          type="text"
-                          v-model="property.address1"
-                          placeholder="123 Main Street">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-              </b-row>
-              <b-row>
-                  <b-col>
-                      <b-form-group label="Address Line 2">
-                        <b-form-input
-                          type="text"
-                          v-model="property.address2"
-                          placeholder="Suite 100">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-              </b-row>
-              <b-row>
-                  <b-col>
-                      <b-form-group label="City">
-                        <b-form-input
-                          type="text"
-                          v-model="property.city"
-                          required
-                          :state="property.city != null"
-                          placeholder="Salt Lake City">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="State">
-                        <b-form-input
-                          type="text"
-                          v-model="property.state"
-                          required
-                          :state="property.state != null"
-                          placeholder="UT">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                      <b-form-group label="Zip">
-                        <b-form-input
-                          type="text"
-                          v-model="property.zip"
-                          placeholder="84555">
-                        </b-form-input>
-                      </b-form-group>
-                  </b-col>
               </b-row>
               <b-row>
                 <b-col>
@@ -339,8 +186,8 @@
                       </b-form-group>
                   </b-col>
               </b-row>
-              <b-button @click="saveClient();">New</b-button>
-              <b-button @click="reroute=true;saveClient();">Edit</b-button>
+              <b-button @click="saveProject();">New</b-button>
+              <b-button @click="reroute=true;saveProject();">Edit</b-button>
             </b-container>
           </b-col>
           <b-col v-if="settings.help_show == 'true'">
@@ -357,7 +204,7 @@ import TopMenu from './TopMenu'
 import EditEmails from './EditEmails'
 import EditPhoneNumbers from './EditPhoneNumbers'
 export default {
-  name: 'QuickClient',
+  name: 'QuickOrder',
   components: {
     'TopMenu': TopMenu,
     'EditEmails': EditEmails,
@@ -365,48 +212,27 @@ export default {
   },
   data () {
     return {
-      client_types: [],
+      clients: [],
       contact_methods: [],
-      contact_types: [],
       activity_levels: [],
-      property_types: [],
+      properties: [],
+      projects: [ {id: null, name: 'New Project'}],
       order_categories: [],
       order_priorities: [],
       order_types: [],
       task_categories: [],
       task_statuses: [],
       task_actions: [],
-      contact_methods_loading: true,
-      contact_types_loading: true,
-      client_types_loading: true,
-      property_types_loading: true,
       settings: {},
-      billing_contact: true,
       showSaveFailed: false,
       showSaveSuccess: false,
       reroute: false,
-      client: {
-        id: null,
-        client_type_id: null,
-        name: null,
-        contact_method_id: null,
-        billing_property_id: null,
-        billing_contact_id: null,
-        referred_by: '',
-      },
-      contact: {
-        id: null
-      },
-      property: {
-        id: null,
-        name: 'Home',
-        billing_property: true,
-        work_property: true
-      },
+      client_id: null,
       order: {
         id: null,
         name: null,
-        description: null
+        description: null,
+        property: null
       },
       task: {
         id: null,
@@ -422,21 +248,8 @@ export default {
       this.settings = response.data
       this.resetForm();
     })
-    this.$http.get('/client_types').then(response => {
-      this.client_types = response.data
-      this.client_types_loading = false
-    })
-    this.$http.get('/contact_methods').then(response => {
-      this.contact_methods = response.data
-      this.contact_methods_loading = false
-    })
-    this.$http.get('/contact_types').then(response => {
-      this.contact_types = response.data
-      this.contact_types_loading = false
-    })
-    this.$http.get('/property_types').then(response => {
-      this.property_types = response.data
-      this.property_types_loading = false
+    this.$http.get('/clients').then(response => {
+      this.clients = response.data
     })
     this.$http.get('/order_categories').then(response => {
       this.order_categories = response.data
@@ -462,70 +275,42 @@ export default {
     })
   },
   methods: {
-    saveClient(reroute) {
-      if(this.client.name === null){
-        return;
-      }
-      if(this.client.id === null){
-        this.$http.post('/client',this.client)
-          .then((results) => {
-            this.client.id = results.data.id;
-            this.saveContact();
-          })
+    getProperties() {
+      if(this.client_id){
+        this.$http.get('/properties?client_id=' + this.client_id).then(response => {
+          this.properties = response.data
+          if(this.properties.length == 1){
+             this.order.property = this.properties[0].id;
+          }
+        })
       }
       else{
-        this.$http.patch('/client/' + this.client.id,this.client)
-          .then(() => {
-            this.saveContact();
-          })
+        this.properties = []
       }
     },
-    saveContact() {
-      if(this.contact.name === null){
-        return;
-      }
-      this.contact.client_id = this.client.id;
-      if(this.contact.id === null){
-        this.$http.post('/contact',this.contact)
-          .then((results) => {
-            this.contact.id = results.data.id;
-            this.saveProperty();
-          })
+    getProjects() {
+      if(this.client_id){
+        this.$http.get('/projects?client_id=' + this.client_id + '&completed=false').then(response => {
+          this.projects = response.data
+          this.projects.unshift({id: null, name: 'New Project'})
+        })
       }
       else{
-        this.$http.patch('/contact/' + this.contact.id,this.contact)
-          .then(() => {
-            this.saveProperty();
-          })
-      }
-    },
-    saveProperty() {
-      if(this.property.name === null){
-        return;
-      }
-      this.property.client_id = this.client.id;
-      this.property.contacts = [ this.contact.id ];
-      if(this.property.id === null){
-        this.$http.post('/property',this.property)
-          .then((results) => {
-            this.property.id = results.data.id;
-            this.saveProject();
-          })
-      }
-      else{
-        this.$http.patch('/property/' + this.property.id,this.property)
-          .then(() => {
-            this.saveProject();
-          })
+        this.projects = [{id: null, name: 'New Project'}]
       }
     },
     saveProject() {
       if(this.order.name === null){
         return;
       }
+      if(this.project.id){
+        this.saveOrder();
+        return;
+      }
       this.project.name = this.order.name;
-      this.project.client_id = this.client.id;
-      this.project.contact_id = this.contact.id;
+      this.project.client_id = this.client_id;
+      var client = this.clients.filter(c => c.id == this.client_id);
+      this.project.contact_id = client[0].billing_contact_id;
       this.project.open_date = this.today;
       if(this.project.id === null){
         this.$http.post('/project',this.project)
@@ -546,7 +331,6 @@ export default {
         return;
       }
       this.order.project_id = this.project.id;
-      this.order.property = this.property.id;
       this.order.date = this.today;
       if(this.order.id === null){
         this.$http.post('/order',this.order)
@@ -579,37 +363,14 @@ export default {
       }
     },
     nextTask(){
-      this.client.main_mailing_property_id = this.property.id;
-      this.client.billing_contact_id = this.contact.id;
-      this.$http.patch('/client/' + this.client.id,this.client).then(() => {
-        if(this.reroute){
-          this.$router.push('/client/' + this.client.id);
-        }
-        else{
-          this.resetForm();
-        }
-      });
+      if(this.reroute){
+        this.$router.push('/client/' + this.client_id + '/order/' + this.order.id);
+      }
+      else{
+        this.resetForm();
+      }
     },
     resetForm(){
-      this.client = {
-        id: null,
-        client_type_id: null,
-        name: null,
-        contact_method_id: null,
-        billing_property_id: null,
-        billing_contact_id: null,
-        referred_by: '',
-      };
-      this.contact = {
-        id: null,
-        name: null
-      };
-      this.property = {
-        id: null,
-        name: 'Home',
-        billing_property: true,
-        work_property: true
-      };
       this.order = {
         id: null,
         name: null,
@@ -623,16 +384,10 @@ export default {
         task_action_id: this.settings.default_billing_task_action_id,
       };
       this.project = {
-        id: null
+        id: null,
+        contact_id: null
       };
-      this.client.client_type_id = this.settings.default_client_type_id
-      this.client.activity_level_id = this.settings.default_activity_level_id
-      this.client.contact_method_id = this.settings.default_contact_method_id
-      this.contact.contact_type_id = this.settings.default_contact_type_id
-      this.property.property_type_id = this.settings.default_property_type_id
-      this.client.activity_level_id = this.settings.default_activity_level_id
-      this.contact.activity_level_id = this.settings.default_activity_level_id
-      this.property.activity_level_id = this.settings.default_activity_level_id
+      this.client_id = null;
       this.order.order_category_id = this.settings.default_order_category_id
       this.order.order_priority_id = this.settings.default_order_priority_id
       this.order.order_type_id = this.settings.default_order_type_id
@@ -652,14 +407,6 @@ export default {
       this.task.task_action_id = this.settings.default_billing_task_action_id
  
     },
-    contactNameChanged() {
-      if(this.client.name === null){
-        var names = this.contact.name.split(/\s+/);
-        if(names.length > 1){
-          this.client.name = names[names.length - 1] + ', ' + names[0];
-        }
-      }
-    },
     orderNameChanged(){
       if(this.order.description === null){
         this.order.description = this.order.name;
@@ -670,11 +417,6 @@ export default {
     today() {
 			return moment().format('YYYY-MM-DD');
 		},
-  },
-  updated() {
-    if(!this.first_update){
-      return;
-    }
   }
 }
 

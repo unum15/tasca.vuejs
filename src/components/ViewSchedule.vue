@@ -5,227 +5,57 @@
             Scheduler
         </head>
         <main>
-            <b-container fluid>
-                <b-row>
-                  <b-col md="6" class="my-1">
-                    <b-form-group horizontal label="Filter" class="mb-0">
-                      <b-input-group>
-                        <b-form-input v-model="filter" placeholder="Type to Search" />
-                        <b-input-group-append>
-                          <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
-                        </b-input-group-append>
-                      </b-input-group>
-                    </b-form-group>
-                  </b-col>
-                </b-row>
-            </b-container fluid>
-            <b-table
-                small
-                striped
-                hover
-                foot-clone
-                :items="tasks"
-                :fields="fields"
-                :filter="filter"
-                >
-                <template slot="order_id" slot-scope="data">
-                    <a :href="'/client/'+ data.item.client_id + '/order/' + data.value"> {{ data.value }} </a>
-                </template>
-                <template slot="client" slot-scope="data">
-                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
-                </template>
-                <template slot="task_appointment_status" slot-scope="data">
-                    <b-form-select
-                        :options="task_appointment_statuses"
-						@input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.task_appointment_status_id"
-                        >
-                    </b-form-select>
-                </template>
-                <template slot="task_category" slot-scope="data">
-                    <b-form-select
-                        :options="task_categories"
-						@input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.task_category_id"
-                        >
-                    </b-form-select>
-                </template>
-                <template slot="task_status" slot-scope="data">
-                    <b-form-select
-                        :options="task_statuses"
-						@input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.task_status_id"
-                        >
-                    </b-form-select>
-                </template>
-                <template slot="task_action" slot-scope="data">
-                    <b-form-select
-                        :options="task_actions"
-						@input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.task_action_id"
-                        >
-                    </b-form-select>
-                </template>
-                <template slot="day" slot-scope="data">
-                    <b-form-input
-                        type="text"
-						@change="save(data.item)"
-                        v-model="data.item.day"
+            <b-tabs>
+                <b-tab title="All">
+                    <ScheduleTab
+                        :task_actions="task_actions"
+                        :task_categories="task_categories"
+                        :task_statuses="task_statuses"
+                        :task_types="task_types"
+                        :task_appointment_statuses="task_appointment_statuses"
                     >
-                    </b-form-input>
-                </template>
-                <template slot="date" slot-scope="data">
-                    <b-form-input
-                        type="date"
-						@change="save(data.item)"
-                        v-model="data.item.date"
+                    </ScheduleTab>
+                </b-tab>
+                <b-tab v-for="order_status_type in order_status_types" :key="order_status_type.id" :title="order_status_type.name">
+                    <ScheduleTab
+                        :order_status_type="order_status_type"
+						:task_actions="task_actions"
+                        :task_categories="task_categories"
+                        :task_statuses="task_statuses"
+                        :task_types="task_types"
+                        :task_appointment_statuses="task_appointment_statuses"
                     >
-                    </b-form-input>
-                </template>
-                <template slot="sort_order" slot-scope="data">
-                    <b-form-input
-						@change="save(data.item)"
-                        v-model="data.item.sort_order"
-                        >
-                    </b-form-input>
-                </template>
-                <template slot="time" slot-scope="data">
-                    <b-form-input
-                        type="time"
-						@change="save(data.item)"
-                        v-model="data.item.time"
-                    >
-                    </b-form-input>
-                </template>
-                <template slot="actions" slot-scope="row">
-                    <img src="@/assets/details.png" v-b-tooltip.hover title="Show Details" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
-                    <img src="@/assets/add.png" v-b-tooltip.hover title="Add Task To Order" @click.stop="addTask(row.item)" fluid alt="+" style="width:20px;" />
-                    <img src="../assets/clear.png" v-b-tooltip.hover title="Clear Scheduling Data" @click.stop="clearScheduleData(row.item)" fluid alt="CS" style="width:20px;" />
-                  </template>
-                  <template slot="row-details" slot-scope="row">
-                    <b-card>
-                      <ul>
-                        <li v-for="(value, key) in row.item" :key="key">{{ key }}: {{ value}}</li>
-                      </ul>
-                    </b-card>
-                  </template>
-            </b-table>
-            <b-modal size="xl" scrollable id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewOrder
-                    v-if="modalInfo.order_id"
-                    :order_id="modalInfo.order_id"
-                >
-                </ViewOrder>
-            </b-modal>
+                    </ScheduleTab>
+                </b-tab>
+            </b-tabs>
         </main>
     </div>
 </template>
 <script>
 import TopMenu from './TopMenu';
 import ViewOrder from './ViewOrder';
+import ScheduleTab from './ScheduleTab';
 export default {
     name: 'ViewSchedule',
     components: {
         'TopMenu': TopMenu,
-        'ViewOrder': ViewOrder
+        'ViewOrder': ViewOrder,
+        'ScheduleTab': ScheduleTab
     },
     data() {
         return {
-            tasks: [],
-            task_categories: [],
-			task_statuses: [],
+            order_status_types: [],
             task_appointment_statuses: [],
-			task_actions: [],
-            filter: null,
-            modalInfo: { title: '', content: '', order_id: null },
-            fields: [
-                {
-                    key: 'approval_date',
-                    label: 'App Date',
-                    sortable: true
-                },
-                {
-                    key: 'order_id',
-                    label: 'S/WO#',
-                    sortable: true
-                },
-                {
-                    key: 'task_appointment_status',
-                    label: 'C',
-                    sortable: true
-                },
-                {
-                    key: 'client',
-                    label: 'Client',
-                    sortable: true
-                },
-                {
-                    key: 'property',
-                    label: 'Property',
-                    sortable: true
-                },
-                {
-                    key: 'description',
-                    label: 'Description',
-                    sortable: true
-                },
-                {
-                    key: 'order_priority',
-                    label: 'Pri',
-                    sortable: true
-                },
-                {
-                    key: 'task_category',
-                    label: 'Category',
-                    sortable: true
-                },
-                {
-                    key: 'task_status',
-                    label: 'Status',
-                    sortable: true
-                },
-                {
-                    key: 'task_action',
-                    label: 'Action',
-                    sortable: true
-                },
-                {
-                    key: 'day',
-                    label: 'Day',
-                    sortable: true
-                },
-                {
-                    key: 'date',
-                    label: 'Date',
-                    sortable: true
-                },
-                {
-                    key: 'sort_order',
-                    label: 'Order',
-                    sortable: true
-                },
-                {
-                    key: 'time',
-                    label: 'Time',
-                    sortable: true
-                },
-                {
-                    key: 'actions',
-                    label: 'Actions'
-                }
-            ]
-                
+            task_categories: [],
+            task_statuses: [],
+            task_actions: [],
+            task_types: []
         }
     },
     created() {
+        this.$http.get('/order_status_types').then(response => {
+			this.order_status_types = response.data;
+		});
         this.$http.get('/task_appointment_statuses').then(response => {
 			this.task_appointment_statuses = response.data;
 		});
@@ -238,9 +68,9 @@ export default {
 		this.$http.get('/task_actions').then(response => {
 			this.task_actions = response.data;
 		});
-        this.$http.get('/schedule').then((results) => {
-            this.tasks = results.data;
-        });
+        this.$http.get('/task_types').then(response => {
+			this.task_types = response.data;
+		});
     },
     methods: {
         info (item, index, button) {
@@ -289,23 +119,9 @@ export default {
                 task_category_id: item.task_category_id,
                 task_status_id: item.task_status_id,
                 task_action_id: item.task_action_id
-            
             }
-            console.log(item.task_id);
-            console.log(task);
             this.$http.patch('/task/' + item.task_id, task);
         }
-    },
-    computed: {
-		task_sort_options() {
-			// Chrome can't handle this yet
-			//return [for (i of Array(100).keys()) i+1];
-			var options = Array();
-			for(var x=1;x<=100;x++){
-				options.push(x);
-			}
-			return options;
-		},
     }
 }
 </script>

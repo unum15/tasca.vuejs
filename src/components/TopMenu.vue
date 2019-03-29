@@ -5,7 +5,9 @@
             <b-navbar-brand href="/">Tasca</b-navbar-brand>
             <b-collapse is-nav id="nav_collapse">
             <b-navbar-nav>
+                <b-nav-item href="/quick_order">Quick Order Form</b-nav-item>
                 <b-nav-item href="/projects/edit">Edit Projects</b-nav-item>
+                <b-nav-item href="/assignments">Assignments</b-nav-item>
                 <b-nav-item href="/scheduler">Scheduler</b-nav-item>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
@@ -43,6 +45,7 @@
                     <b-dropdown-item href="/client_types">Client Types</b-dropdown-item>
                     <b-dropdown-item href="/contact_methods">Contact Methods</b-dropdown-item>
                     <b-dropdown-item href="/contact_types">Contact Types</b-dropdown-item>
+                    <b-dropdown-item href="/crews">Crews</b-dropdown-item>
                     <b-dropdown-item href="/email_types">Email Types</b-dropdown-item>
                     <b-dropdown-item href="/order_actions">Order Actions</b-dropdown-item>
                     <b-dropdown-item href="/order_categories">Order Categories</b-dropdown-item>

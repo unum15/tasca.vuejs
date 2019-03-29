@@ -138,7 +138,7 @@
                             <b-form-group label="Order Date">
                                 <b-form-input
                                     type="date"
-                                    @input="save"
+                                    @change="save"
                                     v-model="my_order.date"
                                     required
                                     :state="my_order.date != null"
@@ -150,7 +150,7 @@
                             <b-form-group label="Closed Date" v-if="order.order_status_type_id!=2">
                                 <b-form-input
                                     type="date"
-                                    @input="save"
+                                    @change="save"
                                     v-model="my_order.completion_date"
                                 >
                                 </b-form-input>
@@ -160,7 +160,7 @@
                             <b-form-group label="Expiration Date">
                                 <b-form-input
                                     type="date"
-                                    @input="save"
+                                    @change="save"
                                     v-model="my_order.expiration_date"
                                 >
                                 </b-form-input>
@@ -252,6 +252,7 @@
             <b-tab title="Tasks" v-if="my_order.id !== null">
                 <EditTasks
                     v-if="my_order.id != null"
+                    :crews="crews"
                     :order="my_order"
                     :task_types="task_types"
                     :task_statuses="task_statuses"
@@ -467,6 +468,7 @@ export default {
 		'EditTasks': EditTasks
 	},
 	props: {
+        crews: {required: true},
         properties: {required: true},
 		order: {required: true},
 		types: {required: true},
@@ -550,7 +552,7 @@ export default {
             if((this.my_order.date === null)||(this.my_order.name === null)||(this.my_order.description === null)){
                 return;
             }
-            if((this.my_order.properties.length === 0)&&(this.my_order.property_id == null)){
+            if((this.my_order.properties.length === 0)&&(this.my_order.property == null)){
                 return;
             }
             if((this.recurring_interval.count != null) && (this.recurring_interval.unit != null)){
