@@ -196,7 +196,7 @@ export default {
         this.$http.get('/crews').then(response => {
 			this.crews = response.data;
 		});
-        this.$http.get('/tasks?active_only').then((results) => {
+        this.$http.get('/tasks?active_only=true').then((results) => {
             this.tasks = results.data;
         });
     },
