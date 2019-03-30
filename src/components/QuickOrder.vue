@@ -342,6 +342,7 @@ export default {
         return;
       }
       this.order.project_id = this.project.id;
+      this.order.date = this.today();
       if(this.order.id === null){
         this.$http.post('/order',this.order)
           .then((results) => {
