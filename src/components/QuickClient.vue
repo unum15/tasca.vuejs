@@ -23,6 +23,18 @@
             <b-container>
               <b-row>
                 <b-col>
+                  <b-form-group label="Contact Name">
+                      <b-form-input
+                        type="text"
+                        v-model="contact.name"
+                        @change="contactNameChanged"
+                        required
+                        :state="contact.name != null"
+                        placeholder="John Smith">
+                      </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
                     <b-form-group label="Contact Type">
                       <b-form-select
                         :options="contact_types"
@@ -34,18 +46,6 @@
                         v-model="contact.contact_type_id">
                       </b-form-select>
                     </b-form-group>
-                </b-col>
-                <b-col>
-                  <b-form-group label="Contact Name">
-                      <b-form-input
-                        type="text"
-                        v-model="contact.name"
-                        @change="contactNameChanged"
-                        required
-                        :state="contact.name != null"
-                        placeholder="John Smith">
-                      </b-form-input>
-                  </b-form-group>
                 </b-col>
               </b-row>
               <b-row>
@@ -547,6 +547,7 @@ export default {
       }
       this.order.project_id = this.project.id;
       this.order.property = this.property.id;
+      this.order.date = this.today;
       if(this.order.id === null){
         this.$http.post('/order',this.order)
           .then((results) => {
@@ -578,12 +579,16 @@ export default {
       }
     },
     nextTask(){
-      if(this.reroute){
-        this.$router.push('/client/' + this.client.id);
-      }
-      else{
-        this.resetForm();
-      }
+      this.client.main_mailing_property_id = this.property.id;
+      this.client.billing_contact_id = this.contact.id;
+      this.$http.patch('/client/' + this.client.id,this.client).then(() => {
+        if(this.reroute){
+          this.$router.push('/client/' + this.client.id);
+        }
+        else{
+          this.resetForm();
+        }
+      });
     },
     resetForm(){
       this.client = {

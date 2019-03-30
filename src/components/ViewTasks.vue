@@ -8,7 +8,7 @@
             <b-container fluid>
                 <b-row>
                   <b-col md="6" class="my-1">
-                    <b-form-group horizontal label="Filter" class="mb-0">
+                    <b-form-group label="Filter" class="mb-0">
                       <b-input-group>
                         <b-form-input v-model="filter" placeholder="Type to Search" />
                         <b-input-group-append>
@@ -26,20 +26,76 @@
                 :filter="filter"
                 :items="tasks"
                 :fields="fields"
-                :per-page="perPage"
-                :current-page="currentPage"
-                @filtered="onFiltered"
             >
-                <template slot="id" slot-scope="data">
-                    <a :href="'/client/'+ data.item.order.project.client_id + '/project/'+ data.item.order.project_id + '/order/'+ data.item.order_id +'/task/' + data.item.id"> {{ data.value }} </a>
+                <template slot="order.id" slot-scope="data">
+                    <a :href="'/client/'+ data.item.client_id + '/order/' + data.value"> {{ data.value }} </a>
+                </template>
+                <template slot="order.project.client.name" slot-scope="data">
+                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                </template>
+                <template slot="name" slot-scope="data">
+                    <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
+                </template>                
+                <template slot="task_category.name" slot-scope="data">
+                    <b-form-select
+                        :options="task_categories"
+						@input="save(data.item)"
+                        value-field="id"
+                        text-field="name"
+                        v-model="data.item.task_category_id"
+                        >
+                    </b-form-select>
+                </template>
+                <template slot="task_status.name" slot-scope="data">
+                    <b-form-select
+                        :options="task_statuses"
+						@input="save(data.item)"
+                        value-field="id"
+                        text-field="name"
+                        v-model="data.item.task_status_id"
+                        >
+                    </b-form-select>
+                </template>
+                <template slot="task_action.name" slot-scope="data">
+                    <b-form-select
+                        :options="task_actions"
+						@input="save(data.item)"
+                        value-field="id"
+                        text-field="name"
+                        v-model="data.item.task_action_id"
+                        >
+                    </b-form-select>
+                </template>
+                <template slot="crew.name" slot-scope="data">
+                    <b-form-select
+                        :options="crews"
+						@input="save(data.item)"
+                        value-field="id"
+                        text-field="name"
+                        v-model="data.item.crew_id"
+                        >
+                    </b-form-select>
+                </template>
+                <template slot="task_hours" slot-scope="data">
+                    <b-form-input
+						@change="save(data.item)"
+                        v-model="data.item.task_hours"
+                        >
+                    </b-form-input>
+                </template>
+                <template slot="crew_hours" slot-scope="data">
+                    <b-form-input
+						@change="save(data.item)"
+                        v-model="data.item.crew_hours"
+                        >
+                    </b-form-input>
+                </template>
+                <template slot="dates" slot-scope="data">
+                    <span v-b-popover.hover="formatDates(data.value)">
+                        {{ data.value.length }}
+                    </span>
                 </template>
             </b-table>
-            <b-row>
-                <b-col md="6" class="my-1">
-                  <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" class="my-0" />
-                </b-col>
-            </b-row>
-
         </main>
     </div>
 </template>
@@ -54,13 +110,24 @@ export default {
         return {
             tasks: [],
             filter: null,
-            totalRows: 0,
-            currentPage: 1,
-            perPage: 20,
+            task_actions: [],
+            task_categories: [],
+            task_statuses: [],
+            crews: [],
             fields: [
-                    {
-                    key: 'id',
-                    label: '#',
+                {
+                    key: 'order.start_date',
+                    label: 'Start Date',
+                    sortable: true
+                },
+                {
+                    key: 'order.service_window',
+                    label: 'Service Window',
+                    sortable: true
+                },
+               {
+                    key: 'order.id',
+                    label: 'S/WO#',
                     sortable: true
                 },
                 {
@@ -69,48 +136,82 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'order.project.name',
-                    label: 'Project Name',
-                    sortable: true
-                },
-                {
-                    key: 'order.property.name',
+                    key: 'order.properties[0].name',
                     label: 'Property Name',
                     sortable: true
                 },
                 {
-                    key: 'order.project.contact.name',
-                    label: 'Contact Name',
+                    key: 'name',
+                    label: 'Name',
                     sortable: true
                 },
                 {
-                    key: 'description',
-                    label: 'Description',
+                    key: 'task_category.name',
+                    label: 'Task Category',
                     sortable: true
                 },
                 {
-                    key: 'date',
-                    label: 'Date',
+                    key: 'task_status.name',
+                    label: 'Task Status',
                     sortable: true
                 },
                 {
-                    key: 'notes',
-                    label: 'Notes',
-                    sortable: false
+                    key: 'task_action.name',
+                    label: 'Task Action',
+                    sortable: true
+                },
+                {
+                    key: 'task_hours',
+                    label: 'Task Hours',
+                    sortable: true
+                },
+                {
+                    key: 'crew.name',
+                    label: 'Crew',
+                    sortable: true
+                },
+                {
+                    key: 'crew_hours',
+                    label: 'Crew Hours',
+                    sortable: true
+                },
+                {
+                    key: 'dates',
+                    label: 'Dates',
+                    sortable: true
                 }
             ]
         }
     },
     created() {
-        this.$http.get('/tasks').then((results) => {
+        this.$http.get('/task_categories').then(response => {
+			this.task_categories = response.data;
+		});
+		this.$http.get('/task_statuses').then(response => {
+			this.task_statuses = response.data;
+		});
+		this.$http.get('/task_actions').then(response => {
+			this.task_actions = response.data;
+		});
+        this.$http.get('/crews').then(response => {
+			this.crews = response.data;
+		});
+        this.$http.get('/tasks?active_only').then((results) => {
             this.tasks = results.data;
-            this.totalRows = this.tasks.length;
         });
     },
     methods: {
-        onFiltered (filteredItems) {
-          this.totalRows = filteredItems.length
-          this.currentPage = 1
+        save(item){
+            this.$http.patch('/task/' + item.id, item);
+        },
+        formatDates(dates){
+            var dates_str = "";
+            for(var x = 0; x <= dates.length; x++){
+                if((dates[x]) && (dates[x].date)){
+                    dates_str += dates[x].date + " ";
+                }
+            }
+            return dates_str;
         }
     }
 }

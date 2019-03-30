@@ -31,12 +31,7 @@
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template slot="name" slot-scope="data">
-                    <span :id="'name_' + data.item.id">{{ data.value }}</span>
-                    <b-popover
-                        :target="'name_' + data.item.id"
-                        triggers="hover"
-                        :content="data.item.description"
-                    />
+                    <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
                 </template>
                 
                 <template slot="task_appointment_status" slot-scope="data">
@@ -89,6 +84,7 @@
                 </template>
                 <template slot="date" slot-scope="data">
                     <b-form-input
+                        v-b-popover.hover="data.item.notes"
                         type="date"
 						@change="save(data.item)"
                         v-model="data.item.date"

@@ -21,7 +21,7 @@ import GoogleCalendar from '@/components/GoogleCalendar'
 
 Vue.use(Router)
 
-export default new Router({
+var router = new Router({
   mode: 'history',
   routes: [
     {
@@ -49,6 +49,9 @@ export default new Router({
       name: 'EditClient',
       component: EditClient,
       props: true,
+      meta: {
+        title: 'Edit Client'
+      },
       children: [
         {
           path: 'order/:order_id',
@@ -274,3 +277,14 @@ export default new Router({
     }
   ]
 })
+
+
+
+router.beforeEach((to, from, next) => {
+  const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title);
+  if(nearestWithTitle) document.title = nearestWithTitle.meta.title;
+  next();
+});
+
+
+export default router;
