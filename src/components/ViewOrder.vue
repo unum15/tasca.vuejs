@@ -31,7 +31,7 @@
             <b-row>
                 <b-col>Property</b-col>
                 <b-col>
-                    <a :href="'http://maps.google.com/maps?q=' + order.property.address1 + '+' + order.property.address2 + '+' + order.property.city + '+' + order.property.state + '+' + order.property.zip" target="tasca_address">
+                    <a :href="'http://maps.google.com/maps?q=' + order.property.address1 + '+' + (order.property.address2 ? order.property.address2 + '+' : '') + order.property.city + '+' + order.property.state + '+' + order.property.zip" target="tasca_address">
                         {{ order.property.name }}<br />
                         {{ order.property.address1 }}<br />
                         {{ order.property.address2 }}<br v-if="order.property.address2" />
