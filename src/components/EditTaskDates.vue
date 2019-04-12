@@ -31,7 +31,7 @@ export default {
       this.newDate();
       return;
     }
-    this.$http.get('/task_dates?min_date='+ this.today +'&task_id=' + this.task_id).then(response => {
+    this.$http.get('/task_dates?task_id=' + this.task_id).then(response => {
         if(response.data.length > 0){
           this.dates = response.data
         }

@@ -44,6 +44,26 @@
         </b-form-group>
     </b-col>
     <b-col>
+        <b-form-group label="Completion Date">
+            <b-form-input
+              type="date"
+              @change="save"
+              v-model="my_date.completion_date"
+            >
+            </b-form-input>
+        </b-form-group>
+    </b-col>
+    <b-col>
+        <b-form-group label="Billed Date">
+            <b-form-input
+              type="date"
+              @change="save"
+              v-model="my_date.billed_date"
+            >
+            </b-form-input>
+        </b-form-group>
+    </b-col>
+    <b-col>
       <b-button variant="danger" size="sm" @click="deleteDate">Delete</b-button>
     </b-col>
   </b-row>

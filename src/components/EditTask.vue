@@ -81,9 +81,6 @@
                 </b-form-group>
             </b-col>
         </b-row>
-        <b-row>
-           <EditTaskDates :task_id="my_task.id"></EditTaskDates>
-        </b-row>
 		<b-row>
 			<b-col>
                 <b-form-group label="Job Hours">
@@ -117,6 +114,9 @@
                     </b-form-input>
                 </b-form-group>
             </b-col>
+        </b-row>
+        <b-row>
+           <EditTaskDates :task_id="my_task.id"></EditTaskDates>
         </b-row>
         <b-row>
             <b-col>
