@@ -4,8 +4,9 @@
     <b-col>
       <b-form-group label="Day Notes">
           <b-form-textarea
+            ref="notes"
             type="text"
-            @input="save"
+            @change="save"
             v-model="my_date.notes"
           >
           </b-form-textarea>
@@ -17,7 +18,7 @@
         <b-form-group label="Day">
             <b-form-input
               type="text"
-              @change="save"
+              @blur="save"
               v-model="my_date.day"
             >
             </b-form-input>
@@ -39,6 +40,16 @@
               type="time"
               @change="save"
               v-model="my_date.time"
+            >
+            </b-form-input>
+        </b-form-group>
+    </b-col>
+    <b-col>
+        <b-form-group label="Sort Order">
+            <b-form-input
+              type="text"
+              @change="save"
+              v-model="my_date.sort_order"
             >
             </b-form-input>
         </b-form-group>
@@ -80,14 +91,20 @@ export default {
   data: function () {
     return {
         my_date: {
+          id: null,
           date: null,
           time: null,
           day: null
         }
     }
   },
-  created () {
-    this.my_date = this.date;
+  created() {
+    Object.assign(this.my_date, this.date);
+  },
+  mounted(){
+    if(this.focus){
+      this.focus.focus();
+    }
   },
   methods: {
     deleteDate(){

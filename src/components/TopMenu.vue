@@ -84,7 +84,7 @@
         methods: {
             signOut(){
 				this.$http.post('/unauth')
-				.then(request => {
+				.then(() => {
 					localStorage.clear();
                     this.$router.push('/');
 				})

@@ -35,7 +35,6 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.query.code);
     if(this.$route.query.code !== undefined){
       this.$http.post('/calendar/callback', {code: this.$route.query.code}).then(response => {
         this.status = response.data.status

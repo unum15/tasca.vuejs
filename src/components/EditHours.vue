@@ -103,10 +103,8 @@ export default {
     updateTotal(group,subTotal){
       this.groups[group].total = subTotal;
       var total=0;
-      console.log('subtotal:'+subTotal);
       for (var g in this.groups) {
          if (this.groups.hasOwnProperty(g)) {
-          console.log(this.groups[g].total);
           total+=this.groups[g].total;
          }
       }

@@ -462,7 +462,7 @@ export default {
     })
   },
   methods: {
-    saveClient(reroute) {
+    saveClient() {
       if(this.client.name === null){
         return;
       }

@@ -544,8 +544,6 @@ export default {
 	},
 	methods: {
         save(){
-
-            var reload = false;
             if((this.my_order.name != null) && (this.my_order.description == null)){
                 this.my_order.description = this.my_order.name;
             }
@@ -573,7 +571,7 @@ export default {
             }
             else{
                 var order = this.my_order;
-                this.$http.patch('/order/'+this.my_order.id,this.my_order).then(response => {
+                this.$http.patch('/order/'+this.my_order.id,this.my_order).then(() => {
                     if(this.reload){
                         this.$emit('reload-orders', order);
                         this.reload = false;
@@ -593,11 +591,11 @@ export default {
                 this.my_order.property = this.my_order.properties[0];
                 this.my_order.order_status_type_id = 2;
                 this.reload = true;
-            };
+            }
             if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date === null)){
                 this.my_order.order_status_type_id = 1
                 this.reload = true;
-            };
+            }
 
 
             var pending_days_out = localStorage.getItem('pending_days_out');
@@ -607,15 +605,14 @@ export default {
             if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
                 this.my_order.order_status_type_id = 3
                 this.reload = true;
-            };
+            }
             if((this.my_order.order_status_type_id == 3) && ((this.my_order.start_date == "") || (days_out > pending_days_out))){
                 this.my_order.order_status_type_id = 2
                 this.reload = true;
-            };
+            }
             this.save();
         },
         createOrders(){
-            var order = this.my_order;
             this.$http.post('/order/convert/'+this.my_order.id,this.my_order).then(response => {
                 this.$emit('reload-orders', response.data[0]);
                 this.reload = false;
@@ -644,23 +641,24 @@ export default {
         showConvertButton(){
             if((this.my_order.renewable) || (this.my_order.recurring)){
                 return false;
-            };
+            }
             if((this.my_order.order_status_type_id == 1) && (this.my_order.approval_date != "") && (this.my_order.approval_date != null) && (this.my_order.properties.length == 1)){
                     return true;
             }
             if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date === null)){
                 return true;
-            };
+            }
             var pending_days_out = localStorage.getItem('pending_days_out');
             var today = moment();
             var start_date = moment(this.my_order.start_date);
             var days_out = start_date.diff(today, 'days')
             if((this.my_order.order_status_type_id < 3) && (days_out <= pending_days_out)){
                 return true;
-            };
+            }
             if((this.my_order.order_status_type_id == 3) && ((this.my_order.start_date == "") || (days_out > pending_days_out))){
                 return true;
-            };
+            }
+            return false;
         },
         showCreateButton(){
             if(this.my_order.completed_date != null){
@@ -677,7 +675,7 @@ export default {
             }
             if((!this.my_order.renewable) && (!this.my_order.recurring)){
                 return false;
-            };
+            }
             return true;
         },
         convertButtonLabel(){

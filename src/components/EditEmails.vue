@@ -57,7 +57,6 @@ export default {
   },
   watch: {
     contact_id(){
-      console.log('new id:' + this.contact_id);
       if(this.contact_id === null){
         this.emails = [];
         this.newEmail();

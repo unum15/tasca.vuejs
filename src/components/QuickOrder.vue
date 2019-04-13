@@ -201,14 +201,10 @@
 <script>
 import moment from 'moment'
 import TopMenu from './TopMenu'
-import EditEmails from './EditEmails'
-import EditPhoneNumbers from './EditPhoneNumbers'
 export default {
   name: 'QuickOrder',
   components: {
     'TopMenu': TopMenu,
-    'EditEmails': EditEmails,
-    'EditPhoneNumbers': EditPhoneNumbers
   },
   data () {
     return {

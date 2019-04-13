@@ -129,16 +129,6 @@
                     </b-form-input>
                 </b-form-group>
             </b-col>
-            <b-col>
-                <b-form-group label="Sort Order">
-                    <b-form-input
-						type="text"
-						@change="save"
-                        v-model="my_task.sort_order"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
 			<b-col>
                 <b-form-group label="Completion Date">
                     <b-form-input

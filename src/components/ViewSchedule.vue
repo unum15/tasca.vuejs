@@ -33,13 +33,11 @@
 </template>
 <script>
 import TopMenu from './TopMenu';
-import ViewOrder from './ViewOrder';
 import ScheduleTab from './ScheduleTab';
 export default {
     name: 'ViewSchedule',
     components: {
         'TopMenu': TopMenu,
-        'ViewOrder': ViewOrder,
         'ScheduleTab': ScheduleTab
     },
     data() {

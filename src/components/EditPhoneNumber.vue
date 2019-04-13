@@ -77,9 +77,8 @@ export default {
       this.$http.delete('/phone_number/' + this.my_phone_number.id);
       this.$emit('remove-phone_number', this.my_phone_number);
     },
-    formatPhoneNumber (value, event) {
+    formatPhoneNumber (value) {
       value = value.replace(/[A-Za-z]/g, '');
-      //value = value.replace(/^\d{3}/g, '$1-');
       return value;
     },
   },

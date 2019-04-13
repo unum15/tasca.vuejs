@@ -3,7 +3,7 @@
 			<b-container fluid>
 			<b-form-row>
 				<b-col>
-          <b-form-group horizontal :label-cols="10" label="Show Completed">
+          <b-form-group  :label-cols="10" label="Show Completed">
             <b-form-checkbox
               v-model="filter.completed"
             >

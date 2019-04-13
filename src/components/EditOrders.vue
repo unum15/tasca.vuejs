@@ -3,7 +3,7 @@
 		<b-container fluid>
 			<b-form-row>
 				<b-col>
-          <b-form-group horizontal :label-cols="10" label="Show Closed">
+          <b-form-group  :label-cols="10" label="Show Closed">
             <b-form-checkbox
               v-model="filter.completed"
             >
@@ -11,7 +11,7 @@
           </b-form-group>
 				</b-col>
 				<b-col>
-					<b-form-group horizontal :label-cols="10" label="Show Expired">
+					<b-form-group  :label-cols="10" label="Show Expired">
             <b-form-checkbox
               v-model="filter.expired"
             >

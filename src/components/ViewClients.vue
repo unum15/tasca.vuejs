@@ -8,7 +8,7 @@
             <b-container fluid>
                 <b-row>
                   <b-col md="6" class="my-1">
-                    <b-form-group horizontal label="Filter" class="mb-0">
+                    <b-form-group  label="Filter" class="mb-0">
                       <b-input-group>
                         <b-form-input v-model="filter" placeholder="Type to Search" />
                         <b-input-group-append>
@@ -18,7 +18,7 @@
                     </b-form-group>
                   </b-col>
                 </b-row>
-            </b-container fluid>
+            </b-container>
             <b-table small striped hover :filter="filter" :items="clients" :fields="fields">
                 <template slot="name" slot-scope="data">
                     <a :href="'/client/' + data.item.id"> {{ data.value }} </a>

@@ -14,7 +14,7 @@
                 <b-col>Hours</b-col>
                 <b-col>Notes</b-col>
             </b-row>
-            <b-row v-for="sign_in in order.sign_ins">
+            <b-row v-for="sign_in in order.sign_ins" :key="sign_in.id">
                 <b-col>{{ sign_in.contact.name }}</b-col>
                 <b-col>{{ sign_in.sign_in }}</b-col>
                 <b-col>{{ sign_in.sign_out }}</b-col>
@@ -39,12 +39,12 @@
                     </a>
                 </b-col>
             </b-row>
-            <div v-for="contact in order.property.contacts">
+            <div v-for="contact in order.property.contacts" :key="contact.id">
                 <b-row>
                     <b-col>Contact</b-col>
                     <b-col>{{ contact.name }}</b-col>
                 </b-row>
-                <b-row v-for="phone_number in contact.phone_numbers">
+                <b-row v-for="phone_number in contact.phone_numbers" :key="phone_number.id">
                     <b-col>{{ phone_number.phone_number_type.name }}</b-col>
                     <b-col><a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a></b-col>
                 </b-row>
@@ -53,13 +53,14 @@
                 <b-col>Requested By</b-col>
                 <b-col>{{ order.project.contact.name }}</b-col>
             </b-row>
-            <b-row v-for="phone_number in order.project.contact.phone_numbers">
+            <b-row v-for="phone_number in order.project.contact.phone_numbers" :key="phone_number.id">
                 <b-col>{{ phone_number.phone_number_type.name }}</b-col>
                 <b-col><a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a></b-col>
             </b-row>
             <b-row>
                 <b-col>Description</b-col>
             </b-row>
+            <b-row>
                 <b-col class="bg-info">{{ order.description }}</b-col>
             </b-row>
             <b-row>
@@ -215,7 +216,6 @@ export default {
     },
     methods: {
         getOrder() {
-            console.log('get'+this.order_id)
             this.$http.get('/order/' + this.order_id).then((results) => {
                 this.order = results.data;
                 //only show first property information
@@ -225,7 +225,7 @@ export default {
         signIn(){
             var sign_in
             if(sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"))){
-                this.$http.post('/sign_in', {order_id : this.order_id, sign_in: sign_in}).then((results) => {
+                this.$http.post('/sign_in', {order_id : this.order_id, sign_in: sign_in}).then(() => {
                     this.getOrder()
                 });
             }
@@ -233,7 +233,7 @@ export default {
         signOut(){
             var sign_out
             if(sign_out = prompt('Sign Out Time', moment().format("YYYY-MM-DD h:mm:ss a"))){
-                this.$http.patch('/sign_in/' + this.sign_in_id, {sign_out : sign_out}).then((results) => {
+                this.$http.patch('/sign_in/' + this.sign_in_id, {sign_out : sign_out}).then(() => {
                     this.getOrder()
                 });
             }
@@ -265,7 +265,6 @@ export default {
     },
     watch: {
         order_id() {
-            console.log('get');
             this.getOrder();
         }
     }

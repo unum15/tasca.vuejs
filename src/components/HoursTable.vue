@@ -147,12 +147,7 @@ export default {
       else{
         sign_in[this.editField] = this.editItem.date + " " + this.editValue;
       }
-      console.log(sign_in);
-      $.ajax({
-          url: 'php/hours.php',
-          type: 'PATCH',
-          data: sign_in
-        }).done(data =>
+      this.$http.patch('/sign_in/'+sign_in.id, sign_in).then(() =>
         {
           this.$emit('update');
         });

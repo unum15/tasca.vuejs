@@ -4,7 +4,7 @@
     <b-container fluid>
       <b-row>
         <b-col>
-          <b-form-group horizontal label="Show Completed">
+          <b-form-group label="Show Completed">
             <b-form-checkbox
               @input="getProjects"
               v-model="filter.completed"
@@ -13,7 +13,7 @@
           </b-form-group>
         </b-col>
         <b-col>
-          <b-form-group horizontal label="Filter">
+          <b-form-group label="Filter">
             <b-form-input
                     type="text"
                     v-model="filter.name"
