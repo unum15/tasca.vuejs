@@ -8,7 +8,16 @@
             <h2>Assignments for {{ contact_name }}</h2>
             <b-container fluid>
                 <b-row>
-                    <b-col md="6" class="my-1">
+                    <b-col>
+                        <b-form-group label="Date" class="mb-0">
+                          <b-input-group>
+                            <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;" />
+                            <b-form-input type="date" v-model="date" />
+                            <img src="@/assets/next.png" v-b-tooltip.hover title="Next Date" @click="nextDate" fluid alt="ND" style="width:25px;" />
+                          </b-input-group>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
                         <b-form-group label="Crew">
                             <b-form-select
                                 @change="filterByCrew"
@@ -18,16 +27,16 @@
                                 v-model="crew_id"
                             >
                             </b-form-select>
-                      </b-form-group>
-                  </b-col>
-                  <b-col md="6" class="my-1">
-                    <b-form-group label="Filter" class="mb-0">
-                      <b-input-group>
-                        <b-form-input v-model="text_filter" placeholder="Type to Search" />
-                        <b-input-group-append>
-                          <b-btn :disabled="!text_filter" @click="text_filter = null">Clear</b-btn>
-                        </b-input-group-append>
-                      </b-input-group>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Filter" class="mb-0">
+                          <b-input-group>
+                            <b-form-input v-model="text_filter" placeholder="Type to Search" />
+                            <b-input-group-append>
+                                <b-btn :disabled="!text_filter" @click="text_filter = null">Clear</b-btn>
+                            </b-input-group-append>
+                        </b-input-group>
                     </b-form-group>
                   </b-col>
                 </b-row>
@@ -70,6 +79,7 @@
 <script>
 import TopMenu from './TopMenu';
 import ViewOrder from './ViewOrder';
+import moment from 'moment'
 export default {
     name: 'ViewAssignments',
     components: {
@@ -85,6 +95,7 @@ export default {
             tasks: [],
             text_filter: null,
             modalInfo: { title: '', content: '', order_id: null },
+            date: null,
             fields: [
                 {
                     key: 'order_id',
@@ -145,6 +156,7 @@ export default {
         }
     },
     created() {
+        this.date = moment().format('YYYY-MM-DD');
         this.$http.get('/order_status_types').then(response => {
 			this.order_status_types = response.data;
 		});
@@ -152,12 +164,23 @@ export default {
 			this.crews = response.data;
             this.crews.unshift({id: null, name: 'All'});
 		});
-        this.$http.get('/schedule').then((results) => {
-            this.tasks = results.data;
-        });
+        this.getTasks();
         this.contact_name = localStorage.getItem('name');
     },
     methods: {
+        getTasks(){
+            this.$http.get('/schedule?date='+this.date).then((results) => {
+                this.tasks = results.data;
+            });
+        },
+        previousDate(){
+            this.date = moment(this.date).subtract(1, 'day').format('YYYY-MM-DD');
+            this.getTasks();
+        },
+        nextDate(){
+            this.date = moment(this.date).add(1, 'day').format('YYYY-MM-DD');
+            this.getTasks();
+        },
         filterByCrew(){
         
         },
