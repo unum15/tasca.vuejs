@@ -25,7 +25,7 @@
                 :tbody-tr-class="rowClass"
                 >
                 <template slot="order_id" slot-scope="data">
-                    <a :href="'/client/'+ data.item.client_id + '/order/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
                 <template slot="client" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>

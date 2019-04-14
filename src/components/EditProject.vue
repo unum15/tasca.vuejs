@@ -84,9 +84,11 @@
                :task_types="task_types"
                :default_property_id="default_property_id"
                :reload_count="reload_count"
-               :selected_order_id="changeToOrderId"
+               :order_id="selected_order_id"
+               :task_id="task_id"
                @reload-orders="reloadOrders"
                @changed-order-tab="changedOrderTab"
+               @set-order-tab="setOrderTab"
             >
             </EditOrders>
          </b-tab>
@@ -131,7 +133,9 @@ export default {
       task_categories: {required: true},
       task_statuses: {required: true},
       task_types: {required: true},
-      default_property_id: {required: true}
+      default_property_id: {required: true},
+      order_id: {default: null},
+      task_id: {default: null},
    },
    data() {
       return {
@@ -143,14 +147,17 @@ export default {
          order_tab: 0,
          reload_count: 0,
          currentTab: 0,
-         changeToOrderId: null,
          my_contacts: [],
-         my_properties: []
+         my_properties: [],
+         selected_order_id: null
       };
    },
    created() {
         this.my_project=this.project;
         this.help_order = this.settings.help_project_general;
+        if(this.order_id){
+         this.selected_order_id = this.order_id;
+        }
         if(this.contacts.length == 0){
          this.$http.get('/contacts?client_id=' + this.my_project.client_id).then(response => {
            this.my_contacts = response.data
@@ -245,7 +252,14 @@ export default {
          if(order){
             this.reload_count++;
             this.currentTab = order.order_status_type_id;
-            this.changeToOrderId = order.id;
+            this.new_order_id = order.id;
+         }
+      },
+      setOrderTab(order){
+         if(order){
+            console.log(order.order_status_type_id);
+            this.currentTab = order.order_status_type_id;
+            this.$emit('set-order-tab', order)
          }
       }
    }

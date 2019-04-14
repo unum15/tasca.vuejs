@@ -53,6 +53,8 @@
 						:task_types="task_types"
             :order_status_types="order_status_types"
             :default_property_id="default_property_id"
+            :order_id="order_id"
+            :task_id="task_id"
             @remove-project="removeProject"
         ></EditProject>
       </b-tab>
@@ -76,7 +78,10 @@ export default {
     contacts: {default: () => []},
     properties: {default: () => []},
     contact_id: {default: null},
-    default_property_id: {default: null}
+    default_property_id: {default: null},
+    project_id: {default: null},
+    order_id: {default: null},
+    task_id: {default: null},
   },
   data () {
     return {
@@ -95,6 +100,7 @@ export default {
 			task_types: [],
       order_status_types: [],
       my_settings: null,
+      selected_project_id: null,
       filter: {
         completed : false,
         name: null,
@@ -136,6 +142,7 @@ export default {
 		this.$http.get('/task_types').then(response => {
 			this.task_types = response.data;
 		});
+    this.selected_project_id = this.project_id;
     this.getProjects()
   },
   methods: {
@@ -182,11 +189,14 @@ export default {
       if((this.change_tab)&&(index == this.projects.length -1)){
         return true
       }
+      if(this.selected_project_id == this.projects[index].id){
+        return true
+      }
       return false
     },
     removeProject (project) {
       this.projects = this.projects.filter(p => p.id !== project.id);
-    }
+    },
   },
 }
 

@@ -153,6 +153,9 @@
               :settings="settings"
               :contact_id="client.billing_contact_id"
               :default_property_id="client.main_mailing_property_id"
+              :project_id="project_id"
+              :order_id="order_id"
+              :task_id="task_id"
               ></EditProjects>
           </b-tab>
         </b-tabs>

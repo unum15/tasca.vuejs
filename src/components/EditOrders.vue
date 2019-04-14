@@ -82,7 +82,8 @@ export default {
 		settings: {required: true},
 		default_property_id: {required: true},
 		reload_count: {default: 0},
-		selected_order_id: {default: null}
+		order_id: {default: null},
+    task_id: {default: null},
 	},
 	data() {
 		return {
@@ -155,17 +156,15 @@ export default {
 			this.orders = [];
 			this.$http.get('/orders?project_id=' + this.project.id + '&order_status_type_id=' + this.order_status_type.id).then(response => {
 				this.orders = response.data
-				if(this.selected_order_id != null){
-					var selected_index = this.orders.findIndex( o => o.id == this.selected_order_id);
-					if(selected_index != null){
-						this.current_tab = selected_index;
-					}
-				}
 			})
 		},
 		isActive (index) {
       if((this.change_tab)&&(index == this.orders.length -1)){
         return true
+      }
+			if(this.order_id == this.orders[index].id){
+				this.$emit('set-order-tab', this.orders[index])
+        return true;
       }
       return false
     },
@@ -189,7 +188,6 @@ export default {
 			this.change_tab = true;
 			this.loadOrders();
 		},
-		change_tab(){}
   },
 }
 </script>
