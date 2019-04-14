@@ -67,24 +67,24 @@
                 </template>
             </b-table>
             <b-modal size="xl" scrollable id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewOrder
-                    v-if="modalInfo.order_id"
-                    :order_id="modalInfo.order_id"
+                <ViewTaskDate
+                    v-if="modalInfo.id"
+                    :task_date_id="modalInfo.id"
                 >
-                </ViewOrder>
+                </ViewTaskDate>
             </b-modal>
         </main>
     </div>
 </template>
 <script>
 import TopMenu from './TopMenu';
-import ViewOrder from './ViewOrder';
+import ViewTaskDate from './ViewTaskDate';
 import moment from 'moment'
 export default {
     name: 'ViewAssignments',
     components: {
         'TopMenu': TopMenu,
-        'ViewOrder': ViewOrder
+        'ViewTaskDate': ViewTaskDate
     },
     data() {
         return {
@@ -94,7 +94,7 @@ export default {
             crew_id: null,
             tasks: [],
             text_filter: null,
-            modalInfo: { title: '', content: '', order_id: null },
+            modalInfo: { title: '', content: '', id: null },
             date: null,
             fields: [
                 {
@@ -186,13 +186,13 @@ export default {
         },
         info(item, index, button) {
             this.modalInfo.title = `Order# ${item.order_id}`
-            this.modalInfo.order_id = item.order_id
+            this.modalInfo.id = item.id
             this.$root.$emit('bv::show::modal', 'modalInfo', button)
         },
         resetModal() {
             this.modalInfo.title = ''
             this.modalInfo.content = ''
-            this.modalInfo.order_id = null
+            this.modalInfo.id = null
         },
         filterTasks(record, filter){
             if((filter.crew_id != null) && (record.crew_id != filter.crew_id)) {
