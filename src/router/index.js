@@ -122,7 +122,10 @@ var router = new Router({
     {
       path: '/assignments',
       name: 'ViewAssignments',
-      component: ViewAssignments
+      component: ViewAssignments,
+      meta: {
+        title: 'Assigments'
+      },
     },
     {
       path: '/client/:client_id/contact/:contact_id',

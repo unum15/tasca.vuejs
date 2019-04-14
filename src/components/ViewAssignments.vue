@@ -5,7 +5,7 @@
             {{ contact_name }}
         </head>
         <main>
-            <h2>{{ contact_name }}</h2>
+            <h2>Assignments for {{ contact_name }}</h2>
             <b-container fluid>
                 <b-row>
                     <b-col md="6" class="my-1">
@@ -124,6 +124,21 @@ export default {
                 {
                     key: 'time',
                     label: 'Time',
+                    sortable: true
+                },
+                {
+                    key: 'notes',
+                    label: 'Notes',
+                    sortable: true
+                },
+                {
+                    key: 'completion_date',
+                    label: 'Completed',
+                    sortable: true
+                },
+                {
+                    key: 'billed_date',
+                    label: 'Billed',
                     sortable: true
                 }
             ]
