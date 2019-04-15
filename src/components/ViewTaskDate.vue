@@ -99,26 +99,37 @@
                 <b-col>{{ task_date.task.description }}</b-col>
             </b-row>
             <b-row>
+                <b-col>Completed</b-col>
+                <b-col>
+                    <b-form-checkbox v-model="completed" @input="markCompleted">
+                    </b-form-checkbox>
+                </b-col>
+                <b-col>Billed</b-col>
+                <b-col>
+                    <b-form-checkbox v-model="billed" @input="markBilled">
+                    </b-form-checkbox>
+                </b-col>
+            </b-row>
+            <b-row>
                 <b-col>Employee</b-col>
                 <b-col>Sign In</b-col>
                 <b-col>Sign Out</b-col>
                 <b-col>Hours</b-col>
-                <b-col>Notes</b-col>
+                <b-col>Labor Category</b-col>
             </b-row>
-            <b-row v-for="sign_in in sign_ins" :key="sign_in.id">
-                <b-col>{{ sign_in.contact.name }}</b-col>
-                <b-col>{{ sign_in.sign_in }}</b-col>
-                <b-col>{{ sign_in.sign_out }}</b-col>
-                <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
-                <b-col><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
-            </b-row>
-            <b-row>
-                <b-col>Total</b-col>
-                <b-col></b-col>
-                <b-col></b-col>
-                <b-col></b-col>
-                <b-col></b-col>
-            </b-row>
+            <div v-for="sign_in in sign_ins" :key="sign_in.id">
+                <b-row>
+                    <b-col>{{ sign_in.contact.name }}</b-col>
+                    <b-col>{{ formatTime(sign_in.sign_in) }}</b-col>
+                    <b-col>{{ formatTime(sign_in.sign_out) }}</b-col>
+                    <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
+                    <b-col></b-col>
+                </b-row>
+                <b-row>
+                    <b-col>Notes For The Day</b-col>
+                    <b-col><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
+                </b-row>
+            </div>
         </b-container>
     </div>
 </template>
@@ -148,7 +159,9 @@ export default {
                     }
                 }
             },
-            sign_ins: []
+            sign_ins: [],
+            billed: false,
+            completed: false
         };
     },
     created() {
@@ -160,6 +173,8 @@ export default {
                 this.task_date = results.data;
                 //only show first property information
                 this.task_date.task.order.property = this.task_date.task.order.properties[0];
+                this.completed = this.task_date.completion_date != null;
+                this.billed = this.task_date.billed_date != null;
                 this.getSignIns();
             });
         },
@@ -196,6 +211,21 @@ export default {
             var diff = Math.round(stop.diff(start)/36000)/100
             
             return diff
+        },
+        formatTime(time){
+            return moment(time).format('MM-DD hh:mm')
+        },
+        markCompleted(){
+            let task_date = {
+                completion_date: this.completed ? moment().format('YYYY-MM-DD') : null
+            }
+            this.$http.patch('/task_date/' + this.task_date_id, task_date);
+        },
+        markBilled(){
+            let task_date = {
+                billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
+            }
+            this.$http.patch('/task_date/' + this.task_date_id, task_date);
         }
     },
     computed: {
