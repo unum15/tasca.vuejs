@@ -179,15 +179,15 @@ export default {
             });
         },
         getSignIns() {
-            this.$http.get('/sign_ins?order_id=' + this.task_date.task.order_id).then((results) => {
+            this.$http.get('/sign_ins?task_date_id=' + this.task_date_id).then((results) => {
                 this.sign_ins = results.data;
             });
         },
         signIn(){
             var sign_in
             if(sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"))){
-                this.$http.post('/sign_in', {order_id : this.task_date.task.order_id, sign_in: sign_in}).then(() => {
-                    this.getOrder()
+                this.$http.post('/sign_in', {task_date_id : this.task_date_id, sign_in: sign_in}).then(() => {
+                    this.getTaskDate()
                 });
             }
         },
@@ -195,7 +195,7 @@ export default {
             var sign_out
             if(sign_out = prompt('Sign Out Time', moment().format("YYYY-MM-DD h:mm:ss a"))){
                 this.$http.patch('/sign_in/' + this.sign_in_id, {sign_out : sign_out}).then(() => {
-                    this.getOrder()
+                    this.getTaskDate()
                 });
             }
         },
@@ -213,6 +213,9 @@ export default {
             return diff
         },
         formatTime(time){
+            if(time == null){
+                return "";
+            }
             return moment(time).format('MM-DD hh:mm')
         },
         markCompleted(){
