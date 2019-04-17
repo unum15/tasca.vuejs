@@ -55,35 +55,23 @@
         </b-form-group>
     </b-col>
     <b-col>
-        <b-form-group label="Completion Date">
-            <b-form-input
-              type="date"
-              @change="save"
-              v-model="my_date.completion_date"
-            >
-            </b-form-input>
-        </b-form-group>
-    </b-col>
-    <b-col>
-        <b-form-group label="Billed Date">
-            <b-form-input
-              type="date"
-              @change="save"
-              v-model="my_date.billed_date"
-            >
-            </b-form-input>
-        </b-form-group>
-    </b-col>
-    <b-col>
       <b-button variant="danger" size="sm" @click="deleteDate">Delete</b-button>
     </b-col>
+  </b-row>
+  <b-row>
+    <EditSignIns v-if="my_date.id"
+      :task_date_id="my_date.id"
+    >
+    </EditSignIns>
   </b-row>
 </div>
 </template>
 <script>
+import EditSignIns from './EditSignIns';
 export default {
   name: 'EditTaskDate',
   components: {
+    'EditSignIns': EditSignIns
   },
   props: {
     date: {required: true}

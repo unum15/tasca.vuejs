@@ -139,6 +139,26 @@
                     </b-form-input>
                 </b-form-group>
             </b-col>
+			<b-col>
+                <b-form-group label="Billed Date">
+                    <b-form-input
+                        type="date"
+						@change="save"
+                        v-model="my_task.billed_date"
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>
+			<b-col>
+                <b-form-group label="Closed Date">
+                    <b-form-input
+                        type="date"
+						@change="save"
+                        v-model="my_task.closed_date"
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>
         </b-row>
         <b-row>
 			<b-button variant="danger" size="sm" @click="deleteTask(task)">Delete Task</b-button>
