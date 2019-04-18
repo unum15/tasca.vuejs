@@ -3,7 +3,7 @@
 			<b-container fluid>
 			<b-form-row>
 				<b-col>
-          <b-form-group  :label-cols="10" label="Show Completed">
+          <b-form-group  :label-cols="10" label="Show Closed Greater Than 400 Days">
             <b-form-checkbox
               v-model="filter.completed"
             >
@@ -88,6 +88,8 @@ export default {
 				approval_date: null,
 				completion_date: null,
 				expiration_date: null,
+				closed_date: null,
+				billed_date: null,
 				task_category_id: this.settings.default_billing_task_category_id,
 				task_status_id: this.settings.default_billing_task_status_id,
 				task_action_id: this.settings.default_billing_task_action_id,
@@ -103,7 +105,7 @@ export default {
 		},
 		showTab(task){
 			var show = true;
-			if((!this.filter.completed)&&(task.completion_date != null)){
+			if((!this.filter.completed)&&(task.closed_date != null)&&(task.closed_date < moment().subtract(400, 'days').format('YYYY-MM-DD'))){
 				show = false;
 			}
 			return show;
