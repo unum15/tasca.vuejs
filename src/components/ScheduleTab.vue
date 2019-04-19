@@ -32,7 +32,7 @@
                 :fields="fields"
                 :filter="filter"
                 :tbody-tr-class="rowClass"
-                :primary-key="id"
+                primary-key="row"
                 >
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
