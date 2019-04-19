@@ -28,7 +28,7 @@
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
-                <template slot="client" slot-scope="data">
+                <template slot="order.project.client.name" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template slot="property" slot-scope="data">
@@ -41,13 +41,23 @@
                     {{ getTotalHours(data.item.dates) }}
                 </template>
                 <template slot="date" slot-scope="data">
-                    <b-form-input
-                        v-b-popover.hover="data.item.notes"
-                        type="date"
-                        @change="save(data.item)"
-                        v-model="data.item.date"
+                    <span :id="'dates_'+data.item.id">dates</span>
+                     <b-popover
+                       :target="'dates_'+data.item.id"
+                       title="Dates"
+                       triggers="hover"
                     >
-                    </b-form-input>
+                        <ul>
+                            <li v-for="date in data.item.dates">
+                                {{ date.date }}
+                                <ul>
+                                    <li v-for="sign_in in date.sign_ins">
+                                        {{ sign_in.sign_in }} - {{ sign_in.sign_out }}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </b-popover>
                 </template>
                 <template slot="completion_date" slot-scope="data">
                     <b-form-input
@@ -177,7 +187,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/tasks?completed=true&closed=false').then((results) => {
+        var min_closed_date = moment().subtract(7, 'days');
+        this.$http.get('/tasks?completed=true&min_closed_date=' + min_closed_date.format('YYYY-MM-DD')).then((results) => {
             this.tasks = results.data;
         });
     },
@@ -209,29 +220,13 @@ export default {
             this.save(task);
         },
         save(item){
-            var task_date = {
-                task_id: item.task_id,
-                day: item.day,
-                date: item.date,
-                time: item.time
-            }
-            if(item.id){
-                this.$http.patch('/task_date/' + item.id, task_date);
-            }
-            else{
-                this.$http.post('/task_date', task_date).then(response =>{
-                    item.id = response.id;
-                })
-            }
             var task = {
-                sort_order : item.sort_order,
-                task_appointment_status_id: item.task_appointment_status_id,
-                task_category_id: item.task_category_id,
-                task_status_id: item.task_status_id,
-                task_action_id: item.task_action_id
+                completion_date: item.completion_date,
+                closed_date: item.closed_date,
+                billed_date: item.billed_date,
             
             }
-            this.$http.patch('/task/' + item.task_id, task);
+            this.$http.patch('/task/' + item.id, task);
         },
         rowClass(item){
             var today = moment();

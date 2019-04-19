@@ -42,6 +42,7 @@
 </template>
 <script>
 import EditTask from './EditTask'
+import moment from 'moment'
 export default {
     name: 'EditTasks',
     components: {

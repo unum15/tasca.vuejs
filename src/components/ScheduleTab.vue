@@ -302,7 +302,8 @@ export default {
                 task_id: item.task_id,
                 day: item.day,
                 date: item.date,
-                time: item.time
+                time: item.time,
+                sort_order : item.sort_order,
             }
             if(item.id){
                 this.$http.patch('/task_date/' + item.id, task_date);
@@ -313,7 +314,6 @@ export default {
                 })
             }
             var task = {
-                sort_order : item.sort_order,
                 task_appointment_status_id: item.task_appointment_status_id,
                 task_category_id: item.task_category_id,
                 task_status_id: item.task_status_id,
