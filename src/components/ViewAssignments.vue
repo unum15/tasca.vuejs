@@ -12,7 +12,7 @@
                         <b-form-group label="Date" class="mb-0">
                           <b-input-group>
                             <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;height:25px;" />
-                            <b-form-input type="date" v-model="date" />
+                            <b-form-input type="date" v-model="date" @input="getTasks()" />
                             <img src="@/assets/next.png" v-b-tooltip.hover title="Next Date" @click="nextDate" fluid alt="ND" style="width:25px;height:25px;" />
                           </b-input-group>
                         </b-form-group>
