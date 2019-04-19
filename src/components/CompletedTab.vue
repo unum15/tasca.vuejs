@@ -23,7 +23,6 @@
                 :fields="fields"
                 :filter="filter"
                 :tbody-tr-class="rowClass"
-                :primary-key="id"
                 >
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
@@ -31,79 +30,45 @@
                 <template slot="client" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
+                <template slot="property" slot-scope="data">
+                    {{ data.item.order.properties[0].name }}
+                </template>
                 <template slot="name" slot-scope="data">
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
                 </template>
-                
-                <template slot="task_appointment_status" slot-scope="data">
-                    <b-form-select
-                        :options="task_appointment_statuses"
-						@input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.task_appointment_status_id"
-                        >
-                    </b-form-select>
-                </template>
-                <template slot="task_category" slot-scope="data">
-                    <b-form-select
-                        :options="task_categories"
-						@input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.task_category_id"
-                        >
-                    </b-form-select>
-                </template>
-                <template slot="task_status" slot-scope="data">
-                    <b-form-select
-                        :options="task_statuses"
-						@input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.task_status_id"
-                        >
-                    </b-form-select>
-                </template>
-                <template slot="task_action" slot-scope="data">
-                    <b-form-select
-                        :options="task_actions"
-						@input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.task_action_id"
-                        >
-                    </b-form-select>
-                </template>
-                <template slot="day" slot-scope="data">
-                    <b-form-input
-                        type="text"
-						@change="save(data.item)"
-                        v-model="data.item.day"
-                    >
-                    </b-form-input>
+                <template slot="hours" slot-scope="data">
+                    {{ getTotalHours(data.item.dates) }}
                 </template>
                 <template slot="date" slot-scope="data">
                     <b-form-input
                         v-b-popover.hover="data.item.notes"
                         type="date"
-						@change="save(data.item)"
+                        @change="save(data.item)"
                         v-model="data.item.date"
                     >
                     </b-form-input>
                 </template>
-                <template slot="sort_order" slot-scope="data">
+                <template slot="completion_date" slot-scope="data">
                     <b-form-input
-						@change="save(data.item)"
-                        v-model="data.item.sort_order"
-                        >
+                        type="date"
+                        @change="save(data.item)"
+                        v-model="data.item.completion_date"
+                    >
                     </b-form-input>
                 </template>
-                <template slot="time" slot-scope="data">
+                <template slot="billed_date" slot-scope="data">
                     <b-form-input
-                        type="time"
-						@change="save(data.item)"
-                        v-model="data.item.time"
+                        type="date"
+                        @change="save(data.item)"
+                        v-model="data.item.billed_date"
+                    >
+                    </b-form-input>
+                </template>
+                <template slot="closed_date" slot-scope="data">
+                    <b-form-input
+                        type="date"
+                        @change="save(data.item)"
+                        v-model="data.item.closed_date"
                     >
                     </b-form-input>
                 </template>
@@ -134,17 +99,12 @@
 import moment from 'moment';
 import ViewOrder from './ViewOrder';
 export default {
-    name: 'ScheduleTab',
+    name: 'CompletedTab',
     components: {
         'ViewOrder': ViewOrder
     },
     props: {
-        order_status_type: {default: null},
-        task_actions: {required: true},
-        task_categories: {required: true},
-        task_statuses: {required: true},
-        task_types: {required: true},
-        task_appointment_statuses: {required: true}
+
     },
     data() {
         return {
@@ -153,12 +113,12 @@ export default {
             modalInfo: { title: '', content: '', order_id: null },
             fields: [
                 {
-                    key: 'start_date',
+                    key: 'order.start_date',
                     label: 'Start Date',
                     sortable: true
                 },
                 {
-                    key: 'service_window',
+                    key: 'order.service_window',
                     label: 'Service Window',
                     sortable: true
                 },
@@ -168,12 +128,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'task_appointment_status',
-                    label: 'C',
-                    sortable: true
-                },
-                {
-                    key: 'client',
+                    key: 'order.project.client.name',
                     label: 'Client',
                     sortable: true
                 },
@@ -188,28 +143,8 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'order_priority',
-                    label: 'Pri',
-                    sortable: true
-                },
-                {
-                    key: 'task_category',
-                    label: 'Category',
-                    sortable: true
-                },
-                {
-                    key: 'task_status',
-                    label: 'Status',
-                    sortable: true
-                },
-                {
-                    key: 'task_action',
-                    label: 'Action',
-                    sortable: true
-                },
-                {
-                    key: 'day',
-                    label: 'Day',
+                    key: 'hours',
+                    label: 'Total Hours',
                     sortable: true
                 },
                 {
@@ -218,13 +153,18 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'sort_order',
-                    label: 'Order',
+                    key: 'completion_date',
+                    label: 'Completed',
                     sortable: true
                 },
                 {
-                    key: 'time',
-                    label: 'Time',
+                    key: 'billed_date',
+                    label: 'Billed',
+                    sortable: true
+                },
+                {
+                    key: 'closed_date',
+                    label: 'Closed',
                     sortable: true
                 },
                 {
@@ -236,11 +176,7 @@ export default {
         }
     },
     created() {
-        var params = '';
-        if(this.order_status_type != null){
-            params = '?order_status_type_id=' + this.order_status_type.id;
-        }
-        this.$http.get('/schedule' + params).then((results) => {
+        this.$http.get('/tasks?completed=true&closed=false').then((results) => {
             this.tasks = results.data;
         });
     },
@@ -304,7 +240,7 @@ export default {
                 classes.push('font-weight-bold');
             }
             if(item.task_type_id == 1){
-                switch(item.order_status_type_id){
+                switch(item.order.order_status_type_id){
                     case 1:
                         classes.push('table-danger');
                         break;
@@ -317,6 +253,18 @@ export default {
                 }
             }
             return classes;
+        },
+        getTotalHours(dates){
+            var hours = 0;
+            for(var date_count = 0; date_count < dates.length; date_count++ ){
+                for(var sign_in_count = 0; sign_in_count < dates[date_count].sign_ins.length; sign_in_count++ ){
+                    var sign_in = moment(dates[date_count].sign_ins[sign_in_count].sign_in);
+                    var sign_out = moment(dates[date_count].sign_ins[sign_in_count].sign_out);
+                    var diff = Math.round(sign_out.diff(sign_in)/36000)/100;
+                    hours + diff;
+                }
+            }
+            return hours;
         }
     }
 }

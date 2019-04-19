@@ -27,6 +27,10 @@
                     >
                     </ScheduleTab>
                 </b-tab>
+                <b-tab title="Completed Orders">
+                    <CompletedTab>
+                    </CompletedTab>
+                </b-tab>
             </b-tabs>
         </main>
     </div>
@@ -34,11 +38,13 @@
 <script>
 import TopMenu from './TopMenu';
 import ScheduleTab from './ScheduleTab';
+import CompletedTab from './CompletedTab';
 export default {
     name: 'ViewSchedule',
     components: {
         'TopMenu': TopMenu,
-        'ScheduleTab': ScheduleTab
+        'ScheduleTab': ScheduleTab,
+        'CompletedTab': CompletedTab
     },
     data() {
         return {
