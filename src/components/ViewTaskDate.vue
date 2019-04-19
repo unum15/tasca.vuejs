@@ -173,8 +173,8 @@ export default {
                 this.task_date = results.data;
                 //only show first property information
                 this.task_date.task.order.property = this.task_date.task.order.properties[0];
-                this.completed = this.task_date.completion_date != null;
-                this.billed = this.task_date.billed_date != null;
+                this.completed = this.task_date.task.completion_date != null;
+                this.billed = this.task_date.task.billed_date != null;
                 this.getSignIns();
             });
         },
@@ -219,16 +219,16 @@ export default {
             return moment(time).format('MM-DD hh:mm')
         },
         markCompleted(){
-            let task_date = {
+            let task = {
                 completion_date: this.completed ? moment().format('YYYY-MM-DD') : null
             }
-            this.$http.patch('/task_date/' + this.task_date_id, task_date);
+            this.$http.patch('/task/' + this.task_date.task_id, task);
         },
         markBilled(){
-            let task_date = {
+            let task = {
                 billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
             }
-            this.$http.patch('/task_date/' + this.task_date_id, task_date);
+            this.$http.patch('/task/' + this.task_date.task_id, task);
         }
     },
     computed: {

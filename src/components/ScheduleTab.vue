@@ -12,6 +12,15 @@
                       </b-input-group>
                     </b-form-group>
                   </b-col>
+                    <b-col v-if="order_status_type != null && order_status_type.id==3">
+                        <b-form-group label="Date" class="mb-0">
+                          <b-input-group>
+                            <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;height:25px;" />
+                            <b-form-input type="date" v-model="date" @input="getTasks()" />
+                            <img src="@/assets/next.png" v-b-tooltip.hover title="Next Date" @click="nextDate" fluid alt="ND" style="width:25px;height:25px;" />
+                          </b-input-group>
+                        </b-form-group>
+                    </b-col>
                 </b-row>
             </b-container>
             <b-table
@@ -151,6 +160,7 @@ export default {
             tasks: [],
             filter: null,
             modalInfo: { title: '', content: '', order_id: null },
+            date: moment().format('YYYY-MM-DD'),
             fields: [
                 {
                     key: 'start_date',
@@ -236,15 +246,31 @@ export default {
         }
     },
     created() {
-        var params = '';
-        if(this.order_status_type != null){
-            params = '?order_status_type_id=' + this.order_status_type.id;
-        }
-        this.$http.get('/schedule' + params).then((results) => {
-            this.tasks = results.data;
-        });
+        this.getTasks();
     },
     methods: {
+        getTasks(){
+            var params = '';
+            if(this.order_status_type != null){
+                params = '?order_status_type_id=' + this.order_status_type.id;
+                if(this.order_status_type.id == 3){
+                    params += '&future=true&date=' + this.date;
+                }
+            }
+            
+            console.log(params);
+            this.$http.get('/schedule' + params).then((results) => {
+                this.tasks = results.data;
+            });
+        },
+         previousDate(){
+            this.date = moment(this.date).subtract(1, 'day').format('YYYY-MM-DD');
+            this.getTasks();
+        },
+        nextDate(){
+            this.date = moment(this.date).add(1, 'day').format('YYYY-MM-DD');
+            this.getTasks();
+        },
         info (item, index, button) {
             this.modalInfo.title = `Order# ${item.order_id}`
             this.modalInfo.order_id = item.order_id

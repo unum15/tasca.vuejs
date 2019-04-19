@@ -117,7 +117,10 @@ var router = new Router({
     {
       path: '/scheduler',
       name: 'ViewSchedule',
-      component: ViewSchedule
+      component: ViewSchedule,
+      meta: {
+        title: 'Scheduler'
+      }
     },
     {
       path: '/assignments',
