@@ -33,6 +33,8 @@
                 :filter="filter"
                 :tbody-tr-class="rowClass"
                 primary-key="row"
+                class="text-left"
+                :sort-compare="sortCompare"
                 >
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
@@ -302,7 +304,8 @@ export default {
                 task_id: item.task_id,
                 day: item.day,
                 date: item.date,
-                time: item.time
+                time: item.time,
+                sort_order : item.sort_order
             }
             if(item.id){
                 this.$http.patch('/task_date/' + item.id, task_date);
@@ -313,7 +316,6 @@ export default {
                 })
             }
             var task = {
-                sort_order : item.sort_order,
                 task_appointment_status_id: item.task_appointment_status_id,
                 task_category_id: item.task_category_id,
                 task_status_id: item.task_status_id,
@@ -343,7 +345,42 @@ export default {
                 }
             }
             return classes;
+        },
+        sortCompare(a, b, key) {
+        console.log(key);
+            if (key == 'time'){
+                var value = this.sortCompare(a, b, 'date');
+                if(value == 0){
+                    value = this.sortCompare(a, b, 'order');
+                    if(value != 0){
+                        return value;
+                    }
+                }
+                else{
+                    return value;
+                }
+            }
+            if (typeof a[key] === 'number' && typeof b[key] === 'number') {
+              // If both compared fields are native numbers
+              return a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0
+            } else {
+              // Stringify the field data and use String.localeCompare
+              return this.toString(a[key]).localeCompare(this.toString(b[key]), undefined, {
+                numeric: true
+              })
+            }
+        },
+        toString(value) {
+            if (!value) {
+              return ''
+            } else if (value instanceof Object) {
+              return keys(value)
+                .sort()
+                .map(key => toString(value[key]))
+                .join(' ')
+            }
+            return String(value)
+          }
         }
-    }
 }
 </script>
