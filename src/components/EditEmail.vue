@@ -1,4 +1,5 @@
 <template>
+<div>
   <b-row>
     <b-col>
         <b-form-group label="Type">
@@ -24,10 +25,13 @@
             </b-form-input>
         </b-form-group>
     </b-col>
+  </b-row>
+  <b-row>
     <b-col>
       <b-button variant="danger" size="sm" @click="deleteEmail">Delete</b-button>
     </b-col>
   </b-row>
+</div>
 </template>
 <script>
 export default {
