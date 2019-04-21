@@ -28,7 +28,7 @@
                 striped
                 hover
                 foot-clone
-                :items="tasks"
+                :items="filtered_tasks"
                 :fields="fields"
                 :filter="filter"
                 :tbody-tr-class="rowClass"
@@ -36,6 +36,13 @@
                 class="text-left"
                 :sort-compare="sortCompare"
                 >
+                <template slot="thead-top" slot-scope="data">
+                    <tr>
+                        <th v-for="field in fields" :key="field.key">
+                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                        </th>  
+                    </tr>
+                </template>
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
@@ -160,6 +167,7 @@ export default {
     data() {
         return {
             tasks: [],
+            filtered_tasks: [],
             filter: null,
             modalInfo: { title: '', content: '', order_id: null },
             date: moment().format('YYYY-MM-DD'),
@@ -167,77 +175,92 @@ export default {
                 {
                     key: 'start_date',
                     label: 'Start Date',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'service_window',
                     label: 'Service Window',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'order_id',
                     label: 'S/WO#',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'task_appointment_status',
                     label: 'C',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'client',
                     label: 'Client',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'property',
                     label: 'Property',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'name',
                     label: 'Name',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'order_priority',
                     label: 'Pri',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'task_category',
                     label: 'Category',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'task_status',
                     label: 'Status',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'task_action',
                     label: 'Action',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'day',
                     label: 'Day',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'date',
                     label: 'Date',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'sort_order',
                     label: 'Order',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'time',
                     label: 'Time',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'actions',
@@ -260,9 +283,9 @@ export default {
                 }
             }
             
-            console.log(params);
             this.$http.get('/schedule' + params).then((results) => {
                 this.tasks = results.data;
+                this.filtered_tasks = this.tasks;
             });
         },
          previousDate(){
@@ -347,7 +370,6 @@ export default {
             return classes;
         },
         sortCompare(a, b, key) {
-        console.log(key);
             if (key == 'time'){
                 var value = this.sortCompare(a, b, 'date');
                 if(value == 0){
@@ -374,13 +396,30 @@ export default {
             if (!value) {
               return ''
             } else if (value instanceof Object) {
-              return keys(value)
+              return Array.keys(value)
                 .sort()
                 .map(key => toString(value[key]))
                 .join(' ')
             }
             return String(value)
-          }
+        },
+        filterColumns(){
+            this.filtered_tasks = this.tasks;
+            for(var x = 0;x < this.fields.length; x++){
+                if(this.fields[x].filter){
+                    var regex = new RegExp(this.fields[x].filter, "i");
+                    this.filtered_tasks = this.filtered_tasks.filter(t => {
+                        
+                        if(t[this.fields[x].key]){
+                            return t[this.fields[x].key].match(regex) != null
+                        }
+                        else{
+                            return false;
+                        }
+                    })
+                }
+            }
         }
+    }
 }
 </script>
