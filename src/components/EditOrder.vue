@@ -262,7 +262,7 @@
                     >
                 </EditTasks>
             </b-tab>
-            <b-tab title="Notes" v-if="my_order.id !== null">
+            <b-tab title="Comments" v-if="my_order.id !== null">
                 <b-form-group label="Location">
                     <b-form-textarea
                         v-model="my_order.location"

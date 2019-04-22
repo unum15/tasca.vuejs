@@ -31,8 +31,11 @@
         :active="isActive(index)"
       >
       <template slot="title" style="text-align:left">
-        <div v-b-popover.hover="project.client.name" style="text-align:left">
+        <div style="text-align:left" v-if="client_id">
           {{ project.name === null ? 'New project' : project.name.substr(0,20) }}
+        </div>
+        <div v-b-popover.hover="project.name.substr(0,20)" style="text-align:left" v-else>
+          {{ project.client.name }}
         </div>
       </template>
         <EditProject

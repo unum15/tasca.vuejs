@@ -373,7 +373,7 @@ export default {
             if (key == 'time'){
                 var value = this.sortCompare(a, b, 'date');
                 if(value == 0){
-                    value = this.sortCompare(a, b, 'order');
+                    value = this.sortCompare(a, b, 'sort_order');
                     if(value != 0){
                         return value;
                     }

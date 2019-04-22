@@ -50,12 +50,21 @@
                 :fields="fields"
                 :filter="filter"
                 :filter-function="filterTasks"
+                :sort-by="sort_by"
+                class="text-left"
+                :sort-compare="sortCompare"
                 >
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
                 <template slot="client" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                </template>
+                <template slot="date" slot-scope="data">
+                    {{ formatDate(data.value) }}
+                </template>
+                <template slot="time" slot-scope="data">
+                    {{ formatTime(data.value) }}
                 </template>
                 <template slot="name" slot-scope="data">
                     <span :id="'name_' + data.item.id">{{ data.value }}</span>
@@ -96,6 +105,7 @@ export default {
             text_filter: null,
             modalInfo: { title: '', content: '', id: null },
             date: null,
+            sort_by: 'time',
             fields: [
                 {
                     key: 'order_id',
@@ -212,6 +222,46 @@ export default {
                 }
             }
             return true;
+        },
+        sortCompare(a, b, key) {
+            if (key == 'time'){
+                var value = this.sortCompare(a, b, 'date');
+                if(value === 0){
+                    value = this.sortCompare(a, b, 'sort_order');
+                    if(value != 0){
+                        return value;
+                    }
+                }
+                else{
+                    return value;
+                }
+            }
+            if (typeof a[key] === 'number' && typeof b[key] === 'number') {
+              // If both compared fields are native numbers
+              return a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0
+            } else {
+              // Stringify the field data and use String.localeCompare
+              return this.toString(a[key]).localeCompare(this.toString(b[key]), undefined, {
+                numeric: true
+              })
+            }
+        },
+        toString(value) {
+            if (!value) {
+              return ''
+            } else if (value instanceof Object) {
+              return Array.keys(value)
+                .sort()
+                .map(key => toString(value[key]))
+                .join(' ')
+            }
+            return String(value)
+        },
+        formatDate(value){
+            return moment(value).format('MM-DD');
+        },
+        formatTime(value){
+            return moment('2019-01-01 ' + value).format('hh:mm A');
         }
     },
     computed:{
