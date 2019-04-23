@@ -176,6 +176,7 @@ export default {
         })
         this.$http.get('/projects?completed=' + this.filter.completed).then(response => {
           this.projects = response.data
+          this.projects.sort((a, b) => (a.client.name > b.client.name))
         })
       }
     },
@@ -183,8 +184,15 @@ export default {
       if((this.filter.name ==  null) || (this.filter.name == "")){
         return true;
       }
-      if(this.projects[index].name.toLowerCase().includes(this.filter.name.toLowerCase()) !==  false){
-        return true;
+      if(this.client_id){
+        if(this.projects[index].name.toLowerCase().includes(this.filter.name.toLowerCase()) !==  false){
+          return true;
+        }
+      }
+      else{
+        if(this.projects[index].client.name.toLowerCase().includes(this.filter.name.toLowerCase()) !==  false){
+          return true;
+        }
       }
       return false;
     },

@@ -360,7 +360,7 @@ export default {
     },
     nextTask(){
       if(this.reroute){
-        this.$router.push('/client/' + this.client_id + '/order/' + this.order.id);
+        this.$router.push('/client/' + this.client_id + '/project/' + this.project.id + '/order/' + this.order.id);
       }
       else{
         this.resetForm();

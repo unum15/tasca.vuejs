@@ -14,13 +14,17 @@
                 <b-col>Hours</b-col>
                 <b-col>Notes</b-col>
             </b-row>
-            <b-row v-for="sign_in in order.sign_ins" :key="sign_in.id">
-                <b-col>{{ sign_in.contact.name }}</b-col>
-                <b-col>{{ sign_in.sign_in }}</b-col>
-                <b-col>{{ sign_in.sign_out }}</b-col>
-                <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
-                <b-col><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
-            </b-row>
+            <div v-for="task in order.tasks" :key="task.id">
+                <div v-for="date in task.dates" :key="date.id">
+                    <b-row v-for="sign_in in date.sign_ins" :key="sign_in.id">
+                        <b-col>{{ sign_in.contact.name }}</b-col>
+                        <b-col>{{ sign_in.sign_in }}</b-col>
+                        <b-col>{{ sign_in.sign_out }}</b-col>
+                        <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
+                        <b-col><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
+                    </b-row>
+                </div>
+            </div>
             <b-row>
                 <b-col>Total</b-col>
                 <b-col></b-col>
@@ -255,11 +259,11 @@ export default {
     computed: {
         sign_in_id() {
             var id = null
-            var my_id = localStorage.getItem('id')
+            /*var my_id = localStorage.getItem('id')
             var ids = this.order.sign_ins.filter( si => (si.contact_id == my_id && si.sign_out == null))
             if(ids.length > 0){
                 id = ids[0].id
-            }
+            }*/
             return id;
         }
     },
