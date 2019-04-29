@@ -17,6 +17,8 @@ import EditHours from '@/components/EditHours'
 import EditList from '@/components/EditList'
 import EditProfile from '@/components/EditProfile'
 import GoogleCalendar from '@/components/GoogleCalendar'
+import PhreeBooksContacts from '@/components/PhreeBooksContacts'
+import PhreeBooksAddresses from '@/components/PhreeBooksAddresses'
 
 
 Vue.use(Router)
@@ -88,6 +90,16 @@ var router = new Router({
       path: '/contacts',
       name: 'ViewContacts',
       component: ViewContacts
+    },
+    {
+      path: '/phree_books/contacts',
+      name: 'PhreeBooksContacts',
+      component: PhreeBooksContacts
+    },
+    {
+      path: '/phree_books/addresses',
+      name: 'PhreeBooksAddresses',
+      component: PhreeBooksAddresses
     },
     {
       path: '/properties',

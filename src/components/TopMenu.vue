@@ -34,6 +34,13 @@
                     </template>
                     <b-dropdown-item href="/hours">Hours</b-dropdown-item>
                 </b-nav-item-dropdown>
+                <b-nav-item-dropdown>
+                    <template slot="button-content">
+                      <em>Phree Books</em>
+                    </template>
+                    <b-dropdown-item href="/phree_books/contacts">Contacts</b-dropdown-item>
+                    <b-dropdown-item href="/phree_books/addresses">Addresses</b-dropdown-item>
+                </b-nav-item-dropdown>
             </b-navbar-nav>
             
             <b-navbar-nav class="ml-auto">
