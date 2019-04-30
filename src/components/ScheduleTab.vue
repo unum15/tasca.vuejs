@@ -409,13 +409,11 @@ export default {
                 if(this.fields[x].filter){
                     var regex = new RegExp(this.fields[x].filter, "i");
                     this.filtered_tasks = this.filtered_tasks.filter(t => {
-                        
-                        if(t[this.fields[x].key]){
-                            return t[this.fields[x].key].match(regex) != null
+                        var value = t[this.fields[x].key]
+                        if(!value){
+                            value = "";
                         }
-                        else{
-                            return false;
-                        }
+                        return value.match(regex) !== null
                     })
                 }
             }
