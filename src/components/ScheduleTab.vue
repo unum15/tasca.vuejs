@@ -335,7 +335,7 @@ export default {
             }
             else{
                 this.$http.post('/task_date', task_date).then(response =>{
-                    item.id = response.id;
+                    item.id = response.data.id;
                 })
             }
             var task = {
