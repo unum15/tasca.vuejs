@@ -138,7 +138,7 @@
                     </b-card>
                   </template>
             </b-table>
-            <b-modal size="xl" scrollable id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
+            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
                 <ViewOrder
                     v-if="modalInfo.order_id"
                     :order_id="modalInfo.order_id"
@@ -299,7 +299,8 @@ export default {
         info (item, index, button) {
             this.modalInfo.title = `Order# ${item.order_id}`
             this.modalInfo.order_id = item.order_id
-            this.$root.$emit('bv::show::modal', 'modalInfo', button)
+            this.$refs['modalInfo'].show()
+            //this.$root.$emit('bv::show::modal', 'modalInfo', button)
         },
         resetModal () {
             this.modalInfo.title = ''
@@ -335,7 +336,7 @@ export default {
             }
             else{
                 this.$http.post('/task_date', task_date).then(response =>{
-                    item.id = response.id;
+                    item.id = response.data.id;
                 })
             }
             var task = {
@@ -409,13 +410,11 @@ export default {
                 if(this.fields[x].filter){
                     var regex = new RegExp(this.fields[x].filter, "i");
                     this.filtered_tasks = this.filtered_tasks.filter(t => {
-                        
-                        if(t[this.fields[x].key]){
-                            return t[this.fields[x].key].match(regex) != null
+                        var value = t[this.fields[x].key]
+                        if(!value){
+                            value = "";
                         }
-                        else{
-                            return false;
-                        }
+                        return value.match(regex) !== null
                     })
                 }
             }
