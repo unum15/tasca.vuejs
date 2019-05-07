@@ -159,6 +159,8 @@
               ></EditProjects>
           </b-tab>
         </b-tabs>
+        <b-button v-if="!client.phreebooks_id" @click="createPhreeBooks">Add To Phree Books</b-button>
+        <b-button v-if="client.phreebooks_id" @click="updatePhreeBooks">Update Phree Books</b-button>
     </main>
   </div>
 </template>
@@ -251,6 +253,15 @@ export default {
       else{
         this.$http.patch('/client/' + this.client.id,this.client)
       }
+    },
+    createPhreeBooks () {
+      this.$http.post('/phree_books/client/' + this.client.id).then((response) => {
+        this.client.phreebooks_id = response.data.phreebooks_id;
+        alert('Created')
+      });
+    },
+    updatePhreeBooks () {
+      this.$http.put('/phree_books/client/' + this.client.id).then(() => alert('Updated'));
     }
   }
 }
