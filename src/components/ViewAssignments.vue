@@ -75,12 +75,12 @@
                     />
                 </template>
             </b-table>
-            <b-modal size="xl" scrollable id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewTaskDate
-                    v-if="modalInfo.id"
-                    :task_date_id="modalInfo.id"
+            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
+                <ViewOrder
+                    v-if="modalInfo.order_id"
+                    :order_id="modalInfo.order_id"
                 >
-                </ViewTaskDate>
+                </ViewOrder>
             </b-modal>
         </main>
     </div>
@@ -196,8 +196,8 @@ export default {
         },
         info(item, index, button) {
             this.modalInfo.title = `Order# ${item.order_id}`
-            this.modalInfo.id = item.id
-            this.$root.$emit('bv::show::modal', 'modalInfo', button)
+            this.modalInfo.order_id = item.order_id
+            this.$refs['modalInfo'].show()
         },
         resetModal() {
             this.modalInfo.title = ''

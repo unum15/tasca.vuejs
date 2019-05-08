@@ -96,7 +96,7 @@
                     </b-card>
                   </template>
             </b-table>
-            <b-modal size="xl" scrollable id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
+            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
                 <ViewOrder
                     v-if="modalInfo.order_id"
                     :order_id="modalInfo.order_id"
@@ -196,7 +196,7 @@ export default {
         info (item, index, button) {
             this.modalInfo.title = `Order# ${item.order_id}`
             this.modalInfo.order_id = item.order_id
-            this.$root.$emit('bv::show::modal', 'modalInfo', button)
+            this.$refs['modalInfo'].show()
         },
         resetModal () {
             this.modalInfo.title = ''
