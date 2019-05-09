@@ -136,7 +136,7 @@
 <script>
 import moment from 'moment'
 export default {
-    name: 'ViewOrder',
+    name: 'ViewTaskDate',
     props: {
         task_date_id : { required:true }
     },
