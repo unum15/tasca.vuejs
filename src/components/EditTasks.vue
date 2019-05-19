@@ -123,10 +123,10 @@ export default {
 		sortTasks(){
 			this.tasks = this.tasks.sort((a, b) => {
 				if(((a.closed_date == null) || (a.closed_date == '')) && ((b.closed_date != null) && (b.closed_date != ''))){
-					return 1;
+					return -1;
 				}
 				if(((a.closed_date != null) && (a.closed_date != '')) && ((b.closed_date == null) || (b.closed_date == ''))){
-					return -1;
+					return 1;
 				}
 				if(a.closed_date > b.closed_date){
 					return 1;
