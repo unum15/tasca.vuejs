@@ -147,7 +147,7 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Closed Date" v-if="order.order_status_type_id!=2">
+                            <b-form-group label="Close Date" v-if="order.order_status_type_id!=2">
                                 <b-form-input
                                     type="date"
                                     @change="save"
@@ -259,6 +259,7 @@
                     :task_actions="task_actions"
                     :task_categories="task_categories"
                     :settings="settings"
+                    :project_close_date="project_close_date"
                     >
                 </EditTasks>
             </b-tab>
@@ -481,6 +482,7 @@ export default {
 		task_actions: {required: true},
 		task_categories: {required: true},
         tab_index: {default: 0},
+        project_close_date: {default: null},
         settings: {required: true}
 	},
 	data: function() {
@@ -708,6 +710,13 @@ export default {
 				return false;
 			})
 		},
-	}
+	},
+    watch:{
+        project_close_date(date){
+            if(!this.my_order.completion_date){
+                this.my_order.completion_date = date;
+            }
+        }
+    }
 }
 </script>

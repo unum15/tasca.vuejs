@@ -47,6 +47,7 @@
 									:task_types="task_types"
 									:settings="settings"
 									:project_name="project_name"
+									:project_close_date="project.close_date"
 									@remove-order="removeOrder"
 									@changed-order-tab="changedOrderTab"
 									@reload-orders="reloadOrders"
@@ -61,7 +62,7 @@
 import moment from 'moment'
 import EditOrder from './EditOrder'
 export default {
-    name: 'EditOrders',
+  name: 'EditOrders',
 	components: {
 		'EditOrder': EditOrder
 	},
