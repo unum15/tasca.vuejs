@@ -25,9 +25,8 @@
     </b-container>
     <b-tabs vertical pills v-model="current_tab">
       <b-tab
-        v-for="(project,index) in projects"
+        v-for="(project,index) in filtered_projects"
         :key="project.id"
-        v-if="showTab(index)"
         :active="isActive(index)"
       >
       <template slot="title" style="text-align:left">
@@ -176,25 +175,9 @@ export default {
         })
         this.$http.get('/projects?completed=' + this.filter.completed).then(response => {
           this.projects = response.data
-          this.projects.sort((a, b) => (a.client.name > b.client.name))
+          this.projects.sort((a, b) => (a.client.name.toLowerCase() > b.client.name.toLowerCase()))
         })
       }
-    },
-    showTab (index) {
-      if((this.filter.name ==  null) || (this.filter.name == "")){
-        return true;
-      }
-      if(this.client_id){
-        if(this.projects[index].name.toLowerCase().includes(this.filter.name.toLowerCase()) !==  false){
-          return true;
-        }
-      }
-      else{
-        if(this.projects[index].client.name.toLowerCase().includes(this.filter.name.toLowerCase()) !==  false){
-          return true;
-        }
-      }
-      return false;
     },
     isActive (index) {
       if((this.change_tab)&&(index == this.projects.length -1)){
@@ -209,6 +192,26 @@ export default {
       this.projects = this.projects.filter(p => p.id !== project.id);
     },
   },
+  computed: {
+    filtered_projects(){
+      return this.projects.filter(p => {
+        if((this.filter.name ==  null) || (this.filter.name == "")){
+          return true;
+        }
+        if(this.client_id){
+          if(p.name.toLowerCase().includes(this.filter.name.toLowerCase()) !==  false){
+            return true;
+          }
+        }
+        else{
+          if(p.client.name.toLowerCase().includes(this.filter.name.toLowerCase()) !==  false){
+            return true;
+          }
+        }
+        return false;
+      });
+    }
+  }
 }
 
 </script>

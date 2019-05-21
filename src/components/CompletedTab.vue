@@ -55,10 +55,10 @@
                        triggers="hover"
                     >
                         <ul>
-                            <li v-for="date in data.item.dates">
+                            <li v-for="date in data.item.dates" :key="date.id" >
                                 {{ date.date }}
                                 <ul>
-                                    <li v-for="sign_in in date.sign_ins">
+                                    <li v-for="sign_in in date.sign_ins" :key="sign_in.id">
                                         {{ sign_in.sign_in }} - {{ sign_in.sign_out }}
                                     </li>
                                 </ul>
@@ -213,7 +213,7 @@ export default {
         });
     },
     methods: {
-        info (item, index) {
+        info (item) {
             this.modalInfo.title = `Order# ${item.order_id}`
             this.modalInfo.order_id = item.order_id
             this.$refs['modalInfo'].show()
