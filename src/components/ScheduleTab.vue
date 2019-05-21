@@ -2,6 +2,18 @@
     <div>
             <b-container fluid>
                 <b-row>
+                    <b-col>
+                        <b-form-group label="Crew">
+                            <b-form-select
+                                @change="filterColumns"
+                                :options="crews"
+                                value-field="id"
+                                text-field="name"
+                                v-model="crew_id"
+                            >
+                            </b-form-select>
+                        </b-form-group>
+                    </b-col>
                   <b-col md="6" class="my-1">
                     <b-form-group label="Filter" class="mb-0">
                       <b-input-group>
@@ -171,6 +183,8 @@ export default {
             filter: null,
             modalInfo: { title: '', content: '', order_id: null },
             date: moment().format('YYYY-MM-DD'),
+            crews: [],
+            crew_id: null,
             fields: [
                 {
                     key: 'start_date',
@@ -271,6 +285,10 @@ export default {
         }
     },
     created() {
+        this.$http.get('/crews').then(response => {
+			this.crews = response.data;
+            this.crews.unshift({id: null, name: 'All'});
+		});
         this.getTasks();
     },
     methods: {

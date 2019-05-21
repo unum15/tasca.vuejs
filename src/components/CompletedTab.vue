@@ -19,12 +19,19 @@
                 striped
                 hover
                 foot-clone
-                :items="tasks"
+                :items="filtered_tasks"
                 :fields="fields"
                 :filter="filter"
                 :tbody-tr-class="rowClass"
                 primary-key="id"
                 >
+                <template slot="thead-top" slot-scope="data">
+                    <tr>
+                        <th v-for="field in fields" :key="field.key">
+                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                        </th>  
+                    </tr>
+                </template>
                 <template slot="order_id" slot-scope="data">
                     <a :href="'/client/' + data.item.order.project.client_id + '/project/' + data.item.order.project_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
@@ -120,63 +127,75 @@ export default {
     data() {
         return {
             tasks: [],
+            filtered_tasks: [],
             filter: null,
             modalInfo: { title: '', content: '', order_id: null },
             fields: [
                 {
                     key: 'order.start_date',
                     label: 'Start Date',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'order.service_window',
                     label: 'Service Window',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'order_id',
                     label: 'S/WO#',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'order.project.client.name',
                     label: 'Client',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'property',
                     label: 'Property',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'name',
                     label: 'Name',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'hours',
                     label: 'Total Hours',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'date',
                     label: 'Date',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'completion_date',
                     label: 'Completed',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'billed_date',
                     label: 'Billed',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'closed_date',
                     label: 'Closed',
-                    sortable: true
+                    sortable: true,
+                    filter: null
                 },
                 {
                     key: 'actions',
@@ -190,10 +209,11 @@ export default {
         var min_closed_date = moment().subtract(7, 'days');
         this.$http.get('/tasks?completed=true&min_closed_date=' + min_closed_date.format('YYYY-MM-DD')).then((results) => {
             this.tasks = results.data;
+            this.filtered_tasks = this.tasks;
         });
     },
     methods: {
-        info (item, index, button) {
+        info (item, index) {
             this.modalInfo.title = `Order# ${item.order_id}`
             this.modalInfo.order_id = item.order_id
             this.$refs['modalInfo'].show()
@@ -261,6 +281,27 @@ export default {
                 }
             }
             return hours;
+        },
+        filterColumns(){
+            this.filtered_tasks = this.tasks;
+            for(var x = 0;x < this.fields.length; x++){
+                if(this.fields[x].filter){
+                    var regex = new RegExp(this.fields[x].filter, "i");
+                    this.filtered_tasks = this.filtered_tasks.filter(t => {
+                        var keys = this.fields[x].key.split('.');
+                        var value = t;
+                        for(var key_num = 0; key_num < keys.length; key_num++){
+                            if(value){
+                                value = value[keys[key_num]];
+                            }
+                        }
+                        if(!value){
+                            value = "";
+                        }
+                        return value.match(regex) !== null
+                    })
+                }
+            }
         }
     }
 }
