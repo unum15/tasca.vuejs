@@ -20,7 +20,7 @@
 					:active="isActive(index)"
 				>
 					<template slot="title" style="text-align:left">
-						<div style="text-align:left">
+						<div class="text-left" v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
 							{{ task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New') }}
 						</div>
 					</template>
@@ -76,6 +76,9 @@ export default {
 				//console.log("on:"+this.order.name);
 				this.newTask(this.order.name);
 			}
+			else{
+				this.sortTasks();
+			}
     })
   },
 	methods: {
@@ -108,17 +111,54 @@ export default {
 		},
 		showTab(task){
 			var show = true;
-			if((!this.filter.completed)&&(task.closed_date != null)&&(task.closed_date < moment().subtract(400, 'days').format('YYYY-MM-DD'))){
+			if((!this.filter.completed)&&((task.closed_date != null)&&((task.closed_date != '')))&&(task.closed_date < moment().subtract(400, 'days').format('YYYY-MM-DD'))){
 				show = false;
 			}
 			return show;
 		},
-		isActive (index) {
+		isActive(index){
       if((this.change_tab)&&(index == this.tasks.length -1)){
         return true
       }
       return false
     },
+		sortTasks(){
+			this.tasks = this.tasks.sort((a, b) => {
+				if(((a.closed_date == null) || (a.closed_date == '')) && ((b.closed_date != null) && (b.closed_date != ''))){
+					return -1;
+				}
+				if(((a.closed_date != null) && (a.closed_date != '')) && ((b.closed_date == null) || (b.closed_date == ''))){
+					return 1;
+				}
+				if(a.closed_date > b.closed_date){
+					return 1;
+				}
+				if(a.closed_date < b.closed_date){
+					return -1;
+				}
+				if((a.dates.length == 0) && (b.dates.length > 0)){
+					return 1;
+				}
+				if((a.dates.length > 0) && (b.dates.length == 0)){
+					return -1;
+				}
+				if((a.dates.length == 0) && (b.dates.length == 0)){
+					return 0;
+				}
+				if(a.dates[0].date > b.dates[0].date){
+					return 1;
+				}
+				if(a.dates[0].date < b.dates[0].date){
+					return -1;
+				}
+				return 0;
+			});
+		}
   },
 }
 </script>
+<style>
+	.billed {
+		color: #9b59b6;
+	}
+</style>

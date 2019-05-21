@@ -104,22 +104,22 @@
                   </template>
             </b-table>
             <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewOrder
-                    v-if="modalInfo.order_id"
-                    :order_id="modalInfo.order_id"
+                <ViewTask
+                    v-if="modalInfo.task_id"
+                    :task_id="modalInfo.task_id"
                 >
-                </ViewOrder>
+                </ViewTask>
             </b-modal>
         
     </div>
 </template>
 <script>
 import moment from 'moment';
-import ViewOrder from './ViewOrder';
+import ViewTask from './ViewTask';
 export default {
     name: 'CompletedTab',
     components: {
-        'ViewOrder': ViewOrder
+        'ViewTask': ViewTask
     },
     props: {
 
@@ -214,8 +214,8 @@ export default {
     },
     methods: {
         info (item) {
-            this.modalInfo.title = `Order# ${item.order_id}`
-            this.modalInfo.order_id = item.order_id
+            this.modalInfo.title = `Task #${item.id} - ${item.name}`
+            this.modalInfo.task_id = item.id
             this.$refs['modalInfo'].show()
         },
         resetModal () {
