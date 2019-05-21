@@ -32,6 +32,7 @@
 						:task_actions="task_actions"
 						:task_categories="task_categories"
 						:crews="crews"
+						:project_close_date="project_close_date"
 						:settings="settings"
 						@remove-task="removeTask"
 					></EditTask>
@@ -55,6 +56,7 @@ export default {
 		task_actions: {required: true},
 		task_categories: {required: true},
 		crews: {required: true},
+		project_close_date: {default: null},
 		settings: {required: true}
 	},
 	data: function() {

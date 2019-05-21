@@ -150,7 +150,7 @@
                 </b-form-group>
             </b-col>
 			<b-col>
-                <b-form-group label="Closed Date">
+                <b-form-group label="Close Date">
                     <b-form-input
                         type="date"
 						@change="save"
@@ -179,6 +179,7 @@ export default {
 		task_actions: {required: true},
 		task_categories: {required: true},
 		crews: {required: true},
+		project_close_date: {default: null},
 		settings: {required: true}
 	},
 	data: function() {
@@ -259,6 +260,13 @@ export default {
 				return false;
 			})
 		}
-	}
+	},
+    watch:{
+        project_close_date(date){
+            if(!this.my_task.closed_date){
+                this.my_task.closed_date = date;
+            }
+        }
+    }
 }
 </script>
