@@ -103,7 +103,7 @@
             <b-row>
                 <b-col class="header">Task Dates</b-col>
             </b-row>
-            <div v-for="task_date in task.task_dates" :key="task_date.id">
+            <div v-for="task_date in task_dates" :key="task_date.id">
                 <b-row>
                     <b-col class="label">Schedule Date & Time</b-col>
                     <b-col class="data">{{ task_date.date }} {{ task_date.time }}</b-col>
@@ -137,7 +137,10 @@
             <b-row>
                 <b-col class="header">Other Tasks for Order #{{ task.order.id }} - {{ task.order.name }}</b-col>
             </b-row>
-            <div v-for="task in task.order.tasks" :key="task.id">
+            <div v-for="task in tasks" :key="'task_' + task.id">
+                <b-row>
+                    <b-col>{{ task.name }}</b-col>
+                </b-row>
             </div>
         </b-container>
     </div>
@@ -172,7 +175,10 @@ export default {
                 }
             },
             billed: false,
-            completed: false
+            completed: false,
+            sign_ins: [],
+            tasks: [],
+            task_dates: []
         };
     },
     created() {
@@ -186,12 +192,38 @@ export default {
                 this.task.order.property = this.task.order.properties[0];
                 this.completed = this.task.completion_date != null;
                 this.billed = this.task.billed_date != null;
+                this.getTaskDates();
                 //this.getSignIns();
+                this.getTasks();
+                
             });
         },
         getSignIns() {
-            this.$http.get('/sign_ins?task_date_id=' + this.task_date_id).then((results) => {
+            this.$http.get('/sign_ins?task_id=' + this.task.id).then((results) => {
                 this.sign_ins = results.data;
+            });
+        },
+        getTasks() {
+            this.$http.get('/tasks?order_id=' + this.task.order_id).then((results) => {
+                this.tasks = results.data;
+                
+            });
+        },
+        getTaskDates() {
+            this.$http.get('/task_dates?task_id=' + this.task_id).then((results) => {
+                var task_dates = results.data;
+                for(var x = 0; x < task_dates.length; x++){
+                    this.$http.get('/sign_ins?task_date_id=' + task_dates[x].id).then((results) => {
+                        if(results.data.length > 0){
+                            for(var y = 0; y < task_dates.length; y++){
+                                if(task_dates[y].id == results.data[0].task_date_id){
+                                    task_dates[y].sign_ins = results.data;
+                                    this.task_dates.splice(y, 0, task_dates[y]);
+                                }
+                            }
+                        }
+                    });
+                }
             });
         },
         timeDiff(start_time, stop_time){
