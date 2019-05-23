@@ -212,6 +212,7 @@ export default {
         getTaskDates() {
             this.$http.get('/task_dates?task_id=' + this.task_id).then((results) => {
                 var task_dates = results.data;
+                this.task_dates = [];
                 for(var x = 0; x < task_dates.length; x++){
                     this.$http.get('/sign_ins?task_date_id=' + task_dates[x].id).then((results) => {
                         if(results.data.length > 0){
@@ -261,10 +262,10 @@ export default {
                     if(this.task_dates[x].id == sign_in.task_date_id){
                         for(var y = 0; y < this.task_dates[x].sign_ins.length; y++){
                             if(this.task_dates[x].sign_ins[y].id == sign_in.id){
-                                var sign_in = {};
-                                sign_in[field] = new_value;
+                                var new_sign_in = {};
+                                new_sign_in[field] = new_value;
                                 this.$http.patch('/sign_in/' + sign_in.id, sign_in);
-                                this.task_dates[y].sign_ins[y][field] = new_value;
+                                this.task_dates[x].sign_ins[y][field] = new_value;
                             }
                         }
                     }
