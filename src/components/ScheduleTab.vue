@@ -314,7 +314,7 @@ export default {
             this.date = moment(this.date).add(1, 'day').format('YYYY-MM-DD');
             this.getTasks();
         },
-        info (item, index, button) {
+        info (item) {
             this.modalInfo.title = `Order# ${item.order_id}`
             this.modalInfo.order_id = item.order_id
             this.$refs['modalInfo'].show()
