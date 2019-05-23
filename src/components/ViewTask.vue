@@ -123,14 +123,14 @@
                 <div v-for="sign_in in task_date.sign_ins" :key="sign_in.id">
                     <b-row>
                         <b-col>{{ sign_in.contact.name }}</b-col>
-                        <b-col>{{ formatTime(sign_in.sign_in) }}</b-col>
-                        <b-col>{{ formatTime(sign_in.sign_out) }}</b-col>
+                        <b-col @click="editSignIn(sign_in, 'sign_in')" style="cursor:pointer;">{{ formatTime(sign_in.sign_in) }}</b-col>
+                        <b-col @click="editSignIn(sign_in, 'sign_out')" style="cursor:pointer;">{{ sign_in.sign_out ? formatTime(sign_in.sign_out) : 'Click to add.' }}</b-col>
                         <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
                         <b-col></b-col>
                     </b-row>
                     <b-row>
                         <b-col class="label">Notes For The Day</b-col>
-                        <b-col class="data"><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
+                        <b-col  @click="editSignIn(sign_in, 'notes')" style="cursor:pointer;" class="data">{{ sign_in.notes ? sign_in.notes : 'Click to add.' }}</b-col>
                     </b-row>
                 </div>
             </div>
@@ -253,6 +253,23 @@ export default {
                 billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
             }
             this.$http.patch('/task/' + this.task_id, task);
+        },
+        editSignIn(sign_in,field){
+            var new_value = null;
+            if(new_value = prompt('Change ' + field, sign_in[field])){
+                for(var x = 0; x < this.task_dates.length; x++){
+                    if(this.task_dates[x].id == sign_in.task_date_id){
+                        for(var y = 0; y < this.task_dates[x].sign_ins.length; y++){
+                            if(this.task_dates[x].sign_ins[y].id == sign_in.id){
+                                var sign_in = {};
+                                sign_in[field] = new_value;
+                                this.$http.patch('/sign_in/' + sign_in.id, sign_in);
+                                this.task_dates[y].sign_ins[y][field] = new_value;
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     computed: {
