@@ -20,7 +20,7 @@
 				</b-col>
 			</b-form-row>
     </b-container>
-        <b-tabs vertical pills v-model="current_tab">
+        <b-tabs vertical pills v-model="current_tab" :key="orders.length">
             <b-tab
 							v-for="(order, index) in orders"
 							:key="index"
