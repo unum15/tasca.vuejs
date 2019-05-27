@@ -5,7 +5,7 @@
             Scheduler
         </head>
         <main>
-            <b-tabs>
+            <b-tabs :key="order_status_types.length">
                 <b-tab title="All">
                     <ScheduleTab
                         :task_actions="task_actions"

@@ -12,7 +12,7 @@
 				</b-col>
 			</b-form-row>
     </b-container>
-			<b-tabs vertical pills v-model="current_tab">
+			<b-tabs vertical pills v-model="current_tab" :key="tasks.length">
 				<b-tab
 					v-for="(task, index) in tasks"
 					:key="task.id"
