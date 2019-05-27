@@ -4,18 +4,18 @@
             <b-row>
                 <b-col class="header">Employee</b-col>
                 <b-col class="header">Hours</b-col>
-            </b-row>
-            <b-row v-for="employee in employees_hours" :key="employee.id" :id="'employee-' + employee.id">
-                <b-col>{{ employee.name }}</b-col>
-                <b-col>{{ employee.hours }}</b-col>
-            </b-row>
-            <b-row>
                 <b-col>
                      <b-button v-b-modal="'sign_ins-' + this.type + '-' + this.id">Show Sign Ins</b-button>
                 </b-col>
                 <b-col>
                      <b-button v-b-modal="'dates-' + this.type + '-' + this.id">Show Dates</b-button>
                 </b-col>
+            </b-row>
+            <b-row v-for="employee in employees_hours" :key="employee.id" :id="'employee-' + employee.id">
+                <b-col>{{ employee.name }}</b-col>
+                <b-col>{{ employee.hours }}</b-col>
+                <b-col></b-col>
+                <b-col></b-col>
             </b-row>
         </b-container>
         <b-modal :id="'sign_ins-' + this.type + '-' + this.id" title="Sign Ins" size="lg" ok-only>
