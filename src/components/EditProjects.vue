@@ -87,8 +87,7 @@ export default {
   },
   data () {
     return {
-      projects: [{"id":1470,"client_id":1313,"name":"Irrigation Maintenance ","notes":null,"contact_id":1492,"open_date":"2019-03-27","close_date":null,"creator_id":3,"updater_id":3,"created_at":"2019-03-27 14:04:14","updated_at":"2019-05-06 21:13:42","contact":{"id":1492,"name":"Matt Yeates","notes":null,"activity_level_id":1,"contact_method_id":4,"login":null,"show_help":true,"show_maximium_activity_level_id":null,"default_service_window":7,"pending_days_out":7,"fluid_containers":true,"creator_id":3,"updater_id":3,"created_at":"2019-03-27 13:58:41","updated_at":"2019-03-27 13:58:45","phreebooks_id":null},"client":{"id":1313,"name":"Compass Group LLC ","notes":"","referred_by":"","client_type_id":2,"activity_level_id":1,"contact_method_id":4,"billing_contact_id":1492,"main_mailing_property_id":null,"creator_id":3,"updater_id":1,"created_at":"2019-03-27 13:56:04","updated_at":"2019-05-27 20:11:22","phreebooks_id":null}}],
-      tests: [{"id":1470,"client_id":1313,"name":"Irrigation Maintenance ","notes":null,"contact_id":1492,"open_date":"2019-03-27","close_date":null,"creator_id":3,"updater_id":3,"created_at":"2019-03-27 14:04:14","updated_at":"2019-05-06 21:13:42","contact":{"id":1492,"name":"Matt Yeates","notes":null,"activity_level_id":1,"contact_method_id":4,"login":null,"show_help":true,"show_maximium_activity_level_id":null,"default_service_window":7,"pending_days_out":7,"fluid_containers":true,"creator_id":3,"updater_id":3,"created_at":"2019-03-27 13:58:41","updated_at":"2019-03-27 13:58:45","phreebooks_id":null},"client":{"id":1313,"name":"Compass Group LLC ","notes":"","referred_by":"","client_type_id":2,"activity_level_id":1,"contact_method_id":4,"billing_contact_id":1492,"main_mailing_property_id":null,"creator_id":3,"updater_id":1,"created_at":"2019-03-27 13:56:04","updated_at":"2019-05-27 20:11:22","phreebooks_id":null}}],
+      projects: [],
       current_tab: 0,
       change_tab: false,
       crews: [],
@@ -168,7 +167,6 @@ export default {
         this.my_settings = this.settings
         this.$http.get('/projects?client_id=' + this.client_id+ '&completed=' + this.filter.completed).then(response => {
           this.projects = response.data
-          this.projects = [{"id":1470,"client_id":1313,"name":"Irrigation Maintenance ","notes":null,"contact_id":1492,"open_date":"2019-03-27","close_date":null,"creator_id":3,"updater_id":3,"created_at":"2019-03-27 14:04:14","updated_at":"2019-05-06 21:13:42","contact":{"id":1492,"name":"Matt Yeates","notes":null,"activity_level_id":1,"contact_method_id":4,"login":null,"show_help":true,"show_maximium_activity_level_id":null,"default_service_window":7,"pending_days_out":7,"fluid_containers":true,"creator_id":3,"updater_id":3,"created_at":"2019-03-27 13:58:41","updated_at":"2019-03-27 13:58:45","phreebooks_id":null},"client":{"id":1313,"name":"Compass Group LLC ","notes":"","referred_by":"","client_type_id":2,"activity_level_id":1,"contact_method_id":4,"billing_contact_id":1492,"main_mailing_property_id":null,"creator_id":3,"updater_id":1,"created_at":"2019-03-27 13:56:04","updated_at":"2019-05-27 20:11:22","phreebooks_id":null}}];
         })
       }
       else{
