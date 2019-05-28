@@ -73,10 +73,10 @@ export default {
      this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
       this.tasks = response.data
 			if(this.tasks.length == 0){
-				//console.log("on:"+this.order.name);
 				this.newTask(this.order.name);
 			}
 			else{
+				console.log(this.tasks);
 				this.sortTasks();
 			}
     })

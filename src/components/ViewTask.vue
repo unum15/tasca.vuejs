@@ -84,7 +84,7 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-tabs>
+                    <b-tabs :key="tasks.length">
                         <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == task_id">
                             <ViewTaskHours :task_id="task.id">
                             </ViewTaskHours>
