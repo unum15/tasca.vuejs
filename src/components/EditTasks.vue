@@ -76,14 +76,12 @@ export default {
 				this.newTask(this.order.name);
 			}
 			else{
-				console.log(this.tasks);
 				this.sortTasks();
 			}
     })
   },
 	methods: {
 		newTask(name=null){
-			//console.log('name:'+name);
 			var task = {
 				id: null,
 				order_id: this.order.id,

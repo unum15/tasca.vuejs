@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios from 'axios';
 
-const API_URL = '/api'
+const API_URL = '/api';
 
 var daxios = axios.create({
   baseURL: API_URL,
@@ -11,29 +11,28 @@ var daxios = axios.create({
 
 daxios.interceptors.response.use(
   function (response) {
-    return response
+    return response;
   },
   function (error) {
-    console.log(error)
     switch (error.response.status) {
       case 401 :
-        window.location='/'
-        return 200
+        window.location='/';
+        return 200;
       case 422 :
-        alert(error.response.request.responseText)
+        alert(error.response.request.responseText);
         break;
       default:
-        alert(error.response.request.statusText)
+        alert(error.response.request.statusText);
       
     }
-    return Promise.reject(error)
+    return Promise.reject(error);
   })
 
 daxios.interceptors.request.use(
   function (config) {
-    config.headers.authorization = 'Bearer ' + localStorage.getItem('bearer_token')
-    return config
+    config.headers.authorization = 'Bearer ' + localStorage.getItem('bearer_token');
+    return config;
   }
 )
 
-export default daxios
+export default daxios;

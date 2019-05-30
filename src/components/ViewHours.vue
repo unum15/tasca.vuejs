@@ -5,10 +5,10 @@
                 <b-col class="header">Employee</b-col>
                 <b-col class="header">Hours</b-col>
                 <b-col>
-                     <b-button v-b-modal="'sign_ins-' + this.type + '-' + this.id">Show Sign Ins</b-button>
+                     <b-button v-b-modal="'sign_ins-' + this.type + '-' + this.id">On-Site Hours</b-button>
                 </b-col>
                 <b-col>
-                     <b-button v-b-modal="'dates-' + this.type + '-' + this.id">Show Dates</b-button>
+                     <b-button v-b-modal="'dates-' + this.type + '-' + this.id">Scheduled Dates</b-button>
                 </b-col>
             </b-row>
             <b-row v-for="employee in employees_hours" :key="employee.id" :id="'employee-' + employee.id">

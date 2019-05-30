@@ -12,7 +12,6 @@
 </template>
 <script>
 import EditSignIn from './EditSignIn';
-import moment from 'moment'
 export default {
   name: 'EditSignIns',
   components: {
@@ -29,7 +28,6 @@ export default {
   created() {
     this.$http.get('/sign_ins?task_date_id=' + this.task_date_id).then(response => {
       this.sign_ins = response.data
-      console.log(this.sign_ins);
     })
   },
   methods: {

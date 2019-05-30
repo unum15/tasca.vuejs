@@ -257,7 +257,6 @@ export default {
       },
       setOrderTab(order){
          if(order){
-            console.log(order.order_status_type_id);
             this.currentTab = order.order_status_type_id;
             this.$emit('set-order-tab', order)
          }

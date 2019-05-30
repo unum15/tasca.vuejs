@@ -24,7 +24,7 @@
                 <b-col class="data" cols="10">{{ task.order.description }}</b-col>
             </b-row>
             <b-row>
-                <b-col cols="3" >
+                <b-col cols="4" >
                     <b-row>
                         <b-col class="label">Property</b-col>
                         <b-col class="data">
@@ -52,7 +52,7 @@
                         </b-row>
                     </div>
                 </b-col>
-                <b-col cols="9">
+                <b-col cols="8">
                     <b-row>
                         <b-col class="label">Location</b-col>
                         <b-col class="data" cols="8">{{ task.order.location }}</b-col>
