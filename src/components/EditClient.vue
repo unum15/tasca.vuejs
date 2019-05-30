@@ -17,7 +17,7 @@
       {{ client.name }}
     </h1>
     <main>
-        <b-tabs v-model="tab_index">
+        <b-tabs v-model="tab_index" :key="client.id">
           <b-tab title="General">
             <b-container :fluid="true">
             <b-row>

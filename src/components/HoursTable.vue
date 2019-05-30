@@ -111,7 +111,6 @@ export default {
 		onFiltered(items) {
 			this.subtotal = 0;
 			for(var x=0; x<items.length; x++){
-				//console.log(items[x].hours);
 				if(!isNaN(Number.parseFloat(items[x].hours))){
 					this.subtotal += Number.parseFloat(items[x].hours);
 				}

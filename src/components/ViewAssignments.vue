@@ -88,7 +88,7 @@
 <script>
 import TopMenu from './TopMenu';
 import ViewTaskDate from './ViewTaskDate';
-import moment from 'moment'
+import moment from 'moment';
 export default {
     name: 'ViewAssignments',
     components: {
@@ -194,7 +194,7 @@ export default {
         filterByCrew(){
         
         },
-        info(item, index) {
+        info(item) {
             this.modalInfo.title = `Order# ${item.order_id}`
             this.modalInfo.id = item.id
             this.$refs['modalInfo'].show()

@@ -228,15 +228,17 @@ export default {
         },
         signIn(){
             var sign_in
-            if(sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"))){
+            sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
+            if(sign_in !== null){
                 this.$http.post('/sign_in', {order_id : this.order_id, sign_in: sign_in}).then(() => {
-                    this.getOrder()
+                    this.getOrder();
                 });
             }
         },
         signOut(){
             var sign_out
-            if(sign_out = prompt('Sign Out Time', moment().format("YYYY-MM-DD h:mm:ss a"))){
+            sign_out = prompt('Sign Out Time', moment().format("YYYY-MM-DD h:mm:ss a"));
+            if(sign_out !== null){
                 this.$http.patch('/sign_in/' + this.sign_in_id, {sign_out : sign_out}).then(() => {
                     this.getOrder()
                 });
