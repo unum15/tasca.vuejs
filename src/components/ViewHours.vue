@@ -4,6 +4,8 @@
             <b-row>
                 <b-col class="header">Employee</b-col>
                 <b-col class="header">Hours</b-col>
+                <b-col class="header">Rate</b-col>
+                <b-col class="header">Total</b-col>
                 <b-col>
                      <b-button v-b-modal="'sign_ins-' + this.type + '-' + this.id">On-Site Hours</b-button>
                 </b-col>
@@ -14,6 +16,16 @@
             <b-row v-for="employee in employees_hours" :key="employee.id" :id="'employee-' + employee.id">
                 <b-col>{{ employee.name }}</b-col>
                 <b-col>{{ employee.hours }}</b-col>
+                <b-col><b-form-input type="text" v-model="employee.rate"></b-form-input></b-col>
+                <b-col>{{ employee.hours * employee.rate }}</b-col>
+                <b-col></b-col>
+                <b-col></b-col>
+            </b-row>
+            <b-row>
+                <b-col class="header">Total</b-col>
+                <b-col>{{ total_hours }}</b-col>
+                <b-col></b-col>
+                <b-col></b-col>
                 <b-col></b-col>
                 <b-col></b-col>
             </b-row>
@@ -90,6 +102,12 @@ export default {
         getSignIns() {
             this.$http.get('/sign_ins?' + this.type + '_id=' + this.id).then((results) => {
                 this.sign_ins = results.data;
+                this.sign_ins.sort((a, b) => {
+                    if(a.contact.name != b.contact.name){
+                        return a.contact.name > b.contact.name;
+                    }
+                    return a.sign_in > b.sign_in;
+                });
             });
         },
         getTaskDates() {
@@ -123,6 +141,15 @@ export default {
             }
         }
     },
+    computed:{
+        total_hours(){
+            var time = 0;
+            for(var x = 0; x< this.employees_hours.length; x++){
+                time+=parseFloat(this.employees_hours[x].hours);
+            }
+            return time.toFixed(2);
+        }
+    }
 }
 </script>
 <style scoped>
