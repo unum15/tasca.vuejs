@@ -24,7 +24,7 @@
                       </b-input-group>
                     </b-form-group>
                   </b-col>
-                    <b-col v-if="order_status_type != null && order_status_type.id==3">
+                    <b-col v-if="tab == 'Current'">
                         <b-form-group label="Date" class="mb-0">
                           <b-input-group>
                             <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;height:25px;" />
