@@ -169,7 +169,7 @@ export default {
         'ViewTask': ViewTask
     },
     props: {
-        order_status_type: {default: null},
+        tab: {default: null},
         task_actions: {required: true},
         task_categories: {required: true},
         task_statuses: {required: true},
@@ -293,15 +293,7 @@ export default {
     },
     methods: {
         getTasks(){
-            var params = '';
-            if(this.order_status_type != null){
-                params = '?order_status_type_id=' + this.order_status_type.id;
-                if(this.order_status_type.id == 3){
-                    params += '&future=true&date=' + this.date;
-                }
-            }
-            
-            this.$http.get('/schedule' + params).then((results) => {
+            this.$http.get('/schedule?status=' + this.tab).then((results) => {
                 this.tasks = results.data;
                 this.filtered_tasks = this.tasks;
             });

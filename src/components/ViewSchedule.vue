@@ -6,19 +6,9 @@
         </head>
         <main>
             <b-tabs :key="order_status_types.length">
-                <b-tab title="All">
+                <b-tab v-for="tab in tabs" :key="tab" :title="tab + ' Tasks'">
                     <ScheduleTab
-                        :task_actions="task_actions"
-                        :task_categories="task_categories"
-                        :task_statuses="task_statuses"
-                        :task_types="task_types"
-                        :task_appointment_statuses="task_appointment_statuses"
-                    >
-                    </ScheduleTab>
-                </b-tab>
-                <b-tab v-for="order_status_type in order_status_types" :key="order_status_type.id" :title="order_status_type.name">
-                    <ScheduleTab
-                        :order_status_type="order_status_type"
+                        :tab="tab"
 						:task_actions="task_actions"
                         :task_categories="task_categories"
                         :task_statuses="task_statuses"
@@ -48,6 +38,7 @@ export default {
     },
     data() {
         return {
+            tabs: ['Current', 'All', 'Pending', 'Unapproved'],
             order_status_types: [],
             task_appointment_statuses: [],
             task_categories: [],
