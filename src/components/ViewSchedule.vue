@@ -38,7 +38,7 @@ export default {
     },
     data() {
         return {
-            tabs: ['Current', 'All', 'Pending', 'Unapproved'],
+            tabs: ['Current', 'All', 'Pending', 'On Hold'],
             order_status_types: [],
             task_appointment_statuses: [],
             task_categories: [],

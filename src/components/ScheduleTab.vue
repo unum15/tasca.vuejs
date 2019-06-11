@@ -293,7 +293,7 @@ export default {
     },
     methods: {
         getTasks(){
-            this.$http.get('/schedule?status=' + this.tab).then((results) => {
+            this.$http.get('/schedule?status=' + escape(this.tab)).then((results) => {
                 this.tasks = results.data;
                 this.filtered_tasks = this.tasks;
             });
