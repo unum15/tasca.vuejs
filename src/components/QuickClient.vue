@@ -77,6 +77,7 @@
                         :options="contact_methods"
                         value-field="id"
                         text-field="name"
+                        required
                         v-model="contact.contact_method_id">
                       </b-form-select>
                     </b-form-group>
@@ -87,7 +88,7 @@
                   <b-form-group label="Order Date">
                     <b-form-input
                       type="date"
-                      v-model="order.order_date">
+                      v-model="order.date">
                     </b-form-input>
                   </b-form-group>
                 </b-col>
@@ -228,7 +229,7 @@
                         v-model="project.name"
                         required
                         :state="project.name != null"
-                        placeholder="New Order Name"
+                        placeholder="New Project Name"
                         >
                     </b-form-input>
                   </b-form-group>
@@ -549,7 +550,7 @@ export default {
       this.project.name = this.order.name;
       this.project.client_id = this.client.id;
       this.project.contact_id = this.contact.id;
-      this.project.open_date = this.order.order_date;
+      this.project.open_date = this.order.date;
       if(this.project.id === null){
         this.$http.post('/project',this.project)
           .then((results) => {
@@ -570,7 +571,6 @@ export default {
       }
       this.order.project_id = this.project.id;
       this.order.property = this.property.id;
-      this.order.date = this.today;
       if(this.order.id === null){
         this.$http.post('/order',this.order)
           .then((results) => {
@@ -589,6 +589,7 @@ export default {
       this.task.order_id = this.order.id;
 			this.task.name = this.order.name;
 			this.task.description = this.order.description;
+      this.task.crew_id = this.settings.default_crew_id;
       if(this.task.id === null){
         this.$http.post('/task',this.task)
           .then((results) => {
@@ -598,7 +599,7 @@ export default {
       }
       else{
         this.$http.patch('/task/' + this.task.id,this.task)
-        .then(() => {this.nextTask()})
+        .then(() => {this.nextTask();})
       }
     },
     nextTask(){
@@ -618,7 +619,6 @@ export default {
         id: null,
         client_type_id: null,
         name: null,
-        contact_method_id: null,
         billing_property_id: null,
         billing_contact_id: null,
         referred_by: '',
@@ -626,7 +626,7 @@ export default {
       this.contact = {
         id: null,
         name: null,
-        method_id: this.settings.default_contact_method_id
+        contact_method_id: this.settings.default_contact_method_id
       };
       this.property = {
         id: null,
@@ -638,7 +638,7 @@ export default {
         id: null,
         name: null,
         description: null,
-        order_date: this.today
+        date: this.today
       };
       this.task= {
         id: null,
@@ -682,7 +682,7 @@ export default {
         var names = this.contact.name.split(/\s+/);
         if(names.length > 1){
           this.client.name = names[names.length - 1] + ', ' + names[0];
-          if(this.property.type_id == 'Home'){
+          if(this.property.property_type_id == 1){
             this.property.name = names[names.length - 1] + ' Residence';
           }
         }
