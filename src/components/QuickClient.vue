@@ -222,6 +222,20 @@
               </b-row>
               <b-row>
                 <b-col>
+                  <b-form-group label="Project Name">
+                    <b-form-input
+                        type="text"
+                        v-model="project.name"
+                        required
+                        :state="project.name != null"
+                        placeholder="New Order Name"
+                        >
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
                   <b-form-group label="Order Name">
                     <b-form-input
                         type="text"
@@ -611,7 +625,8 @@ export default {
       };
       this.contact = {
         id: null,
-        name: null
+        name: null,
+        method_id: this.settings.default_contact_method_id
       };
       this.property = {
         id: null,
@@ -667,6 +682,9 @@ export default {
         var names = this.contact.name.split(/\s+/);
         if(names.length > 1){
           this.client.name = names[names.length - 1] + ', ' + names[0];
+          if(this.property.type_id == 'Home'){
+            this.property.name = names[names.length - 1] + ' Residence';
+          }
         }
         this.lastContactName = this.client.name;
       }
