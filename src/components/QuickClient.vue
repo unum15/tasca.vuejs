@@ -84,6 +84,14 @@
               </b-row>
               <b-row>
                 <b-col>
+                  <b-form-group label="Order Date">
+                    <b-form-input
+                      type="date"
+                      v-model="order.order_date">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
                   <b-form-group label="Referred By">
                     <b-form-input
                       type="text"
@@ -385,6 +393,7 @@ export default {
       showSaveFailed: false,
       showSaveSuccess: false,
       reroute: false,
+      lastContactName: null,
       client: {
         id: null,
         client_type_id: null,
@@ -526,7 +535,7 @@ export default {
       this.project.name = this.order.name;
       this.project.client_id = this.client.id;
       this.project.contact_id = this.contact.id;
-      this.project.open_date = this.today;
+      this.project.open_date = this.order.order_date;
       if(this.project.id === null){
         this.$http.post('/project',this.project)
           .then((results) => {
@@ -613,7 +622,8 @@ export default {
       this.order = {
         id: null,
         name: null,
-        description: null
+        description: null,
+        order_date: this.today
       };
       this.task= {
         id: null,
@@ -643,7 +653,7 @@ export default {
       
       this.order.approval_date = this.today
       this.order.start_date = this.today
-      this.order.order_date = this.today
+      
       this.order.service_window = localStorage.getItem('default_service_window')
       
       
@@ -653,11 +663,12 @@ export default {
  
     },
     contactNameChanged() {
-      if(this.client.name === null){
+      if(this.client.name === this.lastContactName){
         var names = this.contact.name.split(/\s+/);
         if(names.length > 1){
           this.client.name = names[names.length - 1] + ', ' + names[0];
         }
+        this.lastContactName = this.client.name;
       }
     },
     orderNameChanged(){
