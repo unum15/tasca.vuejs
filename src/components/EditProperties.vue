@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-tabs vertical pills v-model="current_tab">
+    <b-tabs vertical pills v-model="current_tab" :key="my_properties.length">
       <b-tab
         v-for="(property, index) in my_properties"
         :key="property.id"
