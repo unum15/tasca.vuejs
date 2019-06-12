@@ -26,7 +26,7 @@
                 >
             </b-form-select>
         </b-form-group>
-        <b-tabs @input="changedTabs" v-model="my_tab_index">
+        <b-tabs @input="changedTabs" v-model="my_tab_index" :key="order.id">
             <b-tab title="Detail">
                 <b-container fluid>
                     <b-form-group label="Order Name">
