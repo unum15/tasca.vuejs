@@ -15,7 +15,7 @@
 			<b-tabs vertical pills v-model="current_tab" :key="tasks.length">
 				<b-tab
 					v-for="(task, index) in tasks"
-					:key="task.id"
+					:key="index"
 					v-if="showTab(task)"
 					:active="isActive(index)"
 				>
