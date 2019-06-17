@@ -547,7 +547,6 @@ export default {
       if(this.order.name === null){
         return;
       }
-      this.project.name = this.order.name;
       this.project.client_id = this.client.id;
       this.project.contact_id = this.contact.id;
       this.project.open_date = this.order.date;
