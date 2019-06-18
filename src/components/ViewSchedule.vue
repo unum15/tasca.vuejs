@@ -13,7 +13,7 @@
                         :task_categories="task_categories"
                         :task_statuses="task_statuses"
                         :task_types="task_types"
-                        :task_appointment_statuses="task_appointment_statuses"
+                        :appointment_statuses="appointment_statuses"
                     >
                     </ScheduleTab>
                 </b-tab>
@@ -40,7 +40,7 @@ export default {
         return {
             tabs: ['Current', 'All', 'Pending', 'On Hold'],
             order_status_types: [],
-            task_appointment_statuses: [],
+            appointment_statuses: [],
             task_categories: [],
             task_statuses: [],
             task_actions: [],
@@ -51,8 +51,8 @@ export default {
         this.$http.get('/order_status_types').then(response => {
 			this.order_status_types = response.data;
 		});
-        this.$http.get('/task_appointment_statuses').then(response => {
-			this.task_appointment_statuses = response.data;
+        this.$http.get('/appointment_statuses').then(response => {
+			this.appointment_statuses = response.data;
 		});
         this.$http.get('/task_categories').then(response => {
 			this.task_categories = response.data;
@@ -66,57 +66,6 @@ export default {
         this.$http.get('/task_types').then(response => {
 			this.task_types = response.data;
 		});
-    },
-    methods: {
-        info (item, index, button) {
-            this.modalInfo.title = `Order# ${item.order_id}`
-            this.modalInfo.order_id = item.order_id
-            this.$root.$emit('bv::show::modal', 'modalInfo', button)
-        },
-        resetModal () {
-            this.modalInfo.title = ''
-            this.modalInfo.content = ''
-            this.modalInfo.order_id = null
-        },
-        addTask (task){
-            var new_task = {
-                order_id: task.id,
-                billable: true
-            };
-            this.$http.post('/task', new_task).then(response => {
-				this.tasks.push(response.data);
-			})
-        },
-        clearScheduleData(task){
-            task.day = null;
-            task.date = null;
-            task.time = null;
-            task.task.sort_order = null;
-            this.save(task);
-        },
-        save(item){
-            var task_date = {
-                day : item.day,
-                date : item.date,
-                time : item.time
-            }
-            if(item.id){
-                this.$http.patch('/task_date/' + item.id, task_date);
-            }
-            else{
-                this.$http.post('/task_date/', task_date).then(response =>{
-                    item.id = response.id;
-                })
-            }
-            var task = {
-                sort_order : item.sort_order,
-                task_appointment_status_id: item.task_appointment_status_id,
-                task_category_id: item.task_category_id,
-                task_status_id: item.task_status_id,
-                task_action_id: item.task_action_id
-            }
-            this.$http.patch('/task/' + item.task_id, task);
-        }
     }
 }
 </script>

@@ -66,13 +66,13 @@
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
                 </template>
                 
-                <template slot="task_appointment_status" slot-scope="data">
+                <template slot="appointment_status" slot-scope="data">
                     <b-form-select
-                        :options="task_appointment_statuses"
+                        :options="appointment_statuses"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_appointment_status_id"
+                        v-model="data.item.appointment_status_id"
                         >
                     </b-form-select>
                 </template>
@@ -175,7 +175,7 @@ export default {
         task_categories: {required: true},
         task_statuses: {required: true},
         task_types: {required: true},
-        task_appointment_statuses: {required: true}
+        appointment_statuses: {required: true}
     },
     data() {
         return {
@@ -207,7 +207,7 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'task_appointment_status',
+                    key: 'appointment_status',
                     label: 'C',
                     sortable: true,
                     filter: null
@@ -342,6 +342,7 @@ export default {
         },
         save(item){
             var task_date = {
+                appointment_status_id: item.appointment_status_id,
                 task_id: item.task_id,
                 day: item.day,
                 date: item.date,
@@ -357,7 +358,6 @@ export default {
                 })
             }
             var task = {
-                task_appointment_status_id: item.task_appointment_status_id,
                 task_category_id: item.task_category_id,
                 task_status_id: item.task_status_id,
                 task_action_id: item.task_action_id
