@@ -179,7 +179,7 @@ export default {
     },
     methods: {
         getTasks(){
-            this.$http.get('/schedule?date='+this.date).then((results) => {
+            this.$http.get('/schedule?status=today&date='+this.date).then((results) => {
                 this.tasks = results.data;
             });
         },
