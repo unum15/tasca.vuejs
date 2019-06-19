@@ -24,7 +24,7 @@
                       </b-input-group>
                     </b-form-group>
                   </b-col>
-                    <b-col v-if="order_status_type != null && order_status_type.id==3">
+                    <b-col v-if="tab == 'Current'">
                         <b-form-group label="Date" class="mb-0">
                           <b-input-group>
                             <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;height:25px;" />
@@ -47,6 +47,7 @@
                 primary-key="row"
                 class="text-left"
                 :sort-compare="sortCompare"
+                :sort-by.sync="sortBy"
                 >
                 <template slot="thead-top" slot-scope="data">
                     <tr>
@@ -65,13 +66,13 @@
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
                 </template>
                 
-                <template slot="task_appointment_status" slot-scope="data">
+                <template slot="appointment_status" slot-scope="data">
                     <b-form-select
-                        :options="task_appointment_statuses"
+                        :options="appointment_statuses"
 						@input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_appointment_status_id"
+                        v-model="data.item.appointment_status_id"
                         >
                     </b-form-select>
                 </template>
@@ -124,8 +125,8 @@
                 </template>
                 <template slot="sort_order" slot-scope="data">
                     <b-form-input
-						@change="save(data.item)"
-                        v-model="data.item.sort_order"
+						@change="copyOrderTmp(data.item),save(data.item)"
+                        v-model="data.item.sort_order_tmp"
                         >
                     </b-form-input>
                 </template>
@@ -169,12 +170,12 @@ export default {
         'ViewTask': ViewTask
     },
     props: {
-        order_status_type: {default: null},
+        tab: {default: null},
         task_actions: {required: true},
         task_categories: {required: true},
         task_statuses: {required: true},
         task_types: {required: true},
-        task_appointment_statuses: {required: true}
+        appointment_statuses: {required: true}
     },
     data() {
         return {
@@ -185,6 +186,7 @@ export default {
             date: moment().format('YYYY-MM-DD'),
             crews: [],
             crew_id: null,
+            sortBy: 'date',
             fields: [
                 {
                     key: 'start_date',
@@ -205,7 +207,7 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'task_appointment_status',
+                    key: 'appointment_status',
                     label: 'C',
                     sortable: true,
                     filter: null
@@ -293,16 +295,11 @@ export default {
     },
     methods: {
         getTasks(){
-            var params = '';
-            if(this.order_status_type != null){
-                params = '?order_status_type_id=' + this.order_status_type.id;
-                if(this.order_status_type.id == 3){
-                    params += '&future=true&date=' + this.date;
-                }
-            }
-            
-            this.$http.get('/schedule' + params).then((results) => {
+            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date).then((results) => {
                 this.tasks = results.data;
+                this.tasks.forEach((t) => {
+                    t.sort_order_tmp = t.sort_order;
+                });
                 this.filtered_tasks = this.tasks;
             });
         },
@@ -340,8 +337,12 @@ export default {
             task.task.sort_order = null;
             this.save(task);
         },
+        copyOrderTmp(item){
+            item.sort_order = item.sort_order_tmp;
+        },
         save(item){
             var task_date = {
+                appointment_status_id: item.appointment_status_id,
                 task_id: item.task_id,
                 day: item.day,
                 date: item.date,
@@ -357,7 +358,6 @@ export default {
                 })
             }
             var task = {
-                task_appointment_status_id: item.task_appointment_status_id,
                 task_category_id: item.task_category_id,
                 task_status_id: item.task_status_id,
                 task_action_id: item.task_action_id
@@ -388,26 +388,50 @@ export default {
             return classes;
         },
         sortCompare(a, b, key) {
-            if (key == 'time'){
-                var value = this.sortCompare(a, b, 'date');
-                if(value == 0){
-                    value = this.sortCompare(a, b, 'sort_order');
-                    if(value != 0){
+            switch(key){
+                case 'time':
+                case 'date':
+                    var value = 0;
+                    if(a.date && b.date){
+                        var first_date = moment(a.date);
+                        var second_date = moment(b.date);
+                        value = first_date.diff(second_date, 'days');
+                    }
+                    else{
+                        if(a.date){
+                            value = 1;
+                        }
+                        else{
+                            if(b.date){
+                                value = -1;
+                            }
+                        }
+                    }
+                    if(value == 0){
+                        value = this.sortCompare(a, b, 'sort_order');
+                        if(value == 0){
+                            if(a.time == b.time){
+                                return this.sortCompare(a, b, 'start_date');
+                            }
+                            else{
+                                return a.time < b.time;
+                            }
+                        }
+                        else{
+                            return value;
+                        }
+                    }
+                    else{
                         return value;
                     }
-                }
-                else{
-                    return value;
-                }
-            }
-            if (typeof a[key] === 'number' && typeof b[key] === 'number') {
-              // If both compared fields are native numbers
-              return a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0
-            } else {
-              // Stringify the field data and use String.localeCompare
-              return this.toString(a[key]).localeCompare(this.toString(b[key]), undefined, {
-                numeric: true
-              })
+                default:
+                    if (typeof a[key] === 'number' && typeof b[key] === 'number') {
+                      return a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0
+                    } else {
+                      return this.toString(a[key]).localeCompare(this.toString(b[key]), undefined, {
+                        numeric: true
+                      })
+                    }
             }
         },
         toString(value) {

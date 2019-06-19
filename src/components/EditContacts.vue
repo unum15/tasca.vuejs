@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-tabs vertical pills v-model="current_tab">
+    <b-tabs vertical pills v-model="current_tab" :key="my_contacts.length">
       <b-tab
         v-for="(contact, index) in my_contacts"
         :key="contact.id"

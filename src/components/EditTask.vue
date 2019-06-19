@@ -83,6 +83,16 @@
         </b-row>
 		<b-row>
 			<b-col>
+                <b-form-group label="Hold Date">
+                    <b-form-input
+                        type="date"
+						@change="save"
+                        v-model="my_task.hold_date"
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>
+			<b-col>
                 <b-form-group label="Job Hours">
                     <b-form-input
                         type="text"
