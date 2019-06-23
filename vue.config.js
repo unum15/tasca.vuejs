@@ -9,6 +9,6 @@ module.exports = {
         }
       },
     },
-    public: 'tascalocal.truecomputing.biz'
-  } 
+    public: 'localhost'
+  }
 };
