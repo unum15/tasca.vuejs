@@ -103,7 +103,7 @@ export default {
       if(this.my_date.task_id === null){
         return;
       }
-      if(this.my_date.id === null){
+      if((this.my_date.id === null)||(this.my_date.id === undefined)){
           this.$http.post('/task_date',this.my_date)
             .then((results) => {
               this.my_date.id = results.data.id;

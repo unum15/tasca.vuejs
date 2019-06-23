@@ -28,7 +28,6 @@ export default {
   },
   created() {
     if(this.task_id == null){
-      this.newDate();
       return;
     }
     this.$http.get('/task_dates?task_id=' + this.task_id).then(response => {
@@ -57,6 +56,13 @@ export default {
     today() {
 			return moment().format('YYYY-MM-DD');
 		},
+  },
+  watch:{
+    task_id(newv, old){
+      if((newv != old) && (newv != null)){
+        this.newDate();
+      }
+    }
   }
 }
 
