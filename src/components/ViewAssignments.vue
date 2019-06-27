@@ -113,7 +113,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'task_appointment_status',
+                    key: 'appointment_status',
                     label: 'C',
                     sortable: true
                 },
