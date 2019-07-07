@@ -674,7 +674,7 @@ export default {
       this.task.task_category_id = this.settings.default_billing_task_category_id
       this.task.task_status_id = this.settings.default_billing_task_status_id
       this.task.task_action_id = this.settings.default_billing_task_action_id
- 
+      this.lastContactName = null;
     },
     contactNameChanged() {
       if(this.client.name === this.lastContactName){
