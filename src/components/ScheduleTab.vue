@@ -334,7 +334,7 @@ export default {
             task.day = null;
             task.date = null;
             task.time = null;
-            task.task.sort_order = null;
+            task.sort_order = null;
             this.save(task);
         },
         copyOrderTmp(item){
@@ -349,6 +349,7 @@ export default {
                 time: item.time,
                 sort_order : item.sort_order
             }
+            console.log(task_date);
             if(item.id){
                 this.$http.patch('/task_date/' + item.id, task_date);
             }
