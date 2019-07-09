@@ -6,6 +6,7 @@
           <b-form-group  :label-cols="10" label="Show Closed">
             <b-form-checkbox
               v-model="filter.completed"
+							@change="loadOrders"
             >
             </b-form-checkbox>
           </b-form-group>
@@ -14,6 +15,7 @@
 					<b-form-group  :label-cols="10" label="Show Expired">
             <b-form-checkbox
               v-model="filter.expired"
+							@change="loadOrders"
             >
             </b-form-checkbox>
           </b-form-group>
