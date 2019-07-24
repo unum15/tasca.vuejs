@@ -17,6 +17,19 @@
                       </b-input-group>
                     </b-form-group>
                   </b-col>
+                  <b-col md="6" class="my-1">
+                    <b-form-group  label="Maximium Activity Level" class="mb-0">
+                      <b-input-group>
+                        <b-form-select
+                            v-model="activity_level_id"
+                            :options="activity_levels"
+                            value-field="id"
+                            text-field="name"
+                            @change="getProperties"
+                        />
+                      </b-input-group>
+                    </b-form-group>
+                  </b-col>
                 </b-row>
             </b-container>
             <b-table small striped hover :filter="filter" :items="properties" :fields="fields">
@@ -36,6 +49,8 @@ export default {
     },
     data() {
         return {
+            activity_level_id: null,
+            activity_levels: [],
             properties: [],
             filter: null,
             fields: [
@@ -73,9 +88,18 @@ export default {
         }
     },
     created() {
-        this.$http.get('/properties').then((results) => {
-            this.properties = results.data;
+        this.$http.get('/activity_levels').then((results) => {
+            this.activity_levels = results.data;
         });
+        this.activity_level_id = localStorage.getItem('show_maximium_activity_level_id');
+        this.getProperties();
+    },
+    methods: {
+        getProperties(){
+            this.$http.get('/properties?maximium_activity_level_id=' + this.activity_level_id).then((results) => {
+                this.properties = results.data;
+            });
+        }
     }
 }
 </script>
