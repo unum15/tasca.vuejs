@@ -32,26 +32,20 @@
         </b-container>
         <b-modal :id="'sign_ins-' + this.type + '-' + this.id" title="Sign Ins" size="lg" ok-only>
             <b-container>
-                <b-row>
-                    <b-col class="header">Employee</b-col>
-                    <b-col class="header">Sign In</b-col>
-                    <b-col class="header">Sign Out</b-col>
-                    <b-col class="header">Hours</b-col>
-                    <b-col class="header">Labor Category</b-col>
-                </b-row>
-                <div v-for="sign_in in sign_ins" :key="sign_in.id">
+                <div v-for="employee in employees_hours" :key="employee.id" :id="'employee-sign_ins-' + employee.id">
                     <b-row>
-                        <b-col>{{ sign_in.contact.name }}</b-col>
-                        <b-col @click="editSignIn(sign_in, 'sign_in')" style="cursor:pointer;">{{ formatTime(sign_in.sign_in) }}</b-col>
-                        <b-col @click="editSignIn(sign_in, 'sign_out')" style="cursor:pointer;">{{ sign_in.sign_out ? formatTime(sign_in.sign_out) : 'Click to add.' }}</b-col>
-                        <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
-                        <b-col></b-col>
+                        <b-col class="header">{{ employee.name }}</b-col>
+                        <b-col class="header">{{ employee.hours }}</b-col>
                     </b-row>
-                    <b-row>
-                        <b-col class="label">Notes For The Day</b-col>
-                        <b-col  @click="editSignIn(sign_in, 'notes')" style="cursor:pointer;" class="data" cols="9">{{ sign_in.notes ? sign_in.notes : 'Click to add.' }}</b-col>
-                    </b-row>
+                    <ViewSignIns :type="type" :id="id" :contact_id="employee.id"></ViewSignIns>
                 </div>
+                <b-row>
+                    <b-col class="header">Total</b-col>
+                    <b-col></b-col>
+                    <b-col></b-col>
+                    <b-col>{{ total_hours }}</b-col>
+                    <b-col></b-col>
+                </b-row>
             </b-container>
         </b-modal>
         <b-modal :id="'dates-' + this.type + '-' + this.id" title="Dates" ok-only>
@@ -75,8 +69,12 @@
 </template>
 <script>
 import moment from 'moment'
+import ViewSignIns from './ViewSignIns'
 export default {
     name: 'ViewHours',
+    components: {
+        'ViewSignIns': ViewSignIns,
+    },
     props: {
         id : { required:true },
         type : { required:true }
