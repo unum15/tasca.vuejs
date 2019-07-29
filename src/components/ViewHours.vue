@@ -17,7 +17,7 @@
                 <b-col>{{ employee.name }}</b-col>
                 <b-col>{{ employee.hours }}</b-col>
                 <b-col><b-form-input type="text" v-model="employee.rate"></b-form-input></b-col>
-                <b-col>{{ employee.hours * employee.rate }}</b-col>
+                <b-col>{{ (employee.hours * employee.rate).toFixed(2) }}</b-col>
                 <b-col></b-col>
                 <b-col></b-col>
             </b-row>
