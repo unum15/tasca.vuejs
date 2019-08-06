@@ -60,10 +60,10 @@
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.item.order_id }} </a>
                 </template>
                 <template slot="client" slot-scope="data">
-                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.client }} </a>
+                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.item.client }} </a>
                 </template>
                 <template slot="name" slot-scope="data">
-                    <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.name }}</span>
+                    <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.item.name }}</span>
                 </template>
                 
                 <template slot="appointment_status" slot-scope="data">
