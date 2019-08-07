@@ -115,8 +115,9 @@ export default {
 		onFiltered(items) {
 			this.subtotal = 0;
 			for(var x=0; x<items.length; x++){
-				if(!isNaN(Number.parseFloat(items[x].hours))){
-					this.subtotal += Number.parseFloat(items[x].hours);
+				var hours = timeStampDiff(items[x].sign_in, items[x].sign_out)
+				if(!isNaN(Number.parseFloat(hours))){
+					this.subtotal += Number.parseFloat(hours);
 				}
 			}
 			this.subtotal = (Math.round(this.subtotal * 100))/100;
