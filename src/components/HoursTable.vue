@@ -135,7 +135,7 @@ export default {
 		timeStampDiff(sign_in, sign_out){
 			var msign_in = moment(sign_in);
 			var msign_out = moment(sign_out);
-			var hours = msign_out.diff(msign_in)/3600;
+			var hours = msign_out.diff(msign_in)/3600000;
 			return hours.toFixed(1);
 		},
     focusTimeInput(){
