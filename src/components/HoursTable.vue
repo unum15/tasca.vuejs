@@ -9,25 +9,28 @@
         small
         striped
 			>
-        <template slot="sign_in_time" slot-scope="data">
-          <span @click.stop="edit('sign_in_time',data.item)">
-            <span v-if="data.item.sign_in_time">
-              {{ data.item.sign_in_time }}
+        <template slot="sign_in" slot-scope="data">
+          <span @click.stop="edit('sign_in',data.item)">
+            <span v-if="data.item.sign_in">
+              {{ formatTimeStampToTime(data.item.sign_in) }}
             </span>
             <span v-else>
               add
             </span>
           </span>
         </template>
-        <template slot="sign_out_time" slot-scope="data">
-          <span @click.stop="edit('sign_out_time',data.item)">
-            <span v-if="data.item.sign_out_time">
-              {{ data.item.sign_out_time }}
+        <template slot="sign_out" slot-scope="data">
+          <span @click.stop="edit('sign_out',data.item)">
+            <span v-if="data.item.sign_out">
+              {{ formatTimeStampToTime(data.item.sign_out) }}
             </span>
             <span v-else>
               add
             </span>
           </span>
+        </template>
+				<template slot="hours" slot-scope="data">
+          {{ timeStampDiff(data.item.sign_in, data.item.sign_out) }}
         </template>
         <template slot="notes" slot-scope="data">
           <span @click.stop="editNotes(data.item)">
@@ -52,6 +55,7 @@
     </div>
 </template>
 <script>
+import moment from 'moment';
 export default {
   name: 'HoursTable',
   props: {
@@ -72,15 +76,15 @@ export default {
 				},
 				{
 					label: "Work Order",
-					key: "order.id"
+					key: "task_date.task.order.id"
 				},
 				{
 					label: "Client Name",
-					key: "client_name"
+					key: "task_date.task.order.project.client.name"
 				},
 				{
 					label: "Date",
-					key: "date"
+					key: "task_date.date"
 				},
 				{
 					label: "Start",
@@ -125,6 +129,15 @@ export default {
       this.$refs.editModal.show();
       this.$refs.editTimeInput.focus();
     },
+		formatTimeStampToTime(value){
+			return moment(value).format('hh:mm A')
+		},
+		timeStampDiff(sign_in, sign_out){
+			var msign_in = moment(sign_in);
+			var msign_out = moment(sign_out);
+			var hours = msign_out.diff(msign_in)/3600;
+			return hours.toFixed(1);
+		},
     focusTimeInput(){
       this.$refs.editTimeInput.focus();
     },
