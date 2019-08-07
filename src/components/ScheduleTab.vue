@@ -118,14 +118,14 @@
                     <b-form-input
                         v-b-popover.hover="data.item.notes"
                         type="date"
-                        @change="save(data.item)"
-                        v-model="data.item.date"
+                        @change="copyDateTmp(data.item);save(data.item)"
+                        v-model="data.item.date_tmp"
                     >
                     </b-form-input>
                 </template>
                 <template slot="sort_order" slot-scope="data">
                     <b-form-input
-                        @change="copyOrderTmp(data.item),save(data.item)"
+                        @change="copyOrderTmp(data.item);save(data.item)"
                         v-model="data.item.sort_order_tmp"
                         >
                     </b-form-input>
@@ -299,6 +299,7 @@ export default {
                 this.tasks = results.data;
                 this.tasks.forEach((t) => {
                     t.sort_order_tmp = t.sort_order;
+                    t.date_tmp = t.date;
                 });
                 this.filtered_tasks = this.tasks;
             });
@@ -339,6 +340,9 @@ export default {
         },
         copyOrderTmp(item){
             item.sort_order = item.sort_order_tmp;
+        },
+        copyDateTmp(item){
+            item.date = item.date_tmp;
         },
         save(item){
             var task_date = {
