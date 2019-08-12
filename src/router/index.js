@@ -211,8 +211,8 @@ var router = new Router({
       component: EditList
     },
     {
-      path: '/task_appointment_statuses',
-      name: 'EditTaskAppointmentStatuses',
+      path: '/appointment_statuses',
+      name: 'EditAppointmentStatuses',
       component: EditList
     },
     {

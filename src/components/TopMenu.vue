@@ -55,7 +55,7 @@
                     <b-dropdown-item href="/phone_number_types">Phone Number Types</b-dropdown-item>
                     <b-dropdown-item href="/property_types">Property Types</b-dropdown-item>
                     <b-dropdown-item href="/task_actions">Task Actions</b-dropdown-item>
-                    <b-dropdown-item href="/task_appointment_statuses">Task Appointment Statuses</b-dropdown-item>
+                    <b-dropdown-item href="/appointment_statuses">Appointment Statuses</b-dropdown-item>
                     <b-dropdown-item href="/task_categories">Task Categories</b-dropdown-item>
                     <b-dropdown-item href="/task_statuses">Task Statuses</b-dropdown-item>
                     <b-dropdown-item href="/task_types">Task Types</b-dropdown-item>
