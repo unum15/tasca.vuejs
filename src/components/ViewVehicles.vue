@@ -95,8 +95,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/notes').then(response => {
-			this.notes = response.data.data;
+        this.$http.get('/vehicles').then(response => {
+			this.vehicles = response.data.data;
 		});
     }
 }

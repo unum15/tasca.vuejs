@@ -16,6 +16,8 @@ import ViewAssignments from '@/components/ViewAssignments'
 import EditHours from '@/components/EditHours'
 import EditList from '@/components/EditList'
 import EditProfile from '@/components/EditProfile'
+import ViewVehicles from '@/components/ViewVehicles'
+import EditVehicle from '@/components/EditVehicle'
 import GoogleCalendar from '@/components/GoogleCalendar'
 
 
@@ -236,9 +238,48 @@ var router = new Router({
       component: EditList
     },
     {
+      path: '/vehicle_types',
+      name: 'EditVehicleTypes',
+      component: EditList
+    },
+    {
+      path: '/service_types',
+      name: 'EditServiceTypes',
+      component: EditList
+    },
+    {
+      path: '/usage_types',
+      name: 'EditUsageTypes',
+      component: EditList
+    },
+    {
       path: '/profile',
       name: 'EditProfile',
       component: EditProfile
+    },
+    {
+      path: '/vehicles',
+      name: 'ViewVehicles',
+      component: ViewVehicles,
+      meta: {
+        title: 'View Vehicles'
+      }
+    },
+    {
+      path: '/vehicle/:vehicle_id',
+      name: 'EditVehicle',
+      component: EditVehicle,
+      meta: {
+        title: 'Edit Vehicle'
+      }
+    },
+    {
+      path: '/vehicle',
+      name: 'NewVehicle',
+      component: EditVehicle,
+      meta: {
+        title: 'New Vehicle'
+      }
     },
     {
       path: '/calendar',
