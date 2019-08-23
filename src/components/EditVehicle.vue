@@ -108,6 +108,11 @@
           </b-form-group>
           </b-col>
         </b-row>
+        <b-row>
+          <b-col>
+            <b-form-button @click="this.$router.push('/vehicles')"></b-form-button>
+          </b-col>
+        </b-row>
       </b-container>
     </main>
   </div>
