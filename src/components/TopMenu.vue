@@ -41,8 +41,24 @@
                     <b-dropdown-item href="/phree_books/contacts">Contacts</b-dropdown-item>
                     <b-dropdown-item href="/phree_books/addresses">Addresses</b-dropdown-item>
                 </b-nav-item-dropdown>
+                <b-nav-item-dropdown>
+                    <template slot="button-content">
+                      <em>Vehicles</em>
+                    </template>
+                    <b-dropdown-item href="/fueling">New Fueling</b-dropdown-item>
+                    <b-dropdown-item href="/fuelings">View Fuelings</b-dropdown-item>
+                    <b-dropdown-item href="/service">New Service</b-dropdown-item>
+                    <b-dropdown-item href="/services">View Services</b-dropdown-item>
+                    <b-dropdown-item href="/part">New Part</b-dropdown-item>
+                    <b-dropdown-item href="/parts">View Parts</b-dropdown-item>
+                    <b-dropdown-item href="/repair">New Repair</b-dropdown-item>
+                    <b-dropdown-item href="/repairs">View Repairs</b-dropdown-item>
+                    <b-dropdown-item href="/maintenance">New Maintenance</b-dropdown-item>
+                    <b-dropdown-item href="/maintenances">View Maintenances</b-dropdown-item>
+                    <b-dropdown-item href="/vehicle">New Vehicle</b-dropdown-item>
+                    <b-dropdown-item href="/vehicles">View Vehicles</b-dropdown-item>
+                </b-nav-item-dropdown>
             </b-navbar-nav>
-            
             <b-navbar-nav class="ml-auto">
                 <b-nav-item-dropdown right>
                     <template slot="button-content">
@@ -61,11 +77,14 @@
                     <b-dropdown-item href="/order_types">Order Types</b-dropdown-item>
                     <b-dropdown-item href="/phone_number_types">Phone Number Types</b-dropdown-item>
                     <b-dropdown-item href="/property_types">Property Types</b-dropdown-item>
+                    <b-dropdown-item href="/service_types">Service Types</b-dropdown-item>
                     <b-dropdown-item href="/task_actions">Task Actions</b-dropdown-item>
                     <b-dropdown-item href="/appointment_statuses">Appointment Statuses</b-dropdown-item>
                     <b-dropdown-item href="/task_categories">Task Categories</b-dropdown-item>
                     <b-dropdown-item href="/task_statuses">Task Statuses</b-dropdown-item>
                     <b-dropdown-item href="/task_types">Task Types</b-dropdown-item>
+                    <b-dropdown-item href="/usage_types">Usage Types</b-dropdown-item>
+                    <b-dropdown-item href="/vehicle_types">Vehicle Types</b-dropdown-item>
                     <b-dropdown-item href="/work_types">Work Types</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown right>
