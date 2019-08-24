@@ -114,7 +114,12 @@ export default {
         })
       }
       this.$http.get(this.resource).then(response => {
-        this.items = response.data
+        if(!response.data.data){
+          this.items = response.data
+        }
+        else{
+          this.items = response.data.data
+        }
         if(this.resource == '/order_actions'){
           for(var i = 0; i < this.items.length; i++){
             var statuses = [];

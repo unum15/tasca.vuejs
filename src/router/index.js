@@ -1,25 +1,37 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import EditClient from '@/components/EditClient'
-import QuickClient from '@/components/QuickClient'
-import QuickOrder from '@/components/QuickOrder'
-import ViewClients from '@/components/ViewClients'
-import ViewContacts from '@/components/ViewContacts'
-import ViewProperties from '@/components/ViewProperties'
-import ViewProjects from '@/components/ViewProjects'
-import EditProjects from '@/components/EditProjects'
-import ViewOrders from '@/components/ViewOrders'
-import ViewTasks from '@/components/ViewTasks'
-import LoginForm from '@/components/LoginForm'
-import ViewSchedule from '@/components/ViewSchedule'
-import ViewAssignments from '@/components/ViewAssignments'
-import EditHours from '@/components/EditHours'
-import EditList from '@/components/EditList'
-import EditProfile from '@/components/EditProfile'
-import GoogleCalendar from '@/components/GoogleCalendar'
+import Vue from 'vue';
+import Router from 'vue-router';
+import EditClient from '@/components/EditClient';
+import QuickClient from '@/components/QuickClient';
+import QuickOrder from '@/components/QuickOrder';
+import ViewClients from '@/components/ViewClients';
+import ViewContacts from '@/components/ViewContacts';
+import ViewProperties from '@/components/ViewProperties';
+import ViewProjects from '@/components/ViewProjects';
+import EditProjects from '@/components/EditProjects';
+import ViewOrders from '@/components/ViewOrders';
+import ViewTasks from '@/components/ViewTasks';
+import LoginForm from '@/components/LoginForm';
+import ViewSchedule from '@/components/ViewSchedule';
+import ViewAssignments from '@/components/ViewAssignments';
+import EditHours from '@/components/EditHours';
+import EditList from '@/components/EditList';
+import EditProfile from '@/components/EditProfile';
+import ViewVehicles from '@/components/ViewVehicles';
+import EditVehicle from '@/components/EditVehicle';
+import EditFueling from '@/components/EditFueling';
+import ViewFuelings from '@/components/ViewFuelings';
+import EditService from '@/components/EditService';
+import ViewServices from '@/components/ViewServices';
+import EditPart from '@/components/EditPart';
+import ViewParts from '@/components/ViewParts';
+import EditRepair from '@/components/EditRepair';
+import ViewRepairs from '@/components/ViewRepairs';
+import EditMaintenance from '@/components/EditMaintenance';
+import ViewMaintenances from '@/components/ViewMaintenances';
+import GoogleCalendar from '@/components/GoogleCalendar';
 
 
-Vue.use(Router)
+Vue.use(Router);
 
 var router = new Router({
   mode: 'history',
@@ -236,9 +248,174 @@ var router = new Router({
       component: EditList
     },
     {
+      path: '/vehicle_types',
+      name: 'EditVehicleTypes',
+      component: EditList
+    },
+    {
+      path: '/service_types',
+      name: 'EditServiceTypes',
+      component: EditList
+    },
+    {
+      path: '/usage_types',
+      name: 'EditUsageTypes',
+      component: EditList
+    },
+    {
       path: '/profile',
       name: 'EditProfile',
       component: EditProfile
+    },
+    {
+      path: '/vehicles',
+      name: 'ViewVehicles',
+      component: ViewVehicles,
+      meta: {
+        title: 'View Vehicles'
+      }
+    },
+    {
+      path: '/vehicle/:vehicle_id',
+      name: 'EditVehicle',
+      component: EditVehicle,
+      props: true,
+      meta: {
+        title: 'Edit Vehicle'
+      }
+    },
+    {
+      path: '/vehicle',
+      name: 'NewVehicle',
+      component: EditVehicle,
+      meta: {
+        title: 'New Vehicle'
+      }
+    },
+    {
+      path: '/fueling',
+      name: 'NewFueling',
+      component: EditFueling,
+      meta: {
+        title: 'New Fueling'
+      }
+    },
+    {
+      path: '/fueling/:fueling_id',
+      name: 'EditFueling',
+      props: true,
+      component: EditFueling,
+      meta: {
+        title: 'Edit Fueling'
+      }
+    },
+    {
+      path: '/fuelings',
+      name: 'ViewFuelings',
+      component: ViewFuelings,
+      meta: {
+        title: 'View Fuelings'
+      }
+    },
+    {
+        path: '/service',
+        name: 'NewService',
+        component: EditService,
+        meta: {
+            title: 'New Service'
+        }
+    },
+    {
+        path: '/service/:service_id',
+        name: 'EditService',
+        component: EditService,
+        props: true,
+        meta: {
+            title: 'Edit Service'
+        }
+    },
+    {
+      path: '/services',
+      name: 'ViewServices',
+      component: ViewServices,
+      meta: {
+        title: 'View Services'
+      }
+    },
+    {
+        path: '/part',
+        name: 'NewPart',
+        component: EditPart,
+        meta: {
+            title: 'New Part'
+        }
+    },
+    {
+        path: '/part/:part_id',
+        name: 'EditPart',
+        component: EditPart,
+        props: true,
+        meta: {
+            title: 'Edit Part'
+        }
+    },
+    {
+      path: '/parts',
+      name: 'ViewParts',
+      component: ViewParts,
+      meta: {
+        title: 'View Parts'
+      }
+    },
+    {
+        path: '/repair',
+        name: 'NewRepair',
+        component: EditRepair,
+        meta: {
+            title: 'New Repair'
+        }
+    },
+    {
+        path: '/repair/:repair_id',
+        name: 'EditRepair',
+        component: EditRepair,
+        props: true,
+        meta: {
+            title: 'Edit Repair'
+        }
+    },
+    {
+      path: '/repairs',
+      name: 'ViewRepairs',
+      component: ViewRepairs,
+      meta: {
+        title: 'View Repairs'
+      }
+    },
+    {
+        path: '/maintenance',
+        name: 'NewMaintenance',
+        component: EditMaintenance,
+        meta: {
+            title: 'New Maintenance'
+        }
+    },
+    {
+        path: '/maintenance/:maintenance_id',
+        name: 'EditMaintenance',
+        component: EditMaintenance,
+        props: true,
+        meta: {
+            title: 'Edit Maintenance'
+        }
+    },
+    {
+      path: '/maintenances',
+      name: 'ViewMaintenances',
+      component: ViewMaintenances,
+      meta: {
+        title: 'View Maintenances'
+      }
     },
     {
       path: '/calendar',
@@ -246,7 +423,7 @@ var router = new Router({
       component: GoogleCalendar
     }
   ]
-})
+});
 
 
 
