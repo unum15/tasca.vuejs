@@ -2,34 +2,20 @@
     <div>
         <TopMenu></TopMenu>
         <h1>
-            {{ vehicle.name }}
+            {{ maintenance.name }}
         </h1>
         <main>
             <b-container>
                 <b-row>
                     <b-col>
-                        <b-form-group label="Name">
-                            <b-form-input
-                                v-model="vehicle.name"
-                                @change="save"
-                                type="text"
-                                :state="vehicle.name != null"
-                                required
-                            >
-                            </b-form-input>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Vehicle Type Id">
+                        <b-form-group label="Service Id">
                             <b-form-select
-                                v-model="vehicle.vehicle_type_id"
+                                v-model="maintenance.service_id"
                                 @change="save"
-                                :options="vehicle_types"
+                                :options="services"
                                 value-field="id"
-                                text-field="name"
-                                :state="vehicle.vehicle_type_id != null"
+                                text-field="description"
+                                :state="maintenance.service_id != null"
                                 required
                             >
                             </b-form-select>
@@ -38,9 +24,9 @@
                 </b-row>
                 <b-row>
                     <b-col>
-                        <b-form-group label="Year">
+                        <b-form-group label="Ending Reading">
                             <b-form-input
-                                v-model="vehicle.year"
+                                v-model="maintenance.ending_reading"
                                 @change="save"
                                 type="number"
                             >
@@ -50,9 +36,21 @@
                 </b-row>
                 <b-row>
                     <b-col>
-                        <b-form-group label="Make">
+                        <b-form-group label="Date">
                             <b-form-input
-                                v-model="vehicle.make"
+                                v-model="maintenance.date"
+                                @change="save"
+                                type="date"
+                            >
+                            </b-form-input>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+                <b-row>
+                    <b-col>
+                        <b-form-group label="Amount">
+                            <b-form-input
+                                v-model="maintenance.amount"
                                 @change="save"
                                 type="text"
                             >
@@ -62,33 +60,9 @@
                 </b-row>
                 <b-row>
                     <b-col>
-                        <b-form-group label="Model">
+                        <b-form-group label="Where">
                             <b-form-input
-                                v-model="vehicle.model"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Trim">
-                            <b-form-input
-                                v-model="vehicle.trim"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Vin">
-                            <b-form-input
-                                v-model="vehicle.vin"
+                                v-model="maintenance.where"
                                 @change="save"
                                 type="text"
                             >
@@ -100,7 +74,7 @@
                     <b-col>
                         <b-form-group label="Notes">
                             <b-form-input
-                                v-model="vehicle.notes"
+                                v-model="maintenance.notes"
                                 @change="save"
                                 type="text"
                             >
@@ -109,7 +83,7 @@
                     </b-col>
                 </b-row>               <b-row>
                     <b-col>
-                        <b-button @click="$router.push('/vehicles')">Done</b-button>
+                        <b-button @click="$router.push('/maintenances')">Done</b-button>
                     </b-col>
                 </b-row>
             </b-container>
@@ -119,42 +93,42 @@
 <script>
 import TopMenu from './TopMenu'
 export default {
-    name: 'EditVehicle',
+    name: 'EditMaintenance',
     components: {
         'TopMenu': TopMenu
     },
     props: {
-        vehicle_id: {default: null}
+        maintenance_id: {default: null}
     },
     data () {
         return {
-            vehicle: { id: null },
-            vehicle_types: [],
+            maintenance: { id: null },
+            services: [],
         };
     },
     created () {
-        this.$http.get('/vehicle_types').then(response => {
-            this.vehicle_types = response.data.data;
+        this.$http.get('/services').then(response => {
+            this.services = response.data.data;
         });
-        if(this.vehicle_id !== null) {
-            this.$http.get('/vehicle/' + this.vehicle_id).then(response => {
-                this.vehicle = response.data.data;
+        if(this.maintenance_id !== null) {
+            this.$http.get('/maintenance/' + this.maintenance_id).then(response => {
+                this.maintenance = response.data.data;
             });
         }
     },
     methods: {
         save () {
-            if((!this.vehicle.name)||(!this.vehicle.vehicle_type_id)){
+            if((!this.maintenance.service_id)){
                 return;
             }
-            if(this.vehicle.id === null){
-                this.$http.post('/vehicle',this.vehicle)
+            if(this.maintenance.id === null){
+                this.$http.post('/maintenance',this.maintenance)
                     .then((results) => {
-                        this.vehicle.id = results.data.data.id;
+                        this.maintenance.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/vehicle/' + this.vehicle.id, this.vehicle);
+                this.$http.patch('/maintenance/' + this.maintenance.id, this.maintenance);
             }
         }
     }

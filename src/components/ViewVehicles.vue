@@ -95,7 +95,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/vehicles').then(response => {
+        this.$http.get('/vehicles?includes=vehicle_type').then(response => {
 			this.vehicles = response.data.data;
 		});
     }
