@@ -57,19 +57,19 @@
                     </tr>
                 </template>
                 <template slot="order_id" slot-scope="data">
-                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.item.order_id }} </a>
                 </template>
                 <template slot="client" slot-scope="data">
-                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.item.client }} </a>
                 </template>
                 <template slot="name" slot-scope="data">
-                    <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
+                    <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.item.name }}</span>
                 </template>
                 
                 <template slot="appointment_status" slot-scope="data">
                     <b-form-select
                         :options="appointment_statuses"
-						@input="save(data.item)"
+                        @input="save(data.item)"
                         value-field="id"
                         text-field="name"
                         v-model="data.item.appointment_status_id"
@@ -79,7 +79,7 @@
                 <template slot="task_category" slot-scope="data">
                     <b-form-select
                         :options="task_categories"
-						@input="save(data.item)"
+                        @input="save(data.item)"
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_category_id"
@@ -89,7 +89,7 @@
                 <template slot="task_status" slot-scope="data">
                     <b-form-select
                         :options="task_statuses"
-						@input="save(data.item)"
+                        @input="save(data.item)"
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_status_id"
@@ -99,7 +99,7 @@
                 <template slot="task_action" slot-scope="data">
                     <b-form-select
                         :options="task_actions"
-						@input="save(data.item)"
+                        @input="save(data.item)"
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_action_id"
@@ -109,7 +109,7 @@
                 <template slot="day" slot-scope="data">
                     <b-form-input
                         type="text"
-						@change="save(data.item)"
+                        @change="save(data.item)"
                         v-model="data.item.day"
                     >
                     </b-form-input>
@@ -118,14 +118,14 @@
                     <b-form-input
                         v-b-popover.hover="data.item.notes"
                         type="date"
-						@change="save(data.item)"
-                        v-model="data.item.date"
+                        @change="copyDateTmp(data.item);save(data.item)"
+                        v-model="data.item.date_tmp"
                     >
                     </b-form-input>
                 </template>
                 <template slot="sort_order" slot-scope="data">
                     <b-form-input
-						@change="copyOrderTmp(data.item),save(data.item)"
+                        @change="copyOrderTmp(data.item);save(data.item)"
                         v-model="data.item.sort_order_tmp"
                         >
                     </b-form-input>
@@ -133,7 +133,7 @@
                 <template slot="time" slot-scope="data">
                     <b-form-input
                         type="time"
-						@change="save(data.item)"
+                        @change="save(data.item)"
                         v-model="data.item.time"
                     >
                     </b-form-input>
@@ -288,9 +288,9 @@ export default {
     },
     created() {
         this.$http.get('/crews').then(response => {
-			this.crews = response.data;
+            this.crews = response.data;
             this.crews.unshift({id: null, name: 'All'});
-		});
+        });
         this.getTasks();
     },
     methods: {
@@ -299,6 +299,7 @@ export default {
                 this.tasks = results.data;
                 this.tasks.forEach((t) => {
                     t.sort_order_tmp = t.sort_order;
+                    t.date_tmp = t.date;
                 });
                 this.filtered_tasks = this.tasks;
             });
@@ -327,18 +328,21 @@ export default {
                 billable: true
             };
             this.$http.post('/task', new_task).then(response => {
-				this.tasks.push(response.data);
-			})
+                this.tasks.push(response.data);
+            })
         },
         clearScheduleData(task){
             task.day = null;
             task.date = null;
             task.time = null;
-            task.task.sort_order = null;
+            task.sort_order = null;
             this.save(task);
         },
         copyOrderTmp(item){
             item.sort_order = item.sort_order_tmp;
+        },
+        copyDateTmp(item){
+            item.date = item.date_tmp;
         },
         save(item){
             var task_date = {
