@@ -51,6 +51,15 @@
                     <b-dropdown-item href="/vehicle">New Vehicle</b-dropdown-item>
                     <b-dropdown-item href="/vehicles">View Vehicles</b-dropdown-item>
                 </b-nav-item-dropdown>
+                <b-nav-item-dropdown>
+                    <template slot="button-content">
+                      <em>Backflows</em>
+                    </template>
+                    <b-dropdown-item href="/backflow_assembly">New Backflow Assembly</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_assemblies">View Backflow Assemblies</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_certification">New Backflow Certification</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_certifications">View Backflow Certifications</b-dropdown-item>
+                </b-nav-item-dropdown>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item-dropdown right>

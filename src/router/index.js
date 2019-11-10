@@ -29,7 +29,10 @@ import ViewRepairs from '@/components/ViewRepairs';
 import EditMaintenance from '@/components/EditMaintenance';
 import ViewMaintenances from '@/components/ViewMaintenances';
 import GoogleCalendar from '@/components/GoogleCalendar';
-
+import EditBackflowAssembly from '@/components/EditBackflowAssembly';
+import ViewBackflowAssemblies from '@/components/ViewBackflowAssemblies';
+import EditBackflowCertification from '@/components/EditBackflowCertification';
+import ViewBackflowCertifications from '@/components/ViewBackflowCertifications';
 
 Vue.use(Router);
 
@@ -421,7 +424,57 @@ var router = new Router({
       path: '/calendar',
       name: 'GoogleCalendar',
       component: GoogleCalendar
-    }
+    },
+    {
+        path: '/backflow_assembly',
+        name: 'NewBackflowAssembly',
+        component: EditBackflowAssembly,
+        meta: {
+            title: 'New Backflow Assembly'
+        }
+    },
+    {
+        path: '/backflow_assembly/:backflow_assembly_id',
+        name: 'EditBackflowAssembly',
+        component: EditBackflowAssembly,
+        props: true,
+        meta: {
+            title: 'Edit Backflow Assembly'
+        }
+    },
+    {
+      path: '/backflow_assemblies',
+      name: 'ViewBackflowAssemblies',
+      component: ViewBackflowAssemblies,
+      meta: {
+        title: 'View Backflow Assemblies'
+      }
+    },
+    {
+        path: '/backflow_certification',
+        name: 'NewBackflowCertification',
+        component: EditBackflowCertification,
+        meta: {
+            title: 'New Backflow Certification'
+        }
+    },
+    {
+        path: '/backflow_certification/:backflow_certification_id',
+        name: 'EditBackflowCertification',
+        component: EditBackflowCertification,
+        props: true,
+        meta: {
+            title: 'Edit Backflow Certification'
+        }
+    },
+    {
+      path: '/backflow_certifications',
+      name: 'ViewBackflowCertifications',
+      component: ViewBackflowCertifications,
+      meta: {
+        title: 'View Backflow Certifications'
+      }
+    },
   ]
 });
 
