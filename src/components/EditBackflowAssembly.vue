@@ -54,12 +54,16 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Water System">
-                            <b-form-input
-                                v-model="backflow_assembly.water_system"
+                            <b-form-select
+                                v-model="backflow_assembly.backflow_water_system_id"
                                 @change="save"
-                                type="text"
+                                :options="systems"
+                                value-field="id"
+                                text-field="name"
+                                :state="backflow_assembly.backflow_water_system_id != null"
+                                required
                             >
-                            </b-form-input>
+                            </b-form-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -67,12 +71,16 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Use">
-                            <b-form-input
-                                v-model="backflow_assembly.use"
+                            <b-form-select
+                                v-model="backflow_assembly.backflow_use_id"
                                 @change="save"
-                                type="text"
+                                :options="uses"
+                                value-field="id"
+                                text-field="name"
+                                :state="backflow_assembly.backflow_use_id != null"
+                                required
                             >
-                            </b-form-input>
+                            </b-form-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -92,14 +100,14 @@
 
                 <b-row>
                     <b-col>
-                        <b-form-group label="Backflow Style">
+                        <b-form-group label="Backflow Type">
                             <b-form-select
-                                v-model="backflow_assembly.backflow_style_id"
+                                v-model="backflow_assembly.backflow_type_id"
                                 @change="save"
-                                :options="backflow_styles"
+                                :options="backflow_types"
                                 value-field="id"
                                 text-field="name"
-                                :state="backflow_assembly.backflow_style_id != null"
+                                :state="backflow_assembly.backflow_type_id != null"
                                 required
                             >
                             </b-form-select>
@@ -110,12 +118,16 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Manufacturer">
-                            <b-form-input
-                                v-model="backflow_assembly.manufacturer"
+                            <b-form-select
+                                v-model="backflow_assembly.backflow_manufacturer_id"
                                 @change="save"
-                                type="text"
+                                :options="manufacturers"
+                                value-field="id"
+                                text-field="name"
+                                :state="backflow_assembly.backflow_manufacturer_id != null"
+                                required
                             >
-                            </b-form-input>
+                            </b-form-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -136,12 +148,16 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Model Number">
-                            <b-form-input
-                                v-model="backflow_assembly.model_number"
+                            <b-form-select
+                                v-model="backflow_assembly.backflow_model_id"
                                 @change="save"
-                                type="text"
+                                :options="models"
+                                value-field="id"
+                                text-field="name"
+                                :state="backflow_assembly.backflow_model_id != null"
+                                required
                             >
-                            </b-form-input>
+                            </b-form-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -195,17 +211,33 @@ export default {
             client_id: null,
             clients: [],
             backflow_assembly: { id: null },
-            backflow_styles: [],
+            backflow_types: [],
             properties: [],
             contacts: [],
+            systems: [],
+            uses: [],
+            manufacturers: [],
+            models: []
         };
     },
     created () {
         this.$http.get('/clients').then(response => {
             this.clients = response.data;
         });
-        this.$http.get('/backflow_styles').then(response => {
-            this.backflow_styles = response.data.data;
+        this.$http.get('/backflow_types').then(response => {
+            this.backflow_types = response.data.data;
+        });
+        this.$http.get('/backflow_water_systems').then(response => {
+            this.systems = response.data.data;
+        });
+        this.$http.get('/backflow_uses').then(response => {
+            this.uses = response.data.data;
+        });
+        this.$http.get('/backflow_manufacturers').then(response => {
+            this.manufactures = response.data.data;
+        });
+        this.$http.get('/backflow_models').then(response => {
+            this.models = response.data.data;
         });
         if(this.backflow_assembly_id !== null) {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id).then(response => {
