@@ -62,12 +62,12 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'water_system',
-                        label: 'Water System',
+                        key: 'backflow_water_system.name',
+                        label: 'System',
                         sortable: true
                     },
                     {
-                        key: 'use',
+                        key: 'backflow_use.name',
                         label: 'Use',
                         sortable: true
                     },
@@ -77,12 +77,12 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'backflow_style_id',
-                        label: 'Backflow Style Id',
+                        key: 'backflow_type.name',
+                        label: 'Type',
                         sortable: true
                     },
                     {
-                        key: 'manufacturer',
+                        key: 'backflow_manufacturer.name',
                         label: 'Manufacturer',
                         sortable: true
                     },
@@ -92,13 +92,13 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'model_number',
-                        label: 'Model Number',
+                        key: 'backflow_model.name',
+                        label: 'Model',
                         sortable: true
                     },
                     {
                         key: 'serial_number',
-                        label: 'Serial Number',
+                        label: 'Serial',
                         sortable: true
                     },
                     {
@@ -120,7 +120,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/backflow_assemblies?includes=contact,property').then(response => {
+        this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_use,backflow_type,backflow_manufacturer,backflow_model').then(response => {
             this.backflow_assemblies = response.data.data;
         });
     }

@@ -9,7 +9,7 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Client">
-                         <el-select v-model="client_id" filterable placeholder="Select Client" @change="getProperties();getContacts();">
+                         <el-select v-model="client_id" filterable default-first-option placeholder="Select Client" @change="getProperties();getContacts();">
                             <el-option
                               v-for="client in clients"
                               :key="client.id"
@@ -54,16 +54,16 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Water System">
-                            <b-form-select
-                                v-model="backflow_assembly.backflow_water_system_id"
-                                @change="save"
-                                :options="systems"
-                                value-field="id"
-                                text-field="name"
-                                :state="backflow_assembly.backflow_water_system_id != null"
-                                required
-                            >
-                            </b-form-select>
+                            <el-select v-model="backflow_assembly.backflow_water_system_id" filterable allow-create default-first-option placeholder="Select Water System" @change="save">
+                            <el-option
+                              v-for="system in systems"
+                              :key="system.id"
+                              :label="system.name"
+                              :value="system.id"
+                              :state="backflow_assembly.backflow_water_system_id != null"
+                              >
+                            </el-option>
+                          </el-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -217,7 +217,8 @@ export default {
             systems: [],
             uses: [],
             manufacturers: [],
-            models: []
+            models: [],
+            tmp_ids: {}
         };
     },
     created () {
@@ -234,14 +235,18 @@ export default {
             this.uses = response.data.data;
         });
         this.$http.get('/backflow_manufacturers').then(response => {
-            this.manufactures = response.data.data;
+            this.manufacturers = response.data.data;
         });
         this.$http.get('/backflow_models').then(response => {
             this.models = response.data.data;
         });
         if(this.backflow_assembly_id !== null) {
-            this.$http.get('/backflow_assembly/' + this.backflow_assembly_id).then(response => {
+            this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
+                this.client_id = response.data.data.property.client_id;
+                this.getProperties();
+                this.getContacts();
                 this.backflow_assembly = response.data.data;
+                console.log(this.backflow_assembly.backflow_use_id);
             });
         }
     },
@@ -262,7 +267,6 @@ export default {
         getContacts() {
           if(this.client_id){
             this.$http.get('/contacts?client_id=' + this.client_id).then(response => {
-              console.log(response.data);
               this.contacts = response.data
               if(this.contacts.length == 1){
                  this.backflow_assembly.contact_id = this.contacts[0].id;
@@ -273,18 +277,36 @@ export default {
             this.contacts = []
           }
         },
+        saveSelect(name, resource, options){
+            this.$http.post('/' + resource,{name})
+                .then((results) => {
+                    //this[options].push({id:results.data.data.id, name: results.data.data.name});
+                    this.tmp_ids[options] = results.data.data.id;
+                    this.save();
+            });
+        },
         save () {
             if((!this.backflow_assembly.property_id)||(!this.backflow_assembly.contact_id)){
                 return;
             }
-            if(this.backflow_assembly.id === null){
-                this.$http.post('/backflow_assembly',this.backflow_assembly)
+            let tmp_bfa = {...this.backflow_assembly};
+            if(isNaN(this.backflow_assembly.backflow_water_system_id)){
+                if(!this.tmp_ids['systems']){
+                    this.saveSelect(this.backflow_assembly.backflow_water_system_id, 'backflow_water_system','systems');
+                    return;
+                }
+                else{
+                    tmp_bfa.backflow_water_system_id = this.tmp_ids['systems'];
+                }
+            }
+            if(tmp_bfa.id === null){
+                this.$http.post('/backflow_assembly',tmp_bfa)
                     .then((results) => {
                         this.backflow_assembly.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/backflow_assembly/' + this.backflow_assembly.id, this.backflow_assembly);
+                this.$http.patch('/backflow_assembly/' + this.backflow_assembly.id, tmp_bfa);
             }
         }
     }

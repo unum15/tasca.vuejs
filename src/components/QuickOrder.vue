@@ -24,7 +24,7 @@
               <b-row>
                 <b-col>
                     <b-form-group label="Client">
-                     <el-select v-model="client_id" filterable placeholder="Select Client" @change="getProperties();getProjects();">
+                     <el-select v-model="client_id" filterable default-first-option placeholder="Select Client" @change="getProperties();getProjects();">
                         <el-option
                           v-for="client in clients"
                           :key="client.id"
