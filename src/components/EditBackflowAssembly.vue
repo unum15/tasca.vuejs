@@ -136,11 +136,15 @@
                     <b-col>
                         <b-form-group label="Size">
                             <b-form-input
+                                list="sizes-list"
                                 v-model="backflow_assembly.size"
                                 @change="save"
                                 type="text"
                             >
                             </b-form-input>
+                            <datalist id="sizes-list">
+                                <option v-for="size in sizes">{{ size.size }}</option>
+                            </datalist>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -218,6 +222,7 @@ export default {
             uses: [],
             manufacturers: [],
             models: [],
+            sizes: [],
             tmp_ids: {}
         };
     },
@@ -239,6 +244,10 @@ export default {
         });
         this.$http.get('/backflow_models').then(response => {
             this.models = response.data.data;
+        });
+        this.$http.get('/backflow_assembly/unique/size').then(response => {
+            this.sizes = response.data.data;
+            console.log(this.sizes);
         });
         if(this.backflow_assembly_id !== null) {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
