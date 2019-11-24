@@ -299,7 +299,7 @@ export default {
                 return;
             }
             let tmp_bfa = {...this.backflow_assembly};
-            if(isNaN(this.backflow_assembly.backflow_water_system_id)){
+            if((this.backflow_assembly.backflow_water_system_id)&&(isNaN(this.backflow_assembly.backflow_water_system_id))){
                 if(!this.tmp_ids['systems']){
                     this.saveSelect(this.backflow_assembly.backflow_water_system_id, 'backflow_water_system','systems');
                     return;
