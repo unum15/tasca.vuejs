@@ -21,79 +21,100 @@
                     </b-col>
                     <b-col>
                         <b-form-group label="Property">
-                            <b-form-select
+                            <el-select
                                 v-model="backflow_assembly.property_id"
+                                filterable
+                                default-first-option
+                                placeholder="Select Property"
                                 @change="save"
-                                :options="properties"
-                                value-field="id"
-                                text-field="name"
-                                :state="backflow_assembly.property_id != null"
-                                required
                             >
-                            </b-form-select>
+                            <el-option
+                              v-for="property in properties"
+                              :key="property.id"
+                              :label="property.name"
+                              :value="property.id">
+                            </el-option>
+                          </el-select>
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
                     <b-col>
                         <b-form-group label="Contact">
-                            <b-form-select
+                            <el-select
                                 v-model="backflow_assembly.contact_id"
+                                filterable
+                                default-first-option
+                                placeholder="Select Contact"
                                 @change="save"
-                                :options="contacts"
-                                value-field="id"
-                                text-field="name"
-                                :state="backflow_assembly.contact_id != null"
-                                required
                             >
-                            </b-form-select>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Water System">
-                            <el-select v-model="backflow_assembly.backflow_water_system_id" filterable allow-create default-first-option placeholder="Select Water System" @change="save">
                             <el-option
-                              v-for="system in systems"
-                              :key="system.id"
-                              :label="system.name"
-                              :value="system.id"
-                              :state="backflow_assembly.backflow_water_system_id != null"
-                              >
+                              v-for="contact in contacts"
+                              :key="contact.id"
+                              :label="contact.name"
+                              :value="contact.id"
+                            >
                             </el-option>
                           </el-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
-
                 <b-row>
                     <b-col>
-                        <b-form-group label="Use">
-                            <b-form-select
-                                v-model="backflow_assembly.backflow_use_id"
+                        <b-form-group label="Water System">
+                            <el-select
+                                v-model="backflow_assembly.backflow_water_system_id"
+                                filterable
+                                default-first-option
+                                placeholder="Select Water System"
                                 @change="save"
-                                :options="uses"
-                                value-field="id"
-                                text-field="name"
-                                :state="backflow_assembly.backflow_use_id != null"
-                                required
                             >
-                            </b-form-select>
+                            <el-option
+                              v-for="system in systems"
+                              :key="system.id"
+                              :label="system.name"
+                              :value="system.id"
+                              >
+                            </el-option>
+                          </el-select>
                         </b-form-group>
                     </b-col>
-                </b-row>
-
-                <b-row>
+                    <b-col>
+                        <b-form-group label="Use">
+                            <el-select
+                                v-model="backflow_assembly.use"
+                                filterable
+                                allow-create
+                                default-first-option
+                                placeholder="Select Use"
+                                @change="save"
+                            >
+                                <el-option
+                                  v-for="use in uses"
+                                  :key="use.use"
+                                  :label="use.use"
+                                  :value="use.use"
+                                  >
+                                </el-option>
+                            </el-select>
+                        </b-form-group>
+                    </b-col>
                     <b-col>
                         <b-form-group label="Placement">
-                            <b-form-input
+                            <el-select
                                 v-model="backflow_assembly.placement"
+                                filterable
+                                allow-create
+                                default-first-option
+                                placeholder="Select Placement"
                                 @change="save"
-                                type="text"
                             >
-                            </b-form-input>
+                                <el-option
+                                  v-for="placement in placements"
+                                  :key="placement.placement"
+                                  :label="placement.placement"
+                                  :value="placement.placement"
+                                  >
+                                </el-option>
+                            </el-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -101,72 +122,82 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Backflow Type">
-                            <b-form-select
+                            <el-select
                                 v-model="backflow_assembly.backflow_type_id"
+                                filterable
+                                default-first-option
+                                placeholder="Select Backflow Type"
                                 @change="save"
-                                :options="backflow_types"
-                                value-field="id"
-                                text-field="name"
-                                :state="backflow_assembly.backflow_type_id != null"
-                                required
                             >
-                            </b-form-select>
+                            <el-option
+                              v-for="type in backflow_types"
+                              :key="type.id"
+                              :label="type.name"
+                              :value="type.id"
+                              >
+                            </el-option>
+                          </el-select>
                         </b-form-group>
                     </b-col>
-                </b-row>
-
-                <b-row>
                     <b-col>
                         <b-form-group label="Manufacturer">
-                            <b-form-select
+                            <el-select
                                 v-model="backflow_assembly.backflow_manufacturer_id"
+                                filterable
+                                default-first-option
+                                placeholder="Select Manufacturer"
                                 @change="save"
-                                :options="manufacturers"
-                                value-field="id"
-                                text-field="name"
-                                :state="backflow_assembly.backflow_manufacturer_id != null"
-                                required
                             >
-                            </b-form-select>
+                            <el-option
+                              v-for="manufacturer in manufacturers"
+                              :key="manufacturer.id"
+                              :label="manufacturer.name"
+                              :value="manufacturer.id"
+                              >
+                            </el-option>
+                          </el-select>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Model Number">
+                            <el-select
+                                v-model="backflow_assembly.backflow_model_id"
+                                filterable
+                                default-first-option
+                                placeholder="Select Model"
+                                @change="setTypeAndManufacturer();save();"
+                            >
+                            <el-option
+                              v-for="model in filtered_models"
+                              :key="model.id"
+                              :label="model.name"
+                              :value="model.id"
+                              >
+                            </el-option>
+                          </el-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
-
                 <b-row>
                     <b-col>
                         <b-form-group label="Size">
-                            <b-form-input
-                                list="sizes-list"
-                                v-model="backflow_assembly.size"
+                            <el-select
+                                v-model="backflow_assembly.backflow_size_id"
+                                filterable
+                                default-first-option
+                                placeholder="Select Size"
                                 @change="save"
-                                type="text"
                             >
-                            </b-form-input>
-                            <datalist id="sizes-list">
-                                <option v-for="size in sizes">{{ size.size }}</option>
-                            </datalist>
+                            <el-option
+                              v-for="size in sizes"
+                              :key="size.id"
+                              :label="size.name"
+                              :value="size.id"
+                              >
+                            </el-option>
+                          </el-select>
                         </b-form-group>
                     </b-col>
-                </b-row>
-
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Model Number">
-                            <b-form-select
-                                v-model="backflow_assembly.backflow_model_id"
-                                @change="save"
-                                :options="models"
-                                value-field="id"
-                                text-field="name"
-                                :state="backflow_assembly.backflow_model_id != null"
-                                required
-                            >
-                            </b-form-select>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-
-                <b-row>
                     <b-col>
                         <b-form-group label="Serial Number">
                             <b-form-input
@@ -182,12 +213,12 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Notes">
-                            <b-form-input
+                            <b-form-textarea
                                 v-model="backflow_assembly.notes"
                                 @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
+                                placeholder="Notes..."
+                                rows="6"
+                              ></b-form-textarea>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -223,7 +254,7 @@ export default {
             manufacturers: [],
             models: [],
             sizes: [],
-            tmp_ids: {}
+            placements: []
         };
     },
     created () {
@@ -236,8 +267,8 @@ export default {
         this.$http.get('/backflow_water_systems').then(response => {
             this.systems = response.data.data;
         });
-        this.$http.get('/backflow_uses').then(response => {
-            this.uses = response.data.data;
+        this.$http.get('/backflow_sizes').then(response => {
+            this.sizes = response.data.data;
         });
         this.$http.get('/backflow_manufacturers').then(response => {
             this.manufacturers = response.data.data;
@@ -245,9 +276,11 @@ export default {
         this.$http.get('/backflow_models').then(response => {
             this.models = response.data.data;
         });
-        this.$http.get('/backflow_assembly/unique/size').then(response => {
-            this.sizes = response.data.data;
-            console.log(this.sizes);
+        this.$http.get('/backflow_assembly/unique/use').then(response => {
+            this.uses = response.data.data;
+        });
+        this.$http.get('/backflow_assembly/unique/placement').then(response => {
+            this.placements = response.data.data;
         });
         if(this.backflow_assembly_id !== null) {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
@@ -255,7 +288,6 @@ export default {
                 this.getProperties();
                 this.getContacts();
                 this.backflow_assembly = response.data.data;
-                console.log(this.backflow_assembly.backflow_use_id);
             });
         }
     },
@@ -317,6 +349,28 @@ export default {
             else{
                 this.$http.patch('/backflow_assembly/' + this.backflow_assembly.id, tmp_bfa);
             }
+        },
+        setTypeAndManufacturer(){
+            if(!this.backflow_assembly.backflow_model_id){
+                return;
+            }
+            let models = this.models.filter(m => (m.id == this.backflow_assembly.backflow_model_id));
+            let model = models[0];
+            this.backflow_assembly.backflow_type_id = model.backflow_type_id;
+            this.backflow_assembly.backflow_manufacturer_id = model.backflow_manufacturer_id
+        }
+    },
+    computed: {
+        filtered_models(){
+          return this.models.filter(m => {
+            if((this.backflow_assembly.backflow_type_id !=  null) && (this.backflow_assembly.backflow_type_id != m.backflow_type_id)){
+              return false;
+            }
+            if((this.backflow_assembly.backflow_manufacturer_id !=  null) && (this.backflow_assembly.backflow_manufacturer_id != m.backflow_manufacturer_id)){
+              return false;
+            }
+            return true;
+          });
         }
     }
 };
