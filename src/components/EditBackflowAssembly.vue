@@ -330,24 +330,14 @@ export default {
             if((!this.backflow_assembly.property_id)||(!this.backflow_assembly.contact_id)){
                 return;
             }
-            let tmp_bfa = {...this.backflow_assembly};
-            if((this.backflow_assembly.backflow_water_system_id)&&(isNaN(this.backflow_assembly.backflow_water_system_id))){
-                if(!this.tmp_ids['systems']){
-                    this.saveSelect(this.backflow_assembly.backflow_water_system_id, 'backflow_water_system','systems');
-                    return;
-                }
-                else{
-                    tmp_bfa.backflow_water_system_id = this.tmp_ids['systems'];
-                }
-            }
-            if(tmp_bfa.id === null){
-                this.$http.post('/backflow_assembly',tmp_bfa)
+            if(this.backflow_assembly.id === null){
+                this.$http.post('/backflow_assembly',this.backflow_assembly)
                     .then((results) => {
                         this.backflow_assembly.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/backflow_assembly/' + this.backflow_assembly.id, tmp_bfa);
+                this.$http.patch('/backflow_assembly/' + this.backflow_assembly.id, this.backflow_assembly);
             }
         },
         setTypeAndManufacturer(){

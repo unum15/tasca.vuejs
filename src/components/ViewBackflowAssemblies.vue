@@ -67,7 +67,7 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'backflow_use.name',
+                        key: 'use',
                         label: 'Use',
                         sortable: true
                     },
@@ -87,7 +87,7 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'size',
+                        key: 'backflow_size.name',
                         label: 'Size',
                         sortable: true
                     },
@@ -120,7 +120,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_use,backflow_type,backflow_manufacturer,backflow_model').then(response => {
+        this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model').then(response => {
             this.backflow_assemblies = response.data.data;
         });
     }
