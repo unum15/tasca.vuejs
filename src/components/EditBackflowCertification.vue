@@ -234,15 +234,19 @@ export default {
             properties: [],
             backflow_certification: { id: null },
             backflow_assemblies: [],
-            valves: []
+            valves: [],
+            settings: {}
         };
     },
     created () {
+        this.$http.get('/settings').then(response => {
+          this.settings = response.data;
+          this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
+            this.contacts = response.data;
+        });
+        })
         this.$http.get('/clients?backflow_only=true').then(response => {
             this.clients = response.data;
-        });
-        this.$http.get('/contacts').then(response => {
-            this.contacts = response.data;
         });
         if(this.backflow_certification_id !== null) {
             this.$http.get('/backflow_certification/' + this.backflow_certification_id).then(response => {

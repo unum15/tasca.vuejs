@@ -57,8 +57,8 @@
                     </template>
                     <b-dropdown-item href="/backflow_assembly">New Backflow Assembly</b-dropdown-item>
                     <b-dropdown-item href="/backflow_assemblies">View Backflow Assemblies</b-dropdown-item>
-                    <b-dropdown-item href="/backflow_certification">New Backflow Certification</b-dropdown-item>
-                    <b-dropdown-item href="/backflow_certifications">View Backflow Certifications</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_certification">New Backflow Test Report</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_certifications">View Backflow Test Reports</b-dropdown-item>
                 </b-nav-item-dropdown>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
