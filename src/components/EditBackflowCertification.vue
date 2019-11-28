@@ -40,7 +40,7 @@
                                 @change="getBackflowValves();save();"
                                 :options="backflow_assemblies"
                                 value-field="id"
-                                text-field="use"
+                                text-field="serial_number"
                                 :state="backflow_certification.backflow_assembly_id != null"
                                 required
                             >
