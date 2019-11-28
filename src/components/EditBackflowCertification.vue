@@ -283,7 +283,11 @@ export default {
         getBackflowAssemblies(){
             if(this.property_id){
                 this.$http.get('/backflow_assemblies?property_id=' + this.property_id).then(response => {
-                     this.backflow_assemblies = response.data.data;
+                    this.backflow_assemblies = response.data.data;
+                    if(this.backflow_assemblies.length == 1){
+                       this.backflow_certification.backflow_assembly_id=this.backflow_assemblies[0].id;
+                       this.getBackflowValves();
+                     }
                  });
             }
             else{
@@ -293,7 +297,8 @@ export default {
         getBackflowValves(){
             if(this.backflow_certification.backflow_assembly_id){
                 let assemblies = this.backflow_assemblies.filter(a => (this.backflow_certification.backflow_assembly_id == a.id));
-                this.$http.get('/backflow_type_valves?includes=backflow_valve_parts&backflow_style_id=' + assemblies[0].backflow_style_id).then(response => {
+                this.$http.get('/backflow_type_valves?includes=backflow_valve_parts&backflow_type_id=' + assemblies[0].backflow_type_id).then(response => {
+                    
                      this.valves = response.data.data;
                  });
             }

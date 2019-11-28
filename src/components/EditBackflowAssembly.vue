@@ -189,7 +189,7 @@
                                 @change="save"
                             >
                             <el-option
-                              v-for="size in sizes"
+                              v-for="size in filtered_sizes"
                               :key="size.id"
                               :label="size.name"
                               :value="size.id"
@@ -245,7 +245,7 @@ export default {
         return {
             client_id: null,
             clients: [],
-            backflow_assembly: { id: null },
+            backflow_assembly: { id: null, backflow_size_id: null },
             backflow_types: [],
             properties: [],
             contacts: [],
@@ -273,7 +273,7 @@ export default {
         this.$http.get('/backflow_manufacturers').then(response => {
             this.manufacturers = response.data.data;
         });
-        this.$http.get('/backflow_models').then(response => {
+        this.$http.get('/backflow_models?includes=backflow_sizes').then(response => {
             this.models = response.data.data;
         });
         this.$http.get('/backflow_assembly/unique/use').then(response => {
@@ -318,14 +318,6 @@ export default {
             this.contacts = []
           }
         },
-        saveSelect(name, resource, options){
-            this.$http.post('/' + resource,{name})
-                .then((results) => {
-                    //this[options].push({id:results.data.data.id, name: results.data.data.name});
-                    this.tmp_ids[options] = results.data.data.id;
-                    this.save();
-            });
-        },
         save () {
             if((!this.backflow_assembly.property_id)||(!this.backflow_assembly.contact_id)){
                 return;
@@ -361,6 +353,23 @@ export default {
             }
             return true;
           });
+        },
+        filtered_sizes(){
+            if(!this.backflow_assembly.backflow_model_id){
+              return this.sizes;
+            }
+            let model = this.models.filter(m => (this.backflow_assembly.backflow_model_id == m.id))[0];
+            let sizes = this.sizes.filter(s => {
+                let matches = model.backflow_sizes.filter(ms => (s.id == ms.id));
+                if(matches.length){
+                    return true;
+                }
+                return false;
+            });
+            if(sizes.length == 1){
+                this.backflow_assembly.backflow_size_id = sizes[0].id;
+            }
+            return sizes;
         }
     }
 };
