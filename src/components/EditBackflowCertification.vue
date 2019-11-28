@@ -238,7 +238,7 @@ export default {
         };
     },
     created () {
-        this.$http.get('/clients').then(response => {
+        this.$http.get('/clients?backflow_only=true').then(response => {
             this.clients = response.data;
         });
         this.$http.get('/contacts').then(response => {
