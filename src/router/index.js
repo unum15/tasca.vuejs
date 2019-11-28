@@ -31,8 +31,8 @@ import ViewMaintenances from '@/components/ViewMaintenances';
 import GoogleCalendar from '@/components/GoogleCalendar';
 import EditBackflowAssembly from '@/components/EditBackflowAssembly';
 import ViewBackflowAssemblies from '@/components/ViewBackflowAssemblies';
-import EditBackflowCertification from '@/components/EditBackflowCertification';
-import ViewBackflowCertifications from '@/components/ViewBackflowCertifications';
+import EditBackflowTestReport from '@/components/EditBackflowTestReport';
+import ViewBackflowTestReports from '@/components/ViewBackflowTestReports';
 
 Vue.use(Router);
 
@@ -451,28 +451,28 @@ var router = new Router({
       }
     },
     {
-        path: '/backflow_certification',
-        name: 'NewBackflowCertification',
-        component: EditBackflowCertification,
+        path: '/backflow_test_report',
+        name: 'NewBackflowTestReport',
+        component: EditBackflowTestReport,
         meta: {
-            title: 'New Backflow Certification'
+            title: 'New Backflow Test Report'
         }
     },
     {
-        path: '/backflow_certification/:backflow_certification_id',
-        name: 'EditBackflowCertification',
-        component: EditBackflowCertification,
+        path: '/backflow_test_report/:backflow_test_report_id',
+        name: 'EditBackflowTestReport',
+        component: EditBackflowTestReport,
         props: true,
         meta: {
-            title: 'Edit Backflow Certification'
+            title: 'Edit Backflow Test Report'
         }
     },
     {
-      path: '/backflow_certifications',
-      name: 'ViewBackflowCertifications',
-      component: ViewBackflowCertifications,
+      path: '/backflow_test_reports',
+      name: 'ViewBackflowTestReports',
+      component: ViewBackflowTestReports,
       meta: {
-        title: 'View Backflow Certifications'
+        title: 'View Backflow Test Reports'
       }
     },
   ]
