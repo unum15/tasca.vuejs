@@ -79,6 +79,12 @@
                     <b-col>Initial</b-col>
                     <b-col v-for="valve in valves" :key="valve.id">
                         <b-form-group :label="valve.test_name">
+                            <b-form-input
+                                v-model="valve.value"
+                                @change="save"
+                                type="number"
+                            >
+                            </b-form-input>
                             <b-form-radio name="valve.test_name" value="true">{{valve.success_label}}</b-form-radio>
                             <b-form-radio name="valve.test_name" value="false">{{valve.fail_label}}</b-form-radio>
                         </b-form-group>
@@ -90,6 +96,7 @@
                         <b-form-checkbox>Cleaned</b-form-checkbox>
                         <b-form-group label="Replaced">
                             <b-form-checkbox v-for="parts in valve.backflow_valve_parts">{{parts.name}}</b-form-checkbox>
+                            <b-form-checkbox>Other</b-form-checkbox>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -133,12 +140,12 @@
                     <b-col>
                         <b-form-group label="Repairs By">
                             <b-form-select
-                                v-model="backflow_certification.initial_test_contact_id"
+                                v-model="backflow_certification.repairs_contact_id"
                                 @change="save"
                                 :options="contacts"
                                 value-field="id"
                                 text-field="name"
-                                :state="backflow_certification.initial_test_contact_id != null"
+                                :state="backflow_certification.repairs_contact_id != null"
                                 required
                             >
                             </b-form-select>
@@ -159,12 +166,12 @@
                     <b-col>
                         <b-form-group label="Final Test By">
                             <b-form-select
-                                v-model="backflow_certification.initial_test_contact_id"
+                                v-model="backflow_certification.final_test_contact_id"
                                 @change="save"
                                 :options="contacts"
                                 value-field="id"
                                 text-field="name"
-                                :state="backflow_certification.initial_test_contact_id != null"
+                                :state="backflow_certification.final_test_contact_id != null"
                                 required
                             >
                             </b-form-select>
@@ -192,8 +199,8 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="This assembly's FINAL TEST performance was:">
-                            <b-form-radio v-model="backflow_certification.initial" name="initial" value="true">Satisfactory</b-form-radio>
-                            <b-form-radio v-model="backflow_certification.initial" name="initial" value="false">Unsatisfactory</b-form-radio>
+                            <b-form-radio v-model="backflow_certification.final" name="initial" value="true">Satisfactory</b-form-radio>
+                            <b-form-radio v-model="backflow_certification.final" name="initial" value="false">Unsatisfactory</b-form-radio>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -234,10 +241,18 @@ export default {
         this.$http.get('/clients').then(response => {
             this.clients = response.data;
         });
+        this.$http.get('/contacts').then(response => {
+            this.contacts = response.data;
+        });
         if(this.backflow_certification_id !== null) {
             this.$http.get('/backflow_certification/' + this.backflow_certification_id).then(response => {
                 this.backflow_certification = response.data.data;
             });
+        }
+        else{
+            let id = localStorage.getItem('id')
+            //this.backflow_certification.final_test_contact_id = id;
+            this.backflow_certification.initial_test_contact_id = id;
         }
     },
     methods: {
@@ -268,7 +283,7 @@ export default {
         getBackflowValves(){
             if(this.backflow_certification.backflow_assembly_id){
                 let assemblies = this.backflow_assemblies.filter(a => (this.backflow_certification.backflow_assembly_id == a.id));
-                this.$http.get('/backflow_style_valves?includes=backflow_valve_parts&backflow_style_id=' + assemblies[0].backflow_style_id).then(response => {
+                this.$http.get('/backflow_type_valves?includes=backflow_valve_parts&backflow_style_id=' + assemblies[0].backflow_style_id).then(response => {
                      this.valves = response.data.data;
                  });
             }
