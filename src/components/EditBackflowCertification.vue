@@ -103,6 +103,12 @@
                 <b-row>
                     <b-col>Final</b-col>
                     <b-col v-for="valve in valves" :key="valve.id">
+                        <b-form-input
+                                v-model="valve.value"
+                                @change="save"
+                                type="number"
+                        >
+                        </b-form-input>
                         <b-form-group :label="valve.test_name">
                             <b-form-radio name="valve.test_name" value="true">{{valve.success_label}}</b-form-radio>
                             <b-form-radio name="valve.test_name" value="false">{{valve.fail_label}}</b-form-radio>
