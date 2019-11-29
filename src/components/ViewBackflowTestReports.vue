@@ -24,7 +24,7 @@
                 striped
                 hover
                 :filter="filter"
-                :items="backflow_certifications"
+                :items="backflow_test_reports"
                 :fields="fields"
             >
                 <template slot="id" slot-scope="data">
@@ -37,13 +37,13 @@
 <script>
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewBackflowCertifications',
+    name: 'ViewBackflowTestReports',
     components: {
         'TopMenu': TopMenu,
     },
     data() {
         return {
-            backflow_certifications: [],
+            backflow_test_reports: [],
             filter: null,
             fields: [
                     {
@@ -52,7 +52,7 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'backflow_assembly.name',
+                        key: 'backflow_assembly.serial',
                         label: 'Backflow Assembly',
                         sortable: true
                     },
@@ -80,8 +80,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/backflow_certifications?includes=backflow_assembly').then(response => {
-            this.backflow_certifications = response.data.data;
+        this.$http.get('/backflow_test_reports?includes=backflow_assembly').then(response => {
+            this.backflow_test_reports = response.data.data;
         });
     }
 }
