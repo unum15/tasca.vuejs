@@ -38,24 +38,37 @@
                 hover
                 :items="backflow_assemblies"
                 :fields="fields"
+                responsive
             >
                 <template v-slot:cell(test_1)="data">
                     <b-form-input
                       type="number"
+                      step="0.1"
+                      min="0"
+                      max="11"
+                      :value="data.item.reading_1"
+                      @change="save(data.index)"
                     >
                     </b-form-input>
                   </b-form-group>
                 </template>
                 <template v-slot:cell(test_2)="data">
-                    <b-form-input v-if="data.item.backflow_type.backflow_valves[0].show_value"
+                    <b-form-input
                       type="number"
+                      step="0.1"
+                      min="0"
+                      max="11"
+                      :value="data.item.reading_2"
+                      @change="save(data.index)"
                     >
                     </b-form-input>
                   </b-form-group>
                 </template>
-                <template v-slot:cell(test_3)="data">
-                    <b-form-input v-if="data.item.backflow_type.backflow_valves.length > 2"
-                      type="number"
+                <template v-slot:cell(notes)="data">
+                    <b-form-input
+                      type="text"
+                      :value="data.item.reading_notes"
+                      @change="save(data.index)"
                     >
                     </b-form-input>
                   </b-form-group>
@@ -66,30 +79,23 @@
     </div>
 </template>
 <script>
-import TopMenu from './TopMenu'
+import TopMenu from './TopMenu';
+import moment from 'moment';
 export default {
     name: 'CreateBackflowTestReport',
     components: {
         'TopMenu': TopMenu
     },
     props: {
-        backflow_test_report_id: {default: null}
     },
     data () {
         return {
             client_id: null,
             property_id: null,
             clients: [],
-            contacts: [],
+            contact_id: null,
             properties: [],
-            backflow_test_report: {
-                id: null,
-                tests: [],
-                repairs: []
-            },
             backflow_assemblies: [],
-            valves: [],
-            settings: {},
             fields: [
                     {
                         key: 'use',
@@ -128,17 +134,12 @@ export default {
                     },
                     {
                         key: 'test_1',
-                        label: '',
+                        label: 'Reading_1',
                         sortable: false
                     },
                     {
                         key: 'test_2',
-                        label: '',
-                        sortable: false
-                    },
-                    {
-                        key: 'test_3',
-                        label: '',
+                        label: 'Reading_2',
                         sortable: false
                     },
                     {
@@ -150,25 +151,10 @@ export default {
         };
     },
     created () {
-        this.$http.get('/settings').then(response => {
-          this.settings = response.data;
-          this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
-            this.contacts = response.data;
-        });
-        })
         this.$http.get('/clients?backflow_only=true').then(response => {
             this.clients = response.data;
         });
-        if(this.backflow_test_report_id !== null) {
-            this.$http.get('/backflow_test_report/' + this.backflow_test_report_id).then(response => {
-                this.backflow_test_report = response.data.data;
-            });
-        }
-        else{
-            let id = localStorage.getItem('id')
-            //this.backflow_test_report.final_test_contact_id = id;
-            this.backflow_test_report.initial_test_contact_id = id;
-        }
+        this.contact_id = localStorage.getItem('id')
     },
     methods: {
         getProperties() {
@@ -188,49 +174,56 @@ export default {
         getBackflowAssemblies(){
             if(this.property_id){
                 this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_type.backflow_valves&property_id=' + this.property_id).then(response => {
-                    this.backflow_assemblies = response.data.data;
-                    if(this.backflow_assemblies.length == 1){
-                       this.backflow_test_report.backflow_assembly_id=this.backflow_assemblies[0].id;
-                       this.getBackflowValves();
-                     }
+                    let tas = response.data.data;
+                    tas.map(ba => {ba.reading_1 = null})
+                    this.backflow_assemblies = tas;
                  });
             }
             else{
                 this.backflow_assemblies = [];
             }
         },
-        getBackflowValves(){
-            if(this.backflow_test_report.backflow_assembly_id){
-                let assemblies = this.backflow_assemblies.filter(a => (this.backflow_test_report.backflow_assembly_id == a.id));
-                this.$http.get('/backflow_valves?includes=backflow_valve_parts&backflow_type_id=' + assemblies[0].backflow_type_id).then(response => {
-                     this.valves = response.data.data;
-                 });
+        save (index) {
+            let item = this.backflow_assemblies[index]
+            if(!item.backflow_test_report_id){
+                this.$http.post('/backflow_test_report',{backflow_assembly_id: item.id, backflow_installed_to_code: true})
+                    .then((results) => {
+                        this.backflow_assemblies[index].backflow_test_report_id = results.data.data.id;
+                        this.saveTest(index);
+                    });
             }
             else{
-                this.valves = [];
+                this.saveTest(index);
             }
         },
-        addTest(){
-            this.backflow_test_report.tests.push({});
-        },
-        addRepair(){
-            this.backflow_test_report.repairs.push({});
-        },
-        save () {
-            if((!this.backflow_test_report.backflow_assembly_id)||(!this.backflow_test_report.visual_inspection_notes)||(!this.backflow_test_report.backflow_installation_status_id)){
-                return;
-            }
-            if(this.backflow_test_report.id === null){
-                this.$http.post('/backflow_test_report',this.backflow_test_report)
+        saveTest (index){
+            let item = this.backflow_assemblies[index]
+            let test = {
+                backflow_test_report_id: item.backflow_test_report_id,
+                contact_id: this.contact_id,
+                reading_1: item.reading_1,
+                reading_2: item.reading_2,
+                tested_on: this.today
+            };
+            console.log(test);
+            return;
+            if(!item.test_id){
+                this.$http.post('/backflow_test_report',{backflow_assembly_id: item.id, backflow_installed_to_code: true})
                     .then((results) => {
-                        this.backflow_test_report.id = results.data.data.id;
+                        this.backflow_assemblies[index].backflow_test_report_id = results.data.data.id;
+                        saveTest();
                     });
             }
             else{
                 this.$http.patch('/backflow_test_report/' + this.backflow_test_report.id, this.backflow_test_report);
             }
         }
-    }
+    },
+    computed:{
+        today() {
+            return moment().format('YYYY-MM-DD');
+        },
+    },
 };
 </script>
 

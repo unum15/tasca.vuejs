@@ -20,7 +20,7 @@
                 </b-row>
             </b-container>
             <b-table small striped hover :filter="filter" :items="orders" :fields="fields">
-                <template slot="id" slot-scope="data">
+                <template v-slot:cell(id)="data">
                     <a :href="'/client/' + data.item.project.client_id + '/project/' + data.item.project_id +'/order/' + data.item.id" v-if="data.item.project"> {{ data.value }} </a>
                 </template>
             </b-table>

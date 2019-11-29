@@ -27,7 +27,7 @@
                 :items="backflow_assemblies"
                 :fields="fields"
             >
-                <template slot="id" slot-scope="data">
+                <template v-slot:cell(id)="data">
                     <a :href="'/backflow_assembly/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>

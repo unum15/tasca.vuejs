@@ -33,7 +33,7 @@
                 <template slot="order.project.client.name" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template slot="name" slot-scope="data">
+                <template v-slot:cell(name)="data">
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
                 </template>                
                 <template slot="task_category.name" slot-scope="data">
@@ -76,21 +76,21 @@
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_hours" slot-scope="data">
+                <template v-slot:cell(task_hours)="data">
                     <b-form-input
 						@change="save(data.item)"
                         v-model="data.item.task_hours"
                         >
                     </b-form-input>
                 </template>
-                <template slot="crew_hours" slot-scope="data">
+                <template v-slot:cell(crew_hours)="data">
                     <b-form-input
 						@change="save(data.item)"
                         v-model="data.item.crew_hours"
                         >
                     </b-form-input>
                 </template>
-                <template slot="dates" slot-scope="data">
+                <template v-slot:cell(dates)="data">
                     <span v-b-popover.hover="formatDates(data.value)">
                         {{ data.value.length }}
                     </span>

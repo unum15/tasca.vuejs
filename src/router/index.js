@@ -452,9 +452,17 @@ var router = new Router({
       }
     },
     {
+        path: '/backflow_test_report/quick/:group',
+        name: 'NewBackflowTestReports',
+        component: CreateBackflowTestReport,
+        meta: {
+            title: 'New Backflow Test Reports'
+        }
+    },
+    {
         path: '/backflow_test_report',
         name: 'NewBackflowTestReport',
-        component: CreateBackflowTestReport,
+        component: EditBackflowTestReport,
         meta: {
             title: 'New Backflow Test Report'
         }

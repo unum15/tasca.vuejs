@@ -12,7 +12,7 @@
 </template>
 <script>
 import EditTaskDate from './EditTaskDate';
-import moment from 'moment'
+import moment from 'moment';
 export default {
   name: 'EditTaskDates',
   components: {

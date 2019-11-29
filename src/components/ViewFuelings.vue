@@ -27,7 +27,7 @@
                 :items="fuelings"
                 :fields="fields"
             >
-                <template slot="id" slot-scope="data">
+                <template v-slot:cell(id)="data">
                     <a :href="'/fueling/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>

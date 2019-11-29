@@ -27,8 +27,8 @@
                 :items="backflow_test_reports"
                 :fields="fields"
             >
-                <template slot="id" slot-scope="data">
-                    <a :href="'/backflow_certification/' + data.value"> {{ data.value }} </a>
+                <template v-slot:cell(id)="data">
+                    <a :href="'/backflow_test_report/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
