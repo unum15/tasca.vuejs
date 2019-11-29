@@ -31,6 +31,7 @@ import ViewMaintenances from '@/components/ViewMaintenances';
 import GoogleCalendar from '@/components/GoogleCalendar';
 import EditBackflowAssembly from '@/components/EditBackflowAssembly';
 import ViewBackflowAssemblies from '@/components/ViewBackflowAssemblies';
+import CreateBackflowTestReport from '@/components/CreateBackflowTestReport';
 import EditBackflowTestReport from '@/components/EditBackflowTestReport';
 import ViewBackflowTestReports from '@/components/ViewBackflowTestReports';
 
@@ -453,7 +454,7 @@ var router = new Router({
     {
         path: '/backflow_test_report',
         name: 'NewBackflowTestReport',
-        component: EditBackflowTestReport,
+        component: CreateBackflowTestReport,
         meta: {
             title: 'New Backflow Test Report'
         }
