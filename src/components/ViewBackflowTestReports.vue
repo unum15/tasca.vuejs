@@ -68,6 +68,16 @@ export default {
                         sortable: true
                     },
                     {
+                        key: 'backflow_assembly.property.client.name',
+                        label: 'Client',
+                        sortable: true
+                    },
+                    {
+                        key: 'backflow_assembly.property.name',
+                        label: 'Property',
+                        sortable: true
+                    },
+                    {
                         key: 'backflow_assembly.serial_number',
                         label: 'Backflow Assembly',
                         sortable: true
@@ -116,7 +126,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/backflow_test_reports?includes=backflow_assembly,backflow_tests,backflow_assembly.backflow_type').then(response => {
+        this.$http.get('/backflow_test_reports?includes=backflow_assembly,backflow_tests,backflow_assembly.backflow_type,backflow_assembly.property,backflow_assembly.property.client').then(response => {
             this.backflow_test_reports = response.data.data;
             this.backflow_test_reports.map(r => {
                 if(r.backflow_tests.length > 0){
