@@ -9,7 +9,7 @@
         small
         striped
 			>
-        <template slot="sign_in" slot-scope="data">
+        <template v-slot:cell(sign_in)="data">
           <span @click.stop="edit('sign_in',data.item)">
             <span v-if="data.item.sign_in">
               {{ formatTimeStampToTime(data.item.sign_in) }}
@@ -19,7 +19,7 @@
             </span>
           </span>
         </template>
-        <template slot="sign_out" slot-scope="data">
+        <template v-slot:cell(sign_out)="data">
           <span @click.stop="edit('sign_out',data.item)">
             <span v-if="data.item.sign_out">
               {{ formatTimeStampToTime(data.item.sign_out) }}
@@ -29,10 +29,10 @@
             </span>
           </span>
         </template>
-				<template slot="hours" slot-scope="data">
+				<template v-slot:cell(hours)="data">
           {{ timeStampDiff(data.item.sign_in, data.item.sign_out) }}
         </template>
-        <template slot="notes" slot-scope="data">
+        <template v-slot:cell(notes)="data">
           <span @click.stop="editNotes(data.item)">
             <span v-if="data.item.notes">
               {{ data.item.notes }}

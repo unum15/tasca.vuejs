@@ -52,7 +52,7 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'backflow_assembly.serial',
+                        key: 'backflow_assembly.serial_number',
                         label: 'Backflow Assembly',
                         sortable: true
                     },
@@ -62,8 +62,13 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'backflow_installation_status_id',
-                        label: 'Backflow Installation Status Id',
+                        key: 'backflow_installed_to_code',
+                        label: 'To Code',
+                        sortable: true
+                    },
+                    {
+                        key: 'notes',
+                        label: 'Notes',
                         sortable: true
                     },
                     {

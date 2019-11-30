@@ -32,22 +32,22 @@
                         </th>  
                     </tr>
                 </template>
-                <template slot="order_id" slot-scope="data">
+                <template v-slot:cell(order_id)="data">
                     <a :href="'/client/' + data.item.order.project.client_id + '/project/' + data.item.order.project_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
                 <template slot="order.project.client.name" slot-scope="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template slot="property" slot-scope="data">
+                <template v-slot:cell(property)="data">
                     {{ data.item.order.properties[0].name }}
                 </template>
-                <template slot="name" slot-scope="data">
+                <template v-slot:cell(name)="data">
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
                 </template>
-                <template slot="hours" slot-scope="data">
+                <template v-slot:cell(hours)="data">
                     {{ getTotalHours(data.item.dates) }}
                 </template>
-                <template slot="date" slot-scope="data">
+                <template v-slot:cell(date)="data">
                     <span :id="'dates_'+data.item.id">dates</span>
                      <b-popover
                        :target="'dates_'+data.item.id"
@@ -66,7 +66,7 @@
                         </ul>
                     </b-popover>
                 </template>
-                <template slot="completion_date" slot-scope="data">
+                <template v-slot:cell(completion_date)="data">
                     <b-form-input
                         type="date"
                         @change="save(data.item)"
@@ -74,7 +74,7 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="billed_date" slot-scope="data">
+                <template v-slot:cell(billed_date)="data">
                     <b-form-input
                         type="date"
                         @change="save(data.item)"
@@ -82,7 +82,7 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="closed_date" slot-scope="data">
+                <template v-slot:cell(closed_date)="data">
                     <b-form-input
                         type="date"
                         @change="save(data.item)"
@@ -90,7 +90,7 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="actions" slot-scope="row">
+                <template v-slot:cell(actions)="row">
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Details" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
                     <img src="@/assets/add.png" v-b-tooltip.hover title="Add Task To Order" @click.stop="addTask(row.item)" fluid alt="+" style="width:20px;" />
                     <img src="../assets/clear.png" v-b-tooltip.hover title="Clear Scheduling Data" @click.stop="clearScheduleData(row.item)" fluid alt="CS" style="width:20px;" />

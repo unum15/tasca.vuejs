@@ -263,6 +263,15 @@
                                         </b-col>
                                     </b-row>
                                 </div>
+                                <b-row>
+                                    <b-col>
+                                        <b-form-textarea
+                                            v-model="test.notes"
+                                            @change="saveTest(test)"
+                                        >
+                                        </b-form-textarea>
+                                    </b-col>
+                                </b-row>
                                 </b-container>
                             </b-tab>
                         </b-tabs>
@@ -331,7 +340,17 @@
                                     <b-form-textarea
                                         v-model="backflow_test_report.visual_inspection_notes"
                                         @change="save"
-                                        type="text"
+                                    >
+                                    </b-form-textarea>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                                <b-form-group label="Report Notes">
+                                    <b-form-textarea
+                                        v-model="backflow_test_report.notes"
+                                        @change="save"
                                     >
                                     </b-form-textarea>
                                 </b-form-group>

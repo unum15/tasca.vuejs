@@ -24,8 +24,6 @@
                                 :options="properties"
                                 value-field="id"
                                 text-field="name"
-                                :state="property_id != null"
-                                required
                             >
                             </b-form-select>
                         </b-form-group>
@@ -46,7 +44,7 @@
                       step="0.1"
                       min="0"
                       max="11"
-                      :value="data.item.reading_1"
+                      v-model="data.item.reading_1"
                       @change="save(data.index)"
                     >
                     </b-form-input>
@@ -58,7 +56,7 @@
                       step="0.1"
                       min="0"
                       max="11"
-                      :value="data.item.reading_2"
+                      v-model="data.item.reading_2"
                       @change="save(data.index)"
                     >
                     </b-form-input>
@@ -67,7 +65,7 @@
                 <template v-slot:cell(notes)="data">
                     <b-form-input
                       type="text"
-                      :value="data.item.reading_notes"
+                      v-model="data.item.reading_notes"
                       @change="save(data.index)"
                     >
                     </b-form-input>
@@ -96,6 +94,7 @@ export default {
             contact_id: null,
             properties: [],
             backflow_assemblies: [],
+            tests: [],
             fields: [
                     {
                         key: 'use',
@@ -174,9 +173,7 @@ export default {
         getBackflowAssemblies(){
             if(this.property_id){
                 this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_type.backflow_valves&property_id=' + this.property_id).then(response => {
-                    let tas = response.data.data;
-                    tas.map(ba => {ba.reading_1 = null})
-                    this.backflow_assemblies = tas;
+                    this.backflow_assemblies = response.data.data;
                  });
             }
             else{
@@ -203,19 +200,17 @@ export default {
                 contact_id: this.contact_id,
                 reading_1: item.reading_1,
                 reading_2: item.reading_2,
+                notes: item.reading_notes,
                 tested_on: this.today
             };
-            console.log(test);
-            return;
             if(!item.test_id){
-                this.$http.post('/backflow_test_report',{backflow_assembly_id: item.id, backflow_installed_to_code: true})
+                this.$http.post('/backflow_test',test)
                     .then((results) => {
-                        this.backflow_assemblies[index].backflow_test_report_id = results.data.data.id;
-                        saveTest();
+                        this.backflow_assemblies[index].test_id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/backflow_test_report/' + this.backflow_test_report.id, this.backflow_test_report);
+                this.$http.patch('/backflow_test/' + item.test_id, test);
             }
         }
     },

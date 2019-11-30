@@ -56,17 +56,16 @@
                         </th>  
                     </tr>
                 </template>
-                <template slot="order_id" slot-scope="data">
+                <template v-slot:cell(order_id)="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.item.order_id }} </a>
                 </template>
-                <template slot="client" slot-scope="data">
+                <template v-slot:cell(client)="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.item.client }} </a>
                 </template>
-                <template slot="name" slot-scope="data">
+                <template v-slot:cell(name)="data">
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.item.name }}</span>
                 </template>
-                
-                <template slot="appointment_status" slot-scope="data">
+                <template v-slot:cell(appointment_status)="data">
                     <b-form-select
                         :options="appointment_statuses"
                         @input="save(data.item)"
@@ -76,7 +75,7 @@
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_category" slot-scope="data">
+                <template v-slot:cell(task_category)="data">
                     <b-form-select
                         :options="task_categories"
                         @input="save(data.item)"
@@ -86,7 +85,7 @@
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_status" slot-scope="data">
+                <template v-slot:cell(task_status)="data">
                     <b-form-select
                         :options="task_statuses"
                         @input="save(data.item)"
@@ -96,7 +95,7 @@
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_action" slot-scope="data">
+                <template v-slot:cell(task_action)="data">
                     <b-form-select
                         :options="task_actions"
                         @input="save(data.item)"
@@ -106,7 +105,7 @@
                         >
                     </b-form-select>
                 </template>
-                <template slot="day" slot-scope="data">
+                <template v-slot:cell(day)="data">
                     <b-form-input
                         type="text"
                         @change="save(data.item)"
@@ -114,7 +113,7 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="date" slot-scope="data">
+                <template v-slot:cell(date)="data">
                     <b-form-input
                         v-b-popover.hover="data.item.notes"
                         type="date"
@@ -123,14 +122,14 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="sort_order" slot-scope="data">
+                <template v-slot:cell(sort_order)="data">
                     <b-form-input
                         @change="copyOrderTmp(data.item);save(data.item)"
                         v-model="data.item.sort_order_tmp"
                         >
                     </b-form-input>
                 </template>
-                <template slot="time" slot-scope="data">
+                <template v-slot:cell(time)="data">
                     <b-form-input
                         type="time"
                         @change="save(data.item)"
@@ -138,7 +137,7 @@
                     >
                     </b-form-input>
                 </template>
-                <template slot="actions" slot-scope="row">
+                <template v-slot:cell(actions)="row">
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Details" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
                     <img src="@/assets/add.png" v-b-tooltip.hover title="Add Task To Order" @click.stop="addTask(row.item)" fluid alt="+" style="width:20px;" />
                     <img src="../assets/clear.png" v-b-tooltip.hover title="Clear Scheduling Data" @click.stop="clearScheduleData(row.item)" fluid alt="CS" style="width:20px;" />

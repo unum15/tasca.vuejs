@@ -6,7 +6,7 @@
     </header>
     <main>
       <b-table :items="items" :fields="fields"   footer>
-        <template slot="sort_order" slot-scope="data">
+        <template v-slot:cell(sort_order)="data">
           <b-form-select
             :options="sort_options"
 						@input="save(data.item)"
@@ -14,7 +14,7 @@
           >
           </b-form-select>
         </template>
-        <template slot="name" slot-scope="data">
+        <template v-slot:cell(name)="data">
           <b-form-input
             type="text"
 						@change="save(data.item)"
@@ -22,7 +22,7 @@
           >
           </b-form-input>
         </template>
-        <template slot="relation" slot-scope="data">
+        <template v-slot:cell(relation)="data">
           <b-form-select
             multiple
             :options="relations"
@@ -32,7 +32,7 @@
           >
           </b-form-select>
         </template>
-        <template slot="notes" slot-scope="data">
+        <template v-slot:cell(notes)="data">
           <b-form-input
             type="text"
 						@change="save(data.item)"
@@ -40,7 +40,7 @@
           >
           </b-form-input>
         </template>
-        <template slot="default" slot-scope="data">
+        <template v-slot:cell(default)="data">
           <input type="radio"
             name="default_item"
             @change="saveDefault"
@@ -49,7 +49,7 @@
             />
             
         </template>
-        <template slot="delete" slot-scope="data">
+        <template v-slot:cell(delete)="data">
           <img src="@/assets/delete.png" @click.stop="deleteItem(data.item)" fluid alt="-" style="width:20px;cursor:pointer;"/>
         </template>
       </b-table>
