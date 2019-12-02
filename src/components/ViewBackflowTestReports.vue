@@ -29,6 +29,7 @@
             >
                 <template v-slot:cell(id)="data">
                     <a :href="'/backflow_test_report/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/api/backflow_test_report/' + data.value + '/pdf'"> PDF </a>
                 </template>
                 
                 
