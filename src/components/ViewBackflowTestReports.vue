@@ -63,66 +63,66 @@ export default {
             backflow_test_reports: [],
             filter: null,
             fields: [
-                    {
-                        key: 'id',
-                        label: 'Id',
-                        sortable: true
-                    },
-                    {
-                        key: 'backflow_assembly.property.client.name',
-                        label: 'Client',
-                        sortable: true
-                    },
-                    {
-                        key: 'backflow_assembly.property.name',
-                        label: 'Property',
-                        sortable: true
-                    },
-                    {
-                        key: 'backflow_assembly.serial_number',
-                        label: 'Backflow Assembly',
-                        sortable: true
-                    },
-                    {
-                        key: 'visual_inspection_notes',
-                        label: 'Visual Inspection Notes',
-                        sortable: true
-                    },
-                    {
-                        key: 'backflow_installed_to_code',
-                        label: 'To Code',
-                        sortable: true
-                    },
-                    {
-                        key: 'notes',
-                        label: 'Notes',
-                        sortable: true
-                    },
-                    {
-                        key: 'last_test.tested_on',
-                        label: 'Date',
-                        sortable: true
-                    },
-                    {
-                        key: 'backflow_assembly.backflow_type.name',
-                        label: 'Type',
-                        sortable: true
-                    },
-                    {
-                        key: 'last_test.reading_1',
-                        label: 'Reading 1',
-                        sortable: true
-                    },
-                    {
-                        key: 'last_test.reading_2',
-                        label: 'Reading 2',
-                        sortable: true
-                    },
-                    {
-                        key: 'result',
-                        label: 'Result',
-                        sortable: false
-                    }
+                {
+                    key: 'id',
+                    label: 'Id',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_assembly.property.client.name',
+                    label: 'Client',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_assembly.property.name',
+                    label: 'Property',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_assembly.serial_number',
+                    label: 'Backflow Assembly',
+                    sortable: true
+                },
+                {
+                    key: 'visual_inspection_notes',
+                    label: 'Visual Inspection Notes',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_installed_to_code',
+                    label: 'To Code',
+                    sortable: true
+                },
+                {
+                    key: 'notes',
+                    label: 'Notes',
+                    sortable: true
+                },
+                {
+                    key: 'last_test.tested_on',
+                    label: 'Date',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_assembly.backflow_type.name',
+                    label: 'Type',
+                    sortable: true
+                },
+                {
+                    key: 'last_test.reading_1',
+                    label: 'Reading 1',
+                    sortable: true
+                },
+                {
+                    key: 'last_test.reading_2',
+                    label: 'Reading 2',
+                    sortable: true
+                },
+                {
+                    key: 'result',
+                    label: 'Result',
+                    sortable: false
+                }
             ]
         }
     },
