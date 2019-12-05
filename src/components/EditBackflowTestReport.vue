@@ -106,237 +106,77 @@
                             <a :href="'/api/backflow_test_report/' + data.value + '/pdf'"> PDF </a>
                         </template>
                         
+                        <template v-slot:cell(contact_id)="data">
+                            <b-form-select
+                                    v-model="data.item.contact_id"
+                                    @change="saveTest(data.item)"
+                                    :options="contacts"
+                                    value-field="id"
+                                    text-field="name"
+                                    :state="data.item.contact_id != null"
+                                    required
+                                >
+                                </b-form-select>
+                        </template>
                         
+                        
+                        <template v-slot:cell(tested_on)="data">
+                            <b-form-input
+                                    v-model="data.item.tested_on"
+                                    @change="saveTest(data.item)"
+                                    type="date"
+                                    :state="data.item.tested_on != null"
+                                >
+                                </b-form-input>
+                        </template>
+                        <template v-slot:cell(reading_1)="data">
+                            <b-form-input
+                                    v-model="data.item.reading_1"
+                                    @change="saveTest(data.item)"
+                                    type="number"
+                                    step="0.1"
+                                    min="0"
+                                    max="11"
+                                    :state="data.item.reading_1 != null"
+                                >
+                                </b-form-input>
+                        </template>
+                        <template v-slot:cell(reading_2)="data">
+                            <b-form-input
+                                    v-model="data.item.reading_2"
+                                    @change="saveTest(data.item)"
+                                    type="number"
+                                    step="0.1"
+                                    min="0"
+                                    max="11"
+                                    :state="data.item.reading_2 != null"
+                                >
+                                </b-form-input>
+                        </template>
+                        <template v-slot:cell(notes)="data">
+                            <b-form-input
+                                    v-model="data.item.notes"
+                                    @change="saveTest(data.item)"
+                                    type="text"
+                                >
+                                </b-form-input>
+                        </template>
                         <template v-slot:cell(result)="data">
-                            <div v-if="['DCDA', 'DC'].includes(data.item.backflow_assembly.backflow_type.name)">
-                                <b-badge v-if="data.item.last_test.reading_1 >= 1 && data.item.last_test.reading_2 >= 1" variant="success">Closed Tight</b-badge>
+                            <div v-if="['DCDA', 'DC'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                <b-badge v-if="data.item.reading_1 >= 1 && data.item.reading_2 >= 1" variant="success">Closed Tight</b-badge>
                                 <b-badge v-else variant="danger">Leaked</b-badge>
                             </div>
-                            <div v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(data.item.backflow_assembly.backflow_type.name)">
-                                <b-badge v-if="(data.item.last_test.reading_1 >= 1) && (data.item.last_test.reading_2) >= 1" variant="success">Opened Under 1#</b-badge>
+                            <div v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                <b-badge v-if="(data.item.reading_1 >= 1) && (data.item.reading_2) >= 1" variant="success">Opened Under 1#</b-badge>
                                 <b-badge v-else variant="danger">Did Not Open</b-badge>
                             </div>
-                            <div v-if="['RPDA', 'RP'].includes(data.item.backflow_assembly.backflow_type.name)">
-                                <b-badge v-if="data.item.last_test.reading_1 - data.item.last_test.reading_2 >= 2" variant="success">Closed Tight</b-badge>
+                            <div v-if="['RPDA', 'RP'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                <b-badge v-if="data.item.reading_1 - data.item.reading_2 >= 2" variant="success">Closed Tight</b-badge>
                                 <b-badge v-else variant="danger">Leaked</b-badge>
                             </div>
                         </template>
                     </b-table>
                 </b-row>
-                    <div v-for="test,index in backflow_test_report.backflow_tests" :key="index">
-                    <b-row v-if="['DCDA', 'DC'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
-                        <b-col>
-                            <b-form-group label="Test By">
-                                <b-form-select
-                                    v-model="test.contact_id"
-                                    @change="saveTest(test)"
-                                    :options="contacts"
-                                    value-field="id"
-                                    text-field="name"
-                                    :state="test.contact_id != null"
-                                    required
-                                >
-                                </b-form-select>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            <b-form-group label="Date">
-                                <b-form-input
-                                    v-model="test.tested_on"
-                                    @change="saveTest(test)"
-                                    type="date"
-                                    :state="test.tested_on != null"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                            <b-col>
-                                Check Valve #1
-                            </b-col>
-                            <b-col>
-                                Check Valve #2
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Held at #">
-                                    <b-form-input
-                                        v-model="test.reading_1"
-                                        @change="saveTest"
-                                        type="number"
-                                        step="0.1"
-                                        min="0"
-                                        max="11"
-                                        :state="test.reading_1 != null"
-                                    >
-                                    </b-form-input>
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Held at #">
-                                    <b-form-input
-                                        v-model="test.reading_2"
-                                        @change="saveTest"
-                                        type="number"
-                                        step="0.1"
-                                        min="0"
-                                        max="11"
-                                    >
-                                    </b-form-input>
-                                </b-form-group>
-                            </b-col>
-                            <b-col v-if="test.reading_1 >= 1" class="warning">
-                                <b-badge variant="success">Closed Tight</b-badge>
-                            </b-col>
-                            <b-col v-else>
-                                <b-badge variant="danger">Leaked</b-badge>
-                            </b-col>
-                            <b-col v-if="test.reading_2 >= 1" class="warning">
-                                <b-badge variant="success">Closed Tight</b-badge>
-                            </b-col>
-                            <b-col v-else>
-                                <b-badge variant="danger">Leaked</b-badge>
-                            </b-col>
-                    </b-row>
-                    <b-row v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
-                        <b-col>
-                            <b-form-group label="Test By">
-                                <b-form-select
-                                    v-model="test.contact_id"
-                                    @change="saveTest(test)"
-                                    :options="contacts"
-                                    value-field="id"
-                                    text-field="name"
-                                    :state="test.contact_id != null"
-                                    required
-                                >
-                                </b-form-select>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            <b-form-group label="Date">
-                                <b-form-input
-                                    v-model="test.tested_on"
-                                    @change="saveTest(test)"
-                                    type="date"
-                                    :state="test.tested_on != null"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                            <b-col>
-                                Air Inlet
-                            </b-col>
-                            <b-col>
-                                Pressure Vacuum Breaker
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Opened At">
-                                    <b-form-input
-                                        v-model="test.reading_1"
-                                        @change="saveTest(test)"
-                                        type="number"
-                                        step="0.1"
-                                        min="0"
-                                        max="11"
-                                        :state="test.reading_1 != null"
-                                    >
-                                    </b-form-input>
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Check Valve">
-                                    <b-form-input
-                                        v-model="test.reading_2"
-                                        @change="saveTest(test)"
-                                        type="number"
-                                        step="0.1"
-                                        min="0"
-                                        max="11"
-                                    >
-                                    </b-form-input>
-                                </b-form-group>
-                            </b-col>
-                            <b-col v-if="test.reading_1 >= 1" class="warning">
-                                <b-badge variant="success">Opened Under 1#</b-badge>
-                            </b-col>
-                            <b-col v-else>
-                                <b-badge variant="danger">Did Not Open</b-badge>
-                            </b-col>
-                            <b-col v-if="test.reading_2 >= 1" class="warning">
-                                <b-badge variant="success">Closed Tight</b-badge>
-                            </b-col>
-                            <b-col v-else>
-                                <b-badge variant="danger">Leaked</b-badge>
-                            </b-col>
-                    </b-row>
-                    <b-row v-if="['RPDA', 'RP'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
-                        <b-col>
-                            <b-form-group label="Test By">
-                                <b-form-select
-                                    v-model="test.contact_id"
-                                    @change="saveTest(test)"
-                                    :options="contacts"
-                                    value-field="id"
-                                    text-field="name"
-                                    :state="test.contact_id != null"
-                                    required
-                                >
-                                </b-form-select>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            <b-form-group label="Date">
-                                <b-form-input
-                                    v-model="test.tested_on"
-                                    @change="saveTest(test)"
-                                    type="date"
-                                    :state="test.tested_on != null"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            Check Valve #1 <Br />
-                            <b-form-group label="PSI Across #">
-                                <b-form-input
-                                    v-model="test.reading_1"
-                                    @change="saveTest(test)"
-                                    type="number"
-                                    step="0.1"
-                                    min="0"
-                                    max="11"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            
-                            <b-form-group label="Differential Pressure Relief Valve">
-                                <b-form-input
-                                    v-model="test.reading_2"
-                                    @change="saveTest(test)"
-                                    type="number"
-                                    step="0.1"
-                                    min="0"
-                                    max="11"
-                                >
-                                </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
-                            <b-form-textarea
-                                v-model="test.notes"
-                                @change="saveTest(test)"
-                            >
-                            </b-form-textarea>
-                        </b-col>
-                        <b-col v-if="test.reading_2 - test.reading_1 >= 2" class="warning">
-                            <b-badge variant="success">Passed</b-badge>
-                        </b-col>
-                        <b-col v-else>
-                            <b-badge variant="danger">Failed</b-badge>
-                        </b-col>
-                    </b-row>
-                </div>
                 <b-row>
                     <b-col>
                         <b-button @click="addTest">Add Test</b-button>
@@ -347,18 +187,15 @@
                         Repairs
                     </b-col>
                 </b-row>
-            <div v-for="repair in backflow_test_report.backflow_repairs">
                 <b-row>
                     <b-col>
                         <b-form-group label="Repairs By">
                             <b-form-select
-                                v-model="backflow_test_report.repairs_contact_id"
+                                v-model="repair_contact_id"
                                 @change="save"
                                 :options="contacts"
                                 value-field="id"
                                 text-field="name"
-                                :state="backflow_test_report.repairs_contact_id != null"
-                                required
                             >
                             </b-form-select>
                         </b-form-group>
@@ -366,48 +203,24 @@
                     <b-col>
                         <b-form-group label="Date">
                             <b-form-input
-                                v-model="backflow_test_report.initial_test_date"
+                                v-model="repair_date"
                                 @change="save"
                                 type="date"
                             >
                             </b-form-input>
                         </b-form-group>
                     </b-col>
-                    <b-col>
-                        <b-form-group label="Valve Type">
-                            <b-form-select
-                                v-model="repair.backflow_valve_type_id"
-                                @change="save"
-                                :options="valves"
-                                value-field="id"
-                                text-field="name"
-                                :state="repair.backflow_valve_type_id != null"
-                                required
-                            >
-                            </b-form-select>
-                        </b-form-group>
-                    </b-col>
-                    <b-col>
-                        <b-form-group label="Part Replaced">
-                            <b-form-select
-                                v-model="repair.backflow_valve_part_id"
-                                @change="save"
-                                :options="parts"
-                                value-field="id"
-                                text-field="name"
-                                :state="repair.backflow_valve_part_id != null"
-                                required
-                            >
-                            </b-form-select>
-                        </b-form-group>
+                </b-row>
+                <b-row>
+                    <b-col v-for="valve in valves" :key="valve.id">
+                        {{ valve.name }}
+                        <div v-for="part in valve.backflow_valve_parts" :key="part.id" style="text-align:left">
+                            <b-form-checkbox>
+                              {{ part.name }}
+                            </b-form-checkbox>
+                        </div>
                     </b-col>
                 </b-row>
-            </div>
-            <b-row>
-                <b-col>
-                    <b-button @click="addRepair">Add Repair</b-button>
-                </b-col>
-            </b-row>
         </b-container>
         <b-button @click="$router.push('/backflow_test_reports')">Done</b-button><b-button @click="$router.push('/api/backflow_test_report/' + backflow_test_report.id + '/pdf')">PDF</b-button>
         </main>
@@ -431,6 +244,9 @@ export default {
             clients: [],
             contacts: [],
             properties: [],
+            filter: null,
+            repair_contact_id: null,
+            repair_date: null,
             backflow_test_report: {
                 id: null,
                 backflow_tests: [],
@@ -444,59 +260,29 @@ export default {
             settings: {},
             test_fields: [
                     {
-                        key: 'id',
-                        label: 'Id',
+                        key: 'contact_id',
+                        label: 'Tested By',
                         sortable: true
                     },
                     {
-                        key: 'backflow_assembly.property.client.name',
-                        label: 'Client',
+                        key: 'tested_on',
+                        label: 'Date',
                         sortable: true
                     },
                     {
-                        key: 'backflow_assembly.property.name',
-                        label: 'Property',
+                        key: 'reading_1',
+                        label: 'First Valve',
                         sortable: true
                     },
                     {
-                        key: 'backflow_assembly.serial_number',
-                        label: 'Backflow Assembly',
-                        sortable: true
-                    },
-                    {
-                        key: 'visual_inspection_notes',
-                        label: 'Visual Inspection Notes',
-                        sortable: true
-                    },
-                    {
-                        key: 'backflow_installed_to_code',
-                        label: 'To Code',
+                        key: 'reading_2',
+                        label: 'Second Valve',
                         sortable: true
                     },
                     {
                         key: 'notes',
                         label: 'Notes',
-                        sortable: true
-                    },
-                    {
-                        key: 'last_test.tested_on',
-                        label: 'Date',
-                        sortable: true
-                    },
-                    {
-                        key: 'backflow_assembly.backflow_type.name',
-                        label: 'Type',
-                        sortable: true
-                    },
-                    {
-                        key: 'last_test.reading_1',
-                        label: 'Reading 1',
-                        sortable: true
-                    },
-                    {
-                        key: 'last_test.reading_2',
-                        label: 'Reading 2',
-                        sortable: true
+                        sortable: false
                     },
                     {
                         key: 'result',
@@ -516,13 +302,20 @@ export default {
         this.$http.get('/clients?backflow_only=true').then(response => {
             this.clients = response.data;
         });
+        this.repair_contact_id = localStorage.getItem('id');
+        this.repair_date = this.today;
         if(this.backflow_test_report_id !== null) {
             this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests').then(response => {
                 this.backflow_test_report = response.data.data;
                 this.client_id = this.backflow_test_report.backflow_assembly.property.client_id;
                 this.getProperties();
+                this.getValves();
                 this.property_id = this.backflow_test_report.backflow_assembly.property_id;
                 this.getBackflowAssemblies();
+                if(this.backflow_test_report.backflow_repairs.length){
+                    this.repair_contact_id = this.backflow_test_report.backflow_repairs[0].contact_id;
+                    this.repair_date = this.backflow_test_report.repaired_on;
+                }
             });
         }
     },
@@ -539,6 +332,16 @@ export default {
           }
           else{
             this.properties = []
+          }
+        },
+        getValves() {
+          if((this.backflow_test_report.backflow_assembly.backflow_type)&&(this.backflow_test_report.backflow_assembly.backflow_type.backflow_super_type_id)){
+            this.$http.get('/backflow_valves?includes=backflow_valve_parts&backflow_super_type_id=' + this.backflow_test_report.backflow_assembly.backflow_type.backflow_super_type_id).then(response => {
+              this.valves = response.data.data;
+            })
+          }
+          else{
+            this.valves = []
           }
         },
         getBackflowAssemblies(){
