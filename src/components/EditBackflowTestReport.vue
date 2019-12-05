@@ -351,6 +351,7 @@ export default {
                     if(this.backflow_assemblies.length == 1){
                        this.backflow_test_report.backflow_assembly_id=this.backflow_assemblies[0].id;
                        this.backflow_test_report.backflow_assembly=this.backflow_assemblies[0];
+                       this.getValves();
                      }
                  });
             }
@@ -360,7 +361,8 @@ export default {
         },
         setBackflow(){
             let assemblies = this.backflow_assemblies.filter(a => (this.backflow_test_report.backflow_assembly_id == a.id));
-            this.backflow_test_report.backflow_assembly=this.backflow_assemblies[0];
+            this.backflow_test_report.backflow_assembly=assemblies[0];
+            this.getValves();
         },
         addTest(){
             let id = localStorage.getItem('id')
