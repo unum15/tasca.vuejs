@@ -33,194 +33,199 @@
                             </b-form-select>
                         </b-form-group>
                     </b-col>
+                </b-row>
+                <b-row v-if="property_id">
                     <b-col>
-                        <b-form-group label="Backflow Assembly">
-                            <b-form-select
-                                v-model="backflow_test_report.backflow_assembly_id"
-                                @change="setBackflow();save();"
-                                :options="backflow_assemblies"
-                                value-field="id"
-                                text-field="serial_number"
-                                :state="backflow_test_report.backflow_assembly_id != null"
-                                required
-                            >
-                            </b-form-select>
-                        </b-form-group>
+                      <b-table ref="backflowsTable" selectable :items="backflow_assemblies" :fields="backflow_fields" striped responsive="sm" @row-selected="backflowSelected" context-changed="tableUpdated" />
                     </b-col>
                 </b-row>
-                <b-row>
-                    <b-col>
-                        {{ backflow_test_report.backflow_assembly.use }}
-                    </b-col>
-                    <b-col>
-                        {{ backflow_test_report.backflow_assembly.placement }}
-                    </b-col>
-                    <b-col>
-                        {{ backflow_test_report.backflow_assembly.backflow_type.name }}
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Proper installation and use">
-                            <b-form-radio v-model="backflow_test_report.backflow_installed_to_code" name="backflow_installed_to_code" value="true">To Code</b-form-radio>
-                            <b-form-radio v-model="backflow_test_report.backflow_installed_to_code" name="backflow_installed_to_code" value="false">Not To code</b-form-radio>
-                        </b-form-group>
-                    </b-col>
-                    <b-col>
-                        <b-form-group label="Visual Inspection Notes">
-                            <b-form-textarea
-                                v-model="backflow_test_report.visual_inspection_notes"
-                                @change="save"
-                            >
-                            </b-form-textarea>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Report Notes">
-                            <b-form-textarea
-                                v-model="backflow_test_report.notes"
-                                @change="save"
-                            >
-                            </b-form-textarea>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col style="font-weight:bold">
-                        Tests
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-table
-                        small
-                        striped
-                        hover
-                        :filter="filter"
-                        :items="backflow_test_report.backflow_tests"
-                        :fields="test_fields"
-                    >
-                        <template v-slot:cell(id)="data">
-                            <a :href="'/backflow_test_report/' + data.value"> {{ data.value }} </a>
-                            <a :href="'/api/backflow_test_report/' + data.value + '/pdf'"> PDF </a>
-                        </template>
-                        
-                        <template v-slot:cell(contact_id)="data">
-                            <b-form-select
-                                    v-model="data.item.contact_id"
-                                    @change="saveTest(data.item)"
+                <div v-if="backflow_test_report.backflow_assembly.id">
+                    <b-row>
+                        <b-col>
+                            {{ backflow_test_report.backflow_assembly.use }}
+                        </b-col>
+                        <b-col>
+                            {{ backflow_test_report.backflow_assembly.placement }}
+                        </b-col>
+                        <b-col>
+                            {{ backflow_test_report.backflow_assembly.backflow_type.name }}
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Proper installation and use">
+                                <b-form-radio v-model="backflow_test_report.backflow_installed_to_code" name="backflow_installed_to_code" value="true">To Code</b-form-radio>
+                                <b-form-radio v-model="backflow_test_report.backflow_installed_to_code" name="backflow_installed_to_code" value="false">Not To code</b-form-radio>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Visual Inspection Notes">
+                                <b-form-textarea
+                                    v-model="backflow_test_report.visual_inspection_notes"
+                                    @change="save"
+                                >
+                                </b-form-textarea>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Report Notes">
+                                <b-form-textarea
+                                    v-model="backflow_test_report.notes"
+                                    @change="save"
+                                >
+                                </b-form-textarea>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col style="font-weight:bold">
+                            Tests
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-table
+                            small
+                            striped
+                            hover
+                            :filter="filter"
+                            :items="backflow_test_report.backflow_tests"
+                            :fields="test_fields"
+                        >
+                            <template v-slot:cell(id)="data">
+                                <a :href="'/backflow_test_report/' + data.value"> {{ data.value }} </a>
+                                <a :href="'/api/backflow_test_report/' + data.value + '/pdf'"> PDF </a>
+                            </template>
+                            
+                            <template v-slot:cell(contact_id)="data">
+                                <b-form-select
+                                        v-model="data.item.contact_id"
+                                        @change="saveTest(data.item)"
+                                        :options="contacts"
+                                        value-field="id"
+                                        text-field="name"
+                                        :state="data.item.contact_id != null"
+                                        required
+                                    >
+                                    </b-form-select>
+                            </template>
+                            
+                            
+                            <template v-slot:cell(tested_on)="data">
+                                <b-form-input
+                                        v-model="data.item.tested_on"
+                                        @change="saveTest(data.item)"
+                                        type="date"
+                                        :state="data.item.tested_on != null"
+                                    >
+                                    </b-form-input>
+                            </template>
+                            <template v-slot:cell(reading_1)="data">
+                                <b-form-input
+                                        v-model="data.item.reading_1"
+                                        @change="saveTest(data.item)"
+                                        type="number"
+                                        step="0.1"
+                                        min="0"
+                                        max="11"
+                                        :state="data.item.reading_1 != null"
+                                    >
+                                    </b-form-input>
+                            </template>
+                            <template v-slot:cell(reading_2)="data">
+                                <b-form-input
+                                        v-model="data.item.reading_2"
+                                        @change="saveTest(data.item)"
+                                        type="number"
+                                        step="0.1"
+                                        min="0"
+                                        max="11"
+                                        :state="data.item.reading_2 != null"
+                                    >
+                                    </b-form-input>
+                            </template>
+                            <template v-slot:cell(notes)="data">
+                                <b-form-input
+                                        v-model="data.item.notes"
+                                        @change="saveTest(data.item)"
+                                        type="text"
+                                    >
+                                    </b-form-input>
+                            </template>
+                            <template v-slot:cell(result)="data">
+                                <div v-if="['DCDA', 'DC'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                    <b-badge v-if="data.item.reading_1 >= 1 && data.item.reading_2 >= 1" variant="success">Closed Tight</b-badge>
+                                    <b-badge v-else variant="danger">Leaked</b-badge>
+                                </div>
+                                <div v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                    <b-badge v-if="(data.item.reading_1 >= 1) && (data.item.reading_2) >= 1" variant="success">Opened Under 1#</b-badge>
+                                    <b-badge v-else variant="danger">Did Not Open</b-badge>
+                                </div>
+                                <div v-if="['RPDA', 'RP'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                    <b-badge v-if="data.item.reading_1 - data.item.reading_2 >= 2" variant="success">Closed Tight</b-badge>
+                                    <b-badge v-else variant="danger">Leaked</b-badge>
+                                </div>
+                            </template>
+                        </b-table>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-button @click="addTest">Add Test</b-button>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col style="font-weight:bold">
+                            Repairs
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Repairs By">
+                                <b-form-select
+                                    v-model="repair_contact_id"
+                                    @change="save"
                                     :options="contacts"
                                     value-field="id"
                                     text-field="name"
-                                    :state="data.item.contact_id != null"
-                                    required
                                 >
                                 </b-form-select>
-                        </template>
-                        
-                        
-                        <template v-slot:cell(tested_on)="data">
-                            <b-form-input
-                                    v-model="data.item.tested_on"
-                                    @change="saveTest(data.item)"
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Date">
+                                <b-form-input
+                                    v-model="repair_date"
+                                    @change="save"
                                     type="date"
-                                    :state="data.item.tested_on != null"
                                 >
                                 </b-form-input>
-                        </template>
-                        <template v-slot:cell(reading_1)="data">
-                            <b-form-input
-                                    v-model="data.item.reading_1"
-                                    @change="saveTest(data.item)"
-                                    type="number"
-                                    step="0.1"
-                                    min="0"
-                                    max="11"
-                                    :state="data.item.reading_1 != null"
-                                >
-                                </b-form-input>
-                        </template>
-                        <template v-slot:cell(reading_2)="data">
-                            <b-form-input
-                                    v-model="data.item.reading_2"
-                                    @change="saveTest(data.item)"
-                                    type="number"
-                                    step="0.1"
-                                    min="0"
-                                    max="11"
-                                    :state="data.item.reading_2 != null"
-                                >
-                                </b-form-input>
-                        </template>
-                        <template v-slot:cell(notes)="data">
-                            <b-form-input
-                                    v-model="data.item.notes"
-                                    @change="saveTest(data.item)"
-                                    type="text"
-                                >
-                                </b-form-input>
-                        </template>
-                        <template v-slot:cell(result)="data">
-                            <div v-if="['DCDA', 'DC'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
-                                <b-badge v-if="data.item.reading_1 >= 1 && data.item.reading_2 >= 1" variant="success">Closed Tight</b-badge>
-                                <b-badge v-else variant="danger">Leaked</b-badge>
-                            </div>
-                            <div v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
-                                <b-badge v-if="(data.item.reading_1 >= 1) && (data.item.reading_2) >= 1" variant="success">Opened Under 1#</b-badge>
-                                <b-badge v-else variant="danger">Did Not Open</b-badge>
-                            </div>
-                            <div v-if="['RPDA', 'RP'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
-                                <b-badge v-if="data.item.reading_1 - data.item.reading_2 >= 2" variant="success">Closed Tight</b-badge>
-                                <b-badge v-else variant="danger">Leaked</b-badge>
-                            </div>
-                        </template>
-                    </b-table>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-button @click="addTest">Add Test</b-button>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col style="font-weight:bold">
-                        Repairs
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Repairs By">
-                            <b-form-select
-                                v-model="repair_contact_id"
-                                @change="save"
-                                :options="contacts"
-                                value-field="id"
-                                text-field="name"
-                            >
-                            </b-form-select>
-                        </b-form-group>
-                    </b-col>
-                    <b-col>
-                        <b-form-group label="Date">
-                            <b-form-input
-                                v-model="repair_date"
-                                @change="save"
-                                type="date"
-                            >
-                            </b-form-input>
-                        </b-form-group>
-                    </b-col>
-                </b-row>
-                <b-row>
-                    <b-col v-for="valve in valves" :key="valve.id">
-                        {{ valve.name }}
-                        <div v-for="part in valve.backflow_valve_parts" :key="part.id" style="text-align:left">
-                            <b-form-checkbox>
-                              {{ part.name }}
-                            </b-form-checkbox>
-                        </div>
-                    </b-col>
-                </b-row>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col v-for="valve in valves" :key="valve.id">
+                            {{ valve.name }}
+                            <b-container>
+                                <b-row v-for="part in valve.backflow_valve_parts" :key="part.id" style="text-align:left">
+                                    <b-col>
+                                      {{ part.name }}
+                                    </b-col>
+                                    <b-col>
+                                        <b-form-checkbox>
+                                          Cleaned
+                                        </b-form-checkbox>
+                                    </b-col>
+                                    <b-col>
+                                        <b-form-checkbox>
+                                          Replaced
+                                        </b-form-checkbox>
+                                    </b-col>
+                                </b-row>
+                            </b-container>
+                        </b-col>
+                    </b-row>
+                </div>
         </b-container>
         <b-button @click="$router.push('/backflow_test_reports')">Done</b-button><b-button @click="$router.push('/api/backflow_test_report/' + backflow_test_report.id + '/pdf')">PDF</b-button>
         </main>
@@ -255,6 +260,43 @@ export default {
                 backflow_installed_to_code: true
             },
             backflow_assemblies: [],
+            backflow_fields: [
+                {
+                    key: 'use',
+                    label: 'Use',
+                    sortable: true
+                },
+                {
+                    key: 'placement',
+                    label: 'Placement',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_type.name',
+                    label: 'Type',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_manufacturer.name',
+                    label: 'Manufacturer',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_size.name',
+                    label: 'Size',
+                    sortable: true
+                },
+                {
+                    key: 'backflow_model.name',
+                    label: 'Model',
+                    sortable: true
+                },
+                {
+                    key: 'serial_number',
+                    label: 'Serial',
+                    sortable: true
+                }
+            ],
             valves: [],
             parts: [],
             settings: {},
@@ -319,6 +361,14 @@ export default {
             });
         }
     },
+    updated () {
+            this.$nextTick(function () {
+                if(this.$refs.backflowsTable){
+                    let index = this.backflow_assemblies.indexOf(this.backflow_test_report.backflow_assembly);
+                    this.$refs.backflowsTable.selectRow(index);
+                }
+            });
+          },
     methods: {
         getProperties() {
           if(this.client_id){
@@ -346,7 +396,7 @@ export default {
         },
         getBackflowAssemblies(){
             if(this.property_id){
-                this.$http.get('/backflow_assemblies?includes=backflow_type&property_id=' + this.property_id).then(response => {
+                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model&property_id=' + this.property_id).then(response => {
                     this.backflow_assemblies = response.data.data;
                     if(this.backflow_assemblies.length == 1){
                        this.backflow_test_report.backflow_assembly_id=this.backflow_assemblies[0].id;
@@ -399,6 +449,15 @@ export default {
             }
             else{
                 this.$http.patch('/backflow_test/' + test.id, test);
+            }
+        },
+        backflowSelected (items) {
+            if(items.length){
+                this.backflow_test_report.backflow_assembly=items[0];
+                this.getValves();
+            }
+            else{
+                this.backflow_test_report.backflow_assembly=null;
             }
         }
     },
