@@ -36,7 +36,7 @@
                 </b-row>
                 <b-row v-if="property_id">
                     <b-col>
-                      <b-table ref="backflowsTable" selectable :items="backflow_assemblies" :fields="backflow_fields" striped responsive="sm" @row-selected="backflowSelected" context-changed="tableUpdated" />
+                      <b-table ref="backflowsTable" selectable :items="backflow_assemblies" :fields="backflow_fields" striped responsive="sm" @row-selected="backflowSelected" context-changed="tableUpdated" select-mode="single" />
                     </b-col>
                 </b-row>
                 <div v-if="backflow_test_report.backflow_assembly.id">
