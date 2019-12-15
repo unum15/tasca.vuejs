@@ -59,7 +59,7 @@
                     <b-dropdown-item href="/backflow_assemblies">View Backflow Assemblies</b-dropdown-item>
                     <b-dropdown-item href="/backflow_test_report/quick/property">Quick Backflow Test Report(Property)</b-dropdown-item>
                     <b-dropdown-item href="/backflow_test_report/quick/date">Quick Backflow Test Report(Today)</b-dropdown-item>
-                    <b-dropdown-item href="/backflow_test_report">New Backflow Test Report</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_test_report">Edit Backflow Test Reports</b-dropdown-item>
                     <b-dropdown-item href="/backflow_test_reports">View Backflow Test Reports</b-dropdown-item>
                 </b-nav-item-dropdown>
             </b-navbar-nav>

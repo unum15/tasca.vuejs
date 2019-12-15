@@ -27,8 +27,6 @@
                                 :options="properties"
                                 value-field="id"
                                 text-field="name"
-                                :state="property_id != null"
-                                required
                             >
                             </b-form-select>
                         </b-form-group>
@@ -39,16 +37,33 @@
                       <b-table ref="backflowsTable" selectable :items="backflow_assemblies" :fields="backflow_fields" striped responsive="sm" @row-selected="backflowSelected" context-changed="tableUpdated" select-mode="single" />
                     </b-col>
                 </b-row>
-                <div v-if="backflow_test_report.backflow_assembly.id">
+                <div v-if="backflow_assembly.id">
                     <b-row>
                         <b-col>
-                            {{ backflow_test_report.backflow_assembly.use }}
+                            <b-form-group label="Report Date">
+                              <b-form-select
+                                v-model="report_id"
+                                @change="getReport()"
+                                :options="reports"
+                                value-field="id"
+                                text-field="report_date"
+                              >
+                              </b-form-select>
+                            </b-form-group>
                         </b-col>
                         <b-col>
-                            {{ backflow_test_report.backflow_assembly.placement }}
+                            <b-button @click="newReport">New Report</b-button>
+                        </b-col>
+                    </b-row>
+                    <b-row>
+                        <b-col>
+                            {{ backflow_assembly.use }}
                         </b-col>
                         <b-col>
-                            {{ backflow_test_report.backflow_assembly.backflow_type.name }}
+                            {{ backflow_assembly.placement }}
+                        </b-col>
+                        <b-col>
+                            {{ backflow_assembly.backflow_type.name }}
                         </b-col>
                     </b-row>
                     <b-row>
@@ -97,7 +112,6 @@
                                 <a :href="'/backflow_test_report/' + data.value"> {{ data.value }} </a>
                                 <a :href="'/api/backflow_test_report/' + data.value + '/pdf'"> PDF </a>
                             </template>
-                            
                             <template v-slot:cell(contact_id)="data">
                                 <b-form-select
                                         v-model="data.item.contact_id"
@@ -154,15 +168,15 @@
                                     </b-form-input>
                             </template>
                             <template v-slot:cell(result)="data">
-                                <div v-if="['DCDA', 'DC'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                <div v-if="['DCDA', 'DC'].includes(backflow_assembly.backflow_type.name)">
                                     <b-badge v-if="data.item.reading_1 >= 1 && data.item.reading_2 >= 1" variant="success">Closed Tight</b-badge>
                                     <b-badge v-else variant="danger">Leaked</b-badge>
                                 </div>
-                                <div v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                <div v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(backflow_assembly.backflow_type.name)">
                                     <b-badge v-if="(data.item.reading_1 >= 1) && (data.item.reading_2) >= 1" variant="success">Opened Under 1#</b-badge>
                                     <b-badge v-else variant="danger">Did Not Open</b-badge>
                                 </div>
-                                <div v-if="['RPDA', 'RP'].includes(backflow_test_report.backflow_assembly.backflow_type.name)">
+                                <div v-if="['RPDA', 'RP'].includes(backflow_assembly.backflow_type.name)">
                                     <b-badge v-if="data.item.reading_1 - data.item.reading_2 >= 2" variant="success">Closed Tight</b-badge>
                                     <b-badge v-else variant="danger">Leaked</b-badge>
                                 </div>
@@ -205,21 +219,44 @@
                     </b-row>
                     <b-row>
                         <b-col v-for="valve in valves" :key="valve.id">
-                            {{ valve.name }}
                             <b-container>
-                                <b-row v-for="part in valve.backflow_valve_parts" :key="part.id" style="text-align:left">
+                                <b-row>
                                     <b-col>
-                                      {{ part.name }}
+                                        {{ valve.name }} Valve
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col>
+                                        Cleaned
                                     </b-col>
                                     <b-col>
-                                        <b-form-checkbox>
-                                          Cleaned
-                                        </b-form-checkbox>
+                                        Replaced
+                                    </b-col>
+                                </b-row>
+                                <b-row style="text-align:left;">
+                                    <b-col>
+                                        <b-form-checkbox-group
+                                            v-model="cleanings[valve.id]"
+                                            :name="'valve-cleanings-' + valve.id"
+                                            @input="saveCleaning(valve.id)"
+                                            :options="valve.backflow_valve_parts"
+                                            value-field="id"
+                                            text-field="name"
+                                            stacked
+                                        >
+                                        </b-form-checkbox-group>
                                     </b-col>
                                     <b-col>
-                                        <b-form-checkbox>
-                                          Replaced
-                                        </b-form-checkbox>
+                                        <b-form-checkbox-group
+                                            v-model="repairs[valve.id]"
+                                            :name="'valve-repairs-' + valve.id"
+                                            @input="saveRepair(valve.id)"
+                                            :options="valve.backflow_valve_parts"
+                                            value-field="id"
+                                            text-field="name"
+                                            stacked
+                                        >
+                                        </b-form-checkbox-group>
                                     </b-col>
                                 </b-row>
                             </b-container>
@@ -249,6 +286,8 @@ export default {
             clients: [],
             contacts: [],
             properties: [],
+            cleanings: [],
+            repairs: [],
             filter: null,
             repair_contact_id: null,
             repair_date: null,
@@ -256,10 +295,12 @@ export default {
                 id: null,
                 backflow_tests: [],
                 backflow_repairs: [],
-                backflow_assembly: {backflow_type: {}},
                 backflow_installed_to_code: true
             },
             backflow_assemblies: [],
+            reports: [],
+            report_id: null,
+            backflow_assembly: { backflow_type: null},
             backflow_fields: [
                 {
                     key: 'use',
@@ -349,13 +390,13 @@ export default {
         if(this.backflow_test_report_id !== null) {
             this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests').then(response => {
                 this.backflow_test_report = response.data.data;
-                this.client_id = this.backflow_test_report.backflow_assembly.property.client_id;
+                this.client_id = this.backflow_assembly.property.client_id;
                 this.getProperties();
                 this.getValves();
-                this.property_id = this.backflow_test_report.backflow_assembly.property_id;
+                this.property_id = this.backflow_assembly.property_id;
                 this.getBackflowAssemblies();
-                if(this.backflow_test_report.backflow_repairs.length){
-                    this.repair_contact_id = this.backflow_test_report.backflow_repairs[0].contact_id;
+                if(this.backflow_repairs.length){
+                    this.repair_contact_id = this.backflow_repairs[0].contact_id;
                     this.repair_date = this.backflow_test_report.repaired_on;
                 }
             });
@@ -364,7 +405,7 @@ export default {
     updated () {
             this.$nextTick(function () {
                 if(this.$refs.backflowsTable){
-                    let index = this.backflow_assemblies.indexOf(this.backflow_test_report.backflow_assembly);
+                    let index = this.backflow_assemblies.indexOf(this.backflow_assembly);
                     this.$refs.backflowsTable.selectRow(index);
                 }
             });
@@ -385,8 +426,8 @@ export default {
           }
         },
         getValves() {
-          if((this.backflow_test_report.backflow_assembly.backflow_type)&&(this.backflow_test_report.backflow_assembly.backflow_type.backflow_super_type_id)){
-            this.$http.get('/backflow_valves?includes=backflow_valve_parts&backflow_super_type_id=' + this.backflow_test_report.backflow_assembly.backflow_type.backflow_super_type_id).then(response => {
+          if((this.backflow_assembly.backflow_type)&&(this.backflow_assembly.backflow_type.backflow_super_type_id)){
+            this.$http.get('/backflow_valves?includes=backflow_valve_parts&backflow_super_type_id=' + this.backflow_assembly.backflow_type.backflow_super_type_id).then(response => {
               this.valves = response.data.data;
             })
           }
@@ -394,13 +435,55 @@ export default {
             this.valves = []
           }
         },
+        getReports() {
+          if(this.backflow_assembly.id){
+            this.$http.get('/backflow_test_reports?backflow_assembly_id=' + this.backflow_assembly.id).then(response => {
+                this.reports = response.data.data;
+                this.reports = this.reports.sort((a, b) => (a.report_date < b.report_date) ? 1 : -1)
+                if(this.reports.length){
+                    this.report_id = this.reports[0].id;
+                    this.getReport();
+                }
+            })
+          }
+          else{
+            this.reports = []
+          }
+        },
+        getReport() {
+          if(this.report_id){
+            console.log(this.report_id);
+            this.$http.get('/backflow_test_report/' + this.report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_repairs,backflow_cleanings').then(response => {
+                this.backflow_test_report = response.data.data;
+                if(this.backflow_test_report.backflow_repairs.length){
+                    this.repair_contact_id = this.backflow_test_report.backflow_repairs[0].contact_id;
+                    this.repair_date = this.backflow_test_report.backflow_repairs[0].repaired_on;
+                }
+                this.backflow_test_report.backflow_repairs.map(r => {
+                    this.repairs[r.backflow_valve_id] = [];
+                });
+                this.backflow_test_report.backflow_repairs.map(r => {
+                    this.repairs[r.backflow_valve_id].push(r.backflow_valve_part_id);
+                });
+                this.backflow_test_report.backflow_cleanings.map(c => {
+                    this.cleanings[c.backflow_valve_id] = [];
+                });
+                this.backflow_test_report.backflow_cleanings.map(c => {
+                    this.cleanings[c.backflow_valve_id].push(c.backflow_valve_part_id);
+                });
+            });
+          }
+          else{
+            this.report = []
+          }
+        },
         getBackflowAssemblies(){
             if(this.property_id){
                 this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model&property_id=' + this.property_id).then(response => {
                     this.backflow_assemblies = response.data.data;
                     if(this.backflow_assemblies.length == 1){
-                       this.backflow_test_report.backflow_assembly_id=this.backflow_assemblies[0].id;
-                       this.backflow_test_report.backflow_assembly=this.backflow_assemblies[0];
+                       this.backflow_assembly_id=this.backflow_assemblies[0].id;
+                       this.backflow_assembly=this.backflow_assemblies[0];
                        this.getValves();
                      }
                  });
@@ -410,19 +493,19 @@ export default {
             }
         },
         setBackflow(){
-            let assemblies = this.backflow_assemblies.filter(a => (this.backflow_test_report.backflow_assembly_id == a.id));
-            this.backflow_test_report.backflow_assembly=assemblies[0];
+            let assemblies = this.backflow_assemblies.filter(a => (this.backflow_assembly_id == a.id));
+            this.backflow_assembly=assemblies[0];
             this.getValves();
         },
         addTest(){
             let id = localStorage.getItem('id')
-            this.backflow_test_report.backflow_tests.push({backflow_test_report_id: this.backflow_test_report.id, tested_on: this.today, contact_id: id});
+            this.backflow_tests.push({backflow_test_report_id: this.backflow_test_report.id, tested_on: this.today, contact_id: id});
         },
         addRepair(){
-            this.backflow_test_report.backflow_repairs.push({});
+            this.backflow_repairs.push({});
         },
         save () {
-            if((!this.backflow_test_report.backflow_assembly_id)||(!this.backflow_test_report.backflow_installed_to_code)){
+            if((!this.backflow_assembly_id)||(!this.backflow_installed_to_code)){
                 return;
             }
             if(this.backflow_test_report.id === null){
@@ -453,12 +536,45 @@ export default {
         },
         backflowSelected (items) {
             if(items.length){
-                this.backflow_test_report.backflow_assembly=items[0];
+                this.backflow_assembly=items[0];
+                this.getReports();
                 this.getValves();
             }
             else{
-                this.backflow_test_report.backflow_assembly=null;
+                this.backflow_assembly={};
             }
+        },
+        saveCleaning (valve_id){
+            let cleaning = {
+                parts: this.cleanings[valve_id],
+                valve_id: valve_id,
+                contact_id: this.repair_contact_id,
+                cleaned_on: this.repair_date
+            }
+            this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/cleanings', cleaning);
+        },
+        saveRepair (valve_id){
+            let repair = {
+                parts: this.repairs[valve_id],
+                valve_id: valve_id,
+                contact_id: this.repair_contact_id,
+                repaired_on: this.repair_date
+            }
+            this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair);
+        },
+        newReport (){
+            this.reports.unshift({
+                id: '',
+                backflow_tests: [],
+                backflow_repairs: [],
+                backflow_installed_to_code: true,
+                report_date: this.today
+            });
+            this.report_id='';
+            this.cleanings=[];
+            this.repairs=[];
+            //this.repair_contact_id=;
+            this.repair_date=this.today;
         }
     },
     computed:{

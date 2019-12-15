@@ -464,7 +464,7 @@ var router = new Router({
         name: 'NewBackflowTestReport',
         component: EditBackflowTestReport,
         meta: {
-            title: 'New Backflow Test Report'
+            title: 'Edit Backflow Test Reports'
         }
     },
     {
@@ -473,7 +473,7 @@ var router = new Router({
         component: EditBackflowTestReport,
         props: true,
         meta: {
-            title: 'Edit Backflow Test Report'
+            title: 'Edit Backflow Test Reports'
         }
     },
     {
