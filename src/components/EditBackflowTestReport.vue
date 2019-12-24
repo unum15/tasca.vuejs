@@ -77,7 +77,7 @@
                             <b-form-group label="Visual Inspection Notes">
                                 <b-form-textarea
                                     v-model="backflow_test_report.visual_inspection_notes"
-                                    @change="save"
+                                    @input="save"
                                 >
                                 </b-form-textarea>
                             </b-form-group>
@@ -88,7 +88,7 @@
                             <b-form-group label="Report Notes">
                                 <b-form-textarea
                                     v-model="backflow_test_report.notes"
-                                    @change="save"
+                                    @input="save"
                                 >
                                 </b-form-textarea>
                             </b-form-group>
@@ -124,8 +124,6 @@
                                     >
                                     </b-form-select>
                             </template>
-                            
-                            
                             <template v-slot:cell(tested_on)="data">
                                 <b-form-input
                                         v-model="data.item.tested_on"
@@ -264,7 +262,7 @@
                     </b-row>
                 </div>
         </b-container>
-        <b-button @click="$router.push('/backflow_test_reports')">Done</b-button><b-button @click="$router.push('/api/backflow_test_report/' + backflow_test_report.id + '/pdf')">PDF</b-button>
+        <b-button @click="$router.push('/backflow_test_reports')">Done</b-button><b-button @click="$router.push('/api/backflow_test_report/' + backflow_test_report.id + '/pdf')" v-if="backflow_test_report.id">PDF</b-button>
         </main>
     </div>
 </template>
@@ -452,7 +450,6 @@ export default {
         },
         getReport() {
           if(this.report_id){
-            console.log(this.report_id);
             this.$http.get('/backflow_test_report/' + this.report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_repairs,backflow_cleanings').then(response => {
                 this.backflow_test_report = response.data.data;
                 if(this.backflow_test_report.backflow_repairs.length){
@@ -474,7 +471,16 @@ export default {
             });
           }
           else{
-            this.report = []
+            this.backflow_test_report =
+            {
+                id: '',
+                backflow_tests: [],
+                backflow_repairs: [],
+                backflow_installed_to_code: true,
+                report_date: this.today,
+                backflow_assembly_id : this.backflow_assembly.id
+            }
+            this.save();
           }
         },
         getBackflowAssemblies(){
@@ -499,19 +505,20 @@ export default {
         },
         addTest(){
             let id = localStorage.getItem('id')
-            this.backflow_tests.push({backflow_test_report_id: this.backflow_test_report.id, tested_on: this.today, contact_id: id});
+            this.backflow_test_report.backflow_tests.push({backflow_test_report_id: this.backflow_test_report.id, tested_on: this.today, contact_id: id});
         },
         addRepair(){
             this.backflow_repairs.push({});
         },
         save () {
-            if((!this.backflow_assembly_id)||(!this.backflow_installed_to_code)){
+            if((!this.backflow_test_report.backflow_assembly_id)||(!this.backflow_test_report.backflow_installed_to_code)){
                 return;
             }
-            if(this.backflow_test_report.id === null){
+            if(!this.backflow_test_report.id){
                 this.$http.post('/backflow_test_report',this.backflow_test_report)
                     .then((results) => {
                         this.backflow_test_report.id = results.data.data.id;
+                        this.report_id = results.data.data.id;
                     });
             }
             else{
@@ -573,8 +580,9 @@ export default {
             this.report_id='';
             this.cleanings=[];
             this.repairs=[];
-            //this.repair_contact_id=;
+            this.repair_contact_id = localStorage.getItem('id');
             this.repair_date=this.today;
+            this.getReport();
         }
     },
     computed:{
