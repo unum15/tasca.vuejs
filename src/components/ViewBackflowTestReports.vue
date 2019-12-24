@@ -29,7 +29,7 @@
             >
                 <template v-slot:cell(id)="data">
                     <a :href="'/backflow_test_report/' + data.value"> {{ data.value }} </a>
-                    <a :href="'/api/backflow_test_report/' + data.value + '/pdf'"> PDF </a>
+                    <a href="" v-on:click.stop.prevent="openWindow('/api/backflow_test_report/' + data.value + '/pdf', 'pdf')"> PDF </a>
                 </template>
                 
                 
@@ -138,6 +138,11 @@ export default {
                 }
             });
         });
+    },
+    methods: {
+        openWindow: function (link, tab) {
+            window.open(link, tab);
+        }
     }
 }
 </script>

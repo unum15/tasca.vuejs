@@ -262,7 +262,8 @@
                     </b-row>
                 </div>
         </b-container>
-        <b-button @click="$router.push('/backflow_test_reports')">Done</b-button><b-button @click="$router.push('/api/backflow_test_report/' + backflow_test_report.id + '/pdf')" v-if="backflow_test_report.id">PDF</b-button>
+            <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
+            <b-button @click="openWindow('/api/backflow_test_report/' + backflow_test_report.id + '/pdf', 'pdf')" v-if="backflow_test_report.id">PDF</b-button>
         </main>
     </div>
 </template>
@@ -583,6 +584,9 @@ export default {
             this.repair_contact_id = localStorage.getItem('id');
             this.repair_date=this.today;
             this.getReport();
+        },
+        openWindow: function (link, tab) {
+            window.open(link, tab);
         }
     },
     computed:{
