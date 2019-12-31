@@ -33,19 +33,9 @@
                 </template>
                 
                 
-                <template v-slot:cell(result)="data">
-                    <div v-if="['DCDA', 'DC'].includes(data.item.backflow_assembly.backflow_type.name)">
-                        <b-badge v-if="data.item.last_test.reading_1 >= 1 && data.item.last_test.reading_2 >= 1" variant="success">Closed Tight</b-badge>
-                        <b-badge v-else variant="danger">Leaked</b-badge>
-                    </div>
-                    <div v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(data.item.backflow_assembly.backflow_type.name)">
-                        <b-badge v-if="(data.item.last_test.reading_1 >= 1) && (data.item.last_test.reading_2) >= 1" variant="success">Opened Under 1#</b-badge>
-                        <b-badge v-else variant="danger">Did Not Open</b-badge>
-                    </div>
-                    <div v-if="['RPDA', 'RP'].includes(data.item.backflow_assembly.backflow_type.name)">
-                        <b-badge v-if="data.item.last_test.reading_1 - data.item.last_test.reading_2 >= 2" variant="success">Closed Tight</b-badge>
-                        <b-badge v-else variant="danger">Leaked</b-badge>
-                    </div>
+                <template v-slot:cell(passed)="data">
+                    <b-badge v-if="data.item.last_test.passed" variant="success">Closed Tight</b-badge>
+                    <b-badge v-else variant="danger">Leaked</b-badge>
                 </template>
             </b-table>
         </main>
@@ -119,7 +109,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'result',
+                    key: 'passed',
                     label: 'Result',
                     sortable: false
                 }
@@ -127,6 +117,7 @@ export default {
         }
     },
     created() {
+        console.log('/backflow_test_reports?includes=backflow_assembly,backflow_tests,backflow_assembly.backflow_type,backflow_assembly.property,backflow_assembly.property.client');
         this.$http.get('/backflow_test_reports?includes=backflow_assembly,backflow_tests,backflow_assembly.backflow_type,backflow_assembly.property,backflow_assembly.property.client').then(response => {
             this.backflow_test_reports = response.data.data;
             this.backflow_test_reports.map(r => {

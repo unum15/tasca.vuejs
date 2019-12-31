@@ -172,7 +172,7 @@ export default {
         },
         getBackflowAssemblies(){
             if(this.property_id){
-                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_type.backflow_valves&property_id=' + this.property_id).then(response => {
+                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_super_type,backflow_type.backflow_super_type.backflow_valves&property_id=' + this.property_id).then(response => {
                     this.backflow_assemblies = response.data.data;
                  });
             }
@@ -183,7 +183,7 @@ export default {
         save (index) {
             let item = this.backflow_assemblies[index]
             if(!item.backflow_test_report_id){
-                this.$http.post('/backflow_test_report',{backflow_assembly_id: item.id, backflow_installed_to_code: true})
+                this.$http.post('/backflow_test_report',{backflow_assembly_id: item.id, backflow_installed_to_code: true, 'report_date': this.today})
                     .then((results) => {
                         this.backflow_assemblies[index].backflow_test_report_id = results.data.data.id;
                         this.saveTest(index);
@@ -195,13 +195,26 @@ export default {
         },
         saveTest (index){
             let item = this.backflow_assemblies[index]
+            let passed = null;
+            switch(item.backflow_type.backflow_super_type.name){
+                case 'DC':
+                    passed = item.reading_1 >= 1 && item.reading_2 >= 1;
+                    break;
+                case 'PVB':
+                    passed=item.reading_1 >= 1 && item.reading_2 >= 1;
+                    break;
+                case 'RP':
+                    passed=item.reading_1 - item.reading_2 >= 2;
+                    break;
+            }
             let test = {
                 backflow_test_report_id: item.backflow_test_report_id,
                 contact_id: this.contact_id,
                 reading_1: item.reading_1,
                 reading_2: item.reading_2,
                 notes: item.reading_notes,
-                tested_on: this.today
+                tested_on: this.today,
+                passed: passed
             };
             if(!item.test_id){
                 this.$http.post('/backflow_test',test)

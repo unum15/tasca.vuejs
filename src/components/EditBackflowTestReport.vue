@@ -166,18 +166,12 @@
                                     </b-form-input>
                             </template>
                             <template v-slot:cell(result)="data">
-                                <div v-if="['DCDA', 'DC'].includes(backflow_assembly.backflow_type.name)">
-                                    <b-badge v-if="data.item.reading_1 >= 1 && data.item.reading_2 >= 1" variant="success">Closed Tight</b-badge>
-                                    <b-badge v-else variant="danger">Leaked</b-badge>
-                                </div>
-                                <div v-if="['PCVB', 'AVB', 'SVB', 'PVB'].includes(backflow_assembly.backflow_type.name)">
-                                    <b-badge v-if="(data.item.reading_1 >= 1) && (data.item.reading_2) >= 1" variant="success">Opened Under 1#</b-badge>
-                                    <b-badge v-else variant="danger">Did Not Open</b-badge>
-                                </div>
-                                <div v-if="['RPDA', 'RP'].includes(backflow_assembly.backflow_type.name)">
-                                    <b-badge v-if="data.item.reading_1 - data.item.reading_2 >= 2" variant="success">Closed Tight</b-badge>
-                                    <b-badge v-else variant="danger">Leaked</b-badge>
-                                </div>
+                                <b-form-checkbox
+                                    v-model="data.item.passed"
+                                    @change="saveTest(data.item)"
+                                    
+                                >
+                                </b-form-checkbox>
                             </template>
                         </b-table>
                     </b-row>
