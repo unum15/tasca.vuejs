@@ -27,7 +27,7 @@
                 :items="maintenances"
                 :fields="fields"
             >
-                <template slot="id" slot-scope="data">
+                <template v-slot:cell(id)="data">
                     <a :href="'/maintenance/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>

@@ -33,7 +33,7 @@
                 </b-row>
             </b-container>
             <b-table small striped hover :filter="filter" :items="properties" :fields="fields">
-                <template slot="name" slot-scope="data">
+                <template v-slot:cell(name)="data">
                     <a :href="'/client/'+ data.item.client_id +'/property/' + data.item.id"> {{ data.value }} </a>
                 </template>
             </b-table>

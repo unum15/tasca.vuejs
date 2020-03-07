@@ -54,19 +54,19 @@
                 class="text-left"
                 :sort-compare="sortCompare"
                 >
-                <template slot="order_id" slot-scope="data">
+                <template v-slot:cell(order_id)="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
-                <template slot="client" slot-scope="data">
+                <template v-slot:cell(client)="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template slot="date" slot-scope="data">
+                <template v-slot:cell(date)="data">
                     {{ formatDate(data.value) }}
                 </template>
-                <template slot="time" slot-scope="data">
+                <template v-slot:cell(time)="data">
                     {{ formatTime(data.value) }}
                 </template>
-                <template slot="name" slot-scope="data">
+                <template v-slot:cell(name)="data">
                     <span :id="'name_' + data.item.id">{{ data.value }}</span>
                     <b-popover
                         :target="'name_' + data.item.id"
