@@ -48,7 +48,6 @@
                       @change="save(data.index)"
                     >
                     </b-form-input>
-                  </b-form-group>
                 </template>
                 <template v-slot:cell(test_2)="data">
                     <b-form-input
@@ -60,7 +59,6 @@
                       @change="save(data.index)"
                     >
                     </b-form-input>
-                  </b-form-group>
                 </template>
                 <template v-slot:cell(notes)="data">
                     <b-form-input
@@ -69,7 +67,6 @@
                       @change="save(data.index)"
                     >
                     </b-form-input>
-                  </b-form-group>
                 </template>
             </b-table>
             <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
@@ -133,12 +130,12 @@ export default {
                     },
                     {
                         key: 'test_1',
-                        label: 'Reading_1',
+                        label: 'Test 1',
                         sortable: false
                     },
                     {
                         key: 'test_2',
-                        label: 'Reading_2',
+                        label: 'Test 2',
                         sortable: false
                     },
                     {

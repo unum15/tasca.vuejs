@@ -34,6 +34,8 @@ import ViewBackflowAssemblies from '@/components/ViewBackflowAssemblies';
 import CreateBackflowTestReport from '@/components/CreateBackflowTestReport';
 import EditBackflowTestReport from '@/components/EditBackflowTestReport';
 import ViewBackflowTestReports from '@/components/ViewBackflowTestReports';
+import PhreeBooksContacts from '@/components/PhreeBooksContacts';
+import PhreeBooksAddresses from '@/components/PhreeBooksAddresses';
 
 Vue.use(Router);
 
@@ -104,6 +106,16 @@ var router = new Router({
       path: '/contacts',
       name: 'ViewContacts',
       component: ViewContacts
+    },
+    {
+      path: '/phree_books/contacts',
+      name: 'PhreeBooksContacts',
+      component: PhreeBooksContacts
+    },
+    {
+      path: '/phree_books/addresses',
+      name: 'PhreeBooksAddresses',
+      component: PhreeBooksAddresses
     },
     {
       path: '/properties',

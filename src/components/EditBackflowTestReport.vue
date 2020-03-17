@@ -370,10 +370,10 @@ export default {
     },
     created () {
         this.$http.get('/settings').then(response => {
-          this.settings = response.data;
-          this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
-            this.contacts = response.data;
-        });
+            this.settings = response.data;
+            this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
+                this.contacts = response.data;
+            });
         })
         this.$http.get('/clients?backflow_only=true').then(response => {
             this.clients = response.data;
@@ -383,15 +383,16 @@ export default {
         if(this.backflow_test_report_id !== null) {
             this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests').then(response => {
                 this.backflow_test_report = response.data.data;
-                this.client_id = this.backflow_assembly.property.client_id;
+                this.client_id = this.backflow_test_report.backflow_assembly.property.client_id;
                 this.getProperties();
-                this.getValves();
-                this.property_id = this.backflow_assembly.property_id;
+                this.property_id = this.backflow_test_report.backflow_assembly.property_id;
+                this.backflow_assembly = this.backflow_test_report.backflow_assembly;
+                this.backflow_assembly_id = this.backflow_test_report.backflow_assembly.id;
+                this.backflow_assembly = this.backflow_test_report.backflow_assembly;
                 this.getBackflowAssemblies();
-                if(this.backflow_repairs.length){
-                    this.repair_contact_id = this.backflow_repairs[0].contact_id;
-                    this.repair_date = this.backflow_test_report.repaired_on;
-                }
+                this.getValves();
+                this.report_id = this.backflow_test_report_id;
+                this.getReport();
             });
         }
     },
@@ -486,7 +487,11 @@ export default {
                        this.backflow_assembly_id=this.backflow_assemblies[0].id;
                        this.backflow_assembly=this.backflow_assemblies[0];
                        this.getValves();
-                     }
+                    }
+                    else{
+                       let row = this.backflow_assemblies.findIndex(b => b.id === this.backflow_assembly_id);
+                       this.$refs.backflowsTable.selectRow(row);
+                    }
                  });
             }
             else{

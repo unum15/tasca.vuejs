@@ -117,7 +117,6 @@ export default {
         }
     },
     created() {
-        console.log('/backflow_test_reports?includes=backflow_assembly,backflow_tests,backflow_assembly.backflow_type,backflow_assembly.property,backflow_assembly.property.client');
         this.$http.get('/backflow_test_reports?includes=backflow_assembly,backflow_tests,backflow_assembly.backflow_type,backflow_assembly.property,backflow_assembly.property.client').then(response => {
             this.backflow_test_reports = response.data.data;
             this.backflow_test_reports.map(r => {

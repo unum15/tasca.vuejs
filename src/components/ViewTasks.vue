@@ -27,49 +27,49 @@
                 :items="tasks"
                 :fields="fields"
             >
-                <template slot="order.id" slot-scope="data">
+                <template v-slot:cell(order.id)="data">
                     <a :href="'/client/' + data.item.order.project.client_id + '/project/' + data.item.order.project_id + '/order/' + data.value" v-if="data.item.order.project"> {{ data.value }} </a>
                 </template>
-                <template slot="order.project.client.name" slot-scope="data">
+                <template v-slot:cell(order.project.client.name)="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(name)="data">
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
                 </template>                
-                <template slot="task_category.name" slot-scope="data">
+                <template v-slot:cell(task_category.name)="data">
                     <b-form-select
                         :options="task_categories"
-						@input="save(data.item)"
+                        @input="save(data.item)"
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_category_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_status.name" slot-scope="data">
+                <template v-slot:cell(task_status.name)="data">
                     <b-form-select
                         :options="task_statuses"
-						@input="save(data.item)"
+                        @input="save(data.item)"
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_status_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="task_action.name" slot-scope="data">
+                <template v-slot:cell(task_action.name)="data">
                     <b-form-select
                         :options="task_actions"
-						@input="save(data.item)"
+                        @input="save(data.item)"
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_action_id"
                         >
                     </b-form-select>
                 </template>
-                <template slot="crew.name" slot-scope="data">
+                <template v-slot:cell(crew.name)="data">
                     <b-form-select
                         :options="crews"
-						@input="save(data.item)"
+                        @input="save(data.item)"
                         value-field="id"
                         text-field="name"
                         v-model="data.item.crew_id"
@@ -78,14 +78,14 @@
                 </template>
                 <template v-slot:cell(task_hours)="data">
                     <b-form-input
-						@change="save(data.item)"
+                        @change="save(data.item)"
                         v-model="data.item.task_hours"
                         >
                     </b-form-input>
                 </template>
                 <template v-slot:cell(crew_hours)="data">
                     <b-form-input
-						@change="save(data.item)"
+                        @change="save(data.item)"
                         v-model="data.item.crew_hours"
                         >
                     </b-form-input>

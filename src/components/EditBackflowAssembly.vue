@@ -366,10 +366,14 @@ export default {
                 }
                 return false;
             });
-            if(sizes.length == 1){
-                this.backflow_assembly.backflow_size_id = sizes[0].id;
-            }
             return sizes;
+        }
+    },
+    watch: {
+        filtered_sizes(){
+            if(this.filtered_sizes.length == 1){
+                this.backflow_assembly.backflow_size_id = this.filtered_size[0].id;
+            }
         }
     }
 };
