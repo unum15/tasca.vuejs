@@ -34,21 +34,33 @@
                 </b-row>
                 <b-row v-if="property_id">
                     <b-col>
-                      <b-table ref="backflowsTable" selectable :items="backflow_assemblies" :fields="backflow_fields" striped responsive="sm" @row-selected="backflowSelected" context-changed="tableUpdated" select-mode="single" />
+                      <b-table
+                        ref="backflowsTable"
+                        selectable
+                        :items="backflow_assemblies"
+                        :fields="backflow_fields"
+                        striped
+                        responsive="sm"
+                        @row-selected="backflowSelected"
+                        context-changed="tableUpdated"
+                        select-mode="single"
+                    >
+                        <template v-slot:cell(include)="data">
+                                <b-form-checkbox v-model="data.item.include" />
+                        </template>
+                    </b-table>
                     </b-col>
                 </b-row>
                 <div v-if="backflow_assembly.id">
                     <b-row>
                         <b-col>
                             <b-form-group label="Report Date">
-                              <b-form-select
-                                v-model="report_id"
-                                @change="getReport()"
-                                :options="reports"
-                                value-field="id"
-                                text-field="report_date"
+                              <b-form-input
+                                type="date"
+                                v-model="backflow_test_report.report_date"
+                                @input="save"
                               >
-                              </b-form-select>
+                              </b-form-input>
                             </b-form-group>
                         </b-col>
                         <b-col>
@@ -257,7 +269,9 @@
                 </div>
         </b-container>
             <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
-            <b-button @click="openWindow('/api/backflow_test_report/' + backflow_test_report.id + '/pdf', 'pdf')" v-if="backflow_test_report.id">PDF</b-button>
+            <b-button @click="preview" v-if="includedBackflowAssemblies.length">Preview</b-button>
+            <b-button @click="pdf" v-if="includedBackflowAssemblies.length">PDF</b-button>
+            <b-button @click="submit" v-if="includedBackflowAssemblies.length">Submit</b-button>
         </main>
     </div>
 </template>
@@ -329,6 +343,11 @@ export default {
                     key: 'serial_number',
                     label: 'Serial',
                     sortable: true
+                },
+                {
+                    key: 'include',
+                    label: 'Include',
+                    sortable: false
                 }
             ],
             valves: [],
@@ -482,7 +501,11 @@ export default {
         getBackflowAssemblies(){
             if(this.property_id){
                 this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model&property_id=' + this.property_id).then(response => {
-                    this.backflow_assemblies = response.data.data;
+                    let assemblies = response.data.data;
+                    assemblies.map( a => {
+                        a.include=true;
+                    });
+                    this.backflow_assemblies = assemblies;
                     if(this.backflow_assemblies.length == 1){
                        this.backflow_assembly_id=this.backflow_assemblies[0].id;
                        this.backflow_assembly=this.backflow_assemblies[0];
@@ -584,14 +607,26 @@ export default {
             this.repair_date=this.today;
             this.getReport();
         },
-        openWindow: function (link, tab) {
-            window.open(link, tab);
+        pdf (){
+            let url = '/api/backflow_test_reports/pdf?';
+            this.includedBackflowAssemblies.map(a => {
+                url += 'backflow_test_report_id[]='+a.id+'&'
+            })
+            window.open(url, 'backflow_pdf');
+        },
+        preview(){
+            window.open('/api/backflow_test_reports/html?backflow_test_report_id[]='+this.backflow_test_report.id, 'backflow_preview');
+        },
+        submit(){
         }
     },
     computed:{
         today() {
             return moment().format('YYYY-MM-DD');
         },
+        includedBackflowAssemblies(){
+            return this.backflow_assemblies.filter(a => a.include);
+        }
     },
 };
 </script>
