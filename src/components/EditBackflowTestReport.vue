@@ -46,7 +46,7 @@
                         select-mode="single"
                     >
                         <template v-slot:cell(include)="data">
-                                <b-form-checkbox v-model="data.item.include" />
+                                <b-form-checkbox v-if="data.item.backflow_test_reports.length" v-model="data.item.include" />
                         </template>
                     </b-table>
                     </b-col>
@@ -410,8 +410,7 @@ export default {
                 this.backflow_assembly = this.backflow_test_report.backflow_assembly;
                 this.getBackflowAssemblies();
                 this.getValves();
-                this.report_id = this.backflow_test_report_id;
-                this.getReport();
+                this.setReport();
             });
         }
     },
@@ -448,25 +447,9 @@ export default {
             this.valves = []
           }
         },
-        getReports() {
-          if(this.backflow_assembly.id){
-            this.$http.get('/backflow_test_reports?backflow_assembly_id=' + this.backflow_assembly.id).then(response => {
-                this.reports = response.data.data;
-                this.reports = this.reports.sort((a, b) => (a.report_date < b.report_date) ? 1 : -1)
-                if(this.reports.length){
-                    this.report_id = this.reports[0].id;
-                    this.getReport();
-                }
-            })
-          }
-          else{
-            this.reports = []
-          }
-        },
-        getReport() {
-          if(this.report_id){
-            this.$http.get('/backflow_test_report/' + this.report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_repairs,backflow_cleanings').then(response => {
-                this.backflow_test_report = response.data.data;
+        setReport() {
+            if((this.backflow_assembly)&&(this.backflow_assembly.backflow_test_reports.length)){
+                this.backflow_test_report = this.backflow_assembly.backflow_test_reports[0];
                 if(this.backflow_test_report.backflow_repairs.length){
                     this.repair_contact_id = this.backflow_test_report.backflow_repairs[0].contact_id;
                     this.repair_date = this.backflow_test_report.backflow_repairs[0].repaired_on;
@@ -483,24 +466,23 @@ export default {
                 this.backflow_test_report.backflow_cleanings.map(c => {
                     this.cleanings[c.backflow_valve_id].push(c.backflow_valve_part_id);
                 });
-            });
-          }
-          else{
-            this.backflow_test_report =
-            {
-                id: '',
-                backflow_tests: [],
-                backflow_repairs: [],
-                backflow_installed_to_code: true,
-                report_date: this.today,
-                backflow_assembly_id : this.backflow_assembly.id
             }
-            this.save();
-          }
+            else{
+                this.backflow_test_report =
+                    {
+                        id: '',
+                        backflow_tests: [],
+                        backflow_repairs: [],
+                        backflow_installed_to_code: true,
+                        report_date: this.today,
+                        backflow_assembly_id : this.backflow_assembly.id
+                    };
+                this.save();
+            }
         },
         getBackflowAssemblies(){
             if(this.property_id){
-                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model&property_id=' + this.property_id).then(response => {
+                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model&recent_reports=30&property_id=' + this.property_id).then(response => {
                     let assemblies = response.data.data;
                     assemblies.map( a => {
                         a.include=true;
@@ -567,8 +549,8 @@ export default {
         backflowSelected (items) {
             if(items.length){
                 this.backflow_assembly=items[0];
-                this.getReports();
                 this.getValves();
+                this.setReport();
             }
             else{
                 this.backflow_assembly={};
@@ -605,19 +587,32 @@ export default {
             this.repairs=[];
             this.repair_contact_id = localStorage.getItem('id');
             this.repair_date=this.today;
-            this.getReport();
+            this.setReport();
         },
         pdf (){
             let url = '/api/backflow_test_reports/pdf?';
             this.includedBackflowAssemblies.map(a => {
-                url += 'backflow_test_report_id[]='+a.id+'&'
+                if(a.backflow_test_reports.length){
+                    url += 'backflow_test_report_id[]='+a.backflow_test_reports[0].id+'&';
+                }
             })
             window.open(url, 'backflow_pdf');
         },
         preview(){
-            window.open('/api/backflow_test_reports/html?backflow_test_report_id[]='+this.backflow_test_report.id, 'backflow_preview');
+            let url = '/api/backflow_test_reports/html?';
+            this.includedBackflowAssemblies.map(a => {
+                if(a.backflow_test_reports.length){
+                    url += 'backflow_test_report_id[]='+a.backflow_test_reports[0].id+'&';
+                }
+            })
+            window.open(url, 'backflow_preview');
         },
         submit(){
+            this.includedBackflowAssemblies.map(a => {
+                if(a.backflow_test_reports.length){
+                    this.$http.put('/backflow_test_report/' + a.backflow_test_report[0].id, {'submitted_date' : this.today()});
+                }
+            })
         }
     },
     computed:{
