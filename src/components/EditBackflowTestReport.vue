@@ -51,7 +51,7 @@
                     </b-table>
                     </b-col>
                 </b-row>
-                <div v-if="backflow_assembly.id">
+                <div v-if="backflow_assembly.id && backflow_assembly.backflow_test_reports.length">
                     <b-row>
                         <b-col>
                             <b-form-group label="Report Date">
@@ -275,6 +275,7 @@
                     </b-row>
                 </div>
         </b-container>
+            <b-button v-if="backflow_assembly.id && !backflow_assembly.backflow_test_reports.length" @click="newReport">New Report</b-button>
             <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
             <b-button @click="preview" v-if="includedBackflowAssemblies.length">Preview</b-button>
             <b-button @click="pdf" v-if="includedBackflowAssemblies.length">PDF</b-button>
@@ -478,19 +479,6 @@ export default {
                     });
                 });
             }
-            else{
-                this.backflow_test_report =
-                    {
-                        id: '',
-                        backflow_tests: [],
-                        backflow_repairs: [],
-                        backflow_installed_to_code: true,
-                        report_date: this.today,
-                        submitted_date: '',
-                        backflow_assembly_id : this.backflow_assembly.id
-                    };
-                this.save();
-            }
         },
         getBackflowAssemblies(){
             if(this.property_id){
@@ -514,6 +502,18 @@ export default {
             else{
                 this.backflow_assemblies = [];
             }
+        },
+        newReport(){
+            this.backflow_test_report = {
+                id: '',
+                backflow_tests: [],
+                backflow_repairs: [],
+                backflow_installed_to_code: true,
+                report_date: this.today,
+                submitted_date: '',
+                backflow_assembly_id : this.backflow_assembly.id
+            };
+            this.save();
         },
         setBackflow(){
             let assemblies = this.backflow_assemblies.filter(a => (this.backflow_assembly_id == a.id));
