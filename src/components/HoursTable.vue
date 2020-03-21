@@ -115,7 +115,7 @@ export default {
 		onFiltered(items) {
 			this.subtotal = 0;
 			for(var x=0; x<items.length; x++){
-				var hours = timeStampDiff(items[x].sign_in, items[x].sign_out)
+				var hours = this.timeStampDiff(items[x].sign_in, items[x].sign_out)
 				if(!isNaN(Number.parseFloat(hours))){
 					this.subtotal += Number.parseFloat(hours);
 				}
