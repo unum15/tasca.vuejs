@@ -64,7 +64,14 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
-                            <b-button @click="newReport">New Report</b-button>
+                            <b-form-group label="Submitted Date">
+                              <b-form-input
+                                type="date"
+                                v-model="backflow_test_report.submitted_date"
+                                @input="save"
+                              >
+                              </b-form-input>
+                            </b-form-group>
                         </b-col>
                     </b-row>
                     <b-row>
@@ -390,9 +397,11 @@ export default {
     created () {
         this.$http.get('/settings').then(response => {
             this.settings = response.data;
-            this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
-                this.contacts = response.data;
-            });
+            if(this.settings.operating_company_client_id){
+                this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
+                    this.contacts = response.data;
+                });
+            }
         })
         this.$http.get('/clients?backflow_only=true').then(response => {
             this.clients = response.data;
@@ -410,7 +419,7 @@ export default {
                 this.backflow_assembly = this.backflow_test_report.backflow_assembly;
                 this.getBackflowAssemblies();
                 this.getValves();
-                this.setReport();
+                this.getReport();
             });
         }
     },
@@ -447,24 +456,26 @@ export default {
             this.valves = []
           }
         },
-        setReport() {
+        getReport() {
             if((this.backflow_assembly)&&(this.backflow_assembly.backflow_test_reports.length)){
-                this.backflow_test_report = this.backflow_assembly.backflow_test_reports[0];
-                if(this.backflow_test_report.backflow_repairs.length){
-                    this.repair_contact_id = this.backflow_test_report.backflow_repairs[0].contact_id;
-                    this.repair_date = this.backflow_test_report.backflow_repairs[0].repaired_on;
-                }
-                this.backflow_test_report.backflow_repairs.map(r => {
-                    this.repairs[r.backflow_valve_id] = [];
-                });
-                this.backflow_test_report.backflow_repairs.map(r => {
-                    this.repairs[r.backflow_valve_id].push(r.backflow_valve_part_id);
-                });
-                this.backflow_test_report.backflow_cleanings.map(c => {
-                    this.cleanings[c.backflow_valve_id] = [];
-                });
-                this.backflow_test_report.backflow_cleanings.map(c => {
-                    this.cleanings[c.backflow_valve_id].push(c.backflow_valve_part_id);
+                this.$http.get('/backflow_test_report/'+this.backflow_assembly.backflow_test_reports[0].id+'?includes=backflow_tests,backflow_repairs,backflow_cleanings').then(response => {
+                    this.backflow_test_report = response.data.data;
+                    if(this.backflow_test_report.backflow_repairs.length){
+                        this.repair_contact_id = this.backflow_test_report.backflow_repairs[0].contact_id;
+                        this.repair_date = this.backflow_test_report.backflow_repairs[0].repaired_on;
+                    }
+                    this.backflow_test_report.backflow_repairs.map(r => {
+                        this.repairs[r.backflow_valve_id] = [];
+                    });
+                    this.backflow_test_report.backflow_repairs.map(r => {
+                        this.repairs[r.backflow_valve_id].push(r.backflow_valve_part_id);
+                    });
+                    this.backflow_test_report.backflow_cleanings.map(c => {
+                        this.cleanings[c.backflow_valve_id] = [];
+                    });
+                    this.backflow_test_report.backflow_cleanings.map(c => {
+                        this.cleanings[c.backflow_valve_id].push(c.backflow_valve_part_id);
+                    });
                 });
             }
             else{
@@ -475,6 +486,7 @@ export default {
                         backflow_repairs: [],
                         backflow_installed_to_code: true,
                         report_date: this.today,
+                        submitted_date: '',
                         backflow_assembly_id : this.backflow_assembly.id
                     };
                 this.save();
@@ -524,6 +536,7 @@ export default {
                     .then((results) => {
                         this.backflow_test_report.id = results.data.data.id;
                         this.report_id = results.data.data.id;
+                        this.backflow_assembly.backflow_test_reports.push(this.backflow_test_report);
                     });
             }
             else{
@@ -550,7 +563,7 @@ export default {
             if(items.length){
                 this.backflow_assembly=items[0];
                 this.getValves();
-                this.setReport();
+                this.getReport();
             }
             else{
                 this.backflow_assembly={};
@@ -574,21 +587,6 @@ export default {
             }
             this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair);
         },
-        newReport (){
-            this.reports.unshift({
-                id: '',
-                backflow_tests: [],
-                backflow_repairs: [],
-                backflow_installed_to_code: true,
-                report_date: this.today
-            });
-            this.report_id='';
-            this.cleanings=[];
-            this.repairs=[];
-            this.repair_contact_id = localStorage.getItem('id');
-            this.repair_date=this.today;
-            this.setReport();
-        },
         pdf (){
             let url = '/api/backflow_test_reports/pdf?';
             this.includedBackflowAssemblies.map(a => {
@@ -610,7 +608,7 @@ export default {
         submit(){
             this.includedBackflowAssemblies.map(a => {
                 if(a.backflow_test_reports.length){
-                    this.$http.put('/backflow_test_report/' + a.backflow_test_report[0].id, {'submitted_date' : this.today()});
+                    this.$http.patch('/backflow_test_report/' + a.backflow_test_reports[0].id, {'submitted_date' : this.today});
                 }
             })
         }

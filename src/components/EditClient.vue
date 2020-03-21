@@ -158,6 +158,11 @@
               :task_id="task_id"
               ></EditProjects>
           </b-tab>
+          <b-tab v-if="client.id && (client.properties.length > 0)" title="Backflows" :active="backflow_id != null">
+            <ViewBackflowsTab
+              :properties="client.properties"
+              ></ViewBackflowsTab>
+          </b-tab>
         </b-tabs>
         <b-button v-if="!client.phreebooks_id" @click="createPhreeBooks">Add To Phree Books</b-button>
         <b-button v-if="client.phreebooks_id" @click="updatePhreeBooks">Update Phree Books</b-button>
@@ -168,6 +173,7 @@
 import EditContacts from './EditContacts'
 import EditProperties from './EditProperties'
 import EditProjects from './EditProjects'
+import ViewClientBackflowsTab from './ViewClientBackflowsTab'
 import TopMenu from './TopMenu'
 export default {
   name: 'EditClient',
@@ -175,7 +181,8 @@ export default {
     'TopMenu': TopMenu,
     'EditContacts': EditContacts,
     'EditProperties': EditProperties,
-    'EditProjects': EditProjects
+    'EditProjects': EditProjects,
+    'ViewClientBackflowsTab': ViewClientBackflowsTab
   },
   props: {
     client_id: {default: null},
