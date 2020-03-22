@@ -159,9 +159,9 @@
               ></EditProjects>
           </b-tab>
           <b-tab v-if="client.id && (client.properties.length > 0)" title="Backflows" :active="backflow_id != null">
-            <ViewBackflowsTab
+            <ViewClientBackflowsTab
               :properties="client.properties"
-              ></ViewBackflowsTab>
+              ></ViewClientBackflowsTab>
           </b-tab>
         </b-tabs>
         <b-button v-if="!client.phreebooks_id" @click="createPhreeBooks">Add To Phree Books</b-button>
@@ -191,6 +191,7 @@ export default {
     project_id: {default: null},
     order_id: {default: null},
     task_id: {default: null},
+    backflow_id: {default: null},
   },
   data () {
     return {

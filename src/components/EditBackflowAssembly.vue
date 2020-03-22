@@ -359,14 +359,17 @@ export default {
               return this.sizes;
             }
             let model = this.models.filter(m => (this.backflow_assembly.backflow_model_id == m.id))[0];
-            let sizes = this.sizes.filter(s => {
-                let matches = model.backflow_sizes.filter(ms => (s.id == ms.id));
-                if(matches.length){
-                    return true;
-                }
-                return false;
-            });
-            return sizes;
+            if(model){
+                let sizes = this.sizes.filter(s => {
+                    let matches = model.backflow_sizes.filter(ms => (s.id == ms.id));
+                    if(matches.length){
+                        return true;
+                    }
+                    return false;
+                });
+                return sizes;
+            }
+            return [];
         }
     },
     watch: {

@@ -8,17 +8,21 @@
         >
         <template slot="title" style="text-align:left">
           <div style="text-align:left">
-            {{ property.name==null?'New Property':property.name }}
+            {{ property.name }}
           </div>
         </template>
+        <ViewPropertyBackflowsTab :property_id="property.id">
+        </ViewPropertyBackflowsTab>
       </b-tab>
     </b-tabs>
   </div>
 </template>
 <script>
+import ViewPropertyBackflowsTab from './ViewPropertyBackflowsTab'
 export default {
   name: 'ViewClientBackflowsTab',
   components: {
+    'ViewPropertyBackflowsTab': ViewPropertyBackflowsTab
   },
   props: {
     properties: {required: true}
@@ -32,9 +36,6 @@ export default {
     }
   },
   created() {
-    this.$http.get('/property_types').then(response => {
-      this.property_types = response.data
-    })
     this.my_properties = this.properties;
   },
   methods: {
