@@ -434,7 +434,25 @@ export default {
           },
     methods: {
         getProperties() {
-          if(this.client_id){
+        this.property_id = null;
+        this.cleanings = [];
+        this.repairs = [];
+        this.filter = null;
+        this.repair_contact_id = null;
+        this.repair_date = null;
+        this.backflow_test_report = {
+                id: null,
+                backflow_tests: [],
+                backflow_repairs: [],
+                backflow_installed_to_code: true
+        },
+        this.backflow_assemblies = [];
+        this.reports = [];
+        this.report_id = null;
+        this.backflow_assembly = { backflow_type: null};
+        this.valves = [];
+        this.parts = [];
+        if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
               this.properties = response.data
               if(this.properties.length == 1){
@@ -608,7 +626,8 @@ export default {
         submit(){
             this.includedBackflowAssemblies.map(a => {
                 if(a.backflow_test_reports.length){
-                    this.$http.patch('/backflow_test_report/' + a.backflow_test_reports[0].id, {'submitted_date' : this.today});
+                    a.backflow_test_reports[0].submitted_date = this.today
+                    this.$http.patch('/backflow_test_report/' + a.backflow_test_reports[0].id, a.backflow_test_reports[0]);
                 }
             })
         }
