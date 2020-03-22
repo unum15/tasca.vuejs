@@ -143,14 +143,14 @@ export default {
       item._showDetails = !item._showDetails;
     },
     showReports(id){
-      let a = this.backflow_assemblies.filter(a => (a.id = id));
+      let a = this.backflow_assemblies.filter(a => (a.id == id));
       a[0].show_all_reports = true;
       let b = this.backflow_assemblies;
       this.backflow_assemblies = [];
       this.backflow_assemblies = b;
     },
     hideReports(id){
-      let a = this.backflow_assemblies.filter(a => (a.id = id));
+      let a = this.backflow_assemblies.filter(a => (a.id == id));
       a[0].show_all_reports = false;
       let b = this.backflow_assemblies;
       this.backflow_assemblies = [];

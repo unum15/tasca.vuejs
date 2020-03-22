@@ -185,12 +185,9 @@
                                     </b-form-input>
                             </template>
                             <template v-slot:cell(result)="data">
-                                <b-form-checkbox
-                                    v-model="data.item.passed"
-                                    @change="saveTest(data.item)"
-                                    
-                                >
-                                </b-form-checkbox>
+                                <img src="@/assets/delete.png" v-if="!data.item.passed" @click.stop="markTestPassed(data.item.id)" fluid alt="failed" style="width:20px;" />
+                                <img src="@/assets/checkmark.png" v-if="data.item.passed" @click.stop="markTestFailed(data.item.id)" fluid alt="passed" style="width:20px;" />
+                                {{ data.item.id }}
                             </template>
                         </b-table>
                     </b-row>
@@ -410,18 +407,7 @@ export default {
         this.repair_contact_id = localStorage.getItem('id');
         this.repair_date = this.today;
         if(this.backflow_test_report_id !== null) {
-            this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests').then(response => {
-                this.backflow_test_report = response.data.data;
-                this.client_id = this.backflow_test_report.backflow_assembly.property.client_id;
-                this.getProperties();
-                this.property_id = this.backflow_test_report.backflow_assembly.property_id;
-                this.backflow_assembly = this.backflow_test_report.backflow_assembly;
-                this.backflow_assembly_id = this.backflow_test_report.backflow_assembly.id;
-                this.backflow_assembly = this.backflow_test_report.backflow_assembly;
-                this.getBackflowAssemblies();
-                this.getValves();
-                this.getReport();
-            });
+            this.getRequestedReport();
         }
     },
     updated () {
@@ -433,37 +419,52 @@ export default {
             });
           },
     methods: {
-        getProperties() {
-        this.property_id = null;
-        this.cleanings = [];
-        this.repairs = [];
-        this.filter = null;
-        this.repair_contact_id = null;
-        this.repair_date = null;
-        this.backflow_test_report = {
+        getRequestedReport () {
+            this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_type.backflow_super_type').then(response => {
+                let report = response.data.data
+                this.client_id = report.backflow_assembly.property.client_id;
+                this.getProperties();
+                this.property_id = report.backflow_assembly.property_id;
+                this.getBackflowAssemblies();
+                this.backflow_assembly_id = report.backflow_assembly.id;
+                report.backflow_assembly.backflow_test_reports = [report];
+                this.backflow_assembly = report.backflow_assembly;
+                this.backflow_test_report = report.backflow_assembly;
+                this.getValves();
+                this.getReport();
+            });
+        },
+        getProperties () {
+            this.property_id = null;
+            this.cleanings = [];
+            this.repairs = [];
+            this.filter = null;
+            this.repair_contact_id = null;
+            this.repair_date = null;
+            this.backflow_test_report = {
                 id: null,
                 backflow_tests: [],
                 backflow_repairs: [],
                 backflow_installed_to_code: true
-        },
-        this.backflow_assemblies = [];
-        this.reports = [];
-        this.report_id = null;
-        this.backflow_assembly = { backflow_type: null};
-        this.valves = [];
-        this.parts = [];
-        if(this.client_id){
-            this.$http.get('/properties?client_id=' + this.client_id).then(response => {
-              this.properties = response.data
-              if(this.properties.length == 1){
-                 this.property_id= this.properties[0].id;
-                 this.getBackflowAssemblies();
-              }
-            })
-          }
-          else{
-            this.properties = []
-          }
+            },
+            this.backflow_assemblies = [];
+            this.reports = [];
+            this.report_id = null;
+            this.backflow_assembly = { backflow_type: null};
+            this.valves = [];
+            this.parts = [];
+            if(this.client_id){
+                this.$http.get('/properties?client_id=' + this.client_id).then(response => {
+                    this.properties = response.data
+                    if(this.properties.length == 1){
+                       this.property_id= this.properties[0].id;
+                       this.getBackflowAssemblies();
+                    }
+                });
+            }
+            else{
+              this.properties = []
+            }
         },
         getValves() {
           if((this.backflow_assembly.backflow_type)&&(this.backflow_assembly.backflow_type.backflow_super_type_id)){
@@ -477,6 +478,20 @@ export default {
         },
         getReport() {
             if((this.backflow_assembly)&&(this.backflow_assembly.backflow_test_reports.length)){
+                switch(this.backflow_assembly.backflow_type.backflow_super_type.name){
+                    case 'RP':
+                        this.test_fields[2].label = 'RP Test';
+                        this.test_fields[3].label = 'Check Test';
+                        break;
+                    case 'DC':
+                        this.test_fields[2].label = 'First Test';
+                        this.test_fields[3].label = 'Second Test';
+                        break;
+                    case 'PVB':
+                        this.test_fields[2].label = 'Air Inlet Test';
+                        this.test_fields[3].label = 'Check Test';
+                        break;
+                }
                 this.$http.get('/backflow_test_report/'+this.backflow_assembly.backflow_test_reports[0].id+'?includes=backflow_tests,backflow_repairs,backflow_cleanings').then(response => {
                     this.backflow_test_report = response.data.data;
                     if(this.backflow_test_report.backflow_repairs.length){
@@ -500,7 +515,7 @@ export default {
         },
         getBackflowAssemblies(){
             if(this.property_id){
-                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model&recent_reports=30&property_id=' + this.property_id).then(response => {
+                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_type.backflow_super_type,backflow_manufacturer,backflow_model&recent_reports=30&property_id=' + this.property_id).then(response => {
                     let assemblies = response.data.data;
                     assemblies.map( a => {
                         a.include=true;
@@ -630,6 +645,16 @@ export default {
                     this.$http.patch('/backflow_test_report/' + a.backflow_test_reports[0].id, a.backflow_test_reports[0]);
                 }
             })
+        },
+        markTestPassed(id){
+            let a = this.backflow_test_report.backflow_tests.filter(a => (a.id == id));
+            a[0].passed = true;
+            this.saveTest(a[0]);
+        },
+        markTestFailed(id){
+            let a = this.backflow_test_report.backflow_tests.filter(a => (a.id == id));
+            a[0].passed = false;
+            this.saveTest(a[0]);
         }
     },
     computed:{
