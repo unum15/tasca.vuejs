@@ -155,7 +155,7 @@
                             <template v-slot:cell(reading_1)="data">
                                 <b-form-input
                                         v-model="data.item.reading_1"
-                                        @change="saveTest(data.item)"
+                                        @change="checkPassed(data.item);saveTest(data.item)"
                                         type="number"
                                         step="0.1"
                                         min="0"
@@ -167,7 +167,7 @@
                             <template v-slot:cell(reading_2)="data">
                                 <b-form-input
                                         v-model="data.item.reading_2"
-                                        @change="saveTest(data.item)"
+                                        @change="checkPassed(data.item);saveTest(data.item)"
                                         type="number"
                                         step="0.1"
                                         min="0"
@@ -283,6 +283,7 @@
 <script>
 import TopMenu from './TopMenu'
 import moment from 'moment';
+import backflows from '../common/backflows.js';
 export default {
     name: 'EditBackflowTestReport',
     components: {
@@ -409,6 +410,7 @@ export default {
         if(this.backflow_test_report_id !== null) {
             this.getRequestedReport();
         }
+        this.passed = backflows.passed // shared code between here and CreateBackflowTestReport;
     },
     updated () {
             this.$nextTick(function () {
@@ -655,6 +657,10 @@ export default {
             let a = this.backflow_test_report.backflow_tests.filter(a => (a.id == id));
             a[0].passed = false;
             this.saveTest(a[0]);
+        },
+        checkPassed(item){
+            item.backflow_type = this.backflow_assembly.backflow_type;
+            item.passed = this.passed(item);
         }
     },
     computed:{

@@ -76,6 +76,7 @@
 <script>
 import TopMenu from './TopMenu';
 import moment from 'moment';
+import backflows from '../common/backflows.js';
 export default {
     name: 'CreateBackflowTestReport',
     components: {
@@ -151,6 +152,7 @@ export default {
             this.clients = response.data;
         });
         this.contact_id = localStorage.getItem('id')
+        this.passed = backflows.passed // shared code between here and EditBackflowTestReport;
     },
     methods: {
         getProperties() {
@@ -191,19 +193,8 @@ export default {
             }
         },
         saveTest (index){
-            let item = this.backflow_assemblies[index]
-            let passed = null;
-            switch(item.backflow_type.backflow_super_type.name){
-                case 'DC':
-                    passed = item.reading_1 >= 1 && item.reading_2 >= 1;
-                    break;
-                case 'PVB':
-                    passed=item.reading_1 >= 1 && item.reading_2 >= 1;
-                    break;
-                case 'RP':
-                    passed=item.reading_1 - item.reading_2 >= 2;
-                    break;
-            }
+            let item = this.backflow_assemblies[index];
+            let passed = this.passed(item);
             let test = {
                 backflow_test_report_id: item.backflow_test_report_id,
                 contact_id: this.contact_id,
