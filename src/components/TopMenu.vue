@@ -68,6 +68,7 @@
                     <b-dropdown-item href="/backflow_test_report/quick/date">Quick Backflow Test Report(Today)</b-dropdown-item>
                     <b-dropdown-item href="/backflow_test_report">Edit Backflow Test Reports</b-dropdown-item>
                     <b-dropdown-item href="/backflow_test_reports">View Backflow Test Reports</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_old">View Backblow Old</b-dropdown-item>
                 </b-nav-item-dropdown>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">

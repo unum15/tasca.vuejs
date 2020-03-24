@@ -36,6 +36,8 @@ import EditBackflowTestReport from '@/components/EditBackflowTestReport';
 import ViewBackflowTestReports from '@/components/ViewBackflowTestReports';
 import PhreeBooksContacts from '@/components/PhreeBooksContacts';
 import PhreeBooksAddresses from '@/components/PhreeBooksAddresses';
+import ViewBackflowOld from '@/components/ViewBackflowOld';
+
 
 Vue.use(Router);
 
@@ -496,6 +498,15 @@ var router = new Router({
         title: 'View Backflow Test Reports'
       }
     },
+    {
+      path: '/backflow_old',
+      name: 'ViewBackflowOld',
+      component: ViewBackflowOld,
+      meta: {
+        title: 'View Backflow Old'
+      }
+    },
+
   ]
 });
 
