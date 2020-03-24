@@ -14,13 +14,19 @@
                 :fields="fields"
             >
                 <template v-slot:cell(property_id)="data">
-                    <b-form-select
-                            v-model="data.item.property_id"
-                            :options="properties"
-                            value-field="id"
-                            text-field="name"
-                            @change="save"
-                        />
+                    <el-select
+                        v-model="data.item.property_id"
+                        filterable
+                        default-first-option
+                        placeholder="Select Property"
+                    >
+                        <el-option
+                          v-for="property in properties"
+                          :key="property.id"
+                          :label="property.name + '-' + property.address"
+                          :value="property.id">
+                        </el-option>
+                    </el-select>
                 </template>
             </b-table>
         </main>
@@ -39,26 +45,6 @@ export default {
             filter: null,
             fields: [
                     {
-                        key: 'active',
-                        label: 'Active',
-                        sortable: true
-                    },
-                    {
-                        key: 'prt',
-                        label: 'Prt',
-                        sortable: true
-                    },
-                    {
-                        key: 'owner',
-                        label: 'Owner',
-                        sortable: true
-                    },
-                    {
-                        key: 'contact',
-                        label: 'Contact',
-                        sortable: true
-                    },
-                    {
                         key: 'location',
                         label: 'Location',
                         sortable: true
@@ -66,21 +52,6 @@ export default {
                     {
                         key: 'laddress',
                         label: 'Laddress',
-                        sortable: true
-                    },
-                    {
-                        key: 'lcity',
-                        label: 'Lcity',
-                        sortable: true
-                    },
-                    {
-                        key: 'lstate',
-                        label: 'Lstate',
-                        sortable: true
-                    },
-                    {
-                        key: 'lzip',
-                        label: 'Lzip',
                         sortable: true
                     },
                     {
