@@ -159,6 +159,60 @@
                                 </b-form-group>
                             </b-col>
                         </b-row>
+                        <div v-for="unit in my_property.property_units" :key="unit.id">
+                            <b-row>
+                                <b-col>
+                                    <b-form-group label="Name">
+                                      <b-form-input
+                                        type="text"
+                                        @change="saveUnit(unit)"
+                                        v-model="unit.name"
+                                        required
+                                        :state="unit.name != null"
+                                        placeholder="A1">
+                                      </b-form-input>
+                                    </b-form-group>
+                                </b-col>
+                                <b-col>
+                                    <b-form-group label="Address">
+                                      <b-form-input
+                                        type="text"
+                                        @change="saveUnit(unit)"
+                                        v-model="unit.number"
+                                        placeholder="123">
+                                      </b-form-input>
+                                    </b-form-group>
+                                </b-col>
+                                <b-col>
+                                    <b-form-group label="Phone">
+                                      <b-form-input
+                                        type="text"
+                                        @change="saveUnit(unit)"
+                                        v-model="unit.phone"
+                                        placeholder="(801) 555-5555">
+                                      </b-form-input>
+                                    </b-form-group>
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col>
+                                    <b-form-group label="Notes">
+                                      <b-form-textarea
+                                        v-model="unit.notes"
+                                        @input="saveUnit(unit)"
+                                        :rows="3"
+                                        :max-rows="6"
+                                        placeholder="Notes about this unit.">
+                                      </b-form-textarea>
+                                    </b-form-group>
+                                </b-col>
+                            </b-row>
+                        </div>
+                        <b-row>
+                            <b-col>
+                                <b-button @click="addUnit">Add Unit</b-button>
+                            </b-col>
+                        </b-row>
                         <b-row>
                             <b-button variant="danger" size="sm" @click="deleteProperty" >Delete Property</b-button>
                         </b-row>
@@ -212,6 +266,32 @@ export default {
             }
             else{
                 this.$http.patch('/property/' + this.my_property.id,this.my_property);
+            }
+        },
+        addUnit(){
+            this.my_property.property_units.push(
+                {
+                    id: null,
+                    property_id: this.my_property.id,
+                    name: null,
+                    number: null,
+                    phone: null,
+                    notes: null
+                }
+            );
+        },
+        saveUnit(unit) {
+            if(unit.name === null){
+              return;
+            }
+            if(unit.id === null){
+              this.$http.post('/property_unit',unit)
+                .then((results) => {
+                  unit.id = results.data.id;
+                })
+            }
+            else{
+                this.$http.patch('/property_unit/' + unit.id,unit);
             }
         },
     }
