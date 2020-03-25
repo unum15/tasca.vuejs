@@ -88,7 +88,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/orders').then((results) => {
+        this.$http.get('/orders?includes=project,property,project.client,project.contact').then((results) => {
             this.orders = results.data;
         });
     }
