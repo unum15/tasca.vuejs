@@ -196,7 +196,7 @@
                             </b-row>
                             <b-row>
                                 <b-col>
-                                    <b-form-group label="Notes">
+                                    <b-form-group label="Unit Notes">
                                       <b-form-textarea
                                         v-model="unit.notes"
                                         @input="saveUnit(unit)"
@@ -244,7 +244,7 @@ export default {
     created() {
         this.my_property = this.property;
         var contacts = [];
-        this.my_property.contacts.forEach( c => {
+        this.my_property.contacts.map( c => {
             contacts.push(c.id);
         })
         this.my_property.contacts = contacts;
@@ -287,7 +287,7 @@ export default {
             if(unit.id === null){
               this.$http.post('/property_unit',unit)
                 .then((results) => {
-                  unit.id = results.data.id;
+                  unit.id = results.data.data.id;
                 })
             }
             else{
