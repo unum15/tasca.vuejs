@@ -49,7 +49,7 @@
                         filterable
                         default-first-option
                         placeholder="Select Property"
-                        @change="getProperties(data.item)"
+                        @change="smartMatch(data.item);getProperties(data.item);"
                     >
                         <el-option
                           v-for="client in clients"
@@ -58,7 +58,7 @@
                           :value="client.id">
                         </el-option>
                     </el-select>
-                    <b-button @click="createClient(data.item)">Add Client</b-button>
+                    <b-button @click="createClient(data.item)" style="margin-left:50px;">Add Client</b-button>
                 </template>
                 <template v-slot:cell(property_id)="data">
                     <el-select
@@ -66,7 +66,7 @@
                         filterable
                         default-first-option
                         placeholder="Select Property"
-                        @change="getUnits(data.item)"
+                        @change="smartMatchProperties(data.item);getUnits(data.item);"
                         :disabled="data.item.client_id == null"
                     >
                         <el-option
@@ -76,7 +76,7 @@
                           :value="property.id">
                         </el-option>
                     </el-select>
-                    <b-button @click="createProperty(data.item)" :disabled="data.item.client_id == null">Add Property</b-button>
+                    <b-button @click="createProperty(data.item)" :disabled="data.item.client_id == null" style="margin-left:50px;">Add Property</b-button>
                 </template>
                 <template v-slot:cell(unit_id)="data">
                     <el-select
@@ -95,7 +95,7 @@
                     </el-select>
                 </template>
                 <template v-slot:cell(save)="data">
-                    <b-button @click="save(data.item)">
+                    <b-button @click="save(data.item)" style="margin-left:50px;">
                         Save
                     </b-button>
                 </template>
@@ -167,6 +167,7 @@ export default {
     },
     methods: {
         getZips(){
+            this.zip = null;
             this.$http.get('/backflow_old/zips?group='+this.group).then(response => {
                 this.zips = response.data.data;
             });
@@ -175,6 +176,9 @@ export default {
             this.$http.get('/properties?client_id=' + item.client_id).then((results) => {
                 let index = this.backflows.map(b => (b.id)).indexOf(item.id);
                 this.backflows[index].properties = results.data;
+                if(results.data.length == 1){
+                    item.property_id = results.data[0].id;
+                }
             });
         },
         getUnits(item){
@@ -189,7 +193,7 @@ export default {
             });
         },
         getBackflows(){
-            this.$http.get('/backflow_old?zip=' + this.zip).then(response => {
+            this.$http.get('/backflow_old?zip=' + this.zip + '&group='+this.group).then(response => {
                 this.backflows = [];
                 response.data.data.map(b =>{
                     let backflow = b;
@@ -203,6 +207,11 @@ export default {
             });
         },
         save(item){
+            if(!item.property_id){
+                if(!confirm('Click OK to remove with out assigning.')){
+                    return;
+                }
+            }
             this.$http.post('/backflow_old/export/' + item.id, {property_id: item.property_id, unit_id: item.unit_id}).then(response =>{
                 if(response.data){
                     let index = this.backflows.map(b => (b.id)).indexOf(item.id);
@@ -215,6 +224,7 @@ export default {
                 if(response.data){
                     this.getClients();
                     item.client_id = response.data.data.id
+                    this.getProperties(item);
                 }
             })
         },
@@ -225,6 +235,22 @@ export default {
                     item.property_id = response.data.data.id
                 }
             })
+        },
+        smartMatch(item){
+            this.backflows.map(b =>{
+                if((b.client_id == null)&&(b.owner == item.owner)){
+                     b.client_id = item.client_id;
+                     this.getProperties(b);
+                 }
+            });
+        },
+        smartMatchProperties(item){
+            this.backflows.map(b =>{
+                if((b.client_id == item.client_id)&&(b.property_id == null)&&(b.laddress == item.laddress)){
+                     b.property_id = item.property_id;
+                     this.getUnits(b);
+                 }
+            });
         }
     }
 }
