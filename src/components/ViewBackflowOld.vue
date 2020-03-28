@@ -47,6 +47,7 @@
                     <el-select
                         v-model="data.item.client_id"
                         filterable
+                        clearable
                         default-first-option
                         placeholder="Select Property"
                         @change="smartMatch(data.item);getProperties(data.item);"
@@ -64,6 +65,7 @@
                     <el-select
                         v-model="data.item.property_id"
                         filterable
+                        clearable
                         default-first-option
                         placeholder="Select Property"
                         @change="smartMatchProperties(data.item);getUnits(data.item);"
@@ -151,11 +153,9 @@ export default {
                         sortable: false
                     }
             ],
-            properties: [],
             zips: [],
             clients: [],
             zip: null,
-            units: [],
             group: null,
             groups: []
         }
@@ -167,12 +167,18 @@ export default {
     },
     methods: {
         getZips(){
+            this.backflows = [];
             this.zip = null;
+            this.clients = [];
             this.$http.get('/backflow_old/zips?group='+this.group).then(response => {
                 this.zips = response.data.data;
             });
         },
         getProperties(item){
+            if(!item.client_id){
+                item.property_id = null;
+                return;
+            }
             this.$http.get('/properties?client_id=' + item.client_id).then((results) => {
                 let index = this.backflows.map(b => (b.id)).indexOf(item.id);
                 this.backflows[index].properties = results.data;
@@ -182,6 +188,9 @@ export default {
             });
         },
         getUnits(item){
+            if(!item.property_id){
+                return;
+            }
             this.$http.get('/property_units?property_id=' + item.property_id).then((results) => {
                 let index = this.backflows.map(b => (b.id)).indexOf(item.id);
                 this.backflows[index].units = results.data.data;
