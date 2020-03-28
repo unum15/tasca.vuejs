@@ -64,6 +64,16 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
+                            <b-form-group label="Tag Year End">
+                              <b-form-input
+                                type="number"
+                                v-model="backflow_test_report.tag_year"
+                                @input="save"
+                              >
+                              </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
                             <b-form-group label="Submitted Date">
                               <b-form-input
                                 type="date"

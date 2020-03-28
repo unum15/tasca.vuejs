@@ -242,6 +242,11 @@ export default {
                 if(response.data){
                     this.getProperties(item);
                     item.property_id = response.data.data.id
+                    this.backflows.map(b =>{
+                        if(b.client_id == item.client_id){
+                            this.getProperties(b);
+                        }
+                    });
                 }
             })
         },

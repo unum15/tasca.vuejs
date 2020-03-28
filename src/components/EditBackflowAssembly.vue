@@ -56,6 +56,16 @@
                           </el-select>
                         </b-form-group>
                     </b-col>
+                    <b-col>
+                        <b-form-group label="Month">
+                            <b-form-input
+                                v-model="backflow_assembly.month"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        </b-form-group>
+                    </b-col>
                 </b-row>
                 <b-row>
                     <b-col>
@@ -117,6 +127,16 @@
                             </el-select>
                         </b-form-group>
                     </b-col>
+                    <b-col>
+                        <b-form-group label="GPS">
+                            <b-form-input
+                                v-model="backflow_assembly.gps"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        </b-form-group>
+                    </b-col>
                 </b-row>
 
                 <b-row>
@@ -176,6 +196,14 @@
                             </el-option>
                           </el-select>
                         </b-form-group>
+                    </b-col>
+                    <b-col>
+                         <b-form-checkbox
+                            v-model="backflow_assembly.active"
+                          >
+                            Active
+                          </b-form-checkbox>
+
                     </b-col>
                 </b-row>
                 <b-row>
