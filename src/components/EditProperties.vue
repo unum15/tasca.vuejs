@@ -70,7 +70,8 @@ export default {
         state: null,
         zip: null,
         notes: null,
-        contacts: []
+        contacts: [],
+        property_units: []
       };
       this.my_properties.push(property);
       this.change_tab = true;

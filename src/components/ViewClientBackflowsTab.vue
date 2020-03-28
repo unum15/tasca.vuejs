@@ -11,7 +11,7 @@
             {{ property.name }}
           </div>
         </template>
-        <ViewPropertyBackflowsTab :property_id="property.id">
+        <ViewPropertyBackflowsTab v-if="property.id != null" :property_id="property.id">
         </ViewPropertyBackflowsTab>
       </b-tab>
     </b-tabs>

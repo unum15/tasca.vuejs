@@ -17,6 +17,15 @@
                       </b-input-group>
                     </b-form-group>
                   </b-col>
+                  <b-col>
+                    <b-form-group label="Active Filter" class="mb-0">
+                    <b-form-select
+                        @change="getBackflowAssemblies()"
+                        :options="active_values"
+                        v-model="active_filter">
+                    </b-form-select>
+                    </b-form-group>
+                  </b-col>
                 </b-row>
             </b-container>
             <b-table
@@ -102,6 +111,11 @@ export default {
                         sortable: true
                     },
                     {
+                        key: 'active',
+                        label: 'Active',
+                        sortable: true
+                    },
+                    {
                         key: 'notes',
                         label: 'Notes',
                         sortable: true
@@ -116,13 +130,37 @@ export default {
                         label: 'Updated At',
                         sortable: true
                     },
+            ],
+            active_filter: 1,
+            active_values: [
+                {
+                    value: '1',
+                    text: 'Active Only'
+                },
+                {
+                    value: '0',
+                    text: 'Inactive Only'
+                },
+                {
+                    value: '',
+                    text: 'All'
+                }
             ]
         }
     },
     created() {
-        this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model').then(response => {
-            this.backflow_assemblies = response.data.data;
-        });
+        this.getBackflowAssemblies();
+    },
+    methods: {
+        getBackflowAssemblies(){
+            let active = '';
+            if(this.active_filter != ''){
+                active = '&active=' + this.active_filter;
+            }
+            this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model' + active).then(response => {
+                this.backflow_assemblies = response.data.data;
+            });
+        }
     }
 }
 </script>

@@ -225,6 +225,10 @@ export default {
                 if(response.data){
                     let index = this.backflows.map(b => (b.id)).indexOf(item.id);
                     this.backflows.splice(index,1);
+                    if(this.backflows.length == 0){
+                        let zindex = this.zips.indexOf(this.zip);
+                        this.zips.splice(zindex,1);
+                    }
                 }
             })
         },

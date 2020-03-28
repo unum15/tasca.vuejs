@@ -527,7 +527,7 @@ export default {
         },
         getBackflowAssemblies(){
             if(this.property_id){
-                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_type.backflow_super_type,backflow_manufacturer,backflow_model&recent_reports=30&property_id=' + this.property_id).then(response => {
+                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_type.backflow_super_type,backflow_manufacturer,backflow_model&recent_reports=30&active=1&property_id=' + this.property_id).then(response => {
                     let assemblies = response.data.data;
                     assemblies.map( a => {
                         a.include=true;

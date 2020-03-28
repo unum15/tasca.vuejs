@@ -210,7 +210,7 @@
                         </div>
                         <b-row>
                             <b-col>
-                                <b-button @click="addUnit">Add Unit</b-button>
+                                <b-button @click="addUnit" :disabled="my_property == null || my_property.id == null">Add Unit</b-button>
                             </b-col>
                         </b-row>
                         <b-row>
@@ -245,8 +245,10 @@ export default {
         this.my_property = this.property;
         var contacts = [];
         this.my_property.contacts.map( c => {
-            contacts.push(c.id);
-        })
+            if(c){
+                contacts.push(c.id);
+            }
+        });
         this.my_property.contacts = contacts;
     },
     methods: {
