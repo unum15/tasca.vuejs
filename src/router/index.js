@@ -34,6 +34,7 @@ import ViewBackflowAssemblies from '@/components/ViewBackflowAssemblies';
 import CreateBackflowTestReport from '@/components/CreateBackflowTestReport';
 import EditBackflowTestReport from '@/components/EditBackflowTestReport';
 import ViewBackflowTestReports from '@/components/ViewBackflowTestReports';
+import PhreeBooksClients from '@/components/PhreeBooksClients';
 import PhreeBooksContacts from '@/components/PhreeBooksContacts';
 import PhreeBooksAddresses from '@/components/PhreeBooksAddresses';
 import ViewBackflowOld from '@/components/ViewBackflowOld';
@@ -108,6 +109,11 @@ var router = new Router({
       path: '/contacts',
       name: 'ViewContacts',
       component: ViewContacts
+    },
+    {
+      path: '/phree_books/clients',
+      name: 'PhreeBooksClients',
+      component: PhreeBooksClients
     },
     {
       path: '/phree_books/contacts',

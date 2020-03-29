@@ -38,6 +38,7 @@
                     <template slot="button-content">
                       <em>Phree Books</em>
                     </template>
+                    <b-dropdown-item href="/phree_books/clients">Clients</b-dropdown-item>
                     <b-dropdown-item href="/phree_books/contacts">Contacts</b-dropdown-item>
                     <b-dropdown-item href="/phree_books/addresses">Addresses</b-dropdown-item>
                 </b-nav-item-dropdown>

@@ -26,13 +26,32 @@
                                 filterable
                                 default-first-option
                                 placeholder="Select Property"
-                                @change="save"
+                                @change="getUnits();save();"
                             >
                             <el-option
                               v-for="property in properties"
                               :key="property.id"
                               :label="property.name"
                               :value="property.id">
+                            </el-option>
+                          </el-select>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Unit">
+                            <el-select
+                                v-model="backflow_assembly.unit_id"
+                                filterable
+                                clearable
+                                default-first-option
+                                placeholder="Select Unit"
+                                @change="save"
+                            >
+                            <el-option
+                              v-for="unit in units"
+                              :key="unit.id"
+                              :label="unit.name"
+                              :value="unit.id">
                             </el-option>
                           </el-select>
                         </b-form-group>
@@ -276,6 +295,7 @@ export default {
             backflow_assembly: { id: null, backflow_size_id: null },
             backflow_types: [],
             properties: [],
+            units: [],
             contacts: [],
             systems: [],
             uses: [],
@@ -331,6 +351,16 @@ export default {
           }
           else{
             this.properties = []
+          }
+        },
+        getUnits() {
+          if(this.backflow_assembly.property_id){
+            this.$http.get('/property_units?property_id=' + this.backflow_assembly_id).then(response => {
+              this.units = response.data.data
+            })
+          }
+          else{
+            this.units = []
           }
         },
         getContacts() {
