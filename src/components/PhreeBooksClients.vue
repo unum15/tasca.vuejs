@@ -200,7 +200,7 @@ export default {
     },
     methods: {
         getClients(){
-            this.$http.get('/phree_books/clients?active='+this.active+'&location='+this.location+'&synced='+this.synced).then((results) => {
+            this.$http.get('/phree_books/clients?active='+this.activity+'&location='+this.location+'&synced='+this.synced).then((results) => {
                 this.clients = results.data;
             });
         },
