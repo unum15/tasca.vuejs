@@ -23,7 +23,7 @@
                         <b-form-select
                             v-model="activity"
                             :options="activity_types"
-                            @change="getClients"
+                            @change="getClients();getPhreeClients();getTascaClients();"
                         />
                       </b-input-group>
                     </b-form-group>
@@ -191,17 +191,23 @@ export default {
     },
     created() {
         this.getClients();
-        this.$http.get('/phree_books/clients?location=Tasca&synced=Not Synced').then((results) => {
-            this.tasca_clients = results.data;
-        });
-        this.$http.get('/phree_books/clients?location=Phree Books&synced=Not Synced').then((results) => {
-            this.phree_clients = results.data;
-        });
+        this.getTascaClients();
+        this.getPhreeClients();
     },
     methods: {
         getClients(){
             this.$http.get('/phree_books/clients?active='+this.activity+'&location='+this.location+'&synced='+this.synced).then((results) => {
                 this.clients = results.data;
+            });
+        },
+        getTascaClients(){
+            this.$http.get('/phree_books/clients?active='+this.activity+'&location=Tasca&synced=Not Synced').then((results) => {
+                this.tasca_clients = results.data;
+            });
+        },
+        getPhreeClients(){
+            this.$http.get('/phree_books/clients?active='+this.activity+'&location=Phree Books&synced=Not Synced').then((results) => {
+                this.phree_clients = results.data;
             });
         },
         findPhreebooksClient(id){
