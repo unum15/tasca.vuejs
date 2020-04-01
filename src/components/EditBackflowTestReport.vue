@@ -432,7 +432,7 @@ export default {
           },
     methods: {
         getRequestedReport () {
-            this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_type.backflow_super_type').then(response => {
+            this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_assembly.backflow_type.backflow_super_type').then(response => {
                 let report = response.data.data
                 this.client_id = report.backflow_assembly.property.client_id;
                 this.getProperties();

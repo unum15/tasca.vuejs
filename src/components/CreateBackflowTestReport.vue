@@ -68,6 +68,9 @@
                     >
                     </b-form-input>
                 </template>
+                <template v-slot:cell(edit)="data">
+                    <a v-if="data.item.backflow_test_report_id" :href="'/backflow_test_report/'+data.item.backflow_test_report_id" target="edit_report" >EDIT</a>
+                </template>
             </b-table>
             <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
         </main>
@@ -143,6 +146,11 @@ export default {
                         key: 'notes',
                         label: 'Notes',
                         sortable: false
+                    },
+                    {
+                        key: 'edit',
+                        label: 'Edit',
+                        sortable: false
                     }
                 ]
         };
@@ -213,6 +221,10 @@ export default {
             else{
                 this.$http.patch('/backflow_test/' + item.test_id, test);
             }
+        },
+        edit(id){
+            let edit_route = this.$router.resolve({name: 'EditBackflowTestReport', query: {backflow_test_report_id: id}});
+            window.open(edit_route.href, '_blank');
         }
     },
     computed:{
