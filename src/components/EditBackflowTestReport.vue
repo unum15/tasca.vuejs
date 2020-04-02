@@ -282,9 +282,21 @@
                     </b-row>
                 </div>
         </b-container>
+            <b-modal
+                id="modal-preview"
+                title="Backflow Test Report Preview"
+                @show="showPreview"
+                size="lg"
+                ok-only
+            >
+                <div v-html="preview">
+                </div>
+                <b-button @click="previousPreview">Previous</b-button>
+                <b-button @click="nextPreview">Next</b-button>
+            </b-modal>
             <b-button v-if="backflow_assembly.id && !backflow_assembly.backflow_test_reports.length" @click="newReport">New Report</b-button>
             <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
-            <b-button @click="preview" v-if="includedBackflowAssemblies.length">Preview</b-button>
+            <b-button v-b-modal.modal-preview v-if="includedBackflowAssemblies.length">Preview</b-button>
             <b-button @click="pdf" v-if="includedBackflowAssemblies.length">PDF</b-button>
             <b-button @click="submit" v-if="includedBackflowAssemblies.length">Submit</b-button>
         </main>
@@ -306,6 +318,8 @@ export default {
         return {
             client_id: null,
             property_id: null,
+            preview: null,
+            preview_backflow_test_report_index: null,
             clients: [],
             contacts: [],
             properties: [],
@@ -641,7 +655,30 @@ export default {
             })
             window.open(url, 'backflow_pdf');
         },
-        preview(){
+        showPreview(){
+            this.preview_backflow_test_report_index = 0;
+            this.getPreview();
+        },
+        nextPreview(){
+            this.preview_backflow_test_report_index++;
+            if(this.preview_backflow_test_report_index >= this.includedBackflowAssemblies.length){
+                this.preview_backflow_test_report_index = 0;
+            }
+            this.getPreview();
+        },
+        previousPreview(){
+            this.preview_backflow_test_report_index--;
+            if(this.preview_backflow_test_report_index < 0){
+                this.preview_backflow_test_report_index = this.includedBackflowAssemblies.length-1;
+            }
+            this.getPreview();
+        },
+        getPreview(){
+            this.$http.get('/backflow_test_reports/html?backflow_test_report_id[]='+this.includedBackflowAssemblies[this.preview_backflow_test_report_index].backflow_test_reports[0].id).then(response => {
+                this.preview = response.data;
+            });
+        },
+        previewTab(){
             let url = '/api/backflow_test_reports/html?';
             this.includedBackflowAssemblies.map(a => {
                 if(a.backflow_test_reports.length){
