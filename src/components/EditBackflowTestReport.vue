@@ -503,6 +503,10 @@ export default {
           }
         },
         getReport() {
+            this.repair_contact_id = localStorage.getItem('id');
+            this.repair_date = this.today;
+            this.repairs = [];
+            this.cleanings = [];
             if((this.backflow_assembly)&&(this.backflow_assembly.backflow_test_reports.length)){
                 switch(this.backflow_assembly.backflow_type.backflow_super_type.name){
                     case 'RP':
@@ -629,6 +633,9 @@ export default {
             }
         },
         saveCleaning (valve_id){
+            if(!this.cleanings[valve_id]){
+                return;
+            }
             let cleaning = {
                 parts: this.cleanings[valve_id],
                 valve_id: valve_id,
@@ -638,6 +645,9 @@ export default {
             this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/cleanings', cleaning);
         },
         saveRepair (valve_id){
+            if(!this.repairs[valve_id]){
+                return;
+            }
             let repair = {
                 parts: this.repairs[valve_id],
                 valve_id: valve_id,
@@ -720,4 +730,14 @@ export default {
     },
 };
 </script>
+<style>
+ .modal-lg {
+    max-width: 1024px !important;
+    width: 1024px !important;
+   }
 
+  .modal-dialog {
+    max-width: 1024px !important;
+    width: 1024px !important;
+  }
+</style>
