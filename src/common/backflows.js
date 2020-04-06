@@ -9,7 +9,7 @@ export default {
                 passed=item.reading_1 >= 1 && item.reading_2 >= 1;
                 break;
             case 'RP':
-                passed=(item.reading_1  >= 2) && (item.reading_2 - item.reading_1 >= 5);
+                passed=(item.reading_1  >= 2) && (item.reading_2 - item.reading_1 >= 3);
                 break;
         }
         return passed;
