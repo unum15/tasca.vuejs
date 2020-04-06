@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div  style="padding-bottom:50px;">
         <TopMenu></TopMenu>
         <h1>
             {{ backflow_test_report.name }}
@@ -54,16 +54,6 @@
                 <div v-if="backflow_assembly.id && backflow_assembly.backflow_test_reports.length">
                     <b-row>
                         <b-col>
-                            <b-form-group label="Report Date">
-                              <b-form-input
-                                type="date"
-                                v-model="backflow_test_report.report_date"
-                                @input="save"
-                              >
-                              </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
                             <b-form-group label="Tag Year End">
                               <b-form-input
                                 type="number"
@@ -74,10 +64,22 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
+                        </b-col>
+                        <b-col>
                             <b-form-group label="Submitted Date">
                               <b-form-input
                                 type="date"
                                 v-model="backflow_test_report.submitted_date"
+                                @input="save"
+                              >
+                              </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Report Date">
+                              <b-form-input
+                                type="date"
+                                v-model="backflow_test_report.report_date"
                                 @input="save"
                               >
                               </b-form-input>
@@ -113,19 +115,8 @@
                         </b-col>
                     </b-row>
                     <b-row>
-                        <b-col>
-                            <b-form-group label="Report Notes">
-                                <b-form-textarea
-                                    v-model="backflow_test_report.notes"
-                                    @input="save"
-                                >
-                                </b-form-textarea>
-                            </b-form-group>
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col style="font-weight:bold">
-                            Tests
+                        <b-col style="font-weight:bold;text-align:left;font-size:200%;">
+                            Test Results
                         </b-col>
                     </b-row>
                     <b-row>
@@ -207,11 +198,15 @@
                         </b-col>
                     </b-row>
                     <b-row>
-                        <b-col style="font-weight:bold">
+                        <b-col style="font-weight:bold;text-align:left;font-size:200%;">
                             Repairs
                         </b-col>
                     </b-row>
                     <b-row>
+                        <b-col>
+                        </b-col>
+                        <b-col>
+                        </b-col>
                         <b-col>
                             <b-form-group label="Repairs By">
                                 <b-form-select
@@ -239,15 +234,15 @@
                         <b-col v-for="valve in valves" :key="valve.id">
                             <b-container>
                                 <b-row>
-                                    <b-col>
+                                    <b-col style="font-weight:bold;">
                                         {{ valve.name }} Valve
                                     </b-col>
                                 </b-row>
                                 <b-row>
-                                    <b-col>
+                                    <b-col style="font-weight:bold;text-align:left;">
                                         Cleaned
                                     </b-col>
-                                    <b-col>
+                                    <b-col style="font-weight:bold;text-align:left;">
                                         Replaced
                                     </b-col>
                                 </b-row>
@@ -280,8 +275,19 @@
                             </b-container>
                         </b-col>
                     </b-row>
+                    <b-row>
+                        <b-col>
+                            <b-form-group label="Report Notes">
+                                <b-form-textarea
+                                    v-model="backflow_test_report.notes"
+                                    @input="save"
+                                >
+                                </b-form-textarea>
+                            </b-form-group>
+                        </b-col>
+                    </b-row>
                 </div>
-        </b-container>
+            </b-container>
             <b-modal
                 id="modal-preview"
                 title="Backflow Test Report Preview"
@@ -294,11 +300,13 @@
                 <b-button @click="previousPreview">Previous</b-button>
                 <b-button @click="nextPreview">Next</b-button>
             </b-modal>
-            <b-button v-if="backflow_assembly.id && !backflow_assembly.backflow_test_reports.length" @click="newReport">New Report</b-button>
-            <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
-            <b-button v-b-modal.modal-preview v-if="includedBackflowAssemblies.length">Preview</b-button>
-            <b-button @click="pdf" v-if="includedBackflowAssemblies.length">PDF</b-button>
-            <b-button @click="submit" v-if="includedBackflowAssemblies.length">Submit</b-button>
+            <div class="left-align">
+                <b-button v-if="backflow_assembly.id && !backflow_assembly.backflow_test_reports.length" @click="newReport">New Report</b-button>
+                <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
+                <b-button v-b-modal.modal-preview v-if="includedBackflowAssemblies.length">Preview</b-button>
+                <b-button @click="pdf" v-if="includedBackflowAssemblies.length">PDF</b-button>
+                <b-button @click="submit" v-if="includedBackflowAssemblies.length">Submit</b-button>
+            </div>
         </main>
     </div>
 </template>
@@ -342,12 +350,14 @@ export default {
                 {
                     key: 'use',
                     label: 'Use',
-                    sortable: true
+                    sortable: true,
+                    tdClass: 'left-align'
                 },
                 {
                     key: 'placement',
                     label: 'Placement',
-                    sortable: true
+                    sortable: true,
+                    tdClass: 'left-align'
                 },
                 {
                     key: 'backflow_type.name',
@@ -739,5 +749,9 @@ export default {
   .modal-dialog {
     max-width: 1024px !important;
     width: 1024px !important;
+  }
+  
+  .left-align {
+    text-align: left;
   }
 </style>
