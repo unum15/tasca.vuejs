@@ -35,7 +35,7 @@
                 <template v-slot:cell(order_id)="data">
                     <a :href="'/client/' + data.item.order.project.client_id + '/project/' + data.item.order.project_id + '/order/' + data.value"> {{ data.value }} </a>
                 </template>
-                <template slot="order.project.client.name" slot-scope="data">
+                <template v-slot:cell(order.project.client.name)="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(property)="data">
