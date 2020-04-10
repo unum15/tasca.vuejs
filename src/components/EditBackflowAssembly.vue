@@ -40,7 +40,7 @@
                     <b-col>
                         <b-form-group label="Unit">
                             <el-select
-                                v-model="backflow_assembly.unit_id"
+                                v-model="backflow_assembly.property_unit_id"
                                 filterable
                                 clearable
                                 default-first-option
@@ -77,12 +77,21 @@
                     </b-col>
                     <b-col>
                         <b-form-group label="Month">
-                            <b-form-input
+                            <el-select
                                 v-model="backflow_assembly.month"
+                                filterable
+                                default-first-option
+                                placeholder="Select Month"
                                 @change="save"
-                                type="text"
                             >
-                            </b-form-input>
+                                <el-option
+                                  v-for="index in 12"
+                                  :key="index"
+                                  :label="index"
+                                  :value="index"
+                                  >
+                                </el-option>
+                            </el-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -333,9 +342,10 @@ export default {
         if(this.backflow_assembly_id !== null) {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
                 this.client_id = response.data.data.property.client_id;
+                this.backflow_assembly = response.data.data;
                 this.getProperties();
                 this.getContacts();
-                this.backflow_assembly = response.data.data;
+                this.getUnits();
             });
         }
     },
@@ -345,7 +355,8 @@ export default {
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
               this.properties = response.data
               if(this.properties.length == 1){
-                 this.backflow_assembly.property_id= this.properties[0].id;
+                 this.backflow_assembly.property_id = this.properties[0].id;
+                 this.getUnits();
               }
             })
           }
@@ -355,7 +366,7 @@ export default {
         },
         getUnits() {
           if(this.backflow_assembly.property_id){
-            this.$http.get('/property_units?property_id=' + this.backflow_assembly_id).then(response => {
+            this.$http.get('/property_units?property_id=' + this.backflow_assembly.property_id).then(response => {
               this.units = response.data.data
             })
           }

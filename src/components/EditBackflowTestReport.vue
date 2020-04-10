@@ -1,5 +1,5 @@
 <template>
-    <div  style="padding-bottom:50px;">
+    <div  style="padding-bottom:100px;">
         <TopMenu></TopMenu>
         <h1>
             {{ backflow_test_report.name }}
@@ -44,6 +44,7 @@
                         @row-selected="backflowSelected"
                         context-changed="tableUpdated"
                         select-mode="single"
+                        style="text-align:left"
                     >
                         <template v-slot:cell(include)="data">
                                 <b-form-checkbox v-if="data.item.backflow_test_reports.length" v-model="data.item.include" />
@@ -66,16 +67,6 @@
                         <b-col>
                         </b-col>
                         <b-col>
-                            <b-form-group label="Submitted Date">
-                              <b-form-input
-                                type="date"
-                                v-model="backflow_test_report.submitted_date"
-                                @input="save"
-                              >
-                              </b-form-input>
-                            </b-form-group>
-                        </b-col>
-                        <b-col>
                             <b-form-group label="Report Date">
                               <b-form-input
                                 type="date"
@@ -85,21 +76,20 @@
                               </b-form-input>
                             </b-form-group>
                         </b-col>
+                        <b-col>
+                            <b-form-group label="Submitted Date">
+                              <b-form-input
+                                type="date"
+                                v-model="backflow_test_report.submitted_date"
+                                @input="save"
+                              >
+                              </b-form-input>
+                            </b-form-group>
+                        </b-col>
                     </b-row>
                     <b-row>
                         <b-col>
-                            {{ backflow_assembly.use }}
-                        </b-col>
-                        <b-col>
-                            {{ backflow_assembly.placement }}
-                        </b-col>
-                        <b-col>
-                            {{ backflow_assembly.backflow_type.name }}
-                        </b-col>
-                    </b-row>
-                    <b-row>
-                        <b-col>
-                            <b-form-group label="Proper installation and use">
+                            <b-form-group label="Proper installation and use" style="text-align:left;">
                                 <b-form-radio v-model="backflow_test_report.backflow_installed_to_code" name="backflow_installed_to_code" value="true">To Code</b-form-radio>
                                 <b-form-radio v-model="backflow_test_report.backflow_installed_to_code" name="backflow_installed_to_code" value="false">Not To code</b-form-radio>
                             </b-form-group>
@@ -300,7 +290,7 @@
                 <b-button @click="previousPreview">Previous</b-button>
                 <b-button @click="nextPreview">Next</b-button>
             </b-modal>
-            <div class="left-align">
+            <div>
                 <b-button v-if="backflow_assembly.id && !backflow_assembly.backflow_test_reports.length" @click="newReport">New Report</b-button>
                 <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
                 <b-button v-b-modal.modal-preview v-if="includedBackflowAssemblies.length">Preview</b-button>
@@ -351,13 +341,11 @@ export default {
                     key: 'use',
                     label: 'Use',
                     sortable: true,
-                    tdClass: 'left-align'
                 },
                 {
                     key: 'placement',
                     label: 'Placement',
                     sortable: true,
-                    tdClass: 'left-align'
                 },
                 {
                     key: 'backflow_type.name',
