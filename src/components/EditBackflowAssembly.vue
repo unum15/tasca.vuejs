@@ -333,10 +333,10 @@ export default {
         if(this.backflow_assembly_id !== null) {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
                 this.client_id = response.data.data.property.client_id;
+                this.backflow_assembly = response.data.data;
                 this.getProperties();
                 this.getContacts();
                 this.getUnits();
-                this.backflow_assembly = response.data.data;
             });
         }
     },
