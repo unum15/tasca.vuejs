@@ -335,6 +335,7 @@ export default {
                 this.client_id = response.data.data.property.client_id;
                 this.getProperties();
                 this.getContacts();
+                this.getUnits();
                 this.backflow_assembly = response.data.data;
             });
         }
@@ -345,7 +346,8 @@ export default {
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
               this.properties = response.data
               if(this.properties.length == 1){
-                 this.backflow_assembly.property_id= this.properties[0].id;
+                 this.backflow_assembly.property_id = this.properties[0].id;
+                 this.getUnits();
               }
             })
           }
