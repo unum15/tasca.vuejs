@@ -355,7 +355,7 @@ export default {
         },
         getUnits() {
           if(this.backflow_assembly.property_id){
-            this.$http.get('/property_units?property_id=' + this.backflow_assembly_id).then(response => {
+            this.$http.get('/property_units?property_id=' + this.backflow_assembly.property_id).then(response => {
               this.units = response.data.data
             })
           }
