@@ -40,7 +40,7 @@
                     <b-col>
                         <b-form-group label="Unit">
                             <el-select
-                                v-model="backflow_assembly.unit_id"
+                                v-model="backflow_assembly.property_unit_id"
                                 filterable
                                 clearable
                                 default-first-option
