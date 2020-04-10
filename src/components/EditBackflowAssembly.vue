@@ -77,12 +77,21 @@
                     </b-col>
                     <b-col>
                         <b-form-group label="Month">
-                            <b-form-input
+                            <el-select
                                 v-model="backflow_assembly.month"
+                                filterable
+                                default-first-option
+                                placeholder="Select Month"
                                 @change="save"
-                                type="text"
                             >
-                            </b-form-input>
+                                <el-option
+                                  v-for="index in 12"
+                                  :key="index"
+                                  :label="index"
+                                  :value="index"
+                                  >
+                                </el-option>
+                            </el-select>
                         </b-form-group>
                     </b-col>
                 </b-row>
