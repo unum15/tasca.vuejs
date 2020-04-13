@@ -26,7 +26,7 @@
             <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value }} </a>
         </template>
         <template v-slot:cell(include)="data">
-          <b-form-checkbox v-if="data.item.backflow_test_reports.length" v-model="data.item.include" />
+          <b-form-checkbox v-model="data.item.include" />
         </template>
         <template v-slot:row-details="data">
           <ViewBackflowsReportsTab v-if="data.item.backflow_test_reports.length && !data.item.show_all_reports" :backflow_test_reports="[data.item.backflow_test_reports[0]]">
