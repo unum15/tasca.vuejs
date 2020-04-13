@@ -25,6 +25,9 @@
         <template v-slot:cell(serial_number)="data">
             <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value }} </a>
         </template>
+        <template v-slot:cell(include)="data">
+          <b-form-checkbox v-if="data.item.backflow_test_reports.length" v-model="data.item.include" />
+        </template>
         <template v-slot:row-details="data">
           <ViewBackflowsReportsTab v-if="data.item.backflow_test_reports.length && !data.item.show_all_reports" :backflow_test_reports="[data.item.backflow_test_reports[0]]">
           </ViewBackflowsReportsTab>
@@ -34,6 +37,7 @@
           <img src="@/assets/delete.png" v-if="data.item.backflow_test_reports.length && data.item.show_all_reports" v-b-tooltip.hover title="Show All Reports" @click.stop="hideReports(data.item.id)" fluid alt="x" style="width:20px;" />
         </template>
     </b-table>
+    <b-button @click="pdfTag" v-if="includedBackflowAssemblies.length">PDF Tag</b-button>
   </div>
 </template>
 <script>
@@ -91,6 +95,11 @@ export default {
               key: 'notes',
               label: 'Notes',
               sortable: true
+          },
+          {
+              key: 'include',
+              label: 'Include',
+              sortable: false
           }
       ],
       test_fields: [
@@ -155,8 +164,22 @@ export default {
       let b = this.backflow_assemblies;
       this.backflow_assemblies = [];
       this.backflow_assemblies = b;
-    }
-  }
+    },
+    pdfTag(){
+      let url = '/api/backflow_assemblies/tags/pdf?';
+      this.includedBackflowAssemblies.map(a => {
+          if(a.backflow_test_reports.length){
+              url += 'backflow_assembly_id[]='+a.backflow_test_reports[0].backflow_assembly_id+'&';
+          }
+       })
+      window.open(url, 'backflow_tag_pdf');
+    },
+  },
+  computed:{
+        includedBackflowAssemblies(){
+            return this.backflow_assemblies.filter(a => a.include);
+        }
+    },
 }
 
 </script>

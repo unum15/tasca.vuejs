@@ -295,6 +295,7 @@
                 <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
                 <b-button v-b-modal.modal-preview v-if="includedBackflowAssemblies.length">Preview</b-button>
                 <b-button @click="pdf" v-if="includedBackflowAssemblies.length">PDF</b-button>
+                <b-button @click="pdfTag" v-if="includedBackflowAssemblies.length">PDF Tag</b-button>
                 <b-button @click="submit" v-if="includedBackflowAssemblies.length">Submit</b-button>
             </div>
         </main>
@@ -654,7 +655,7 @@ export default {
             }
             this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair);
         },
-        pdf (){
+        pdf(){
             let url = '/api/backflow_test_reports/pdf?';
             this.includedBackflowAssemblies.map(a => {
                 if(a.backflow_test_reports.length){
@@ -662,6 +663,15 @@ export default {
                 }
             })
             window.open(url, 'backflow_pdf');
+        },
+        pdfTag(){
+            let url = '/api/backflow_assemblies/tags/pdf?';
+            this.includedBackflowAssemblies.map(a => {
+                if(a.backflow_test_reports.length){
+                    url += 'backflow_assembly_id[]='+a.backflow_test_reports[0].backflow_assembly_id+'&';
+                }
+            })
+            window.open(url, 'backflow_tag_pdf');
         },
         showPreview(){
             this.preview_backflow_test_report_index = 0;
