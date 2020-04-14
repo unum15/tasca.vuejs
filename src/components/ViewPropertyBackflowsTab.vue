@@ -168,7 +168,7 @@ export default {
     pdfTag(){
       let url = '/api/backflow_assemblies/tags/pdf?';
       this.includedBackflowAssemblies.map(a => {
-          url += 'backflow_assembly_id[]='+a.backflow_test_reports[0].backflow_assembly_id+'&';
+          url += 'backflow_assembly_id[]='+a.id+'&';
        });
       window.open(url, 'backflow_tag_pdf');
     },
