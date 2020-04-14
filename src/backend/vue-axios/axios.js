@@ -26,13 +26,13 @@ daxios.interceptors.response.use(
       
     }
     return Promise.reject(error);
-  })
+  });
 
 daxios.interceptors.request.use(
   function (config) {
     config.headers.authorization = 'Bearer ' + localStorage.getItem('bearer_token');
     return config;
   }
-)
+);
 
 export default daxios;

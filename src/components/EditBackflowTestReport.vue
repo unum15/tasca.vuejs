@@ -176,9 +176,11 @@
                                     </b-form-input>
                             </template>
                             <template v-slot:cell(result)="data">
-                                <img src="@/assets/delete.png" v-if="!data.item.passed" @click.stop="markTestPassed(data.item.id)" fluid alt="failed" style="width:20px;" />
-                                <img src="@/assets/checkmark.png" v-if="data.item.passed" @click.stop="markTestFailed(data.item.id)" fluid alt="passed" style="width:20px;" />
-                                {{ data.item.id }}
+                                <img src="@/assets/failed.png" v-if="!data.item.passed" @click.stop="markTestPassed(data.item.id)" fluid alt="failed" style="width:20px;cursor:pointer;" />
+                                <img src="@/assets/checkmark.png" v-if="data.item.passed" @click.stop="markTestFailed(data.item.id)" fluid alt="passed" style="width:20px;cursor:pointer;" />
+                            </template>
+                            <template v-slot:cell(actions)="data">
+                                <img src="@/assets/delete.png" @click.stop="deleteTest(data.item.id)" fluid alt="delete" style="width:20px;cursor:pointer;" />
                             </template>
                         </b-table>
                     </b-row>
@@ -411,6 +413,11 @@ export default {
                     {
                         key: 'result',
                         label: 'Result',
+                        sortable: false
+                    },
+                    {
+                        key: 'actions',
+                        label: '',
                         sortable: false
                     }
             ]
@@ -726,7 +733,14 @@ export default {
         checkPassed(item){
             item.backflow_type = this.backflow_assembly.backflow_type;
             item.passed = this.passed(item);
-        }
+        },
+        deleteTest(id) {
+            if(confirm("Delete test?")){
+                this.$http.delete('/backflow_test/' + id).then(() => {
+                    this.getReport();
+                });
+            }
+        },
     },
     computed:{
         today() {
