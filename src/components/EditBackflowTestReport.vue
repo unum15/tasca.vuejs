@@ -736,9 +736,14 @@ export default {
         },
         deleteTest(id) {
             if(confirm("Delete test?")){
-                this.$http.delete('/backflow_test/' + id).then(() => {
+                if(id){
+                    this.$http.delete('/backflow_test/' + id).then(() => {
+                        this.getReport();
+                    });
+                }
+                else{
                     this.getReport();
-                });
+                }
             }
         },
     },
