@@ -32,7 +32,7 @@
       "eslint:recommended"
     ],
     "rules": {
-      "no-console":"on"
+      "no-console":"error"
     },
     "parserOptions": {
       "parser": "babel-eslint"
