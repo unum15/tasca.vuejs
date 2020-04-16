@@ -442,14 +442,6 @@ export default {
         }
         this.passed = backflows.passed // shared code between here and CreateBackflowTestReport;
     },
-    updated () {
-            this.$nextTick(function () {
-                if(this.$refs.backflowsTable){
-                    let index = this.backflow_assemblies.indexOf(this.backflow_assembly);
-                    this.$refs.backflowsTable.selectRow(index);
-                }
-            });
-          },
     methods: {
         getRequestedReport () {
             this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_assembly.backflow_type.backflow_super_type').then(response => {
@@ -514,20 +506,6 @@ export default {
             this.repairs = [];
             this.cleanings = [];
             if((this.backflow_assembly)&&(this.backflow_assembly.backflow_test_reports.length)){
-                switch(this.backflow_assembly.backflow_type.backflow_super_type.name){
-                    case 'RP':
-                        this.test_fields[2].label = 'RP Test';
-                        this.test_fields[3].label = 'Check Test';
-                        break;
-                    case 'DC':
-                        this.test_fields[2].label = 'First Test';
-                        this.test_fields[3].label = 'Second Test';
-                        break;
-                    case 'PVB':
-                        this.test_fields[2].label = 'Air Inlet Test';
-                        this.test_fields[3].label = 'Check Test';
-                        break;
-                }
                 this.$http.get('/backflow_test_report/'+this.backflow_assembly.backflow_test_reports[0].id+'?includes=backflow_tests,backflow_repairs,backflow_cleanings').then(response => {
                     this.backflow_test_report = response.data.data;
                     if(this.backflow_test_report.backflow_repairs.length){
@@ -631,6 +609,20 @@ export default {
         backflowSelected (items) {
             if(items.length){
                 this.backflow_assembly=items[0];
+                switch(this.backflow_assembly.backflow_type.backflow_super_type.name){
+                    case 'RP':
+                        this.test_fields[2].label = 'RP Test';
+                        this.test_fields[3].label = 'Check Test';
+                        break;
+                    case 'DC':
+                        this.test_fields[2].label = 'First Test';
+                        this.test_fields[3].label = 'Second Test';
+                        break;
+                    case 'PVB':
+                        this.test_fields[2].label = 'Air Inlet Test';
+                        this.test_fields[3].label = 'Check Test';
+                        break;
+                }
                 this.getValves();
                 this.getReport();
             }
