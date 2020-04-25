@@ -19,11 +19,22 @@
                   </b-col>
                   <b-col>
                     <b-form-group label="Active Filter" class="mb-0">
-                    <b-form-select
-                        @change="getBackflowAssemblies()"
-                        :options="active_values"
-                        v-model="active_filter">
-                    </b-form-select>
+                        <b-form-select
+                            @change="getBackflowAssemblies()"
+                            :options="active_values"
+                            v-model="active_filter">
+                        </b-form-select>
+                    </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Month" class="mb-0">
+                        <b-form-input v-model="month_match" placeholder="Month" :state="month_match_state"/>
+                    </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Show Submitted" class="mb-0">
+                      <b-form-checkbox v-model="submitted">
+                      </b-form-checkbox>
                     </b-form-group>
                   </b-col>
                 </b-row>
@@ -33,7 +44,7 @@
                 striped
                 hover
                 :filter="filter"
-                :items="backflow_assemblies"
+                :items="filtered_backflow_assemblies"
                 :fields="fields"
             >
                 <template v-slot:cell(id)="data">
@@ -45,6 +56,8 @@
 </template>
 <script>
 import TopMenu from './TopMenu';
+import moment from 'moment'
+import LogicNode from '../common/LogicNode.js';
 export default {
     name: 'ViewBackflowAssemblies',
     components: {
@@ -54,6 +67,9 @@ export default {
         return {
             backflow_assemblies: [],
             filter: null,
+            month_match: null,
+            month_logic: null,
+            submitted: true,
             fields: [
                     {
                         key: 'id',
@@ -116,6 +132,11 @@ export default {
                         sortable: true
                     },
                     {
+                        key: 'month',
+                        label: 'Month',
+                        sortable: true
+                    },
+                    {
                         key: 'notes',
                         label: 'Notes',
                         sortable: true
@@ -157,9 +178,36 @@ export default {
             if(this.active_filter != ''){
                 active = '&active=' + this.active_filter;
             }
-            this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model' + active).then(response => {
+            this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_test_reports' + active).then(response => {
                 this.backflow_assemblies = response.data.data;
             });
+        }
+    },
+    computed: {
+        filtered_backflow_assemblies (){
+            let assemblies = this.backflow_assemblies;
+            if(this.month_match){
+                assemblies = assemblies.filter(a => (this.month_logic.matches(a.month)));
+            }
+            if(!this.submitted){
+                assemblies = assemblies.filter(a =>{
+                    if((a.backflow_test_reports.length) && (a.backflow_test_reports[0].submitted_date)){
+                        if(moment().diff(moment(a.backflow_test_reports[0].submitted_date), 'months', true) < 10){
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+            return assemblies;
+        },
+        month_match_state () {
+            return this.month_match ? this.month_logic.valid : null;
+        }
+    },
+    watch: {
+        month_match(value){
+            this.month_logic = new LogicNode(value,true);
         }
     }
 }
