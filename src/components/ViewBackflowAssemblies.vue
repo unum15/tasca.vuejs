@@ -186,8 +186,8 @@ export default {
     computed: {
         filtered_backflow_assemblies (){
             let assemblies = this.backflow_assemblies;
-            if(this.month_match && this.month_logic && this.month_logic.valid){
-                assemblies = assemblies.filter(a => (this.month_logic.evalLogic(a.month)));
+            if(this.month_match){
+                assemblies = assemblies.filter(a => (this.month_logic.matches(a.month)));
             }
             if(!this.submitted){
                 assemblies = assemblies.filter(a =>{
@@ -207,7 +207,7 @@ export default {
     },
     watch: {
         month_match(value){
-            this.month_logic = new LogicNode(value);
+            this.month_logic = new LogicNode(value,true);
         }
     }
 }
