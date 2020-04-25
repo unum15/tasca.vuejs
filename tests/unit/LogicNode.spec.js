@@ -61,6 +61,16 @@ describe('LogicNode', () => {
 });
 
 describe('LogicNode', () => {
+  it('double digit greater than test', () => {
+    let logic = new LogicNode('>10', true);
+    expect(logic.matches(5)).toBe(false);
+    expect(logic.matches(1)).toBe(false);
+    expect(logic.matches(12)).toBe(true);
+  });
+});
+
+
+describe('LogicNode', () => {
   it('simple greater than or equal to test', () => {
     let logic = new LogicNode('>=5', true);
     expect(logic.matches(5)).toBe(true);

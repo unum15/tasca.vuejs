@@ -46,7 +46,7 @@ class LogicNode{
             return;
         }
         if(/^[><=]+\d+$/.test(value)){
-            let values = /([><=]+)(\d)/.exec(value); //replace with matchAll when avialable
+            let values = /([><=]+)(\d+)/.exec(value); //replace with matchAll when avialable
             this.value = values[1];
             this.left = new LogicNode('value');
             this.right = new LogicNode(values[2]);
