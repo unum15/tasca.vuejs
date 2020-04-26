@@ -11,7 +11,7 @@ class LogicNode{
             this.parse(value);
         }
         catch(e){
-            console.log(e);
+            //console.log(e); This is ok
         }
     }
     
