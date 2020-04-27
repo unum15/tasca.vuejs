@@ -6,6 +6,30 @@
         </head>
         <main>
             <h2>Assignments for {{ contact_name }}</h2>
+            <div>
+                <b-button v-b-modal.modal-1>Sign In</b-button>
+                <b-modal id="modal-1" title="BootstrapVue">
+                    <b-container fluid>
+                        <b-row>
+                            <b-col>
+                                <b-form-group label="Time" class="mb-0">
+                                    <b-form-input type="datetime" />
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <b-form-group label="Category">
+                                    <Treeselect v-model="value" :multiple="true" :options="categories" />
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <b-form-group label="Assignment">
+                                    <Treeselect v-model="value" :options="assignments" />
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                    </b-container>
+                </b-modal>
+            </div>
             <b-container fluid>
                 <b-row>
                     <b-col>
@@ -86,14 +110,17 @@
     </div>
 </template>
 <script>
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TopMenu from './TopMenu';
 import ViewTaskDate from './ViewTaskDate';
 import moment from 'moment';
 export default {
     name: 'ViewAssignments',
     components: {
-        'TopMenu': TopMenu,
-        'ViewTaskDate': ViewTaskDate
+        TopMenu,
+        ViewTaskDate,
+        Treeselect
     },
     data() {
         return {
@@ -106,6 +133,58 @@ export default {
             modalInfo: { title: '', content: '', id: null },
             date: null,
             sort_by: 'time',
+            categories: [
+                {
+                    id: '1',
+                    label: 'Equipment Maintance',
+                    children: [
+                        {
+                            id: '2',
+                            label: 'Gas up',
+                            children: [
+                                {
+                                    id: '4',
+                                    label: 'truck'
+                                },
+                                {
+                                    id: '5',
+                                    label: 'other'
+                                }
+                            ]
+                        },
+                        {
+                            id: '3',
+                            label: 'Oil change',
+                        }
+                    ],
+                },
+                {
+                    id: '6',
+                    label: 'Driving',
+                },
+                {
+                    id: '7',
+                    label: 'Napping',
+                }
+            ],
+            assignments: [
+                {
+                    id: '1',
+                    label: 'Work Orders'
+                },
+                {
+                    id: '2',
+                    label: 'Shop'
+                },
+                {
+                    id: '3',
+                    label: 'Lunch'
+                },
+                {
+                    id: '4',
+                    label: 'Part Pickup'
+                }
+            ],
             fields: [
                 {
                     key: 'order_id',
