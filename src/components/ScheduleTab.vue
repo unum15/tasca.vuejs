@@ -56,11 +56,17 @@
                         </th>  
                     </tr>
                 </template>
-                <template v-slot:cell(order_id)="data">
-                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.item.order_id }} </a>
+                <template v-slot:cell(start_date)="data">
+                    <span v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id">{{ data.value }}</span>
+                </template>
+                <template v-slot:cell(order_name)="data">
+                    <span v-b-popover.hover="data.item.order_description" :id="'order_name_' + data.item.id"><a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.value }} </a></span>
                 </template>
                 <template v-slot:cell(client)="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.item.client }} </a>
+                </template>
+                <template v-slot:cell(property)="data">
+                    <span v-b-popover.hover="data.item.address" :id="'property_' + data.item.id">{{ data.value }}</span>
                 </template>
                 <template v-slot:cell(name)="data">
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.item.name }}</span>
@@ -126,6 +132,13 @@
                     <b-form-input
                         @change="copyOrderTmp(data.item);save(data.item)"
                         v-model="data.item.sort_order_tmp"
+                        >
+                    </b-form-input>
+                </template>
+                <template v-slot:cell(crew_hours)="data">
+                    <b-form-input
+                        @change="save(data.item)"
+                        v-model="data.item.crew_hours"
                         >
                     </b-form-input>
                 </template>
@@ -200,8 +213,8 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'order_id',
-                    label: 'S/WO#',
+                    key: 'order_name',
+                    label: 'Work Order Name',
                     sortable: true,
                     filter: null
                 },
@@ -242,18 +255,6 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'task_status',
-                    label: 'Status',
-                    sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'task_action',
-                    label: 'Action',
-                    sortable: true,
-                    filter: null
-                },
-                {
                     key: 'day',
                     label: 'Day',
                     sortable: true,
@@ -268,6 +269,12 @@ export default {
                 {
                     key: 'sort_order',
                     label: 'Order',
+                    sortable: true,
+                    filter: null
+                },
+                {
+                    key: 'crew_hours',
+                    label: 'Crew Hours',
                     sortable: true,
                     filter: null
                 },
@@ -363,7 +370,8 @@ export default {
             var task = {
                 task_category_id: item.task_category_id,
                 task_status_id: item.task_status_id,
-                task_action_id: item.task_action_id
+                task_action_id: item.task_action_id,
+                crew_hours: item.crew_hours
             
             }
             this.$http.patch('/task/' + item.task_id, task);
