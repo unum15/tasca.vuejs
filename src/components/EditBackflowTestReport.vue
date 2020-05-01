@@ -203,7 +203,7 @@
                             <b-form-group label="Repairs By">
                                 <b-form-select
                                     v-model="repair_contact_id"
-                                    @change="save"
+                                    @change="saveRepair"
                                     :options="contacts"
                                     value-field="id"
                                     text-field="name"
@@ -215,7 +215,7 @@
                             <b-form-group label="Date">
                                 <b-form-input
                                     v-model="repair_date"
-                                    @change="save"
+                                    @change="saveRepair"
                                     type="date"
                                 >
                                 </b-form-input>
