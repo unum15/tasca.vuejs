@@ -131,6 +131,7 @@
                 <ViewTaskDate
                      v-if="modal_info.id"
                     :task_date_id="modal_info.id"
+                    :clock_in_id="clock_in.id"
                 >
                 </ViewTaskDate>
             </b-modal>

@@ -17,8 +17,8 @@
                 <b-col class="data">{{ task_date.task.order.name }}</b-col>
                 <b-col class="label">Start Date</b-col>
                 <b-col class="data">{{ task_date.task.order.start_date }}</b-col>
-                <b-col><b-button @click="signIn" v-if="!sign_in_id">Clock In</b-button></b-col>
-                <b-col><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
+                <b-col><b-button @click="signIn" v-if="!sign_in_id" :disabled="!clock_in_id" v-b-tooltip.hover :title="clock_in_id ? 'Sign In To This Task' : 'You Must Clock In'">Sign In</b-button></b-col>
+                <b-col><b-button @click="signOut" v-if="sign_in_id">Sign Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ task_date.task.order.description }}</b-col>
@@ -138,7 +138,8 @@ import moment from 'moment';
 export default {
     name: 'ViewTaskDate',
     props: {
-        task_date_id : { required:true }
+        task_date_id : { required:true },
+        clock_in_id : { default: null }
     },
     data() {
         return {
