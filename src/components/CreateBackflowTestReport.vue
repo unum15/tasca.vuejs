@@ -79,7 +79,7 @@
 <script>
 import TopMenu from './TopMenu';
 import moment from 'moment';
-import backflows from '../common/backflows.js';
+import backflows from '../common/Backflows.js';
 export default {
     name: 'CreateBackflowTestReport',
     components: {
