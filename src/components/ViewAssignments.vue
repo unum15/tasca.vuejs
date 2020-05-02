@@ -46,12 +46,12 @@
                             </b-col>
                             <b-col>
                                 <b-form-group label="Category">
-                                    <Treeselect :options="categories" />
+                                    <Treeselect :options="categories" :normalizer="treeNormalizer" />
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label="Assignment">
-                                    <Treeselect :options="assignments" />
+                                    <Treeselect :options="assignments" :normalizer="treeNormalizer"/>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -174,58 +174,8 @@ export default {
                 time: null,
                 title: 'Sign In - Overhead'
             },
-            categories: [
-                {
-                    id: '1',
-                    label: 'Equipment Maintance',
-                    children: [
-                        {
-                            id: '2',
-                            label: 'Gas up',
-                            children: [
-                                {
-                                    id: '4',
-                                    label: 'truck'
-                                },
-                                {
-                                    id: '5',
-                                    label: 'other'
-                                }
-                            ]
-                        },
-                        {
-                            id: '3',
-                            label: 'Oil change',
-                        }
-                    ],
-                },
-                {
-                    id: '6',
-                    label: 'Driving',
-                },
-                {
-                    id: '7',
-                    label: 'Napping',
-                }
-            ],
-            assignments: [
-                {
-                    id: '1',
-                    label: 'Work Orders'
-                },
-                {
-                    id: '2',
-                    label: 'Shop'
-                },
-                {
-                    id: '3',
-                    label: 'Lunch'
-                },
-                {
-                    id: '4',
-                    label: 'Part Pickup'
-                }
-            ],
+            categories: [],
+            assignments: [],
             fields: [
                 {
                     key: 'order_id',
@@ -296,6 +246,12 @@ export default {
 		});
         this.$http.get('/clock_in/current').then(response => {
 			this.clock_in = response.data.data;
+		});
+        this.$http.get('/overhead_assignments').then(response => {
+			this.assignments = response.data.data;
+		});
+        this.$http.get('/overhead_categories').then(response => {
+			this.categories = response.data.data;
 		});
         this.getTasks();
         this.contact_name = localStorage.getItem('name');
@@ -433,6 +389,13 @@ export default {
                 });
             }
         },
+        treeNormalizer(node){
+            return {
+                id: node.id,
+                label: node.name,
+                children: node.children,
+            }
+        }
     },
     computed:{
         filter(){
