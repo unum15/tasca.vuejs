@@ -4,8 +4,8 @@
             <b-row>
                 <b-col>Client</b-col>
                 <b-col>{{ order.project.client.name }}</b-col>
-                <b-col><b-button @click="signIn" v-if="!sign_in_id">Clock In</b-button></b-col>
-                <b-col><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
+                <b-col><b-button @click="signIn" v-if="!sign_in_id">Sign In</b-button></b-col>
+                <b-col><b-button @click="signOut" v-if="sign_in_id">Sign Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col>Employee</b-col>

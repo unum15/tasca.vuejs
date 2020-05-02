@@ -7,23 +7,51 @@
         <main>
             <h2>Assignments for {{ contact_name }}</h2>
             <div>
-                <b-button v-b-modal.modal-1 v-show="false">Sign In</b-button>
-                <b-modal id="modal-1" title="BootstrapVue">
+                <span v-if="clock_in">
+                    Clocked In At: {{ formatDateTime(clock_in.clock_in) }}
+                    <b-button @click="showClockOut">Clock Out</b-button>
+                </span>
+                <b-button @click="showClockIn" v-show="!clock_in">Clock In</b-button>
+                <b-modal ref="modal-clock-in"  @ok="clockIn" :title="modal_clock_in.title">
                     <b-container fluid>
                         <b-row>
                             <b-col>
+                                <b-form-group label="Date" class="mb-0">
+                                    <b-form-input type="date" v-model='modal_clock_in.date' />
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
                                 <b-form-group label="Time" class="mb-0">
-                                    <b-form-input type="datetime" />
+                                    <b-form-input type="time" v-model='modal_clock_in.time' />
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                    </b-container>
+                </b-modal>
+            </div>
+            <div v-show="clock_in">
+                <b-button @click="showSignInOverhead">Sign In - Overhead</b-button>
+                <b-modal ref="modal-sign-in-overhead" @ok="signInOverhead" :title="modal_overhead.title">
+                    <b-container fluid>
+                        <b-row>
+                            <b-col>
+                                <b-form-group label="Date" class="mb-0">
+                                    <b-form-input type="date" v-model="modal_overhead.date" />
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <b-form-group label="Time" class="mb-0">
+                                    <b-form-input type="time" v-model="modal_overhead.time" />
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label="Category">
-                                    <Treeselect v-model="value" :options="categories" />
+                                    <Treeselect :options="categories" />
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label="Assignment">
-                                    <Treeselect v-model="value" :options="assignments" />
+                                    <Treeselect :options="assignments" />
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -99,10 +127,10 @@
                     />
                 </template>
             </b-table>
-            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
+            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modal_info.title" ok-only>
                 <ViewTaskDate
-                     v-if="modalInfo.id"
-                    :task_date_id="modalInfo.id"
+                     v-if="modal_info.id"
+                    :task_date_id="modal_info.id"
                 >
                 </ViewTaskDate>
             </b-modal>
@@ -130,9 +158,21 @@ export default {
             crew_id: null,
             tasks: [],
             text_filter: null,
-            modalInfo: { title: '', content: '', id: null },
+            modal_info: { title: '', content: '', id: null },
             date: null,
             sort_by: 'time',
+            modal_clock_in: {
+                date: null,
+                time: null,
+                title: null
+            },
+            clock_in: null,
+            sign_in: null,
+            modal_overhead: {
+                date: null,
+                time: null,
+                title: 'Sign In - Overhead'
+            },
             categories: [
                 {
                     id: '1',
@@ -253,6 +293,9 @@ export default {
 			this.crews = response.data;
             this.crews.unshift({id: null, name: 'All'});
 		});
+        this.$http.get('/clock_in/current').then(response => {
+			this.clock_in = response.data.data;
+		});
         this.getTasks();
         this.contact_name = localStorage.getItem('name');
     },
@@ -274,14 +317,14 @@ export default {
         
         },
         info(item) {
-            this.modalInfo.title = `Order# ${item.order_id}`
-            this.modalInfo.id = item.id
+            this.modal_info.title = `Order# ${item.order_id}`
+            this.modal_info.id = item.id
             this.$refs['modalInfo'].show()
         },
         resetModal() {
-            this.modalInfo.title = ''
-            this.modalInfo.content = ''
-            this.modalInfo.id = null
+            this.modal_info.title = ''
+            this.modal_info.content = ''
+            this.modal_info.id = null
         },
         filterTasks(record, filter){
             if((filter.crew_id != null) && (record.crew_id != filter.crew_id)) {
@@ -340,8 +383,55 @@ export default {
             return moment(value).format('MM-DD');
         },
         formatTime(value){
-            return moment('2019-01-01 ' + value).format('hh:mm A');
-        }
+            if(value){
+                return moment('2019-01-01 ' + value).format('hh:mm A');
+            }
+            return null;
+        },
+        formatDateTime(value){
+            if(value){
+                return moment(value).format('MM/DD hh:mm A');
+            }
+            return null;
+        },
+        showSignInOverhead(){
+            this.modal_overhead.date = moment().format('YYYY-MM-DD');
+            this.modal_overhead.time = moment().format('HH:mm');
+            this.$refs['modal-sign-in-overhead'].show();
+        },
+        showClockIn(){
+            this.modal_clock_in.title="Clock In";
+            this.modal_clock_in.date = moment().format('YYYY-MM-DD');
+            this.modal_clock_in.time = moment().format('HH:mm');
+            this.$refs['modal-clock-in'].show();
+        },
+        showClockOut(){
+            this.modal_clock_in.title="Clock Out";
+            this.modal_clock_in.date = moment().format('YYYY-MM-DD');
+            this.modal_clock_in.time = moment().format('HH:mm');
+            this.$refs['modal-clock-in'].show();
+        },
+        signInOverhead(){
+            
+        },
+        clockIn(){
+            if(!this.clock_in){
+                let clock_in = {
+                    clock_in : this.modal_clock_in.date + ' ' + this.modal_clock_in.time
+                };
+                this.$http.post('/clock_in', clock_in).then(response => {
+                    this.clock_in = response.data.data;
+                });
+            }
+            else{
+                let clock_in = {
+                    clock_out : this.modal_clock_in.date + ' ' + this.modal_clock_in.time
+                };
+                this.$http.patch('/clock_in/'+this.clock_in.id, clock_in).then(() => {
+                    this.clock_in = null;
+                });
+            }
+        },
     },
     computed:{
         filter(){
