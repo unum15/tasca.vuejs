@@ -45,13 +45,13 @@
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                <b-form-group label="Category">
-                                    <Treeselect :options="categories" :normalizer="treeNormalizer" />
+                                <b-form-group label="Assignment">
+                                    <Treeselect :options="assignments" :normalizer="treeNormalizer"/>
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                <b-form-group label="Assignment">
-                                    <Treeselect :options="assignments" :normalizer="treeNormalizer"/>
+                                <b-form-group label="Category">
+                                    <Treeselect :options="categories" :normalizer="treeNormalizer" />
                                 </b-form-group>
                             </b-col>
                         </b-row>
