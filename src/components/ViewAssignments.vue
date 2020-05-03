@@ -380,7 +380,16 @@ export default {
             this.modal_clock_in.time = moment().format('HH:mm');
             this.$refs['modal-clock-in'].show();
         },
-        signInOverhead(){
+        signInOverhead(event){
+            event.preventDefault();
+            if(!this.modal_overhead.overhead_assignment_id){
+                alert('Please select assignment.');
+                return;
+            }
+            if(!this.modal_overhead.overhead_category_id){
+                alert('Please select category.');
+                return;
+            }
             if(this.sign_in){
                 let sign_in = {
                     sign_out : this.modal_overhead.date + ' ' + this.modal_overhead.time
@@ -395,6 +404,7 @@ export default {
             };
             this.$http.post('/sign_in', sign_in).then(response => {
                 this.sign_in = response.data;
+                this.$refs['modal-sign-in-overhead'].hide();
             });
         },
         clockIn(){
