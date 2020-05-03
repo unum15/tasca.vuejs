@@ -163,7 +163,7 @@ var router = new Router({
       name: 'ViewAssignments',
       component: ViewAssignments,
       meta: {
-        title: 'Assigments'
+        title: 'Assignments'
       },
     },
     {

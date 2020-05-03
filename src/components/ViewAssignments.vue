@@ -30,6 +30,13 @@
                 </b-modal>
             </div>
             <div v-show="clock_in">
+                <span v-if="sign_in">
+                    Signed In At: {{ formatDateTime(sign_in.sign_in) }}
+                    Signed In To: {{ sign_in.task_date ? sign_in.task_date.task.name : sign_in.overhead_assignment.name + ' - ' + sign_in.overhead_category.name }}
+                </span>
+                <span v-else>
+                    Not Signed In
+                </span>
                 <b-button @click="showSignInOverhead">Sign In - Overhead</b-button>
                 <b-modal ref="modal-sign-in-overhead" @ok="signInOverhead" :title="modal_overhead.title">
                     <b-container fluid>
@@ -46,12 +53,12 @@
                             </b-col>
                             <b-col>
                                 <b-form-group label="Assignment">
-                                    <Treeselect :options="assignments" :normalizer="treeNormalizer"/>
+                                    <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_assignment_id"/>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label="Category">
-                                    <Treeselect :options="categories" :normalizer="treeNormalizer" />
+                                    <Treeselect :options="categories" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_category_id"/>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -172,6 +179,8 @@ export default {
             modal_overhead: {
                 date: null,
                 time: null,
+                overhead_assignment_id: null,
+                overhead_category_id: null,
                 title: 'Sign In - Overhead'
             },
             categories: [],
@@ -246,6 +255,9 @@ export default {
 		});
         this.$http.get('/clock_in/current').then(response => {
 			this.clock_in = response.data.data;
+		});
+        this.$http.get('/sign_in/current').then(response => {
+			this.sign_in = response.data;
 		});
         this.$http.get('/overhead_assignments').then(response => {
 			this.assignments = response.data.data;
@@ -369,7 +381,21 @@ export default {
             this.$refs['modal-clock-in'].show();
         },
         signInOverhead(){
-            
+            if(this.sign_in){
+                let sign_in = {
+                    sign_out : this.modal_overhead.date + ' ' + this.modal_overhead.time
+                };
+                this.$http.patch('/sign_in/'+this.sign_in.id, sign_in);
+            }
+            let sign_in = {
+                clock_in_id : this.clock_in.id,
+                sign_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
+                overhead_assignment_id: this.modal_overhead.overhead_assignment_id,
+                overhead_category_id: this.modal_overhead.overhead_category_id
+            };
+            this.$http.post('/sign_in', sign_in).then(response => {
+                this.sign_in = response.data;
+            });
         },
         clockIn(){
             if(!this.clock_in){
