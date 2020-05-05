@@ -388,7 +388,7 @@ export default {
           }
         },
         save () {
-            if((!this.backflow_assembly.property_id)||(!this.backflow_assembly.contact_id)){
+            if(!this.backflow_assembly.property_id){
                 return;
             }
             if(this.backflow_assembly.id === null){
