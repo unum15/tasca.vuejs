@@ -58,7 +58,7 @@
                             </b-col>
                             <b-col>
                                 <b-form-group label="Category">
-                                    <Treeselect :options="categories" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_category_id"/>
+                                    <Treeselect :options="filtered_categories" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_category_id"/>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -440,6 +440,14 @@ export default {
                 text_filter: this.text_filter,
                 crew_id: this.crew_id
             };
+        },
+        filtered_categories(){
+            if(this.modal_overhead.overhead_assignment_id){
+                let selected_assignments = this.assignments.filter(a => a.id == this.modal_overhead.overhead_assignment_id);
+                let assignment = selected_assignments[0];
+                return this.categories.filter(c => (assignment.overhead_categories.filter(ac => (ac.id == c.id)).length));
+            }
+            return [];
         }
     }
 }
