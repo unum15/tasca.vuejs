@@ -47,9 +47,22 @@
                 :filter="filter"
                 :items="filtered_backflow_assemblies"
                 :fields="fields"
+                style="text-align:left;"
             >
                 <template v-slot:cell(id)="data">
                     <a :href="'/backflow_assembly/' + data.value"> {{ data.value }} </a>
+                </template>
+                <template v-slot:cell(property.name)="data">
+                    <span v-b-popover.hover="data.item.property_unit ? data.item.property_unit.name : ''" :id="'property_' + data.item.id">{{ data.value }}</span>
+                </template>
+                <template v-slot:cell(contact.name)="data">
+                    <span v-b-popover.hover="data.item.contact ? (data.item.contact.phone_numbers.length > 0 ? data.item.contact.phone_numbers[0].phone_number + ' ' : '') + (data.item.contact.emails.length > 0 ? data.item.contact.emails[0].email : '') : ''" :id="'property_' + data.item.id">{{ data.value }}</span>
+                </template>
+                <template v-slot:cell(backflow_test_reports)="data">
+                    {{ data.value.length > 0 ? data.value[0].report_date : null }}
+                </template>
+                <template v-slot:cell(updated_at)="data">
+                    {{ data.value.substr(0,10) }}
                 </template>
             </b-table>
         </main>
@@ -75,6 +88,11 @@ export default {
                     {
                         key: 'id',
                         label: 'Id',
+                        sortable: true
+                    },
+                    {
+                        key: 'property.client.name',
+                        label: 'Client',
                         sortable: true
                     },
                     {
@@ -143,8 +161,8 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'created_at',
-                        label: 'Created At',
+                        key: 'backflow_test_reports',
+                        label: 'Last Test',
                         sortable: true
                     },
                     {
@@ -179,7 +197,7 @@ export default {
             if(this.active_filter != ''){
                 active = '&active=' + this.active_filter;
             }
-            this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_test_reports' + active).then(response => {
+            this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_test_reports,property_unit,property.client,contact.emails,contact.phoneNumbers' + active).then(response => {
                 this.backflow_assemblies = response.data.data;
             });
         }
