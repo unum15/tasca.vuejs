@@ -423,6 +423,14 @@ export default {
                 this.$http.patch('/clock_in/'+this.clock_in.id, clock_in).then(() => {
                     this.clock_in = null;
                 });
+                if(this.sign_in){
+                    let sign_in = {
+                        sign_out : this.modal_clock_in.date + ' ' + this.modal_clock_in.time
+                    };
+                    this.$http.patch('/sign_in/'+this.sign_in.id, sign_in).then(() => {
+                        this.clock_in = null;
+                    });
+                }
             }
         },
         treeNormalizer(node){
