@@ -17,9 +17,9 @@
                     >
                     </ScheduleTab>
                 </b-tab>
-                <b-tab title="Completed Orders">
-                    <CompletedTab>
-                    </CompletedTab>
+                <b-tab v-for="tab in order_tabs" :key="tab" :title="tab + ' Orders'">
+                    <OrderScheduleTab :tab="tab">
+                    </OrderScheduleTab>
                 </b-tab>
             </b-tabs>
         </main>
@@ -28,17 +28,18 @@
 <script>
 import TopMenu from './TopMenu';
 import ScheduleTab from './ScheduleTab';
-import CompletedTab from './CompletedTab';
+import OrderScheduleTab from './OrderScheduleTab';
 export default {
     name: 'ViewSchedule',
     components: {
         'TopMenu': TopMenu,
         'ScheduleTab': ScheduleTab,
-        'CompletedTab': CompletedTab
+        'OrderScheduleTab': OrderScheduleTab
     },
     data() {
         return {
             tabs: ['Current', 'All', 'Service', 'Pending', 'On Hold'],
+            order_tabs: ['Non-Completed', 'Completed'],
             order_status_types: [],
             appointment_statuses: [],
             task_categories: [],
