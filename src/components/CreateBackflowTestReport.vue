@@ -167,6 +167,7 @@ export default {
     },
     methods: {
         getProperties() {
+          this.backflow_assemblies = [];
           if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
               this.properties = response.data
