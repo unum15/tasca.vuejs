@@ -24,7 +24,7 @@
                       </b-input-group>
                     </b-form-group>
                   </b-col>
-                    <b-col v-if="tab == 'Current'">
+                    <b-col v-if="['Current', 'Pending', 'All'].includes(tab)">
                         <b-form-group label="Date" class="mb-0">
                           <b-input-group>
                             <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;height:25px;" />
@@ -302,6 +302,9 @@ export default {
     methods: {
         getTasks(){
             this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date).then((results) => {
+                if(this.tab=='Pending'){
+                    this.sortBy='start_date';
+                }
                 this.tasks = results.data;
                 this.tasks.forEach((t) => {
                     t.sort_order_tmp = t.sort_order;
