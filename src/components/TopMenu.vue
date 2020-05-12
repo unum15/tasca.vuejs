@@ -26,7 +26,6 @@
                     <b-dropdown-item href="/properties">Properties</b-dropdown-item>
                     <b-dropdown-item href="/projects/view">Projects</b-dropdown-item>
                     <b-dropdown-item href="/orders">Orders</b-dropdown-item>
-                    <b-dropdown-item href="/orders/closable">Closable Orders</b-dropdown-item>
                     <b-dropdown-item href="/tasks">Tasks</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>

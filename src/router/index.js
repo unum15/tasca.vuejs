@@ -9,7 +9,6 @@ import ViewProperties from '@/components/ViewProperties';
 import ViewProjects from '@/components/ViewProjects';
 import EditProjects from '@/components/EditProjects';
 import ViewOrders from '@/components/ViewOrders';
-import ClosableOrders from '@/components/ClosableOrders';
 import ViewTasks from '@/components/ViewTasks';
 import LoginForm from '@/components/LoginForm';
 import ViewSchedule from '@/components/ViewSchedule';
@@ -145,11 +144,6 @@ var router = new Router({
       path: '/orders',
       name: 'ViewOrders',
       component: ViewOrders
-    },
-    {
-      path: '/orders/closable',
-      name: 'ClosableOrders',
-      component: ClosableOrders
     },
     {
       path: '/tasks',
