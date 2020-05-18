@@ -190,7 +190,7 @@ export default {
                             if((ba.backflow_test_reports[0].submitted_date==null)&&(ba.backflow_test_reports[0].backflow_tests.length)){
                                 let last_test = ba.backflow_test_reports[0].backflow_tests[ba.backflow_test_reports[0].backflow_tests.length-1];
                                 ba.reading_1 = last_test.reading_1;
-                                ba.reading_2 = last_test.reading_1;
+                                ba.reading_2 = last_test.reading_2;
                                 ba.reading_notes = last_test.notes;
                                 ba.backflow_test_report_id = ba.backflow_test_reports[0].id;
                             }
