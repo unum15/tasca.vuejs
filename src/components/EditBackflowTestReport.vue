@@ -203,7 +203,7 @@
                             <b-form-group label="Repairs By">
                                 <b-form-select
                                     v-model="repair_contact_id"
-                                    @change="saveRepairs"
+                                    @change="saveRepairs();saveCleanings();"
                                     :options="contacts"
                                     value-field="id"
                                     text-field="name"
@@ -215,7 +215,7 @@
                             <b-form-group label="Date">
                                 <b-form-input
                                     v-model="repair_date"
-                                    @change="saveRepair"
+                                    @change="saveRepairs()"
                                     type="date"
                                 >
                                 </b-form-input>
@@ -243,7 +243,7 @@
                                         <b-form-checkbox-group
                                             v-model="cleanings[valve.id]"
                                             :name="'valve-cleanings-' + valve.id"
-                                            @change="saveCleaning(valve.id)"
+                                            @change="saveCleaning($event, valve.id)"
                                             :options="valve.backflow_valve_parts"
                                             value-field="id"
                                             text-field="name"
@@ -255,7 +255,7 @@
                                         <b-form-checkbox-group
                                             v-model="repairs[valve.id]"
                                             :name="'valve-repairs-' + valve.id"
-                                            @change="saveRepair(valve.id)"
+                                            @change="saveRepair($event, valve.id);"
                                             :options="valve.backflow_valve_parts"
                                             value-field="id"
                                             text-field="name"
@@ -627,36 +627,32 @@ export default {
                 this.backflow_assembly={};
             }
         },
-        saveCleaning (valve_id){
-            if(!this.cleanings[valve_id]){
-                return;
-            }
+        saveCleaning (values, valve_id){
             let cleaning = {
-                parts: this.cleanings[valve_id],
+                parts: values,
                 valve_id: valve_id,
                 contact_id: this.repair_contact_id,
                 cleaned_on: this.repair_date
             }
             this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/cleanings', cleaning);
         },
-        saveRepair(valve_id){
-            if(!this.repairs[valve_id]){
-                return;
-            }
+        saveCleanings(){
+            this.cleanings.map( (values, valve_id) => {
+                this.saveCleaning(values, valve_id);
+            });
+        },
+        saveRepair(values, valve_id){
             let repair = {
-                parts: this.repairs[valve_id],
+                parts: values,
                 valve_id: valve_id,
                 contact_id: this.repair_contact_id,
                 repaired_on: this.repair_date
             }
-            this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair).then((results) => {
-                this.repairs.push(results.data.data.id);
-            });
+            this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair);
         },
         saveRepairs(){
-            this.backflow_test_report.backflow_repairs.map( r => {
-                let repair = {contact_id:this.repair_contact_id};
-                this.$http.patch('/backflow_repair/' + r.id, repair);
+            this.repairs.map( (values,valve_id) => {
+                this.saveRepair(values,valve_id);
             });
         },
         pdf(){

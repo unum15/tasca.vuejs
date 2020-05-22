@@ -68,8 +68,11 @@
                     >
                     </b-form-input>
                 </template>
-                <template v-slot:cell(edit)="data">
-                    <a v-if="data.item.backflow_test_report_id" :href="'/backflow_test_report/'+data.item.backflow_test_report_id" target="edit_report" >EDIT</a>
+                <template v-slot:cell(actions)="data">
+                    <img src="@/assets/new.png" v-b-tooltip.hover title="New Test" @click="newTest(data.index)" fluid alt="+" style="width:20px;cursor:pointer;" />
+                    <a v-if="data.item.backflow_test_report_id" :href="'/backflow_test_report/'+data.item.backflow_test_report_id" target="edit_report" >
+                        <img src="@/assets/edit.png" v-b-tooltip.hover title="Edit Test" fluid alt="edit" style="margin-left:5px;width:25px;" />
+                    </a>
                 </template>
             </b-table>
             <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
@@ -148,8 +151,8 @@ export default {
                         sortable: false
                     },
                     {
-                        key: 'edit',
-                        label: 'Edit',
+                        key: 'actions',
+                        label: 'Actions',
                         sortable: false
                     }
                 ]
@@ -164,6 +167,7 @@ export default {
     },
     methods: {
         getProperties() {
+          this.backflow_assemblies = [];
           if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
               this.properties = response.data
@@ -179,8 +183,20 @@ export default {
         },
         getBackflowAssemblies(){
             if(this.property_id){
-                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_super_type,backflow_type.backflow_super_type.backflow_valves&property_id=' + this.property_id).then(response => {
-                    this.backflow_assemblies = response.data.data;
+                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_super_type,backflow_type.backflow_super_type.backflow_valves,backflow_test_reports,backflow_test_reports.backflow_tests&property_id=' + this.property_id).then(response => {
+                    let bas = response.data.data;
+                    bas.map(ba => {
+                        if(ba.backflow_test_reports.length){
+                            if((ba.backflow_test_reports[0].submitted_date==null)&&(ba.backflow_test_reports[0].backflow_tests.length)){
+                                let last_test = ba.backflow_test_reports[0].backflow_tests[ba.backflow_test_reports[0].backflow_tests.length-1];
+                                ba.reading_1 = last_test.reading_1;
+                                ba.reading_2 = last_test.reading_2;
+                                ba.reading_notes = last_test.notes;
+                                ba.backflow_test_report_id = ba.backflow_test_reports[0].id;
+                            }
+                        }
+                    });
+                    this.backflow_assemblies = bas;
                  });
             }
             else{
@@ -225,6 +241,12 @@ export default {
         edit(id){
             let edit_route = this.$router.resolve({name: 'EditBackflowTestReport', query: {backflow_test_report_id: id}});
             window.open(edit_route.href, '_blank');
+        },
+        newTest (index){
+            this.backflow_assemblies[index].test_id = null;
+            this.backflow_assemblies[index].reading_1 = null;
+            this.backflow_assemblies[index].reading_2 = null;
+            this.backflow_assemblies[index].reading_notes = null;
         }
     },
     computed:{

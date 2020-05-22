@@ -16,12 +16,12 @@
             <b-row>
                 <b-col class="label">Completed</b-col>
                 <b-col>
-                    <b-form-checkbox v-model="completed" @input="markCompleted">
+                    <b-form-checkbox v-model="completed" @change="markCompleted">
                     </b-form-checkbox>
                 </b-col>
                 <b-col class="label">Billed</b-col>
                 <b-col>
-                    <b-form-checkbox v-model="billed" @input="markBilled">
+                    <b-form-checkbox v-model="billed" @change="markBilled">
                     </b-form-checkbox>
                 </b-col>
             </b-row>

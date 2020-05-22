@@ -96,7 +96,6 @@
     </div>
 </template>
 <script>
-import moment from 'moment'
 import ViewTaskHours from './ViewTaskHours'
 import ViewHours from './ViewHours'
 export default {
@@ -148,18 +147,6 @@ export default {
             this.$http.get('/tasks?order_id=' + this.task.order_id).then((results) => {
                 this.tasks = results.data;
             });
-        },
-        markCompleted(){
-            let task = {
-                completion_date: this.completed ? moment().format('YYYY-MM-DD') : null
-            }
-            this.$http.patch('/task/' + this.task_id, task);
-        },
-        markBilled(){
-            let task = {
-                billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
-            }
-            this.$http.patch('/task/' + this.task_id, task);
         },
     },
     watch: {
