@@ -203,7 +203,7 @@
                             <b-form-group label="Repairs By">
                                 <b-form-select
                                     v-model="repair_contact_id"
-                                    @change="saveRepair"
+                                    @change="saveRepairs();saveCleanings();"
                                     :options="contacts"
                                     value-field="id"
                                     text-field="name"
@@ -215,7 +215,7 @@
                             <b-form-group label="Date">
                                 <b-form-input
                                     v-model="repair_date"
-                                    @change="saveRepair"
+                                    @change="saveRepairs()"
                                     type="date"
                                 >
                                 </b-form-input>
@@ -243,7 +243,7 @@
                                         <b-form-checkbox-group
                                             v-model="cleanings[valve.id]"
                                             :name="'valve-cleanings-' + valve.id"
-                                            @input="saveCleaning(valve.id)"
+                                            @change="saveCleaning($event, valve.id)"
                                             :options="valve.backflow_valve_parts"
                                             value-field="id"
                                             text-field="name"
@@ -255,7 +255,7 @@
                                         <b-form-checkbox-group
                                             v-model="repairs[valve.id]"
                                             :name="'valve-repairs-' + valve.id"
-                                            @input="saveRepair(valve.id)"
+                                            @change="saveRepair($event, valve.id);"
                                             :options="valve.backflow_valve_parts"
                                             value-field="id"
                                             text-field="name"
@@ -571,9 +571,6 @@ export default {
             let id = localStorage.getItem('id')
             this.backflow_test_report.backflow_tests.push({backflow_test_report_id: this.backflow_test_report.id, tested_on: this.today, contact_id: id});
         },
-        addRepair(){
-            this.backflow_repairs.push({});
-        },
         save () {
             if((!this.backflow_test_report.backflow_assembly_id)||(!this.backflow_test_report.backflow_installed_to_code)){
                 return;
@@ -630,29 +627,35 @@ export default {
                 this.backflow_assembly={};
             }
         },
-        saveCleaning (valve_id){
-            if(!this.cleanings[valve_id]){
-                return;
-            }
+        saveCleaning (values, valve_id){
             let cleaning = {
-                parts: this.cleanings[valve_id],
+                parts: values,
                 valve_id: valve_id,
                 contact_id: this.repair_contact_id,
                 cleaned_on: this.repair_date
             }
             this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/cleanings', cleaning);
         },
-        saveRepair (valve_id){
-            if(!this.repairs[valve_id]){
-                return;
-            }
+        saveCleanings(){
+            this.cleanings.map( (values, valve_id) => {
+                this.saveCleaning(values, valve_id);
+            });
+        },
+        saveRepair(values, valve_id){
             let repair = {
-                parts: this.repairs[valve_id],
+                parts: values,
                 valve_id: valve_id,
                 contact_id: this.repair_contact_id,
                 repaired_on: this.repair_date
             }
+            console.log('repair');
+            console.log(repair);
             this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair);
+        },
+        saveRepairs(){
+            this.repairs.map( (values,valve_id) => {
+                this.saveRepair(values,valve_id);
+            });
         },
         pdf(){
             let url = '/api/backflow_test_reports/pdf?';
