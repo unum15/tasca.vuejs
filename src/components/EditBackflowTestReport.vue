@@ -203,7 +203,7 @@
                             <b-form-group label="Repairs By">
                                 <b-form-select
                                     v-model="repair_contact_id"
-                                    @change="saveRepair"
+                                    @change="saveRepairs"
                                     :options="contacts"
                                     value-field="id"
                                     text-field="name"
@@ -243,7 +243,7 @@
                                         <b-form-checkbox-group
                                             v-model="cleanings[valve.id]"
                                             :name="'valve-cleanings-' + valve.id"
-                                            @input="saveCleaning(valve.id)"
+                                            @change="saveCleaning(valve.id)"
                                             :options="valve.backflow_valve_parts"
                                             value-field="id"
                                             text-field="name"
@@ -255,7 +255,7 @@
                                         <b-form-checkbox-group
                                             v-model="repairs[valve.id]"
                                             :name="'valve-repairs-' + valve.id"
-                                            @input="saveRepair(valve.id)"
+                                            @change="saveRepair(valve.id)"
                                             :options="valve.backflow_valve_parts"
                                             value-field="id"
                                             text-field="name"
@@ -571,9 +571,6 @@ export default {
             let id = localStorage.getItem('id')
             this.backflow_test_report.backflow_tests.push({backflow_test_report_id: this.backflow_test_report.id, tested_on: this.today, contact_id: id});
         },
-        addRepair(){
-            this.backflow_repairs.push({});
-        },
         save () {
             if((!this.backflow_test_report.backflow_assembly_id)||(!this.backflow_test_report.backflow_installed_to_code)){
                 return;
@@ -642,7 +639,7 @@ export default {
             }
             this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/cleanings', cleaning);
         },
-        saveRepair (valve_id){
+        saveRepair(valve_id){
             if(!this.repairs[valve_id]){
                 return;
             }
@@ -652,7 +649,15 @@ export default {
                 contact_id: this.repair_contact_id,
                 repaired_on: this.repair_date
             }
-            this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair);
+            this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair).then((results) => {
+                this.repairs.push(results.data.data.id);
+            });
+        },
+        saveRepairs(){
+            this.backflow_test_report.backflow_repairs.map( r => {
+                let repair = {contact_id:this.repair_contact_id};
+                this.$http.patch('/backflow_repair/' + r.id, repair);
+            });
         },
         pdf(){
             let url = '/api/backflow_test_reports/pdf?';
