@@ -95,11 +95,8 @@
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Tasks" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
                   </template>
                   <template slot="row-details" slot-scope="row">
-                    <b-card>
-                      <ul>
-                        <li v-for="(task, id) in row.item.tasks" :key="id">{{ task.name }} - {{ task.completion_date ? 'Completed:' + task.completion_date : task.dates.length & task.dates[0].date  ? 'Scheduled:' + task.dates[0].date : 'Unscheduled'}}</li>
-                      </ul>
-                    </b-card>
+                    <ViewScheduleOrdersTabTasks :tasks="row.item.tasks">
+                    </ViewScheduleOrdersTabTasks>
                   </template>
             </b-table>
         
@@ -107,8 +104,12 @@
 </template>
 <script>
 import moment from 'moment';
+import ViewScheduleOrdersTabTasks from './ViewScheduleOrdersTabTasks';
 export default {
-    name: 'OrderScheduleTab',
+    name: 'ViewScheduleOrdersTab',
+    components: {
+        'ViewScheduleOrdersTabTasks': ViewScheduleOrdersTabTasks
+    },
     props: {
         tab: { required: true}
     },
@@ -119,20 +120,20 @@ export default {
             filter: null,
             fields: [
                 {
+                    key: 'open_date',
+                    label: 'Open Date',
+                    sortable: true,
+                    filter: null
+                },
+                {
+                    key: 'approved_date',
+                    label: 'Approved Date',
+                    sortable: true,
+                    filter: null
+                },
+                {
                     key: 'start_date',
                     label: 'Start Date',
-                    sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'service_window',
-                    label: 'Service Window',
-                    sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'id',
-                    label: 'S/WO#',
                     sortable: true,
                     filter: null
                 },
@@ -155,26 +156,14 @@ export default {
                     filter: null
                 },
                 {
+                    key: 'description',
+                    label: 'Description',
+                    sortable: true,
+                    filter: null
+                },
+                {
                     key: 'hours',
                     label: 'Total Hours',
-                    sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'date',
-                    label: 'Date',
-                    sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'completion_date',
-                    label: 'Completed',
-                    sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'billed_date',
-                    label: 'Billed',
                     sortable: true,
                     filter: null
                 },
@@ -200,25 +189,23 @@ export default {
     },
     methods: {
         save(item){
-            var task = {
+            var order = {
                 completion_date: item.completion_date,
-                closed_date: item.closed_date,
-                billed_date: item.billed_date,
-            
             }
-            this.$http.patch('/task/' + item.id, task);
+            this.$http.patch('/order/' + item.id, order);
         },
-        getTotalHours(dates){
-            var hours = 0;
-            for(var date_count = 0; date_count < dates.length; date_count++ ){
-                for(var sign_in_count = 0; sign_in_count < dates[date_count].sign_ins.length; sign_in_count++ ){
-                    var sign_in = moment(dates[date_count].sign_ins[sign_in_count].sign_in);
-                    var sign_out = moment(dates[date_count].sign_ins[sign_in_count].sign_out);
-                    var diff = Math.round(sign_out.diff(sign_in)/36000)/100;
-                    hours + diff;
-                }
-            }
-            return hours;
+        getTotalHours(order){
+            var time = 0;
+            order.tasks.map(t => {
+                t.dates.map(d =>{
+                    d.sign_ins.map(si =>{
+                        var sign_in = moment(si.sign_in);
+                        var sign_out = moment(si.sign_out);
+                        time += sign_out.diff(sign_in);
+                    });
+                });
+            });
+            return Math.round(time/3600000,2);
         },
         filterColumns(){
             this.filtered_orders = this.orders;

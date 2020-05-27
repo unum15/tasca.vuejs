@@ -7,19 +7,19 @@
         <main>
             <b-tabs :key="order_status_types.length">
                 <b-tab v-for="tab in tabs" :key="tab" :title="tab + ' Tasks'">
-                    <ScheduleTab
+                    <ViewScheduleTasksTab
                         :tab="tab"
-						:task_actions="task_actions"
+                        :task_actions="task_actions"
                         :task_categories="task_categories"
                         :task_statuses="task_statuses"
                         :task_types="task_types"
                         :appointment_statuses="appointment_statuses"
                     >
-                    </ScheduleTab>
+                    </ViewScheduleTasksTab>
                 </b-tab>
-                <b-tab v-for="tab in order_tabs" :key="tab" :title="tab + ' Orders'">
-                    <OrderScheduleTab :tab="tab">
-                    </OrderScheduleTab>
+                <b-tab v-for="(title,tab) in order_tabs" :key="tab" :title="title">
+                    <ViewScheduleOrdersTab :tab="tab">
+                    </ViewScheduleOrdersTab>
                 </b-tab>
             </b-tabs>
         </main>
@@ -27,19 +27,19 @@
 </template>
 <script>
 import TopMenu from './TopMenu';
-import ScheduleTab from './ScheduleTab';
-import OrderScheduleTab from './OrderScheduleTab';
+import ViewScheduleTasksTab from './ViewScheduleTasksTab';
+import ViewScheduleOrdersTab from './ViewScheduleOrdersTab';
 export default {
     name: 'ViewSchedule',
     components: {
         'TopMenu': TopMenu,
-        'ScheduleTab': ScheduleTab,
-        'OrderScheduleTab': OrderScheduleTab
+        'ViewScheduleTasksTab': ViewScheduleTasksTab,
+        'ViewScheduleOrdersTab': ViewScheduleOrdersTab
     },
     data() {
         return {
             tabs: ['Current', 'All', 'Service', 'Pending', 'On Hold'],
-            order_tabs: ['Non-Completed', 'Completed'],
+            order_tabs: {'Non-Completed' : 'Orders with part Closed Tasks', 'Completed' : 'Orders with all Closed Tasks'},
             order_status_types: [],
             appointment_statuses: [],
             task_categories: [],

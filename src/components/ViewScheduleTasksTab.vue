@@ -177,7 +177,7 @@
 import moment from 'moment';
 import ViewTask from './ViewTask';
 export default {
-    name: 'ScheduleTab',
+    name: 'ViewScheduleTab',
     components: {
         'ViewTask': ViewTask
     },

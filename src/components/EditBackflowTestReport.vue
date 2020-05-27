@@ -648,8 +648,6 @@ export default {
                 contact_id: this.repair_contact_id,
                 repaired_on: this.repair_date
             }
-            console.log('repair');
-            console.log(repair);
             this.$http.put('/backflow_test_report/' + this.backflow_test_report.id + '/repairs', repair);
         },
         saveRepairs(){
