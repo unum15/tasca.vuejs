@@ -17,7 +17,7 @@
                     >
                     </ViewScheduleTasksTab>
                 </b-tab>
-                <b-tab v-for="tab in order_tabs" :key="tab" :title="tab + ' Orders'">
+                <b-tab v-for="(title,tab) in order_tabs" :key="tab" :title="title">
                     <ViewScheduleOrdersTab :tab="tab">
                     </ViewScheduleOrdersTab>
                 </b-tab>
@@ -39,7 +39,7 @@ export default {
     data() {
         return {
             tabs: ['Current', 'All', 'Service', 'Pending', 'On Hold'],
-            order_tabs: ['Non-Completed', 'Completed'],
+            order_tabs: {'Non-Completed' : 'Orders with part Closed Tasks', 'Completed' : 'Orders with all Closed Tasks'},
             order_status_types: [],
             appointment_statuses: [],
             task_categories: [],

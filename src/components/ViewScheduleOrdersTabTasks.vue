@@ -42,7 +42,7 @@
             </b-form-input>
         </template>
         <template v-slot:cell(total_hours)="data">
-            {{ getTotalHours(data.item) }}
+            {{ getTotalHours(data.item.dates) }}
         </template>
     </b-table>
 </template>
@@ -178,16 +178,15 @@ export default {
             }
         },
         getTotalHours(dates){
-            var hours = 0;
-            for(var date_count = 0; date_count < dates.length; date_count++ ){
-                for(var sign_in_count = 0; sign_in_count < dates[date_count].sign_ins.length; sign_in_count++ ){
-                    var sign_in = moment(dates[date_count].sign_ins[sign_in_count].sign_in);
-                    var sign_out = moment(dates[date_count].sign_ins[sign_in_count].sign_out);
-                    var diff = Math.round(sign_out.diff(sign_in)/36000)/100;
-                    hours + diff;
-                }
-            }
-            return hours;
+            var time = 0;
+            dates.map(d =>{
+                d.sign_ins.map(si =>{
+                    var sign_in = moment(si.sign_in);
+                    var sign_out = moment(si.sign_out);
+                    time += Math.round(sign_out.diff(sign_in)/36000);
+                });
+            });
+            return Math.round(time/3600000,2);
         }
     },
     computed: {

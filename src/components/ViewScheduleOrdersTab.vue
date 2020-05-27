@@ -192,23 +192,20 @@ export default {
             var order = {
                 completion_date: item.completion_date,
             }
-            this.$http.patch('/order/' + order.id, order);
+            this.$http.patch('/order/' + item.id, order);
         },
         getTotalHours(order){
-            var hours = 0;
+            var time = 0;
             order.tasks.map(t => {
-                console.log(t.dates.length);
                 t.dates.map(d =>{
-                    console.log(t.sign_ins.length);
                     d.sign_ins.map(si =>{
                         var sign_in = moment(si.sign_in);
                         var sign_out = moment(si.sign_out);
-                        var diff = Math.round(sign_out.diff(sign_in)/36000)/100;
-                        hours + diff;
+                        time += sign_out.diff(sign_in);
                     });
                 });
             });
-            return hours;
+            return Math.round(time/3600000,2);
         },
         filterColumns(){
             this.filtered_orders = this.orders;
