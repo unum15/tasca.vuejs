@@ -120,14 +120,14 @@ export default {
             filter: null,
             fields: [
                 {
-                    key: 'open_date',
+                    key: 'project.open_date',
                     label: 'Open Date',
                     sortable: true,
                     filter: null
                 },
                 {
-                    key: 'approved_date',
-                    label: 'Approved Date',
+                    key: 'approval_date',
+                    label: 'Approval Date',
                     sortable: true,
                     filter: null
                 },
