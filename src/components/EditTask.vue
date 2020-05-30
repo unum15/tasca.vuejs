@@ -150,6 +150,16 @@
                 </b-form-group>
             </b-col>
 			<b-col>
+                <b-form-group label="Invoiced Date">
+                    <b-form-input
+                        type="date"
+						@change="save"
+                        v-model="my_task.invoiced_date"
+                    >
+                    </b-form-input>
+                </b-form-group>
+            </b-col>
+			<b-col>
                 <b-form-group label="Billed Date">
                     <b-form-input
                         type="date"
