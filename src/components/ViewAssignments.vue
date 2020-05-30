@@ -6,65 +6,6 @@
         </head>
         <main>
             <h2>Assignments for {{ contact_name }}</h2>
-            <div>
-                <span v-if="clock_in">
-                    Clocked In At: {{ formatDateTime(clock_in.clock_in) }}
-                    <b-button @click="showClockOut">Clock Out</b-button>
-                </span>
-                <b-button @click="showClockIn" v-show="!clock_in">Clock In</b-button>
-                <b-modal ref="modal-clock-in"  @ok="clockIn" :title="modal_clock_in.title">
-                    <b-container fluid>
-                        <b-row>
-                            <b-col>
-                                <b-form-group label="Date" class="mb-0">
-                                    <b-form-input type="date" v-model='modal_clock_in.date' />
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Time" class="mb-0">
-                                    <b-form-input type="time" v-model='modal_clock_in.time' />
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                    </b-container>
-                </b-modal>
-            </div>
-            <div v-show="clock_in">
-                <span v-if="sign_in">
-                    Signed In At: {{ formatDateTime(sign_in.sign_in) }}
-                    Signed In To: {{ sign_in.task_date ? sign_in.task_date.task.name : sign_in.overhead_assignment.name + ' - ' + sign_in.overhead_category.name }}
-                </span>
-                <span v-else>
-                    Not Signed In
-                </span>
-                <b-button @click="showSignInOverhead">Sign In - Overhead</b-button>
-                <b-modal ref="modal-sign-in-overhead" @ok="signInOverhead" :title="modal_overhead.title">
-                    <b-container fluid>
-                        <b-row>
-                            <b-col>
-                                <b-form-group label="Date" class="mb-0">
-                                    <b-form-input type="date" v-model="modal_overhead.date" />
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Time" class="mb-0">
-                                    <b-form-input type="time" v-model="modal_overhead.time" />
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Assignment">
-                                    <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_assignment_id"/>
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Category">
-                                    <Treeselect :options="filtered_categories" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_category_id"/>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                    </b-container>
-                </b-modal>
-            </div>
             <b-container fluid>
                 <b-row>
                     <b-col>
@@ -252,18 +193,6 @@ export default {
         this.$http.get('/crews').then(response => {
 			this.crews = response.data;
             this.crews.unshift({id: null, name: 'All'});
-		});
-        this.$http.get('/clock_in/current').then(response => {
-			this.clock_in = response.data.data;
-		});
-        this.$http.get('/sign_in/current').then(response => {
-			this.sign_in = response.data;
-		});
-        this.$http.get('/overhead_assignments').then(response => {
-			this.assignments = response.data.data;
-		});
-        this.$http.get('/overhead_categories').then(response => {
-			this.categories = response.data.data;
 		});
         this.getTasks();
         this.contact_name = localStorage.getItem('name');

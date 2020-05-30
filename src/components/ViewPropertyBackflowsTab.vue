@@ -38,6 +38,7 @@
         </template>
     </b-table>
     <b-button @click="pdfTag" v-if="includedBackflowAssemblies.length">PDF Tag</b-button>
+    <b-button @click="pdfReport" v-if="includedBackflowAssemblies.length">PDF Report</b-button>
   </div>
 </template>
 <script>
@@ -171,6 +172,13 @@ export default {
           url += 'backflow_assembly_id[]='+a.id+'&';
        });
       window.open(url, 'backflow_tag_pdf');
+    },
+    pdfReport(){
+        let url = '/api/backflow_test_reports/pdf?';
+        this.includedBackflowAssemblies.map(a => {
+          url += 'backflow_test_report_id[]='+a.backflow_test_reports[0].id+'&';
+        });
+        window.open(url, 'backflow_pdf');
     },
   },
   computed:{
