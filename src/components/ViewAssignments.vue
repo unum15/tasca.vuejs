@@ -6,30 +6,6 @@
         </head>
         <main>
             <h2>Assignments for {{ contact_name }}</h2>
-            <div>
-                <b-button v-b-modal.modal-1 v-show="false">Sign In</b-button>
-                <b-modal id="modal-1" title="BootstrapVue">
-                    <b-container fluid>
-                        <b-row>
-                            <b-col>
-                                <b-form-group label="Time" class="mb-0">
-                                    <b-form-input type="datetime" />
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Category">
-                                    <Treeselect v-model="value" :options="categories" />
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Assignment">
-                                    <Treeselect v-model="value" :options="assignments" />
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                    </b-container>
-                </b-modal>
-            </div>
             <b-container fluid>
                 <b-row>
                     <b-col>
