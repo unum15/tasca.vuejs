@@ -228,6 +228,7 @@
                     <b-col>
                          <b-form-checkbox
                             v-model="backflow_assembly.active"
+                            @change="save"
                           >
                             Active
                           </b-form-checkbox>
@@ -280,7 +281,9 @@
                 </b-row>
                <b-row>
                     <b-col>
-                        <b-button @click="$router.push('/backflow_assemblies')">Done</b-button>
+                        <b-button @click="$router.push('/backflow_assemblies')" style="margin:5px;">View Assemblies</b-button>
+                        <b-button @click="newAssembly" style="margin:5px;">New</b-button>
+                        <b-button @click="addAssembly" style="margin:5px;">Add Additional</b-button>
                     </b-col>
                 </b-row>
             </b-container>
@@ -301,7 +304,7 @@ export default {
         return {
             client_id: null,
             clients: [],
-            backflow_assembly: { id: null, backflow_size_id: null },
+            backflow_assembly: { id: null, backflow_size_id: null, active: true },
             backflow_types: [],
             properties: [],
             units: [],
@@ -409,6 +412,16 @@ export default {
             let model = models[0];
             this.backflow_assembly.backflow_type_id = model.backflow_type_id;
             this.backflow_assembly.backflow_manufacturer_id = model.backflow_manufacturer_id
+        },
+        newAssembly(){
+            this.backflow_assembly = { id: null, backflow_size_id: null, active: true };
+            this.client_id = null;
+            this.properties = [];
+            this.units = [];
+            this.contacts = [];
+        },
+        addAssembly(){
+            this.backflow_assembly = {...this.backflow_assembly, id: null, use: null, placement: null, gps: null, backflow_type_id: null, backflow_manufacturer_id: null, backflow_model_id: null, backflow_size_id: null, serial_number:null, notes: null, active: true };
         }
     },
     computed: {
@@ -444,7 +457,7 @@ export default {
     watch: {
         filtered_sizes(){
             if(this.filtered_sizes.length == 1){
-                this.backflow_assembly.backflow_size_id = this.filtered_size[0].id;
+                this.backflow_assembly.backflow_size_id = this.filtered_sizes[0].id;
             }
         }
     }
