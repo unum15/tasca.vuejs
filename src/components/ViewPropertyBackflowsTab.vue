@@ -20,10 +20,7 @@
           </span>
         </template>
         <template v-slot:cell(serial_number)="data">
-            <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value }} </a>
-        </template>
-        <template v-slot:cell(serial_number)="data">
-            <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value }} </a>
+            <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value ?  data.value : data.item.id }} </a>
         </template>
         <template v-slot:cell(include)="data">
           <b-form-checkbox v-model="data.item.include" />
