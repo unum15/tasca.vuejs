@@ -23,6 +23,7 @@
                 :fields="fields"
                 :filter="filter"
                 primary-key="id"
+                style="text-align:left;"
                 >
                 <template slot="thead-top" slot-scope="data">
                     <tr>
@@ -193,6 +194,9 @@ export default {
         },
         getTotalHours(order){
             var time = 0;
+            if(!order.tasks){
+                return;
+            }
             order.tasks.map(t => {
                 t.dates.map(d =>{
                     d.sign_ins.map(si =>{
