@@ -23,6 +23,9 @@
                 <template v-slot:cell(id)="data">
                     <a :href="'/client/' + data.item.project.client_id + '/project/' + data.item.project_id +'/order/' + data.item.id" v-if="data.item.project"> {{ data.value }} </a>
                 </template>
+                <template v-slot:cell(property)="data">
+                    {{ data.item.properties.length ? data.item.properties[0].name : ''}}
+                </template>
             </b-table>
         </main>
     </div>
@@ -55,7 +58,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'property.name',
+                    key: 'property',
                     label: 'Property Name',
                     sortable: true
                 },
@@ -65,13 +68,23 @@ export default {
                     sortable: true
                 },
                 {
+                    key: 'name',
+                    label: 'Name',
+                    sortable: true
+                },
+                {
                     key: 'description',
                     label: 'Description',
                     sortable: true
                 },
                 {
                     key: 'date',
-                    label: 'Date',
+                    label: 'Order Date',
+                    sortable: true
+                },
+                {
+                    key: 'closed_date',
+                    label: 'Closed Date',
                     sortable: true
                 },
                 {
