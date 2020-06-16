@@ -64,6 +64,10 @@
                 <template v-slot:cell(updated_at)="data">
                     {{ data.value.substr(0,10) }}
                 </template>
+                <template v-slot:cell(active)="data">
+                    <b-form-checkbox v-model="data.item.active" @change="saveActive(data.item)">
+                    </b-form-checkbox>
+                </template>
             </b-table>
         </main>
     </div>
@@ -200,6 +204,14 @@ export default {
             this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_test_reports,property_unit,property.client,contact.emails,contact.phoneNumbers' + active).then(response => {
                 this.backflow_assemblies = response.data.data;
             });
+        },
+        saveActive(item){
+            let ba = {
+                active: !item.active
+            }
+            console.log(item);
+            console.log(ba);
+            this.$http.patch('/backflow_assembly/' + item.id, ba);
         }
     },
     computed: {

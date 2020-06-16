@@ -228,6 +228,7 @@
                     <b-col>
                          <b-form-checkbox
                             v-model="backflow_assembly.active"
+                            @change="save();"
                           >
                             Active
                           </b-form-checkbox>
@@ -444,7 +445,7 @@ export default {
     watch: {
         filtered_sizes(){
             if(this.filtered_sizes.length == 1){
-                this.backflow_assembly.backflow_size_id = this.filtered_size[0].id;
+                this.backflow_assembly.backflow_size_id = this.filtered_sizes[0].id;
             }
         }
     }
