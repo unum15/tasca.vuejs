@@ -197,12 +197,20 @@ export default {
             });
         },
         getClients(){
-            this.$http.get('/clients?zip=' + this.zip).then(response => {
+            let params = '';
+            if(this.zip){
+             params = '?zip=' + this.zip;
+            }
+            this.$http.get('/clients' + params).then(response => {
                 this.clients = response.data;
             });
         },
         getBackflows(){
-            this.$http.get('/backflow_old?zip=' + this.zip + '&group='+this.group).then(response => {
+            let params = '?group=' + this.group;
+            if(this.zip){
+             params += '&zip=' + this.zip;
+            }
+            this.$http.get('/backflow_old' + params).then(response => {
                 this.backflows = [];
                 response.data.data.map(b =>{
                     let backflow = b;
@@ -214,6 +222,7 @@ export default {
                     this.backflows.push(backflow);
                 });
             });
+            getClients();
         },
         save(item){
             if(!item.property_id){
