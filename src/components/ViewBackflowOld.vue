@@ -173,6 +173,7 @@ export default {
             this.$http.get('/backflow_old/zips?group='+this.group).then(response => {
                 this.zips = response.data.data;
             });
+            this.getBackflows();
         },
         getProperties(item){
             if(!item.client_id){
