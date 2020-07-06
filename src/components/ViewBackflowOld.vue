@@ -222,7 +222,7 @@ export default {
                     this.backflows.push(backflow);
                 });
             });
-            getClients();
+            this.getClients();
         },
         save(item){
             if(!item.property_id){
