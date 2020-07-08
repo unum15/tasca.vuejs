@@ -164,22 +164,23 @@
                   </template>
             </b-table>
            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewTask
-                    v-if="modalInfo.task_id"
+                <ViewScheduleOrderPopup
+                    v-if="modalInfo.order_id"
+                    :order_id="modalInfo.order_id"
                     :task_id="modalInfo.task_id"
                 >
-                </ViewTask>
+                </ViewScheduleOrderPopup>
             </b-modal>
         
     </div>
 </template>
 <script>
 import moment from 'moment';
-import ViewTask from './ViewTask';
+import ViewScheduleOrderPopup from './ViewScheduleOrderPopup';
 export default {
     name: 'ViewScheduleTab',
     components: {
-        'ViewTask': ViewTask
+        'ViewScheduleOrderPopup': ViewScheduleOrderPopup
     },
     props: {
         tab: {default: null},
@@ -194,7 +195,7 @@ export default {
             tasks: [],
             filtered_tasks: [],
             filter: null,
-            modalInfo: { title: '', content: '', order_id: null },
+            modalInfo: { title: '', content: '', order_id: null, task_id: null },
             date: moment().format('YYYY-MM-DD'),
             crews: [],
             crew_id: null,
@@ -322,7 +323,8 @@ export default {
             this.getTasks();
         },
         info (item) {
-            this.modalInfo.title = `Task #${item.task_id} - ${item.name}`
+            this.modalInfo.title = `Order #${item.order_id} - ${item.order_name}`
+            this.modalInfo.order_id = item.order_id
             this.modalInfo.task_id = item.task_id
             this.$refs['modalInfo'].show()
         },

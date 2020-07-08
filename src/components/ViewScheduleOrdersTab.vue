@@ -32,60 +32,23 @@
                         </th>  
                     </tr>
                 </template>
+                <template v-slot:cell(project.client.name)="data">
+                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                </template>
+                <template v-slot:cell(property)="data">
+                    {{ data.item.properties[0].name }}
+                </template>
                 <template v-slot:cell(name)="data">
                     <a :href="'/client/' + data.item.project.client_id + '/project/' + data.item.project_id + '/order/' + data.item.id"> {{ data.value }} </a>
                 </template>
-                <template v-slot:cell(property)="data">
-                    {{ data.item.properties.length ? data.item.properties[0].name : ''}}
-                </template>
-                <template v-slot:cell(name)="data">
-                    <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
-                </template>
                 <template v-slot:cell(hours)="data">
                     {{ getTotalHours(data.item) }}
-                </template>
-                <template v-slot:cell(date)="data">
-                    <span :id="'dates_'+data.item.id">dates</span>
-                     <b-popover
-                       :target="'dates_'+data.item.id"
-                       title="Dates"
-                       triggers="hover"
-                    >
-                        <ul>
-                            <ul v-for="task in data.item.tasks" :key="task.id" >
-                                <li v-for="date in task.dates" :key="date.id" >
-                                    {{ date.date }}
-                                    <ul>
-                                        <li v-for="sign_in in date.sign_ins" :key="sign_in.id">
-                                            {{ sign_in.sign_in }} - {{ sign_in.sign_out }}
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </ul>
-                    </b-popover>
                 </template>
                 <template v-slot:cell(completion_date)="data">
                     <b-form-input
                         type="date"
                         @change="save(data.item)"
                         v-model="data.item.completion_date"
-                    >
-                    </b-form-input>
-                </template>
-                <template v-slot:cell(billed_date)="data">
-                    <b-form-input
-                        type="date"
-                        @change="save(data.item)"
-                        v-model="data.item.billed_date"
-                    >
-                    </b-form-input>
-                </template>
-                <template v-slot:cell(closed_date)="data">
-                    <b-form-input
-                        type="date"
-                        @change="save(data.item)"
-                        v-model="data.item.closed_date"
                     >
                     </b-form-input>
                 </template>
@@ -97,16 +60,25 @@
                     </ViewScheduleOrdersTabTasks>
                   </template>
             </b-table>
-        
+            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
+                <ViewScheduleOrderPopup
+                    v-if="modalInfo.order_id"
+                    :order_id="modalInfo.order_id"
+                    :task_id="modalInfo.task_id"
+                >
+                </ViewScheduleOrderPopup>
+            </b-modal>
     </div>
 </template>
 <script>
 import moment from 'moment';
 import ViewScheduleOrdersTabTasks from './ViewScheduleOrdersTabTasks';
+import ViewScheduleOrderPopup from './ViewScheduleOrderPopup';
 export default {
     name: 'ViewScheduleOrdersTab',
     components: {
-        'ViewScheduleOrdersTabTasks': ViewScheduleOrdersTabTasks
+        'ViewScheduleOrdersTabTasks': ViewScheduleOrdersTabTasks,
+        'ViewScheduleOrderPopup': ViewScheduleOrderPopup
     },
     props: {
         tab: { required: true}
@@ -116,6 +88,7 @@ export default {
             orders: [],
             filtered_orders: [],
             filter: null,
+            modalInfo: { title: '', content: '', order_id: null, task_id: null },
             fields: [
                 {
                     key: 'project.open_date',
@@ -132,6 +105,12 @@ export default {
                 {
                     key: 'start_date',
                     label: 'Start Date',
+                    sortable: true,
+                    filter: null
+                },
+                {
+                    key: 'hours',
+                    label: 'Total Hours',
                     sortable: true,
                     filter: null
                 },
@@ -156,12 +135,6 @@ export default {
                 {
                     key: 'description',
                     label: 'Description',
-                    sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'hours',
-                    label: 'Total Hours',
                     sortable: true,
                     filter: null
                 },
@@ -206,7 +179,7 @@ export default {
                     });
                 });
             });
-            return Math.round(time/3600000,2);
+            return Math.round(time/36000)/100;
         },
         filterColumns(){
             this.filtered_orders = this.orders;
@@ -228,6 +201,16 @@ export default {
                     })
                 }
             }
+        },
+        info (item) {
+            this.modalInfo.title = `Order #${item.id} - ${item.name}`
+            this.modalInfo.order_id = item.id
+            this.$refs['modalInfo'].show()
+        },
+        resetModal () {
+            this.modalInfo.title = ''
+            this.modalInfo.content = ''
+            this.modalInfo.order_id = null
         }
     }
 }
