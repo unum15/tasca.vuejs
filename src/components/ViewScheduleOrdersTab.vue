@@ -139,7 +139,7 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'closed_date',
+                    key: 'completion_date',
                     label: 'Closed',
                     sortable: true,
                     filter: null
