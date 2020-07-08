@@ -71,14 +71,14 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'completion_date',
-                    label: 'Completion Date',
+                    key: 'total_hours',
+                    label: 'Total Hours',
                     sortable: true,
                     filter: null
                 },
                 {
-                    key: 'total_hours',
-                    label: 'Total Hours',
+                    key: 'completion_date',
+                    label: 'Completion Date',
                     sortable: true,
                     filter: null
                 },
@@ -183,10 +183,11 @@ export default {
                 d.sign_ins.map(si =>{
                     var sign_in = moment(si.sign_in);
                     var sign_out = moment(si.sign_out);
-                    time += Math.round(sign_out.diff(sign_in)/36000);
+                    time += Math.round(sign_out.diff(sign_in));
+                    console.log(time);
                 });
             });
-            return Math.round(time/3600000,2);
+            return Math.round(time/36000)/100;
         }
     },
     computed: {
