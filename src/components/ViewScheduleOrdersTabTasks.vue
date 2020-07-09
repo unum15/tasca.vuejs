@@ -9,6 +9,9 @@
         :sort-compare="sortCompare"
         :sort-by.sync="sortBy"
     >
+        <template v-slot:cell(name)="data">
+            <a :href="'/client/' + order.project.client_id + '/project/' + order.project_id + '/order/' + data.item.order_id + '/task/' + data.item.id"> {{ data.value }} </a>
+        </template>
         <template v-slot:cell(completion_date)="data">
             <b-form-input
                 type="date"
@@ -51,7 +54,8 @@ import moment from 'moment';
 export default {
     name: 'ViewScheduleOrdersTabTasks',
     props: {
-        tasks: {required: true}
+        tasks: {required: true},
+        order: {required: true}
     },
     data() {
         return {

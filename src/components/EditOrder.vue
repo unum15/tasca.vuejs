@@ -20,7 +20,7 @@
                 value-field="id"
                 text-field="name"
                 required
-                state="my_order.properties.length == 0"
+                :state="my_order.properties.length == 0"
                 v-model="my_order.properties"
                 multiple
                 >
@@ -249,7 +249,7 @@
                     </b-row>
                 </b-container>
             </b-tab>
-            <b-tab title="Tasks" v-if="my_order.id !== null">
+            <b-tab title="Tasks" v-if="my_order.id !== null" :active="task_id != null">
                 <EditTasks
                     v-if="my_order.id != null"
                     :crews="crews"
@@ -258,6 +258,7 @@
                     :task_statuses="task_statuses"
                     :task_actions="task_actions"
                     :task_categories="task_categories"
+                    :task_id="task_id"
                     :settings="settings"
                     :project_close_date="project_close_date"
                     >
@@ -481,6 +482,7 @@ export default {
 		task_statuses: {required: true},
 		task_actions: {required: true},
 		task_categories: {required: true},
+        task_id: {default: null},
         tab_index: {default: 0},
         project_close_date: {default: null},
         settings: {required: true}
