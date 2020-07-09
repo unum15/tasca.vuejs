@@ -57,6 +57,7 @@ export default {
 		task_categories: {required: true},
 		crews: {required: true},
 		project_close_date: {default: null},
+		task_id: {default: null},
 		settings: {required: true}
 	},
 	data: function() {
@@ -117,6 +118,10 @@ export default {
 		isActive(index){
       if((this.change_tab)&&(index == this.tasks.length -1)){
         return true
+      }
+			if(this.task_id == this.tasks[index].id){
+				this.$emit('set-task-tab', this.tasks[index])
+        return true;
       }
       return false
     },

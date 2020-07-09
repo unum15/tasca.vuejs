@@ -50,6 +50,7 @@
 									:settings="settings"
 									:project_name="project_name"
 									:project_close_date="project.close_date"
+									:task_id="task_id"
 									@remove-order="removeOrder"
 									@changed-order-tab="changedOrderTab"
 									@reload-orders="reloadOrders"

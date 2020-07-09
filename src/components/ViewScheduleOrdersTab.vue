@@ -56,7 +56,7 @@
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Tasks" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
                   </template>
                   <template slot="row-details" slot-scope="row">
-                    <ViewScheduleOrdersTabTasks :tasks="row.item.tasks">
+                    <ViewScheduleOrdersTabTasks :order="row.item" :tasks="row.item.tasks">
                     </ViewScheduleOrdersTabTasks>
                   </template>
             </b-table>
@@ -139,7 +139,7 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'closed_date',
+                    key: 'completion_date',
                     label: 'Closed',
                     sortable: true,
                     filter: null
