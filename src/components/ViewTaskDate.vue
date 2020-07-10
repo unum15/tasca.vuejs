@@ -17,8 +17,8 @@
                 <b-col class="data">{{ task_date.task.order.name }}</b-col>
                 <b-col class="label">Start Date</b-col>
                 <b-col class="data">{{ task_date.task.order.start_date }}</b-col>
-                <b-col><b-button @click="signIn" v-if="!sign_in_id" :disabled="!clock_in_id" v-b-tooltip.hover :title="clock_in_id ? 'Sign In To This Task' : 'You Must Clock In'">Sign In</b-button></b-col>
-                <b-col><b-button @click="signOut" v-if="sign_in_id">Sign Out</b-button></b-col>
+                <b-col><b-button @click="signIn" v-if="!sign_in_id">Clock In</b-button></b-col>
+                <b-col><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ task_date.task.order.description }}</b-col>
@@ -119,7 +119,7 @@
             </b-row>
             <div v-for="sign_in in sign_ins" :key="sign_in.id">
                 <b-row>
-                    <b-col>{{ sign_in.clock_in.contact.name }}</b-col>
+                    <b-col>{{ sign_in.contact.name }}</b-col>
                     <b-col>{{ formatTime(sign_in.sign_in) }}</b-col>
                     <b-col>{{ formatTime(sign_in.sign_out) }}</b-col>
                     <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
@@ -138,8 +138,7 @@ import moment from 'moment';
 export default {
     name: 'ViewTaskDate',
     props: {
-        task_date_id : { required:true },
-        clock_in_id : { default: null }
+        task_date_id : { required:true }
     },
     data() {
         return {
@@ -188,7 +187,7 @@ export default {
             var sign_in;
             sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
             if(sign_in !== null){
-                this.$http.post('/sign_in', {clock_in_id: this.clock_in_id, task_date_id : this.task_date_id, sign_in: sign_in}).then(() => {
+                this.$http.post('/sign_in', {task_date_id : this.task_date_id, sign_in: sign_in}).then(() => {
                     this.getTaskDate();
                 });
             }
@@ -238,7 +237,7 @@ export default {
         sign_in_id() {
             var id = null
             var my_id = localStorage.getItem('id')
-            var ids = this.sign_ins.filter( si => (si.clock_in.contact_id == my_id && si.sign_out == null))
+            var ids = this.sign_ins.filter( si => (si.contact_id == my_id && si.sign_out == null))
             if(ids.length > 0){
                 id = ids[0].id
             }
