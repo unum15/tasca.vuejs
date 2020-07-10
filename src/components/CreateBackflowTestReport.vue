@@ -40,9 +40,9 @@
                 </b-form-input>
             </template>
             <template v-slot:cell(actions)="data">
-                <img src="@/assets/new.png" v-b-tooltip.hover title="New Test" @click="newTest(data.index)" fluid alt="+" style="width:20px;cursor:pointer;" />
+                <img src="@/assets/new.png" v-b-tooltip.hover.top title="New Test" @click="newTest(data.index)" fluid alt="+" style="width:20px;cursor:pointer;" />
                 <a v-if="data.item.backflow_test_report_id" :href="'/backflow_test_report/'+data.item.backflow_test_report_id" target="edit_report" >
-                    <img src="@/assets/edit.png" v-b-tooltip.hover title="Edit Test" fluid alt="edit" style="margin-left:5px;width:25px;" />
+                    <img src="@/assets/edit.png" v-b-tooltip.hover.top title="Edit Test" fluid alt="edit" style="margin-left:5px;width:25px;" />
                 </a>
             </template>
         </b-table>
