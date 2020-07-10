@@ -31,7 +31,8 @@ import ViewMaintenances from '@/components/ViewMaintenances';
 import GoogleCalendar from '@/components/GoogleCalendar';
 import EditBackflowAssembly from '@/components/EditBackflowAssembly';
 import ViewBackflowAssemblies from '@/components/ViewBackflowAssemblies';
-import CreateBackflowTestReport from '@/components/CreateBackflowTestReport';
+import CreateBackflowTestReportProperty from '@/components/CreateBackflowTestReportProperty';
+import CreateBackflowTestReportDate from '@/components/CreateBackflowTestReportDate';
 import EditBackflowTestReport from '@/components/EditBackflowTestReport';
 import ViewBackflowTestReports from '@/components/ViewBackflowTestReports';
 import PhreeBooksClients from '@/components/PhreeBooksClients';
@@ -472,9 +473,17 @@ var router = new Router({
       }
     },
     {
-        path: '/backflow_test_report/quick/:group',
-        name: 'NewBackflowTestReports',
-        component: CreateBackflowTestReport,
+        path: '/backflow_test_report/quick/property',
+        name: 'NewBackflowTestReportProperty',
+        component: CreateBackflowTestReportProperty,
+        meta: {
+            title: 'New Backflow Test Reports'
+        }
+    },
+    {
+        path: '/backflow_test_report/quick/date',
+        name: 'NewBackflowTestReportDate',
+        component: CreateBackflowTestReportDate,
         meta: {
             title: 'New Backflow Test Reports'
         }
