@@ -117,6 +117,7 @@
                             :filter="filter"
                             :items="backflow_test_report.backflow_tests"
                             :fields="test_fields"
+                            id="tests-table"
                         >
                             <template v-slot:cell(id)="data">
                                 <a :href="'/backflow_test_report/' + data.value"> {{ data.value }} </a>
@@ -726,6 +727,7 @@ export default {
         checkPassed(item){
             item.backflow_type = this.backflow_assembly.backflow_type;
             item.passed = this.passed(item);
+            this.$root.$emit('bv::refresh::table', 'tests-table')
         },
         deleteTest(id) {
             if(confirm("Delete test?")){
