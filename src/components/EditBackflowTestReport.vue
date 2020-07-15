@@ -417,11 +417,6 @@ export default {
                         sortable: false
                     },
                     {
-                        key: 'passed',
-                        label: 'Passed',
-                        sortable: false
-                    },
-                    {
                         key: 'actions',
                         label: '',
                         sortable: false
