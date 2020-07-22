@@ -39,7 +39,7 @@ export default {
     data() {
         return {
             tabs: ['Current', 'All', 'Service', 'Pending', 'On Hold'],
-            order_tabs: {'Non-Completed' : 'Orders with part Closed Tasks', 'Completed' : 'Orders with all Closed Tasks'},
+            order_tabs: {'Non-Completed' : 'Partly Completed Orders', 'Completed' : 'Completed Orders'},
             order_status_types: [],
             appointment_statuses: [],
             task_categories: [],

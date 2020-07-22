@@ -8,6 +8,7 @@
         :filter="filter"
         :sort-compare="sortCompare"
         :sort-by.sync="sortBy"
+        class="task-tab"
     >
         <template v-slot:cell(name)="data">
             <a :href="'/client/' + order.project.client_id + '/project/' + order.project_id + '/order/' + data.item.order_id + '/task/' + data.item.id"> {{ data.value }} </a>
@@ -201,3 +202,12 @@ export default {
     }
 }
 </script>
+<style>
+.task-tab th {
+    background-color:#0000FF;
+    color:#FFFFFF;
+}
+.task-tab td {
+    background-color:#55AAFF;
+}
+</style>
