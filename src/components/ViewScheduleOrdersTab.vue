@@ -91,7 +91,7 @@ export default {
             modalInfo: { title: '', content: '', order_id: null, task_id: null },
             fields: [
                 {
-                    key: 'project.open_date',
+                    key: 'date',
                     label: 'Open Date',
                     sortable: true,
                     filter: null

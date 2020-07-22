@@ -311,7 +311,7 @@ export default {
     methods: {
         getTasks(){
             this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date).then((results) => {
-                if(this.tab=='Pending'){
+                if(['Pending', 'On Hold', 'All'].includes(this.tab)){
                     this.sortBy='start_date';
                 }
                 this.tasks = results.data;
