@@ -33,13 +33,13 @@
                     </tr>
                 </template>
                 <template v-slot:cell(project.client.name)="data">
-                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                    <a :href="'/client/' + data.item.project.client_id + '/project/' + data.item.project_id + '/order/' + data.item.id"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(property)="data">
                     {{ data.item.properties.length ? data.item.properties[0].name : '' }}
                 </template>
                 <template v-slot:cell(name)="data">
-                    <a :href="'/client/' + data.item.project.client_id + '/project/' + data.item.project_id + '/order/' + data.item.id"> {{ data.value }} </a>
+                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(hours)="data">
                     {{ getTotalHours(data.item) }}
