@@ -220,6 +220,9 @@ export default {
 			if(this.my_task.billable === null){
 				return;
 			}
+			if(this.my_task.name === null){
+				return;
+			}
 			if(this.my_task.id === null){
 				this.$http.post('/task',this.my_task).then(response => {
 					this.my_task.id = response.data.id;
