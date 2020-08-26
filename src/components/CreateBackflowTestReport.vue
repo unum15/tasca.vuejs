@@ -9,6 +9,11 @@
             :fields="fields"
             responsive
         >
+            <template v-slot:cell(serial_number)="data">
+                <a :href="'/backflow_assembly/'+data.item.id">
+                    {{ data.value }}
+                </a>
+            </template>
             <template v-slot:cell(test_1)="data">
                 <b-form-input
                   type="number"
@@ -55,6 +60,7 @@ export default {
     name: 'CreateBackflowTestReport',
     props: {
         backflow_assemblies: {required: 'true'},
+        property_data: {default: false}
     },
     data () {
         return {
@@ -115,12 +121,27 @@ export default {
                         label: 'Actions',
                         sortable: false
                     }
+                ],
+                property_fields : [
+                    {
+                        key: 'property.name',
+                        label: 'Property',
+                        sortable: true
+                    },
+                    {
+                        key: 'property.address1',
+                        label: 'Address',
+                        sortable: true
+                    },
                 ]
         };
     },
     created () {
         this.contact_id = localStorage.getItem('id')
         this.passed = backflows.passed // shared code between here and EditBackflowTestReport;
+        if(this.property_data){
+            this.fields = this.property_fields.concat(this.fields);
+        }
     },
     methods: {
         save (index) {
