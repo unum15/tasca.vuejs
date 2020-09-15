@@ -104,7 +104,7 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
-                    <b-row v-if="active_reports.length">
+                    <b-row v-if="active_reports.length>1">
                         <b-table
                             small
                             striped
@@ -811,17 +811,15 @@ export default {
         },
         active_reports() {
             let reports = [];
-            this.backflow_assemblies.map(a => {
-                a.backflow_test_reports.map(r => {
-                    if(!r.submitted_date){
-                        let report = {
-                            id : r.id,
-                            serial_number: a.serial_number,
-                            backflow_tests: r.backflow_tests
-                        };
-                        reports.push(report);
-                    }
-                });
+            this.backflow_assembly.backflow_test_reports.map(r => {
+                if(!r.submitted_date){
+                    let report = {
+                        id : r.id,
+                        serial_number: this.backflow_assembly.serial_number,
+                        backflow_tests: r.backflow_tests
+                    };
+                    reports.push(report);
+                }
             });
             return reports;
         }
