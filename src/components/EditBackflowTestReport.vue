@@ -104,6 +104,34 @@
                             </b-form-group>
                         </b-col>
                     </b-row>
+                    <b-row v-if="active_reports.length>1">
+                        <b-table
+                            small
+                            striped
+                            hover
+                            :items="active_reports"
+                            :fields="active_reports_fields"
+                            id="tests-table"
+                        >
+                            <template v-slot:cell(backflow_tests)="data">
+                                {{ data.value.length }}
+                            </template>
+                             <template v-slot:cell(show_details)="row">
+                                <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+                                  {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
+                                </b-button>
+                              </template>
+                             <template v-slot:row-details="data">
+                                <b-card>
+                                  <b-row v-for="test in data.item.backflow_tests" :key="test.id">
+                                    {{ test }}
+                                  </b-row>
+                        
+                                  <b-button size="sm" @click="deleteReport(data.item.id)">Delete Report</b-button>
+                                </b-card>
+                            </template>
+                        </b-table>
+                    </b-row>
                     <b-row>
                         <b-col style="font-weight:bold;text-align:left;font-size:200%;">
                             Test Results
@@ -340,6 +368,28 @@ export default {
             reports: [],
             report_id: null,
             backflow_assembly: { backflow_type: null},
+            active_reports_fields: [
+                {
+                    key: 'id',
+                    label: 'ID',
+                    sortable: false,
+                },
+                {
+                    key: 'serial_number',
+                    label: 'SN',
+                    sortable: false,
+                },
+                {
+                    key: 'backflow_tests',
+                    label: '#Test',
+                    sortable: false,
+                },
+                {
+                    key: 'show_details',
+                    label: '',
+                    sortable: false,
+                },
+            ],
             backflow_fields: [
                 {
                     key: 'use',
@@ -445,14 +495,13 @@ export default {
     },
     methods: {
         getRequestedReport () {
-            this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_assembly.backflow_type.backflow_super_type').then(response => {
+            this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_assembly.backflow_type.backflow_super_type,backflow_assembly.backflow_test_reports,backflow_assembly.backflow_test_reports.backflow_tests').then(response => {
                 let report = response.data.data
                 this.client_id = report.backflow_assembly.property.client_id;
                 this.getProperties();
                 this.property_id = report.backflow_assembly.property_id;
                 this.getBackflowAssemblies();
                 this.backflow_assembly_id = report.backflow_assembly.id;
-                report.backflow_assembly.backflow_test_reports = [report];
                 this.backflow_assembly = report.backflow_assembly;
                 this.backflow_test_report = report.backflow_assembly;
                 this.getValves();
@@ -530,7 +579,7 @@ export default {
         },
         getBackflowAssemblies(){
             if(this.property_id){
-                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_type.backflow_super_type,backflow_manufacturer,backflow_model&recent_reports=30&active=1&property_id=' + this.property_id).then(response => {
+                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_type.backflow_super_type,backflow_manufacturer,backflow_model,backflow_test_reports.backflow_tests&recent_reports=30&active=1&property_id=' + this.property_id).then(response => {
                     let assemblies = response.data.data;
                     assemblies.map( a => {
                         a.include=true;
@@ -741,6 +790,17 @@ export default {
                 }
             }
         },
+        deleteReport(id) {
+            if(confirm("Delete report?")){
+                if(id){
+                    this.$http.delete('/backflow_test_report/' + id).then(() => {
+                        this.backflow_assemblies.map(a => {
+                            a.backflow_test_reports = a.backflow_test_reports.filter(r => r.id != id);
+                        });
+                    });
+                }
+            }
+        },
     },
     computed:{
         today() {
@@ -748,6 +808,20 @@ export default {
         },
         includedBackflowAssemblies(){
             return this.backflow_assemblies.filter(a => a.include);
+        },
+        active_reports() {
+            let reports = [];
+            this.backflow_assembly.backflow_test_reports.map(r => {
+                if(!r.submitted_date){
+                    let report = {
+                        id : r.id,
+                        serial_number: this.backflow_assembly.serial_number,
+                        backflow_tests: r.backflow_tests
+                    };
+                    reports.push(report);
+                }
+            });
+            return reports;
         }
     },
 };
