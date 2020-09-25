@@ -60,16 +60,24 @@
                     <span v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id">{{ data.value }}</span>
                 </template>
                 <template v-slot:cell(order_name)="data">
-                    <span v-b-popover.hover="data.item.order_description" :id="'order_name_' + data.item.id"><a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.value }} </a></span>
+                    <span v-b-popover.hover="data.item.order_description" :id="'order_name_' + data.item.id">
+                        <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)">
+                            {{ data.value }}
+                        </a>
+                    </span>
                 </template>
                 <template v-slot:cell(client)="data">
-                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.item.client }} </a>
+                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id" target="_blank">
+                        {{ data.item.client }}
+                    </a>
                 </template>
                 <template v-slot:cell(property)="data">
                     <span v-b-popover.hover="data.item.address" :id="'property_' + data.item.id">{{ data.value }}</span>
                 </template>
                 <template v-slot:cell(name)="data">
-                    <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.item.name }}</span>
+                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id + '/task/' + data.item.id" target="_blank">
+                        <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.item.name }}</span>
+                    </a>
                 </template>
                 <template v-slot:cell(appointment_status)="data">
                     <b-form-select
