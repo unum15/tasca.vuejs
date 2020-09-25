@@ -38,7 +38,7 @@ export default {
     },
     data() {
         return {
-            tabs: ['Current', 'All', 'Service', 'Pending', 'On Hold'],
+            tabs: ['Service', 'On Hold', 'All',  'Pending', 'Current'],
             order_tabs: {'Non-Completed' : 'Partly Completed Orders', 'Completed' : 'Completed Orders'},
             order_status_types: [],
             appointment_statuses: [],
