@@ -10,6 +10,7 @@
                                 value-field="id"
                                 text-field="name"
                                 v-model="crew_id"
+                                @input="getTasks()"
                             >
                             </b-form-select>
                         </b-form-group>
@@ -24,7 +25,7 @@
                       </b-input-group>
                     </b-form-group>
                   </b-col>
-                    <b-col v-if="['Current', 'Pending', 'All'].includes(tab)">
+                    <b-col v-if="['Current', 'Pending', 'All', 'On Hold'].includes(tab)">
                         <b-form-group label="Date" class="mb-0">
                           <b-input-group>
                             <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;height:25px;" />
@@ -206,7 +207,7 @@ export default {
             modalInfo: { title: '', content: '', order_id: null, task_id: null },
             date: moment().format('YYYY-MM-DD'),
             crews: [],
-            crew_id: null,
+            crew_id: '*',
             sortBy: 'date',
             fields: [
                 {
@@ -304,13 +305,14 @@ export default {
     created() {
         this.$http.get('/crews').then(response => {
             this.crews = response.data;
-            this.crews.unshift({id: null, name: 'All'});
+            this.crews.unshift({id: '*', name: 'All'});
+            this.crews.unshift({id: '', name: 'None'});
         });
         this.getTasks();
     },
     methods: {
         getTasks(){
-            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date).then((results) => {
+            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&crew_id=' + this.crew_id).then((results) => {
                 if(['Pending', 'On Hold', 'All'].includes(this.tab)){
                     this.sortBy='start_date';
                 }
