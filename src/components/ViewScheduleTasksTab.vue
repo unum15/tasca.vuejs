@@ -15,22 +15,29 @@
                             </b-form-select>
                         </b-form-group>
                     </b-col>
-                  <b-col md="6" class="my-1">
-                    <b-form-group label="Filter" class="mb-0">
-                      <b-input-group>
-                        <b-form-input v-model="filter" placeholder="Type to Search" />
-                        <b-input-group-append>
-                          <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
-                        </b-input-group-append>
-                      </b-input-group>
-                    </b-form-group>
-                  </b-col>
+                    <b-col md="6" class="my-1">
+                      <b-form-group label="Filter" class="mb-0">
+                        <b-input-group>
+                          <b-form-input v-model="filter" placeholder="Type to Search" />
+                          <b-input-group-append>
+                            <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
+                          </b-input-group-append>
+                        </b-input-group>
+                      </b-form-group>
+                    </b-col>
                     <b-col v-if="['Current', 'Pending', 'All', 'On Hold'].includes(tab)">
                         <b-form-group label="Date" class="mb-0">
                           <b-input-group>
                             <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;height:25px;" />
                             <b-form-input type="date" v-model="date" @input="getTasks()" />
                             <img src="@/assets/next.png" v-b-tooltip.hover title="Next Date" @click="nextDate" fluid alt="ND" style="width:25px;height:25px;" />
+                          </b-input-group>
+                        </b-form-group>
+                    </b-col>
+                    <b-col v-if="['Current', 'Pending'].includes(tab)">
+                        <b-form-group label="View Days" class="mb-0">
+                          <b-input-group>
+                            <b-form-input type="number" v-model="view_days" @input="getTasks()" />
                           </b-input-group>
                         </b-form-group>
                     </b-col>
@@ -206,6 +213,7 @@ export default {
             filter: null,
             modalInfo: { title: '', content: '', order_id: null, task_id: null },
             date: moment().format('YYYY-MM-DD'),
+            view_days: 14,
             crews: [],
             crew_id: '*',
             sortBy: 'date',
@@ -312,7 +320,7 @@ export default {
     },
     methods: {
         getTasks(){
-            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&crew_id=' + this.crew_id).then((results) => {
+            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&crew_id=' + this.crew_id + '&view_days=' + this.view_days).then((results) => {
                 if(['Pending', 'On Hold', 'All'].includes(this.tab)){
                     this.sortBy='start_date';
                 }
