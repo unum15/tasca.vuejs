@@ -5,7 +5,7 @@
             Scheduler
         </head>
         <main>
-            <b-tabs :key="order_status_types.length">
+            <b-tabs :key="order_status_types.length" v-model="tab_index">
                 <b-tab v-for="tab in tabs" :key="tab" :title="tab + ' Tasks'">
                     <ViewScheduleTasksTab
                         :tab="tab"
@@ -45,7 +45,8 @@ export default {
             task_categories: [],
             task_statuses: [],
             task_actions: [],
-            task_types: []
+            task_types: [],
+            tab_index: 4
         }
     },
     created() {
