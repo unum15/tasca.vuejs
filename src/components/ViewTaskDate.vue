@@ -8,6 +8,8 @@
                 <b-col class="data">{{ task_date.task.order.project.client.name }}</b-col>
                 <b-col class="label">Order#</b-col>
                 <b-col class="data">{{ task_date.task.order.id }}</b-col>
+                <b-col class="label">Task#</b-col>
+                <b-col class="data">{{ task_date.task.id }}</b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ task_date.task.order.project.notes }}</b-col>
@@ -104,6 +106,11 @@
                     <b-form-checkbox v-model="completed" @input="markCompleted">
                     </b-form-checkbox>
                 </b-col>
+                <b-col class="label">Invoiced</b-col>
+                <b-col>
+                    <b-form-checkbox v-model="invoiced" @input="markInvoiced">
+                    </b-form-checkbox>
+                </b-col>
                 <b-col class="label">Billed</b-col>
                 <b-col>
                     <b-form-checkbox v-model="billed" @input="markBilled">
@@ -161,6 +168,7 @@ export default {
             },
             sign_ins: [],
             billed: false,
+            invoiced: false,
             completed: false
         };
     },
@@ -174,6 +182,7 @@ export default {
                 //only show first property information
                 this.task_date.task.order.property = this.task_date.task.order.properties[0];
                 this.completed = this.task_date.task.completion_date != null;
+                this.invoiced = this.task_date.task.invoiced_date != null;
                 this.billed = this.task_date.task.billed_date != null;
                 this.getSignIns();
             });
@@ -223,6 +232,12 @@ export default {
         markCompleted(){
             let task = {
                 completion_date: this.completed ? moment().format('YYYY-MM-DD') : null
+            }
+            this.$http.patch('/task/' + this.task_date.task_id, task);
+        },
+        markInvoiced(){
+            let task = {
+                invoiced_date: this.invoiced ? moment().format('YYYY-MM-DD') : null
             }
             this.$http.patch('/task/' + this.task_date.task_id, task);
         },

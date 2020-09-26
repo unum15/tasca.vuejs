@@ -274,7 +274,7 @@ export default {
         
         },
         info(item) {
-            this.modalInfo.title = `Order# ${item.order_id}`
+            this.modalInfo.title = `${item.order_name} -- ${item.name}`
             this.modalInfo.id = item.id
             this.$refs['modalInfo'].show()
         },
