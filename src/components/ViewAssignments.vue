@@ -339,6 +339,9 @@ export default {
             return String(value)
         },
         formatDate(value){
+            if(!value){
+                return '';
+            }
             return moment(value).format('MM-DD');
         },
         formatTime(value){
