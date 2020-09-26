@@ -18,12 +18,12 @@
                             </b-col>
                             <b-col>
                                 <b-form-group label="Category">
-                                    <Treeselect v-model="value" :options="categories" />
+                                    <Treeselect v-model="category" :options="categories" />
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label="Assignment">
-                                    <Treeselect v-model="value" :options="assignments" />
+                                    <Treeselect v-model="assignment" :options="assignments" />
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -133,6 +133,8 @@ export default {
             modalInfo: { title: '', content: '', id: null },
             date: null,
             sort_by: 'time',
+            category: null,
+            assignment: null,
             categories: [
                 {
                     id: '1',
@@ -304,7 +306,7 @@ export default {
         },
         sortCompare(a, b, key) {
             if (key == 'time'){
-                var value = this.sortCompare(a, b, 'date');
+                let value = this.sortCompare(a, b, 'date');
                 if(value === 0){
                     value = this.sortCompare(a, b, 'sort_order');
                     if(value != 0){
