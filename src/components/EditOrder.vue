@@ -614,7 +614,7 @@ export default {
                 this.my_order.order_status_type_id = 2
                 this.reload = true;
             }
-            this.save();
+            //this.save(); I don't need this and I don't know why.
         },
         createOrders(){
             this.$http.post('/order/convert/'+this.my_order.id,this.my_order).then(response => {
