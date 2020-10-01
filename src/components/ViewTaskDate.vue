@@ -30,7 +30,7 @@
                     <b-container style="padding-left:0px;">
                         <b-row>
                             <b-col class="label">Property</b-col>
-                            <b-col class="data">
+                            <b-col class="data" cols="10">
                                 <a :href="'http://maps.google.com/maps?q=' + task_date.task.order.property.address1 + '+' + (task_date.task.order.property.address2 ? task_date.task.order.property.address2 + '+' : '') + task_date.task.order.property.city + '+' + task_date.task.order.property.state + '+' + task_date.task.order.property.zip" target="tasca_address">
                                     {{ task_date.task.order.property.name }}<br />
                                     {{ task_date.task.order.property.address1 }}<br />
@@ -43,15 +43,15 @@
                         <div v-for="contact in task_date.task.order.property.contacts" :key="contact.id">
                             <b-row>
                                 <b-col class="label">Contact</b-col>
-                                <b-col class="data">{{ contact.name }}</b-col>
+                                <b-col class="data" cols="10">{{ contact.name }}</b-col>
                             </b-row>
                             <b-row v-for="phone_number in contact.phone_numbers" :key="phone_number.id">
                                 <b-col class="label">{{ phone_number.phone_number_type.name }}</b-col>
-                                <b-col class="data"><a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a></b-col>
+                                <b-col class="data" cols="10"><a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a></b-col>
                             </b-row>
                             <b-row v-for="email in contact.emails" :key="email.id">
                                 <b-col class="label">{{ email.email_type.name }}</b-col>
-                                <b-col class="data"><a :href="'mailto:' + email.email">{{ email.email }}</a></b-col>
+                                <b-col class="data" cols="10"><a :href="'mailto:' + email.email">{{ email.email }}</a></b-col>
                             </b-row>
                         </div>
                     </b-container>
@@ -60,23 +60,23 @@
                     <b-container>
                         <b-row>
                             <b-col class="label">Location</b-col>
-                            <b-col class="data">{{ task_date.task.order.location }}</b-col>
+                            <b-col class="data" cols="10">{{ task_date.task.order.location }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Instructions</b-col>
-                            <b-col class="data">{{ task_date.task.order.instructions }}</b-col>
+                            <b-col class="data" cols="10">{{ task_date.task.order.instructions }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Notes</b-col>
-                            <b-col class="data">{{ task_date.task.order.notes }}</b-col>
+                            <b-col class="data" cols="10">{{ task_date.task.order.notes }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Budget</b-col>
-                            <b-col class="data">{{ task_date.task.order.budget }}+/-{{ task_date.task.order.budget_plus_minus }}</b-col>
+                            <b-col class="data" cols="10">{{ task_date.task.order.budget }}+/-{{ task_date.task.order.budget_plus_minus }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Bid</b-col>
-                            <b-col class="data">{{ task_date.task.order.bid }}+/-{{ task_date.task.order.bid_plus_minus }}</b-col>
+                            <b-col class="data" cols="10">{{ task_date.task.order.bid }}+/-{{ task_date.task.order.bid_plus_minus }}</b-col>
                         </b-row>
                     </b-container>
                 </b-col>
