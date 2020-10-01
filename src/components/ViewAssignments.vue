@@ -345,6 +345,9 @@ export default {
             return moment(value).format('MM-DD');
         },
         formatTime(value){
+            if(!value){
+                return "";
+            }
             return moment('2019-01-01 ' + value).format('hh:mm A');
         }
     },

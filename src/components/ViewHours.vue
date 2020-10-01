@@ -56,7 +56,7 @@
                 <div v-for="task_date in task_dates" :key="task_date.id">
                     <b-row>
                         <b-col class="label">Schedule Date & Time</b-col>
-                        <b-col class="data">{{ task_date.date }} {{ task_date.time }}</b-col>
+                        <b-col class="data">{{ formatTime(task_date.date+' '+task_date.time) }}</b-col>
                     </b-row>
                     <b-row>
                         <b-col class="label">Day Notes</b-col>
@@ -124,10 +124,10 @@ export default {
             return diff
         },
         formatTime(time){
-            if(time == null){
+            if(!time){
                 return "";
             }
-            return moment(time).format('MM-DD hh:mm')
+            return moment(time).format('MM-DD hh:mm A')
         },
         editSignIn(sign_in,field){
             var new_value = null;

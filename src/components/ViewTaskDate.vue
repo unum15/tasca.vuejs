@@ -27,7 +27,7 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-container>
+                    <b-container style="padding-left:15px;">
                         <b-row>
                             <b-col class="label">Property</b-col>
                             <b-col class="data">
@@ -94,7 +94,7 @@
             </b-row>
             <b-row>
                 <b-col class="label">Schedule Date & Time</b-col>
-                <b-col class="data">{{ task_date.date }} {{ task_date.time }}</b-col>
+                <b-col class="data">{{ formatTime(task_date.date + ' ' + task_date.time) }}</b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Day Notes</b-col>
@@ -224,10 +224,10 @@ export default {
             return diff
         },
         formatTime(time){
-            if(time == null){
-                return "";
+            if(time){
+                return moment(time).format('MM-DD hh:mm A')
             }
-            return moment(time).format('MM-DD hh:mm')
+            return "";
         },
         markCompleted(){
             let task = {
@@ -246,6 +246,14 @@ export default {
                 billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
             }
             this.$http.patch('/task/' + this.task_date.task_id, task);
+            if(this.billed&&!this.invoiced){
+                this.invoiced=true;
+                this.markInvoiced();
+            }
+            if(this.billed&&!this.completed){
+                this.completed=true;
+                this.markCompleted();
+            }
         }
     },
     computed: {
@@ -270,6 +278,7 @@ export default {
 .label {
     text-align: right;
     font-weight: bold;
+    text-align: left;
 }
 
 .header {
