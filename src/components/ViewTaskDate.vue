@@ -27,7 +27,7 @@
             </b-row>
             <b-row>
                 <b-col>
-                    <b-container style="padding-left:15px;">
+                    <b-container style="padding-left:0px;">
                         <b-row>
                             <b-col class="label">Property</b-col>
                             <b-col class="data">
