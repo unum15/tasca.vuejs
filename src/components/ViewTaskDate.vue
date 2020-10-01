@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-container>
+        <b-container style="padding-left:0px;">
             <b-row>
                 <b-col class="label">Project</b-col>
                 <b-col class="data">{{ task_date.task.order.project.name }}</b-col>
