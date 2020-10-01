@@ -362,3 +362,8 @@ export default {
     }
 }
 </script>
+<style>
+.modal-header {
+    padding-bottom: 0px;
+}
+</style>
