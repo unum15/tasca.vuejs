@@ -3,11 +3,11 @@
         <b-container>
             <b-row>
                 <b-col class="label">Task</b-col>
-                <b-col class="data">{{ task.name }}</b-col>
+                <b-col class="data" cols="3">{{ task.name }}</b-col>
                 <b-col class="label">Hours</b-col>
-                <b-col class="data">{{ task.task_hours }}</b-col>
+                <b-col class="data" cols="3">{{ task.task_hours }}</b-col>
                 <b-col class="label">Crew Time</b-col>
-                <b-col class="data">{{ task.crew_hours }}</b-col>
+                <b-col class="data" cols="3">{{ task.crew_hours }}</b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Task Description</b-col>
@@ -51,6 +51,7 @@ export default {
             task: { },
             billed: false,
             completed: false,
+            invoiced: false,
             sign_ins: [],
             task_dates: [],
             employees_hours: []
@@ -144,7 +145,7 @@ export default {
 </script>
 <style scoped>
 .label {
-    text-align: right;
+    text-align: left;
     font-weight: bold;
 }
 

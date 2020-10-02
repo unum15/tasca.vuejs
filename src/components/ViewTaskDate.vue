@@ -3,7 +3,7 @@
         <b-container style="padding-left:0px;">
             <b-row>
                 <b-col class="label">Project</b-col>
-                <b-col class="data" cols="3">{{ task_date.task.order.project.name }}</b-col>
+                <b-col class="data" cols="3">{{ task_date.task.order.project.name }} </b-col>
                 <b-col class="label">Client</b-col>
                 <b-col class="data" cols="2">{{ task_date.task.order.project.client.name }}</b-col>
                 <b-col class="label">Order#</b-col>
@@ -16,11 +16,11 @@
             </b-row>
             <b-row>
                 <b-col class="label">Order</b-col>
-                <b-col class="data" cols="3">{{ task_date.task.order.name }}</b-col>
-                <b-col class="label">Start Date</b-col>
+                <b-col class="data" cols="2">{{ task_date.task.order.name }}</b-col>
+                <b-col class="label" cols="2">Start Date</b-col>
                 <b-col class="data" cols="2">{{ task_date.task.order.start_date }}</b-col>
                 <b-col cols="3"><b-button @click="signIn" v-if="!sign_in_id">Clock In</b-button></b-col>
-                <b-col cols="3"><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
+                <b-col cols="2"><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ task_date.task.order.description }}</b-col>
