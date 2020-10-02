@@ -14,19 +14,19 @@
                 <b-col class="data" cols="9">{{ task.description }}</b-col>
             </b-row>
             <b-row>
-                <b-col class="label">Completed</b-col>
-                <b-col>
+                <b-col class="label">
                     <b-form-checkbox v-model="completed" @change="markCompleted">
+                        Completed
                     </b-form-checkbox>
                 </b-col>
-                <b-col class="label">Invoiced</b-col>
-                <b-col cols="3">
+                <b-col class="label">
                     <b-form-checkbox v-model="invoiced" @input="markInvoiced">
+                        Invoiced
                     </b-form-checkbox>
                 </b-col>
-                <b-col class="label">Billed</b-col>
-                <b-col>
+                <b-col class="label">
                     <b-form-checkbox v-model="billed" @change="markBilled">
+                        Billed
                     </b-form-checkbox>
                 </b-col>
             </b-row>
