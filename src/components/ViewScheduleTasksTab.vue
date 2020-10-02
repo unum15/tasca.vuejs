@@ -180,23 +180,22 @@
                   </template>
             </b-table>
            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewScheduleOrderPopup
-                    v-if="modalInfo.order_id"
-                    :order_id="modalInfo.order_id"
-                    :task_id="modalInfo.task_id"
+                <ViewTaskDate
+                    v-if="modalInfo.id"
+                    :task_date_id="modalInfo.id"
                 >
-                </ViewScheduleOrderPopup>
+                </ViewTaskDate>
             </b-modal>
         
     </div>
 </template>
 <script>
 import moment from 'moment';
-import ViewScheduleOrderPopup from './ViewScheduleOrderPopup';
+import ViewTaskDate from './ViewTaskDate';
 export default {
     name: 'ViewScheduleTab',
     components: {
-        'ViewScheduleOrderPopup': ViewScheduleOrderPopup
+        'ViewTaskDate': ViewTaskDate
     },
     props: {
         tab: {default: null},
@@ -211,7 +210,7 @@ export default {
             tasks: [],
             filtered_tasks: [],
             filter: null,
-            modalInfo: { title: '', content: '', order_id: null, task_id: null },
+            modalInfo: { title: '', content: '', order_id: null },
             date: moment().format('YYYY-MM-DD'),
             view_days: 14,
             crews: [],
@@ -341,15 +340,14 @@ export default {
             this.getTasks();
         },
         info (item) {
-            this.modalInfo.title = `Order #${item.order_id} - ${item.order_name}`
-            this.modalInfo.order_id = item.order_id
-            this.modalInfo.task_id = item.task_id
+            this.modalInfo.title = `${item.order_name} -- ${item.name}`
+            this.modalInfo.id = item.id
             this.$refs['modalInfo'].show()
         },
         resetModal () {
             this.modalInfo.title = ''
             this.modalInfo.content = ''
-            this.modalInfo.order_id = null
+            this.modalInfo.id = null
         },
         addTask (task){
             var new_task = {

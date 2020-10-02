@@ -116,33 +116,36 @@
                     </b-form-checkbox>
                 </b-col>
             </b-row>
-            <b-row>
-                <b-col class="header">Employee</b-col>
-                <b-col class="header">Sign In</b-col>
-                <b-col class="header">Sign Out</b-col>
-                <b-col class="header">Hours</b-col>
-                <b-col class="header">Labor Category</b-col>
-            </b-row>
-            <div v-for="sign_in in sign_ins" :key="sign_in.id">
+            <ViewHours :id="task_date.task.order.id" type="order" v-if="task_date.task.order.id">
+            </ViewHours>
+            <b-container class="text-center">
                 <b-row>
-                    <b-col>{{ sign_in.contact.name }}</b-col>
-                    <b-col>{{ formatTime(sign_in.sign_in) }}</b-col>
-                    <b-col>{{ formatTime(sign_in.sign_out) }}</b-col>
-                    <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
-                    <b-col></b-col>
+                    <b-col class="header">Tasks</b-col>
                 </b-row>
                 <b-row>
-                    <b-col class="label">Notes For The Day</b-col>
-                    <b-col class="data"><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
+                    <b-col>
+                        <b-tabs :key="tasks.length">
+                            <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == task_date.task_id">
+                                <ViewTaskHours :task_id="task.id">
+                                </ViewTaskHours>
+                            </b-tab>
+                        </b-tabs>
+                    </b-col>
                 </b-row>
-            </div>
+            </b-container>
         </b-container>
     </div>
 </template>
 <script>
 import moment from 'moment';
+import ViewTaskHours from './ViewTaskHours'
+import ViewHours from './ViewHours'
 export default {
     name: 'ViewTaskDate',
+    components: {
+        'ViewTaskHours': ViewTaskHours,
+        'ViewHours': ViewHours,
+    },
     props: {
         task_date_id : { required:true }
     },
@@ -151,6 +154,7 @@ export default {
             task_date: {
                 task: {
                     order: {
+                        id: null,
                         project: {
                             client: {
                                 name : null
@@ -168,7 +172,8 @@ export default {
             sign_ins: [],
             billed: false,
             invoiced: false,
-            completed: false
+            completed: false,
+            tasks: []
         };
     },
     created() {
@@ -184,6 +189,12 @@ export default {
                 this.invoiced = this.task_date.task.invoiced_date != null;
                 this.billed = this.task_date.task.billed_date != null;
                 this.getSignIns();
+                this.getTasks();
+            });
+        },
+        getTasks() {
+            this.$http.get('/tasks?order_id=' + this.task_date.task.order_id).then((results) => {
+                this.tasks = results.data;
             });
         },
         getSignIns() {
