@@ -78,11 +78,11 @@
                 class="text-left"
                 :sort-compare="sortCompare"
                 >
-                <template v-slot:cell(order_id)="data">
-                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.value"> {{ data.value }} </a>
+                <template v-slot:cell(order_name)="data">
+                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(client)="data">
-                    <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(date)="data">
                     {{ formatDate(data.value) }}
@@ -91,12 +91,14 @@
                     {{ formatTime(data.value) }}
                 </template>
                 <template v-slot:cell(name)="data">
-                    <span :id="'name_' + data.item.id">{{ data.value }}</span>
-                    <b-popover
-                        :target="'name_' + data.item.id"
-                        triggers="hover"
-                        :content="data.item.description"
-                    />
+                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id + '/task/' + data.item.id" target="_blank">
+                        <span :id="'name_' + data.item.id">{{ data.value }}</span>
+                        <b-popover
+                            :target="'name_' + data.item.id"
+                            triggers="hover"
+                            :content="data.item.description"
+                        />
+                    </a>
                 </template>
             </b-table>
             <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
@@ -189,8 +191,8 @@ export default {
             ],
             fields: [
                 {
-                    key: 'order_id',
-                    label: 'S/WO#',
+                    key: 'order_name',
+                    label: 'S/WO',
                     sortable: true
                 },
                 {
