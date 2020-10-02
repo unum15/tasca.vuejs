@@ -35,6 +35,7 @@
                                     {{ task_date.task.order.property.name }}<br />
                                     {{ task_date.task.order.property.address1 }}<br />
                                     {{ task_date.task.order.property.address2 }}<br v-if="task_date.task.order.property.address2" />
+                                    {{ task_date.task.order.property.unit }}<br v-if="task_date.task.order.property.unit" />
                                     {{ task_date.task.order.property.city }},{{ task_date.task.order.property.state }} {{ task_date.task.order.property.zip }}
                                     <b-col class="data"><a :href="'tel:' + task_date.task.order.property.phone_number">{{ task_date.task.order.property.phone_number }}</a></b-col>
                                 </a>
@@ -82,57 +83,17 @@
                 </b-col>
             </b-row>
             <b-row>
-                <b-col class="label">Task</b-col>
-                <b-col class="data" cols="3">{{ task_date.task.name }}</b-col>
-                <b-col class="label">Hours</b-col>
-                <b-col class="data" cols="3">{{ task_date.task.task_hours }}</b-col>
-                <b-col class="label">Crew Time</b-col>
-                <b-col class="data" cols="3">{{ task_date.task.crew_hours }}</b-col>
-            </b-row>
-            <b-row>
-                <b-col class="data">{{ task_date.task.description }}</b-col>
-            </b-row>
-            <b-row>
-                <b-col><span class="label">Schedule Date & Time</span> {{ formatTime(task_date.date + ' ' + task_date.time) }}</b-col>
-            </b-row>
-            <b-row>
-                <b-col class="label">Day Notes</b-col>
-                <b-col class="data">{{ task_date.notes }}</b-col>
-            </b-row>
-            <b-row>
-                <b-col class="label">Completed</b-col>
-                <b-col cols="3">
-                    <b-form-checkbox v-model="completed" @input="markCompleted">
-                    </b-form-checkbox>
-                </b-col>
-                <b-col class="label">Invoiced</b-col>
-                <b-col cols="3">
-                    <b-form-checkbox v-model="invoiced" @input="markInvoiced">
-                    </b-form-checkbox>
-                </b-col>
-                <b-col class="label">Billed</b-col>
-                <b-col cols="3">
-                    <b-form-checkbox v-model="billed" @input="markBilled">
-                    </b-form-checkbox>
-                </b-col>
-            </b-row>
-            <ViewHours :id="task_date.task.order.id" type="order" v-if="task_date.task.order.id">
-            </ViewHours>
-            <b-container class="text-center">
-                <b-row>
-                    <b-col class="header">Tasks</b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-tabs :key="tasks.length">
-                            <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == task_date.task_id">
+                <b-col>
+                    <b-tabs :key="tasks.length">
+                        <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == task_date.task_id">
+                            <b-container>
                                 <ViewTaskHours :task_id="task.id">
                                 </ViewTaskHours>
-                            </b-tab>
-                        </b-tabs>
-                    </b-col>
-                </b-row>
-            </b-container>
+                            </b-container>
+                        </b-tab>
+                    </b-tabs>
+                </b-col>
+            </b-row>
         </b-container>
     </div>
 </template>
@@ -239,32 +200,6 @@ export default {
             }
             return "";
         },
-        markCompleted(){
-            let task = {
-                completion_date: this.completed ? moment().format('YYYY-MM-DD') : null
-            }
-            this.$http.patch('/task/' + this.task_date.task_id, task);
-        },
-        markInvoiced(){
-            let task = {
-                invoiced_date: this.invoiced ? moment().format('YYYY-MM-DD') : null
-            }
-            this.$http.patch('/task/' + this.task_date.task_id, task);
-        },
-        markBilled(){
-            let task = {
-                billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
-            }
-            this.$http.patch('/task/' + this.task_date.task_id, task);
-            if(this.billed&&!this.invoiced){
-                this.invoiced=true;
-                this.markInvoiced();
-            }
-            if(this.billed&&!this.completed){
-                this.completed=true;
-                this.markCompleted();
-            }
-        }
     },
     computed: {
         sign_in_id() {

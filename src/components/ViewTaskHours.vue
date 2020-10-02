@@ -11,12 +11,17 @@
             </b-row>
             <b-row>
                 <b-col class="label">Task Description</b-col>
-                <b-col class="data" cols="10">{{ task.description }}</b-col>
+                <b-col class="data" cols="9">{{ task.description }}</b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Completed</b-col>
                 <b-col>
                     <b-form-checkbox v-model="completed" @change="markCompleted">
+                    </b-form-checkbox>
+                </b-col>
+                <b-col class="label">Invoiced</b-col>
+                <b-col cols="3">
+                    <b-form-checkbox v-model="invoiced" @input="markInvoiced">
                     </b-form-checkbox>
                 </b-col>
                 <b-col class="label">Billed</b-col>
@@ -103,11 +108,25 @@ export default {
             }
             this.$http.patch('/task/' + this.task_id, task);
         },
+        markInvoiced(){
+            let task = {
+                invoiced_date: this.invoiced ? moment().format('YYYY-MM-DD') : null
+            }
+            this.$http.patch('/task/' + this.task_date.task_id, task);
+        },
         markBilled(){
             let task = {
                 billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
             }
-            this.$http.patch('/task/' + this.task_id, task);
+            this.$http.patch('/task/' + this.task_date.task_id, task);
+            if(this.billed&&!this.invoiced){
+                this.invoiced=true;
+                this.markInvoiced();
+            }
+            if(this.billed&&!this.completed){
+                this.completed=true;
+                this.markCompleted();
+            }
         },
         editSignIn(sign_in,field){
             var new_value = null;
