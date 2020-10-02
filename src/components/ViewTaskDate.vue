@@ -17,10 +17,10 @@
             <b-row>
                 <b-col class="label">Order</b-col>
                 <b-col class="data" cols="3">{{ task_date.task.order.name }}</b-col>
-                <b-col class="label" cols="2">Start Date</b-col>
+                <b-col class="label">Start Date</b-col>
                 <b-col class="data" cols="2">{{ task_date.task.order.start_date }}</b-col>
-                <b-col cols="2"><b-button @click="signIn" v-if="!sign_in_id">Clock In</b-button></b-col>
-                <b-col cols="2"><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
+                <b-col cols="3"><b-button @click="signIn" v-if="!sign_in_id">Clock In</b-button></b-col>
+                <b-col cols="3"><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ task_date.task.order.description }}</b-col>
@@ -93,8 +93,7 @@
                 <b-col class="data">{{ task_date.task.description }}</b-col>
             </b-row>
             <b-row>
-                <b-col class="label">Schedule Date & Time</b-col>
-                <b-col class="data" cols="9">{{ formatTime(task_date.date + ' ' + task_date.time) }}</b-col>
+                <b-col><span class="label">Schedule Date & Time</span> {{ formatTime(task_date.date + ' ' + task_date.time) }}</b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Day Notes</b-col>
@@ -102,17 +101,17 @@
             </b-row>
             <b-row>
                 <b-col class="label">Completed</b-col>
-                <b-col>
+                <b-col cols="3">
                     <b-form-checkbox v-model="completed" @input="markCompleted">
                     </b-form-checkbox>
                 </b-col>
                 <b-col class="label">Invoiced</b-col>
-                <b-col>
+                <b-col cols="3">
                     <b-form-checkbox v-model="invoiced" @input="markInvoiced">
                     </b-form-checkbox>
                 </b-col>
                 <b-col class="label">Billed</b-col>
-                <b-col>
+                <b-col cols="3">
                     <b-form-checkbox v-model="billed" @input="markBilled">
                     </b-form-checkbox>
                 </b-col>
