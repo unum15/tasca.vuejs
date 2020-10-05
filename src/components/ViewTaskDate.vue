@@ -82,6 +82,10 @@
                     </b-container>
                 </b-col>
             </b-row>
+        </b-container>
+        <ViewHours :id="task_date.task.order_id" type="order" v-if="task_date.task.order_id">
+        </ViewHours>
+        <b-container>
             <b-row>
                 <b-col>
                     <b-tabs :key="tasks.length">
