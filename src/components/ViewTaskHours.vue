@@ -4,8 +4,6 @@
             <b-row>
                 <b-col class="label">Task#</b-col>
                 <b-col class="data" cols="2">{{ task.id }}</b-col>
-                <b-col class="label">Task</b-col>
-                <b-col class="data" cols="3">{{ task.name }}</b-col>
                 <b-col class="label">Hours</b-col>
                 <b-col class="data" cols="3">{{ task.task_hours }}</b-col>
                 <b-col class="label">Crew Time</b-col>
