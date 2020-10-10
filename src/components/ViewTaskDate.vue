@@ -19,8 +19,6 @@
                 <b-col class="data" cols="2">{{ task_date.task.order.name }}</b-col>
                 <b-col class="label" cols="2">Start Date</b-col>
                 <b-col class="data" cols="2">{{ task_date.task.order.start_date }}</b-col>
-                <b-col cols="3"><b-button @click="signIn" v-if="!sign_in_id">Clock In</b-button></b-col>
-                <b-col cols="2"><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ task_date.task.order.description }}</b-col>
@@ -82,40 +80,16 @@
                     </b-container>
                 </b-col>
             </b-row>
-            <b-row>
-                <b-col class="header">Employee</b-col>
-                <b-col class="header">Sign In</b-col>
-                <b-col class="header">Sign Out</b-col>
-                <b-col class="header">Hours</b-col>
-                <b-col class="header">Labor Category</b-col>
-                <b-col>
-                     <b-button v-b-modal="'sign_ins-' + this.type + '-' + this.id">On-Site Hours</b-button>
-                </b-col>
-                <b-col>
-                     <b-button v-b-modal="'dates-' + this.type + '-' + this.id">Scheduled Dates</b-button>
-                </b-col>
-            </b-row>
-            <div v-for="sign_in in sign_ins" :key="sign_in.id">
-                <b-row>
-                    <b-col>{{ sign_in.contact.name }}</b-col>
-                    <b-col>{{ formatTime(sign_in.sign_in) }}</b-col>
-                    <b-col>{{ formatTime(sign_in.sign_out) }}</b-col>
-                    <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
-                    <b-col></b-col>
-                </b-row>
-                <b-row>
-                    <b-col class="label">Notes For The Day</b-col>
-                    <b-col class="data"><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
-                </b-row>
-            </div>
         </b-container>
+        <ViewHours :id="task_date.task.order.id" type="order" v-if="task_date.task.order.id">
+        </ViewHours>
         <b-container>
             <b-row>
                 <b-col>
                     <b-tabs :key="tasks.length">
                         <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == task_date.task_id">
                             <b-container>
-                                <ViewTaskHours :task_id="task.id">
+                                <ViewTaskHours :task_id="task.id" :task_date_id="task.id == task_date.task_id ? task_date.id : null">
                                 </ViewTaskHours>
                             </b-container>
                         </b-tab>
@@ -191,27 +165,6 @@ export default {
                 this.sign_ins = results.data;
             });
         },
-        signIn(){
-            var sign_in;
-            sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
-            if(sign_in !== null){
-                this.$http.post('/sign_in', {task_date_id : this.task_date_id, sign_in: sign_in}).then(() => {
-                    this.getTaskDate();
-                });
-            }
-        },
-        signOut(){
-            var sign_out;
-            sign_out = prompt('Sign Out Time', moment().format("YYYY-MM-DD h:mm:ss a"));
-            if(sign_out !== null){
-                this.$http.patch('/sign_in/' + this.sign_in_id, {sign_out : sign_out}).then(() => {
-                    this.getTaskDate();
-                });
-            }
-        },
-        saveNotes(sign_in){
-            this.$http.patch('/sign_in/' + sign_in.id, {notes : sign_in.notes})
-        },
         timeDiff(start_time, stop_time){
             var start = moment(start_time)
             var stop = moment();
@@ -228,17 +181,6 @@ export default {
             }
             return "";
         },
-    },
-    computed: {
-        sign_in_id() {
-            var id = null
-            var my_id = localStorage.getItem('id')
-            var ids = this.sign_ins.filter( si => (si.contact_id == my_id && si.sign_out == null))
-            if(ids.length > 0){
-                id = ids[0].id
-            }
-            return id;
-        }
     },
     watch: {
         task_date_id() {

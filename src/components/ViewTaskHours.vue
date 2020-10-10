@@ -8,11 +8,33 @@
                 <b-col class="data" cols="3">{{ task.task_hours }}</b-col>
                 <b-col class="label">Crew Time</b-col>
                 <b-col class="data" cols="3">{{ task.crew_hours }}</b-col>
+                <b-col cols="3"><b-button @click="signIn" v-if="task_date_id && !sign_in_id">Clock In</b-button></b-col>
+                <b-col cols="2"><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Task Description</b-col>
                 <b-col class="data" cols="9">{{ task.description }}</b-col>
             </b-row>
+            <b-row>
+                <b-col class="header">Employee</b-col>
+                <b-col class="header">Sign In</b-col>
+                <b-col class="header">Sign Out</b-col>
+                <b-col class="header">Hours</b-col>
+                <b-col class="header">Labor Category</b-col>
+            </b-row>
+            <div v-for="sign_in in sign_ins" :key="sign_in.id">
+                <b-row>
+                    <b-col>{{ sign_in.contact.name }}</b-col>
+                    <b-col>{{ formatTime(sign_in.sign_in) }}</b-col>
+                    <b-col>{{ formatTime(sign_in.sign_out) }}</b-col>
+                    <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
+                    <b-col></b-col>
+                </b-row>
+                <b-row>
+                    <b-col class="label">Notes For The Day</b-col>
+                    <b-col class="data"><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
+                </b-row>
+            </div>
             <b-row>
                 <b-col class="label">
                     <b-form-checkbox v-model="completed" @change="markCompleted">
@@ -44,7 +66,8 @@ export default {
         'ViewHours': ViewHours,
     },
     props: {
-        task_id : { required:true }
+        task_id : { required:true },
+        task_date_id : { default: null }
     },
     data() {
         return {
@@ -137,9 +160,39 @@ export default {
                 sign_in[field] = new_value;
                 this.$http.patch('/sign_in/' + sign_in.id, sign_in);
             }
-        }
+        },
+        signIn(){
+            var sign_in;
+            sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
+            if(sign_in !== null){
+                this.$http.post('/sign_in', {task_date_id : this.task_date_id, sign_in: sign_in}).then(() => {
+                    this.getSignIns();
+                });
+            }
+        },
+        signOut(){
+            var sign_out;
+            sign_out = prompt('Sign Out Time', moment().format("YYYY-MM-DD h:mm:ss a"));
+            if(sign_out !== null){
+                this.$http.patch('/sign_in/' + this.sign_in_id, {sign_out : sign_out}).then(() => {
+                    this.getSignIns();
+                });
+            }
+        },
+        saveNotes(sign_in){
+            this.$http.patch('/sign_in/' + sign_in.id, {notes : sign_in.notes})
+        },
     },
     computed: {
+        sign_in_id() {
+            var id = null
+            var my_id = localStorage.getItem('id')
+            var ids = this.sign_ins.filter( si => (si.contact_id == my_id && si.sign_out == null))
+            if(ids.length > 0){
+                id = ids[0].id
+            }
+            return id;
+        }
     },
 }
 </script>
