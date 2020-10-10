@@ -2,6 +2,8 @@
     <div>
         <b-container>
             <b-row>
+                <b-col class="label">Task#</b-col>
+                <b-col class="data" cols="2">{{ task.id }}</b-col>
                 <b-col class="label">Task</b-col>
                 <b-col class="data" cols="3">{{ task.name }}</b-col>
                 <b-col class="label">Hours</b-col>
@@ -101,7 +103,10 @@ export default {
             });
         },
         getSignIns() {
-            this.$http.get('/sign_ins?task_id=' + this.task_id).then((results) => {
+            if(!this.task_date_id){
+                return;
+            }
+            this.$http.get('/sign_ins?task_date_id=' + this.task_date_id).then((results) => {
                 this.sign_ins = results.data;
             });
         },

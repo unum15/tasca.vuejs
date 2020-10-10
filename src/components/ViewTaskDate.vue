@@ -8,8 +8,6 @@
                 <b-col class="data" cols="2">{{ task_date.task.order.project.client.name }}</b-col>
                 <b-col class="label">Order#</b-col>
                 <b-col class="data" cols="2">{{ task_date.task.order.id }}</b-col>
-                <b-col class="label">Task#</b-col>
-                <b-col class="data" cols="2">{{ task_date.task.id }}</b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ task_date.task.order.project.notes }}</b-col>
