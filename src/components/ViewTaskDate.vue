@@ -82,9 +82,27 @@
                     </b-container>
                 </b-col>
             </b-row>
+            <b-row>
+                <b-col class="header">Employee</b-col>
+                <b-col class="header">Sign In</b-col>
+                <b-col class="header">Sign Out</b-col>
+                <b-col class="header">Hours</b-col>
+                <b-col class="header">Labor Category</b-col>
+            </b-row>
+            <div v-for="sign_in in sign_ins" :key="sign_in.id">
+                <b-row>
+                    <b-col>{{ sign_in.contact.name }}</b-col>
+                    <b-col>{{ formatTime(sign_in.sign_in) }}</b-col>
+                    <b-col>{{ formatTime(sign_in.sign_out) }}</b-col>
+                    <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
+                    <b-col></b-col>
+                </b-row>
+                <b-row>
+                    <b-col class="label">Notes For The Day</b-col>
+                    <b-col class="data"><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
+                </b-row>
+            </div>
         </b-container>
-        <ViewHours :id="task_date.task.order_id" type="order" v-if="task_date.task.order_id">
-        </ViewHours>
         <b-container>
             <b-row>
                 <b-col>
