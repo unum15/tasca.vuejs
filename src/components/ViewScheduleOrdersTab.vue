@@ -54,6 +54,7 @@
                 </template>
                 <template v-slot:cell(actions)="row">
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Tasks" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
+                    <img src="@/assets/checkmark.png" v-b-tooltip.hover title="Mark All Dates" @click="markDates(row.item)" fluid alt="Dates" style="width:20px;" />
                   </template>
                   <template slot="row-details" slot-scope="row">
                     <ViewScheduleOrdersTabTasks :order="row.item" :tasks="row.item.tasks">
@@ -164,6 +165,26 @@ export default {
                 completion_date: item.completion_date,
             }
             this.$http.patch('/order/' + item.id, order);
+        },
+        markDates(order){
+            if(!order.tasks){
+                return;
+            }
+            let all = true;
+            order.tasks.map(t => {
+                if(t.completion_date){
+                    t.invoiced_date = moment().format("YYYY-MM-DD");
+                    t.billed_date = moment().format("YYYY-MM-DD");
+                    t.closed_date = moment().format("YYYY-MM-DD");
+                }
+                else{
+                    all = false;
+                }
+            });
+            if(all){
+                order.completion_date = moment().format("YYYY-MM-DD");
+            }
+            this.save(order);
         },
         getTotalHours(order){
             var time = 0;

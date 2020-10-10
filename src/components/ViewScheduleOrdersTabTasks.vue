@@ -189,7 +189,6 @@ export default {
                     var sign_in = moment(si.sign_in);
                     var sign_out = moment(si.sign_out);
                     time += Math.round(sign_out.diff(sign_in));
-                    console.log(time);
                 });
             });
             return Math.round(time/36000)/100;
