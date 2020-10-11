@@ -29,7 +29,7 @@
                 <b-col></b-col>
                 <b-col></b-col>
             </b-row>
-            <b-row v-if="task_date_id" v-for="task_date in task_dates" :key="task_date.id">
+            <b-row v-if="type=='task'" v-for="task_date in task_dates" :key="task_date.id">
                  <b-col class="data" v-if="task_date.date>=today" :class="{highlight: task_date.id == task_date_id}">{{ formatTime(task_date.date,task_date.time) }}</b-col>
              </b-row>
         </b-container>
