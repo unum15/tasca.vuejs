@@ -58,6 +58,18 @@
                       </b-form-select>
                     </b-form-group>
                 </b-col>
+                <b-col>
+                  <b-form-group label="Project Name" v-if="!project.id">
+                    <b-form-input
+                        type="text"
+                        v-model="project.name"
+                        required
+                        :state="project.name != null"
+                        placeholder="New Project Name"
+                        >
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
               </b-row>
               <b-row>
                 <b-col>
@@ -326,7 +338,6 @@ export default {
         this.saveOrder();
         return;
       }
-      this.project.name = this.order.name;
       this.project.client_id = this.client_id;
       var client = this.clients.filter(c => c.id == this.client_id);
       this.project.contact_id = client[0].billing_contact_id;
