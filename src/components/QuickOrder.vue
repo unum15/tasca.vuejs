@@ -150,6 +150,24 @@
                            </b-form-input>
                        </b-form-group>
                    </b-col>
+                   <b-col>
+                       <b-form-group label="Task Date">
+                           <b-form-input
+                               type="date"
+                               v-model="task_date.date"
+                           >
+                           </b-form-input>
+                       </b-form-group>
+                   </b-col>
+                   <b-col>
+                       <b-form-group label="Sort order">
+                           <b-form-input
+                               type="text"
+                               v-model="task_date.sort_order"
+                           >
+                           </b-form-input>
+                       </b-form-group>
+                   </b-col>
                </b-row>
                <b-row>
                   <b-col>
@@ -233,6 +251,11 @@ export default {
       task: {
         id: null,
         task_billing_type_id: 1
+      },
+      task_date: {
+        id: null,
+        date: null,
+        sort_order: null
       },
       project: {
         id: null
@@ -350,11 +373,25 @@ export default {
         this.$http.post('/task',this.task)
           .then((results) => {
             this.task.id = results.data.id;
-            this.nextTask();
+            this.saveTaskDate();
           })
       }
       else{
         this.$http.patch('/task/' + this.task.id,this.task)
+        .then(() => {this.nextTask()})
+      }
+    },
+    saveTaskDate() {
+      this.task_date.task_id = this.task.id;
+      if(this.task_date.id === null){
+        this.$http.post('/task_date',this.task_date)
+          .then((results) => {
+            this.task_date.id = results.data.id;
+            this.nextTask();
+          })
+      }
+      else{
+        this.$http.patch('/task_date/' + this.task_date.id,this.task_date)
         .then(() => {this.nextTask()})
       }
     },
