@@ -132,12 +132,12 @@ export default {
                 return "";
             }
             if((date)&&(!time)){
-                return moment(date).format('MM-DD')
+                return moment(date).format('dddd MM-DD')
             }
             if((!date)&&(time)){
                 return moment('2020-01-01 ' + time).format('hh:mm A')
             }
-            return moment(date+' '+time).format('MM-DD hh:mm A')
+            return moment(date+' '+time).format('dddd MM-DD hh:mm A')
         },
         editSignIn(sign_in,field){
             var new_value = null;
