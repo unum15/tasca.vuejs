@@ -54,17 +54,26 @@ var router = new Router({
     {
       path: '/client',
       name: 'NewClient',
-      component: EditClient
+      component: EditClient,
+      meta: {
+        title: 'New Client'
+      },
     },
     {
       path: '/quick_client',
       name: 'QuickClient',
-      component: QuickClient
+      component: QuickClient,
+      meta: {
+        title: 'Quick Client'
+      },
     },
     {
       path: '/quick_order',
       name: 'QuickOrder',
-      component: QuickOrder
+      component: QuickOrder,
+      meta: {
+        title: 'New Order'
+      },
     },
     {
       path: '/client/:client_id',
