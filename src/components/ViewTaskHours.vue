@@ -37,7 +37,7 @@
             </div>
             <b-row>
                 <b-col class="label">
-                    <b-form-checkbox v-model="completed" @change="markCompleted">
+                    <b-form-checkbox v-model="completed" @input="markCompleted">
                         Completed
                     </b-form-checkbox>
                 </b-col>
@@ -47,7 +47,7 @@
                     </b-form-checkbox>
                 </b-col>
                 <b-col class="label">
-                    <b-form-checkbox v-model="billed" @change="markBilled">
+                    <b-form-checkbox v-model="billed" @input="markBilled">
                         Billed
                     </b-form-checkbox>
                 </b-col>
@@ -139,13 +139,13 @@ export default {
             let task = {
                 invoiced_date: this.invoiced ? moment().format('YYYY-MM-DD') : null
             }
-            this.$http.patch('/task/' + this.task_date.task_id, task);
+            this.$http.patch('/task/' + this.task_id, task);
         },
         markBilled(){
             let task = {
                 billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
             }
-            this.$http.patch('/task/' + this.task_date.task_id, task);
+            this.$http.patch('/task/' + this.task_id, task);
             if(this.billed&&!this.invoiced){
                 this.invoiced=true;
                 this.markInvoiced();
