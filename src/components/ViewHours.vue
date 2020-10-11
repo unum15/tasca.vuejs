@@ -29,6 +29,9 @@
                 <b-col></b-col>
                 <b-col></b-col>
             </b-row>
+            <b-row v-if="task_date_id" v-for="task_date in task_dates" :key="task_date.id">
+                 <b-col class="data" v-if="task_date.date>=today" :class="{highlight: task_date.id == task_date_id}">{{ formatTime(task_date.date,task_date.time) }}</b-col>
+             </b-row>
         </b-container>
         <b-modal :id="'sign_ins-' + this.type + '-' + this.id" title="Sign Ins" size="lg" ok-only>
             <b-container>
@@ -56,7 +59,7 @@
                 <div v-for="task_date in task_dates" :key="task_date.id">
                     <b-row>
                         <b-col class="label">Schedule Date & Time</b-col>
-                        <b-col class="data">{{ formatTime(task_date.date+' '+task_date.time) }}</b-col>
+                        <b-col class="data">{{ formatTime(task_date.date,task_date.time) }}</b-col>
                     </b-row>
                     <b-row>
                         <b-col class="label">Day Notes</b-col>
@@ -76,8 +79,9 @@ export default {
         'ViewSignIns': ViewSignIns,
     },
     props: {
-        id : { required:true },
-        type : { required:true }
+        id : { required: true },
+        task_date_id : { default: null },
+        type : { required: true }
     },
     data() {
         return {
@@ -123,11 +127,18 @@ export default {
             
             return diff
         },
-        formatTime(time){
-            if(!time){
+        formatTime(date,time){
+            console.log(date,time);
+            if((!date)&&(!time)){
                 return "";
             }
-            return moment(time).format('MM-DD hh:mm A')
+            if((date)&&(!time)){
+                return moment(date).format('MM-DD')
+            }
+            if((!date)&&(time)){
+                return moment('2020-01-01 ' + time).format('hh:mm A')
+            }
+            return moment(date+' '+time).format('MM-DD hh:mm A')
         },
         editSignIn(sign_in,field){
             var new_value = null;
@@ -146,6 +157,9 @@ export default {
                 time+=parseFloat(this.employees_hours[x].hours);
             }
             return time.toFixed(2);
+        },
+        today(){
+            return moment().format('YYYY-MM-DD')
         }
     }
 }
@@ -162,5 +176,8 @@ export default {
 
 .data {
     text-align: left;
+}
+.highlight {
+    background-color: yellow;
 }
 </style>

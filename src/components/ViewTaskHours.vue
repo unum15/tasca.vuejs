@@ -53,7 +53,7 @@
                 </b-col>
             </b-row>
         </b-container>
-        <ViewHours :id="task_id" type="task">
+        <ViewHours :id="task_id" type="task" :task_date_id="task_date_id">
         </ViewHours>
     </div>
 </template>
