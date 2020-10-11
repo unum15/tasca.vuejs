@@ -128,7 +128,6 @@ export default {
             return diff
         },
         formatTime(date,time){
-            console.log(date,time);
             if((!date)&&(!time)){
                 return "";
             }
