@@ -128,6 +128,18 @@
                 </b-row>
                 <b-row>
                   <b-col>
+                    Location
+                  </b-col>
+                  <b-col>
+                    <b-form-input
+                      type="text"
+                      v-model="controller.location"
+                      @change="saveController(controller)"
+                      />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
                     Model
                   </b-col>
                   <b-col>
@@ -147,6 +159,20 @@
                       type="number"
                       v-model="controller.zones"
                       @change="saveController(controller)"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    Unit
+                  </b-col>
+                  <b-col>
+                    <b-form-select
+                      :options="units"
+                      value-field="id"
+                      text-field="name"
+                      v-model="controller.property_unit_id"
+                      @input="save(system)"
                     />
                   </b-col>
                 </b-row>
@@ -229,10 +255,7 @@ export default {
       console.log(system);
       if(system.id == null){
           this.$http.post('/irrigation_system',system).then(response => {
-          console.log(response);
           system.id = response.data.data.id;
-          console.log('saved');
-          console.log(system);
         })
       }
       else{
@@ -243,7 +266,7 @@ export default {
       console.log(controller);
       if(controller.id == null){
           this.$http.post('/irrigation_controller',controller).then(response => {
-          controller.id = response.data.id;
+          controller.id = response.data.data.id;
         })
       }
       else{
