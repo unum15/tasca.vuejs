@@ -26,30 +26,6 @@
           </b-row>
           <b-row>
             <b-col>
-              Number Of Stops
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="number"
-                v-model="system.stops"
-                @change="save(system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              Number Of POC
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="number"
-                v-model="system.points_of_connection"
-                @change="save(system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
               Type
             </b-col>
             <b-col>
@@ -58,24 +34,76 @@
                 value-field="id"
                 text-field="name"
                 v-model="system.irrigation_water_type_id"
-                @input="save(system)"
+                @input="save(system);"
               />
             </b-col>
           </b-row>
           <b-row>
             <b-col>
-              Filters
+              Point of Connection Location
             </b-col>
             <b-col>
               <b-form-input
-                v-model="system.filters"
-                type="number"
+                type="text"
+                v-model="system.point_of_connection_location"
                 @change="save(system)"
                 />
             </b-col>
           </b-row>
+          <b-row v-if="system.irrigation_water_type_id==1 || system.irrigation_water_type_id==3">
+            <b-col>
+              Backflow
+            </b-col>
+            <b-col>
+              <b-form-select
+                :options="backflows"
+                value-field="id"
+                text-field="placement"
+                v-model="system.backflow_assembly_id"
+                @input="save(system)"
+              />
+            </b-col>
+          </b-row>
+          <b-row v-if="system.irrigation_water_type_id==2 || system.irrigation_water_type_id==3">
+            <b-col>
+              Filter Model
+            </b-col>
+            <b-col>
+              <b-form-input
+                type="text"
+                v-model="system.filter_model"
+                @change="save(system)"
+                />
+            </b-col>
+          </b-row>
+          <b-row v-if="system.irrigation_water_type_id==2 || system.irrigation_water_type_id==3">
+            <b-col>
+              Filter Location
+            </b-col>
+            <b-col>
+              <b-form-input
+                type="text"
+                v-model="system.filter_location"
+                @change="save(system)"
+                />
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              Unit
+            </b-col>
+            <b-col>
+              <b-form-select
+                :options="units"
+                value-field="id"
+                text-field="name"
+                v-model="system.property_unit_id"
+                @input="save(system)"
+              />
+            </b-col>
+          </b-row>
         </b-container>
-        <b-tabs :key="system.irrigation_controllers.length">
+        <b-tabs vertical pills :key="system.irrigation_controllers.length"  v-model="system.current_controller_tab">
           <b-tab
             v-for="(controller) in system.irrigation_controllers"
             :key="controller.id"
@@ -122,6 +150,18 @@
                     />
                   </b-col>
                 </b-row>
+                <b-row>
+                  <b-col>
+                    Password
+                  </b-col>
+                  <b-col>
+                    <b-form-input
+                      type="text"
+                      v-model="controller.password"
+                      @change="saveController(controller)"
+                    />
+                  </b-col>
+                </b-row>
               </b-container>
           </b-tab>
         </b-tabs>
@@ -141,6 +181,8 @@ export default {
   data() {
     return {
         systems: [],
+        backflows: [],
+        units: [],
         current_tab: 0,
         change_tab: false,
         irrigation_water_types: []
@@ -149,6 +191,12 @@ export default {
   created() {
     this.$http.get('/irrigation_water_types').then(response => {
       this.irrigation_water_types = response.data.data
+    });
+    this.$http.get('/backflow_assemblies?property_id='+this.property_id).then(response => {
+      this.backflows = response.data.data
+    });
+    this.$http.get('/property_units?property_id='+this.property_id).then(response => {
+      this.units = response.data.data
     });
     this.$http.get('/irrigation_systems?includes=irrigation_controllers&property_id=' + this.property_id).then(response => {
       this.systems = response.data.data
@@ -163,22 +211,28 @@ export default {
     },
     newSystem() {
       this.systems.push({
+        id: null,
         property_id:this.property_id,
         name:this.property_name,
         irrigation_controllers:[]
       });
+      this.current_tab = this.systems.length-1;
     },
     newController(system){
       system.irrigation_controllers.push({
         irrigation_system_id:system.id,
         name:this.property_name
       });
+      system.current_controller_tab = this.systems.irrigation_controllers.length-1;
     },
     save(system) {
       console.log(system);
       if(system.id == null){
           this.$http.post('/irrigation_system',system).then(response => {
-          system.id = response.data.id;
+          console.log(response);
+          system.id = response.data.data.id;
+          console.log('saved');
+          console.log(system);
         })
       }
       else{
