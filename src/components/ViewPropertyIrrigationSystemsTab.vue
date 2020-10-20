@@ -172,7 +172,7 @@
                       value-field="id"
                       text-field="name"
                       v-model="controller.property_unit_id"
-                      @input="save(system)"
+                      @input="saveController(controller)"
                     />
                   </b-col>
                 </b-row>
