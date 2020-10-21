@@ -64,6 +64,13 @@
               />
             </b-col>
           </b-row>
+          <b-row v-if="system.backflow_assembly_id">
+            <b-col>
+            </b-col>
+            <b-col>
+              {{ getBackflowData(system.backflow_assembly_id) }}
+            </b-col>
+          </b-row>
           <b-row v-if="system.irrigation_water_type_id==2 || system.irrigation_water_type_id==3">
             <b-col>
               Filter Model
@@ -102,6 +109,18 @@
               />
             </b-col>
           </b-row>
+          <b-row>
+            <b-col>
+              Notes
+            </b-col>
+            <b-col>
+              <b-form-input
+                type="text"
+                v-model="system.notes"
+                @change="save(system)"
+                />
+            </b-col>
+          </b-row>
         </b-container>
         <b-tabs vertical pills :key="system.irrigation_controllers.length"  v-model="system.current_controller_tab">
           <b-tab
@@ -131,9 +150,23 @@
                     Location
                   </b-col>
                   <b-col>
+                    <b-form-select
+                      :options="locations"
+                      value-field="id"
+                      text-field="name"
+                      v-model="controller.irrigation_controller_location_id"
+                      @input="saveController(controller)"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    Placement
+                  </b-col>
+                  <b-col>
                     <b-form-input
                       type="text"
-                      v-model="controller.location"
+                      v-model="controller.placement"
                       @change="saveController(controller)"
                       />
                   </b-col>
@@ -178,12 +211,47 @@
                 </b-row>
                 <b-row>
                   <b-col>
+                    Have Access
+                  </b-col>
+                  <b-col style="text-align:left;">
+                    <b-form-checkbox
+                      v-model="controller.accessible"
+                      @input="saveController(controller)"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    Username
+                  </b-col>
+                  <b-col>
+                    <b-form-input
+                      type="text"
+                      v-model="controller.username"
+                      @change="saveController(controller)"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
                     Password
                   </b-col>
                   <b-col>
                     <b-form-input
                       type="text"
                       v-model="controller.password"
+                      @change="saveController(controller)"
+                    />
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    Notes
+                  </b-col>
+                  <b-col>
+                    <b-form-input
+                      type="text"
+                      v-model="controller.notes"
                       @change="saveController(controller)"
                     />
                   </b-col>
@@ -211,18 +279,22 @@ export default {
         units: [],
         current_tab: 0,
         change_tab: false,
-        irrigation_water_types: []
+        irrigation_water_types: [],
+        locations: []
     }
   },
   created() {
     this.$http.get('/irrigation_water_types').then(response => {
       this.irrigation_water_types = response.data.data
     });
-    this.$http.get('/backflow_assemblies?property_id='+this.property_id).then(response => {
+    this.$http.get('/backflow_assemblies?includes=backflow_manufacturer,backflow_size,backflow_model&property_id='+this.property_id).then(response => {
       this.backflows = response.data.data
     });
     this.$http.get('/property_units?property_id='+this.property_id).then(response => {
       this.units = response.data.data
+    });
+    this.$http.get('/irrigation_controller_locations').then(response => {
+      this.locations = response.data.data
     });
     this.$http.get('/irrigation_systems?includes=irrigation_controllers&property_id=' + this.property_id).then(response => {
       this.systems = response.data.data
@@ -249,10 +321,9 @@ export default {
         irrigation_system_id:system.id,
         name:this.property_name
       });
-      system.current_controller_tab = this.systems.irrigation_controllers.length-1;
+      system.current_controller_tab = system.irrigation_controllers.length-1;
     },
     save(system) {
-      console.log(system);
       if(system.id == null){
           this.$http.post('/irrigation_system',system).then(response => {
           system.id = response.data.data.id;
@@ -263,7 +334,6 @@ export default {
       }
     },
     saveController(controller) {
-      console.log(controller);
       if(controller.id == null){
           this.$http.post('/irrigation_controller',controller).then(response => {
           controller.id = response.data.data.id;
@@ -273,6 +343,13 @@ export default {
         this.$http.patch('/irrigation_controller/' + controller.id, controller)
       }
     },
+    getBackflowData(id){
+      let backflow = this.backflows.filter(b => (b.id===id));
+      if(backflow.length){
+        return backflow[0].backflow_manufacturer.name + " " + backflow[0].backflow_size.name + " " + backflow[0].backflow_model.name;
+      }
+      return null;
+    }
   },
 }
 
