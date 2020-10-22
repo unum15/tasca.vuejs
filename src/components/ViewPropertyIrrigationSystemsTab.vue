@@ -121,6 +121,35 @@
                 />
             </b-col>
           </b-row>
+          <div v-if="system.irrigation_system_others.length">
+            <b-row>
+              <b-col>
+                Name
+              </b-col>
+              <b-col>
+                Count
+              </b-col>
+            </b-row>
+            <b-row
+              v-for="(other) in system.irrigation_system_others"
+              :key="other.id"
+            >
+              <b-col>
+                <b-form-input
+                  type="text"
+                  v-model="other.name"
+                  @change="saveOther(other)"
+                  />
+              </b-col>
+              <b-col>
+                <b-form-input
+                  type="number"
+                  v-model="other.count"
+                  @change="saveOther(other)"
+                  />
+              </b-col>
+            </b-row>
+          </div>
         </b-container>
         <b-tabs vertical pills :key="system.irrigation_controllers.length"  v-model="system.current_controller_tab">
           <b-tab
@@ -260,6 +289,7 @@
           </b-tab>
         </b-tabs>
         <b-button variant="secondary" @click="newController(system)">Add New Controller</b-button>
+        <b-button variant="secondary" @click="newOther(system)">Add New System Field</b-button>
       </b-tab>
     </b-tabs>
     <b-button variant="secondary" @click="newSystem">Add New System</b-button>
@@ -296,7 +326,7 @@ export default {
     this.$http.get('/irrigation_controller_locations').then(response => {
       this.locations = response.data.data
     });
-    this.$http.get('/irrigation_systems?includes=irrigation_controllers&property_id=' + this.property_id).then(response => {
+    this.$http.get('/irrigation_systems?includes=irrigation_controllers,irrigation_system_others&property_id=' + this.property_id).then(response => {
       this.systems = response.data.data
     });
   },
@@ -312,18 +342,26 @@ export default {
         id: null,
         property_id:this.property_id,
         name:this.property_name,
-        irrigation_controllers:[]
+        irrigation_controllers:[],
+        irrigation_system_others:[]
       });
       this.save(this.systems[this.systems.length-1]);
       this.current_tab = this.systems.length-1;
     },
     newController(system){
       system.irrigation_controllers.push({
+        id:null,
         irrigation_system_id:system.id,
         name:this.property_name
       });
       this.saveController(system.irrigation_controllers[system.irrigation_controllers.length-1]);
       system.current_controller_tab = system.irrigation_controllers.length-1;
+    },
+    newOther(system){
+      system.irrigation_system_others.push({
+        id:null,
+        irrigation_system_id:system.id,
+      });
     },
     save(system) {
       if(system.id == null){
@@ -343,6 +381,19 @@ export default {
       }
       else{
         this.$http.patch('/irrigation_controller/' + controller.id, controller)
+      }
+    },
+    saveOther(other) {
+      if(!other.name){
+        return;
+      }
+      if(other.id == null){
+          this.$http.post('/irrigation_system_other', other).then(response => {
+          other.id = response.data.data.id;
+        })
+      }
+      else{
+        this.$http.patch('/irrigation_system_other/' + other.id, other)
       }
     },
     getBackflowData(id){
