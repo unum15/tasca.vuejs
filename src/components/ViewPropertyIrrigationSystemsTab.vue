@@ -314,6 +314,7 @@ export default {
         name:this.property_name,
         irrigation_controllers:[]
       });
+      this.save(this.systems[this.systems.length-1]);
       this.current_tab = this.systems.length-1;
     },
     newController(system){
@@ -321,6 +322,7 @@ export default {
         irrigation_system_id:system.id,
         name:this.property_name
       });
+      this.saveController(system.irrigation_controllers[system.irrigation_controllers.length-1]);
       system.current_controller_tab = system.irrigation_controllers.length-1;
     },
     save(system) {
