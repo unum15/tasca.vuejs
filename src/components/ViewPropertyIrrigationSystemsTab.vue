@@ -285,6 +285,40 @@
                     />
                   </b-col>
                 </b-row>
+                <div v-if="controller.irrigation_controller_others.length">
+                  <b-row>
+                    <b-col>
+                      Name
+                    </b-col>
+                    <b-col>
+                      Description
+                    </b-col>
+                  </b-row>
+                  <b-row
+                    v-for="(other) in controller.irrigation_controller_others"
+                    :key="other.id"
+                  >
+                    <b-col>
+                      <b-form-input
+                        type="text"
+                        v-model="other.name"
+                        @change="saveControllerOther(other)"
+                        />
+                    </b-col>
+                    <b-col>
+                      <b-form-input
+                        type="text"
+                        v-model="other.value"
+                        @change="saveControllerOther(other)"
+                        />
+                    </b-col>
+                  </b-row>
+                </div>
+                <b-row>
+                  <b-col>
+                    <b-button variant="secondary" @click="newControllerOther(controller)">Add New Controller Field</b-button>
+                  </b-col>
+                </b-row>
               </b-container>
           </b-tab>
         </b-tabs>
@@ -326,7 +360,7 @@ export default {
     this.$http.get('/irrigation_controller_locations').then(response => {
       this.locations = response.data.data
     });
-    this.$http.get('/irrigation_systems?includes=irrigation_controllers,irrigation_system_others&property_id=' + this.property_id).then(response => {
+    this.$http.get('/irrigation_systems?includes=irrigation_controllers,irrigation_system_others,irrigation_controllers.irrigation_controller_others&property_id=' + this.property_id).then(response => {
       this.systems = response.data.data
     });
   },
@@ -363,6 +397,12 @@ export default {
         irrigation_system_id:system.id,
       });
     },
+    newControllerOther(controller){
+      controller.irrigation_controller_others.push({
+        id:null,
+        irrigation_controller_id:controller.id,
+      });
+    },
     save(system) {
       if(system.id == null){
           this.$http.post('/irrigation_system',system).then(response => {
@@ -394,6 +434,19 @@ export default {
       }
       else{
         this.$http.patch('/irrigation_system_other/' + other.id, other)
+      }
+    },
+    saveControllerOther(other) {
+      if(!other.name){
+        return;
+      }
+      if(other.id == null){
+          this.$http.post('/irrigation_controller_other', other).then(response => {
+          other.id = response.data.data.id;
+        })
+      }
+      else{
+        this.$http.patch('/irrigation_controller_other/' + other.id, other)
       }
     },
     getBackflowData(id){
