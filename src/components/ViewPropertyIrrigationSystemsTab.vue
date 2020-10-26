@@ -386,7 +386,8 @@ export default {
       system.irrigation_controllers.push({
         id:null,
         irrigation_system_id:system.id,
-        name:'Controller'
+        name:'Controller',
+        irrigation_controller_others:[]
       });
       this.saveController(system.irrigation_controllers[system.irrigation_controllers.length-1]);
       system.current_controller_tab = system.irrigation_controllers.length-1;
