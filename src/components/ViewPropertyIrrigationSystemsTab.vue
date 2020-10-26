@@ -127,7 +127,7 @@
                 Name
               </b-col>
               <b-col>
-                Count
+                Description
               </b-col>
             </b-row>
             <b-row
