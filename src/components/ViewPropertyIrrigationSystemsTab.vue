@@ -95,7 +95,7 @@
                 />
             </b-col>
           </b-row>
-          <b-row>
+          <b-row v-if="units.length">
             <b-col>
               Unit
             </b-col>
@@ -143,8 +143,8 @@
               </b-col>
               <b-col>
                 <b-form-input
-                  type="number"
-                  v-model="other.count"
+                  type="text"
+                  v-model="other.value"
                   @change="saveOther(other)"
                   />
               </b-col>
@@ -341,7 +341,7 @@ export default {
       this.systems.push({
         id: null,
         property_id:this.property_id,
-        name:this.property_name,
+        name:this.property_name + " System",
         irrigation_controllers:[],
         irrigation_system_others:[]
       });
@@ -352,7 +352,7 @@ export default {
       system.irrigation_controllers.push({
         id:null,
         irrigation_system_id:system.id,
-        name:this.property_name
+        name:'Controller'
       });
       this.saveController(system.irrigation_controllers[system.irrigation_controllers.length-1]);
       system.current_controller_tab = system.irrigation_controllers.length-1;
