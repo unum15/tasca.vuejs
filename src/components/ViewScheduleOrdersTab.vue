@@ -173,9 +173,9 @@ export default {
             let all = true;
             order.tasks.map(t => {
                 if(t.completion_date){
-                    t.invoiced_date = moment().format("YYYY-MM-DD");
-                    t.billed_date = moment().format("YYYY-MM-DD");
-                    t.closed_date = moment().format("YYYY-MM-DD");
+                    t.invoiced_date = t.invoiced_date ? t.invoiced_date : moment().format("YYYY-MM-DD");
+                    t.billed_date = t.billed_date ? t.billed_date : moment().format("YYYY-MM-DD");
+                    t.closed_date = t.closed_date ? t.closed_date: moment().format("YYYY-MM-DD");
                 }
                 else{
                     all = false;
