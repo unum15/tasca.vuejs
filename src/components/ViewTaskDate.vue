@@ -38,9 +38,9 @@
                             </b-col>
                         </b-row>
                         <div v-for="contact in task_date.task.order.property.contacts" :key="contact.id">
-                            <b-row>
+                            <b-row v-b-popover.hover.top="contact.notes">
                                 <b-col class="label">Contact</b-col>
-                                <b-col class="data" cols="10">{{ contact.name }}</b-col>
+                                <b-col class="data" cols="10">{{ contact.name }} - {{ getContactType(task_date.task.order.project.client.id, contact) }}</b-col>
                             </b-row>
                             <b-row v-for="phone_number in contact.phone_numbers" :key="phone_number.id">
                                 <b-col class="label">{{ phone_number.phone_number_type.name }}</b-col>
@@ -179,6 +179,15 @@ export default {
             }
             return "";
         },
+        getContactType(client_id, contact){
+            let type = contact.client_contact_types.map(t => {
+                console.log(t.client_id);
+                if (t.client_id === client_id ){
+                    return t.contact_type.name;
+                }
+            });
+            return type[0];
+        }
     },
     watch: {
         task_date_id() {
