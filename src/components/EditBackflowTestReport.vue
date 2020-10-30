@@ -244,7 +244,7 @@
                             <b-form-group label="Date">
                                 <b-form-input
                                     v-model="repair_date"
-                                    @change="saveRepairs()"
+                                    @change="saveRepairs();saveCleanings();"
                                     type="date"
                                 >
                                 </b-form-input>
