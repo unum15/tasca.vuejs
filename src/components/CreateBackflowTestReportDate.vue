@@ -51,7 +51,6 @@ export default {
     methods: {
         getBackflowAssemblies(){
             if(this.date){
-                console.log('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_super_type,backflow_type.backflow_super_type.backflow_valves,backflow_test_reports,backflow_test_reports.backflow_tests,property&active=1&test_date=' + this.date);
                 this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_super_type,backflow_type.backflow_super_type.backflow_valves,backflow_test_reports,backflow_test_reports.backflow_tests,property&active=1&test_date=' + this.date).then(response => {
                     let bas = response.data.data;
                     bas.map(ba => {
