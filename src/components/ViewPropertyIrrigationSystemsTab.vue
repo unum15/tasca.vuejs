@@ -11,327 +11,26 @@
             {{ system.name }}
           </div>
         </template>
-        <b-container>
-          <b-row>
-            <b-col>
-              Name
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="text"
-                v-model="system.name"
-                @change="save(system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              Type
-            </b-col>
-            <b-col>
-              <b-form-select
-                :options="irrigation_water_types"
-                value-field="id"
-                text-field="name"
-                v-model="system.irrigation_water_type_id"
-                @input="save(system);"
-              />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              Point of Connection Location
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="text"
-                v-model="system.point_of_connection_location"
-                @change="save(system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row v-if="system.irrigation_water_type_id==1 || system.irrigation_water_type_id==3">
-            <b-col>
-              Backflow
-            </b-col>
-            <b-col>
-              <b-form-select
-                :options="backflows"
-                value-field="id"
-                text-field="placement"
-                v-model="system.backflow_assembly_id"
-                @input="save(system)"
-              />
-            </b-col>
-          </b-row>
-          <b-row v-if="system.backflow_assembly_id">
-            <b-col>
-            </b-col>
-            <b-col>
-              {{ getBackflowData(system.backflow_assembly_id) }}
-            </b-col>
-          </b-row>
-          <b-row v-if="system.irrigation_water_type_id==2 || system.irrigation_water_type_id==3">
-            <b-col>
-              Filter Model
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="text"
-                v-model="system.filter_model"
-                @change="save(system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row v-if="system.irrigation_water_type_id==2 || system.irrigation_water_type_id==3">
-            <b-col>
-              Filter Location
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="text"
-                v-model="system.filter_location"
-                @change="save(system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row v-if="units.length">
-            <b-col>
-              Unit
-            </b-col>
-            <b-col>
-              <b-form-select
-                :options="units"
-                value-field="id"
-                text-field="name"
-                v-model="system.property_unit_id"
-                @input="save(system)"
-              />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              Notes
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="text"
-                v-model="system.notes"
-                @change="save(system)"
-                />
-            </b-col>
-          </b-row>
-          <div v-if="system.irrigation_system_others.length">
-            <b-row>
-              <b-col>
-                Name
-              </b-col>
-              <b-col>
-                Description
-              </b-col>
-            </b-row>
-            <b-row
-              v-for="(other) in system.irrigation_system_others"
-              :key="other.id"
-            >
-              <b-col>
-                <b-form-input
-                  type="text"
-                  v-model="other.name"
-                  @change="saveOther(other)"
-                  />
-              </b-col>
-              <b-col>
-                <b-form-input
-                  type="text"
-                  v-model="other.value"
-                  @change="saveOther(other)"
-                  />
-              </b-col>
-            </b-row>
-          </div>
-        </b-container>
-        <b-tabs vertical pills :key="system.irrigation_controllers.length"  v-model="system.current_controller_tab">
-          <b-tab
-            v-for="(controller) in system.irrigation_controllers"
-            :key="controller.id"
-            >
-              <template slot="title" style="text-align:left">
-                <div style="text-align:left">
-                  {{ controller.name }}
-                </div>
-              </template>
-              <b-container>
-                <b-row>
-                  <b-col>
-                    Name
-                  </b-col>
-                  <b-col>
-                    <b-form-input
-                      type="text"
-                      v-model="controller.name"
-                      @change="saveController(controller)"
-                      />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Location
-                  </b-col>
-                  <b-col>
-                    <b-form-select
-                      :options="locations"
-                      value-field="id"
-                      text-field="name"
-                      v-model="controller.irrigation_controller_location_id"
-                      @input="saveController(controller)"
-                    />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Placement
-                  </b-col>
-                  <b-col>
-                    <b-form-input
-                      type="text"
-                      v-model="controller.placement"
-                      @change="saveController(controller)"
-                      />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Model
-                  </b-col>
-                  <b-col>
-                    <b-form-input
-                      type="text"
-                      v-model="controller.model"
-                      @change="saveController(controller)"
-                      />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Zones
-                  </b-col>
-                  <b-col>
-                    <b-form-input
-                      type="number"
-                      v-model="controller.zones"
-                      @change="saveController(controller)"
-                    />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Unit
-                  </b-col>
-                  <b-col>
-                    <b-form-select
-                      :options="units"
-                      value-field="id"
-                      text-field="name"
-                      v-model="controller.property_unit_id"
-                      @input="saveController(controller)"
-                    />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Have Access
-                  </b-col>
-                  <b-col style="text-align:left;">
-                    <b-form-checkbox
-                      v-model="controller.accessible"
-                      @input="saveController(controller)"
-                    />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Username
-                  </b-col>
-                  <b-col>
-                    <b-form-input
-                      type="text"
-                      v-model="controller.username"
-                      @change="saveController(controller)"
-                    />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Password
-                  </b-col>
-                  <b-col>
-                    <b-form-input
-                      type="text"
-                      v-model="controller.password"
-                      @change="saveController(controller)"
-                    />
-                  </b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    Notes
-                  </b-col>
-                  <b-col>
-                    <b-form-input
-                      type="text"
-                      v-model="controller.notes"
-                      @change="saveController(controller)"
-                    />
-                  </b-col>
-                </b-row>
-                <div v-if="controller.irrigation_controller_others.length">
-                  <b-row>
-                    <b-col>
-                      Name
-                    </b-col>
-                    <b-col>
-                      Description
-                    </b-col>
-                  </b-row>
-                  <b-row
-                    v-for="(other) in controller.irrigation_controller_others"
-                    :key="other.id"
-                  >
-                    <b-col>
-                      <b-form-input
-                        type="text"
-                        v-model="other.name"
-                        @change="saveControllerOther(other)"
-                        />
-                    </b-col>
-                    <b-col>
-                      <b-form-input
-                        type="text"
-                        v-model="other.value"
-                        @change="saveControllerOther(other)"
-                        />
-                    </b-col>
-                  </b-row>
-                </div>
-                <b-row>
-                  <b-col>
-                    <b-button variant="secondary" @click="newControllerOther(controller)">Add New Controller Field</b-button>
-                  </b-col>
-                </b-row>
-              </b-container>
-          </b-tab>
-        </b-tabs>
-        <b-button variant="secondary" @click="newController(system)">Add New Controller</b-button>
-        <b-button variant="secondary" @click="newOther(system)">Add New System Field</b-button>
+        <EditIrrigationSystem
+          :system="system"
+          :backflows="backflows"
+          :units="units"
+          :irrigation_water_types="irrigation_water_types"
+          :locations="locations"
+        >
+        </EditIrrigationSystem>
       </b-tab>
     </b-tabs>
     <b-button variant="secondary" @click="newSystem">Add New System</b-button>
   </div>
 </template>
 <script>
+import EditIrrigationSystem from './EditIrrigationSystem'
 export default {
   name: 'ViewPropertyIrrigationSystemsTab',
+  components: {
+    'EditIrrigationSystem': EditIrrigationSystem
+  },
   props: {
     property_id: {required: true},
     property_name: {required: true}
@@ -360,7 +59,7 @@ export default {
     this.$http.get('/irrigation_controller_locations').then(response => {
       this.locations = response.data.data
     });
-    this.$http.get('/irrigation_systems?includes=irrigation_controllers,irrigation_system_others,irrigation_controllers.irrigation_controller_others&property_id=' + this.property_id).then(response => {
+    this.$http.get('/irrigation_systems?includes=irrigation_controllers,irrigation_system_others,irrigation_controllers.irrigation_controller_others,irrigation_controllers.irrigation_zones&property_id=' + this.property_id).then(response => {
       this.systems = response.data.data
     });
   },
