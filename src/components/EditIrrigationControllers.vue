@@ -368,6 +368,7 @@ export default {
           this.$http.post('/irrigation_zone', zone).then(response => {
             zone.id = response.data.data.id;
             controller.irrigation_zones.push(zone);
+            controller.irrigation_zones.sort((a, b) => {return a.number > b.number;});
           });
         }
       }
