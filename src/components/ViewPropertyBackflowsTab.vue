@@ -23,7 +23,7 @@
             <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value ?  data.value : data.item.id }} </a>
         </template>
         <template v-slot:cell(include)="data">
-          <b-form-checkbox v-model="data.item.include" />
+          <b-form-checkbox @change="include(data.item)" v-if="data.item.backflow_test_reports.length" />
         </template>
         <template v-slot:row-details="data">
           <ViewBackflowsReportsTab v-if="data.item.backflow_test_reports.length && !data.item.show_all_reports" :backflow_test_reports="[data.item.backflow_test_reports[0]]">
@@ -34,8 +34,6 @@
           <img src="@/assets/delete.png" v-if="data.item.backflow_test_reports.length && data.item.show_all_reports" v-b-tooltip.hover title="Show All Reports" @click.stop="hideReports(data.item.id)" fluid alt="x" style="width:20px;" />
         </template>
     </b-table>
-    <b-button @click="pdfTag" v-if="includedBackflowAssemblies.length">PDF Tag</b-button>
-    <b-button @click="pdfReport" v-if="includedBackflowAssemblies.length">PDF Report</b-button>
   </div>
 </template>
 <script>
@@ -163,26 +161,10 @@ export default {
       this.backflow_assemblies = [];
       this.backflow_assemblies = b;
     },
-    pdfTag(){
-      let url = '/api/backflow_assemblies/tags/pdf?';
-      this.includedBackflowAssemblies.map(a => {
-          url += 'backflow_assembly_id[]='+a.id+'&';
-       });
-      window.open(url, 'backflow_tag_pdf');
-    },
-    pdfReport(){
-        let url = '/api/backflow_test_reports/pdf?';
-        this.includedBackflowAssemblies.map(a => {
-          url += 'backflow_test_report_id[]='+a.backflow_test_reports[0].id+'&';
-        });
-        window.open(url, 'backflow_pdf');
-    },
+    include(backflow){
+      this.$emit('include-backflow',backflow);
+    }
   },
-  computed:{
-        includedBackflowAssemblies(){
-            return this.backflow_assemblies.filter(a => a.include);
-        }
-    },
 }
 
 </script>
