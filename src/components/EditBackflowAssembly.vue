@@ -281,15 +281,8 @@
                 </b-row>
                 <b-row>
                     <b-col>
-                        <b-form-group label="Upload Picture">
-                            <b-form-file
-                                v-model="new_picture"
-                                :state="Boolean(new_picture)"
-                                placeholder="Choose a file or drop it here..."
-                                drop-placeholder="Drop file here..."
-                                @change="upload"
-                            ></b-form-file>
-                        </b-form-group>
+                        <b-button v-b-modal.view-pictures style="margin:5px;">View Pictures</b-button>
+                        <b-button v-b-modal.upload-pictures style="margin:5px;">Add Pictures</b-button>
                     </b-col>
                 </b-row>
                <b-row>
@@ -300,6 +293,22 @@
                     </b-col>
                 </b-row>
             </b-container>
+            <b-modal id="view-pictures" title="View Pictures">
+                <div v-for="picture in pictures" :key="picture.filename">
+                    <img :src="'/api/uploads/backflows/pictures/' + picture.filename" style="width:600px;" />
+                </div>
+            </b-modal>
+            <b-modal id="upload-pictures" title="Upload Pictures" @ok="uploadPictures">
+                <b-form-group label="Upload Picture">
+                    <b-form-file
+                        v-model="new_pictures"
+                        :state="Boolean(new_pictures)"
+                        placeholder="Choose files or drop them here..."
+                        drop-placeholder="Drop files here..."
+                        multiple
+                    ></b-form-file>
+                </b-form-group>
+            </b-modal>
         </main>
     </div>
 </template>
@@ -328,7 +337,8 @@ export default {
             models: [],
             sizes: [],
             placements: [],
-            new_picture: null
+            new_pictures: [],
+            pictures: []
         };
     },
     created () {
@@ -363,14 +373,24 @@ export default {
                 this.getProperties();
                 this.getContacts();
                 this.getUnits();
+                this.$http.get('/backflow_pictures?backflow_assembly_id=' + this.backflow_assembly_id).then(response => {
+                    this.pictures = response.data.data;
+                });
             });
         }
     },
     methods: {
-        upload(){
-            this.$http.post('/backflow_assembly/picture',this.new_picture)
-                .then((results) => {
-                    console.log(results);
+        uploadPictures(){
+            console.log('uploading');
+            this.new_pictures.map(p => {
+                let backflow_picture = new FormData();
+                backflow_picture.append('picture', p);
+                console.log(p);
+                backflow_picture.append('backflow_assembly_id', this.backflow_assembly.id);
+                this.$http.post('/backflow_picture',backflow_picture,{headers: {'Content-Type': 'multipart/form-data'}})
+                    .then((results) => {
+                        console.log(results);
+                });
             });
         },
         getProperties() {
