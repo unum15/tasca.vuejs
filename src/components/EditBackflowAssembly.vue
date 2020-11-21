@@ -373,24 +373,24 @@ export default {
                 this.getProperties();
                 this.getContacts();
                 this.getUnits();
-                this.$http.get('/backflow_pictures?backflow_assembly_id=' + this.backflow_assembly_id).then(response => {
-                    this.pictures = response.data.data;
-                });
+                this.getPictures();
             });
         }
     },
     methods: {
         uploadPictures(){
-            console.log('uploading');
             this.new_pictures.map(p => {
                 let backflow_picture = new FormData();
                 backflow_picture.append('picture', p);
-                console.log(p);
                 backflow_picture.append('backflow_assembly_id', this.backflow_assembly.id);
-                this.$http.post('/backflow_picture',backflow_picture,{headers: {'Content-Type': 'multipart/form-data'}})
-                    .then((results) => {
-                        console.log(results);
+                this.$http.post('/backflow_picture',backflow_picture,{headers: {'Content-Type': 'multipart/form-data'}}).then(() => {
+                    this.getPictures();
                 });
+            });
+        },
+        getPictures(){
+            this.$http.get('/backflow_pictures?backflow_assembly_id=' + this.backflow_assembly_id).then(response => {
+                this.pictures = response.data.data;
             });
         },
         getProperties() {
