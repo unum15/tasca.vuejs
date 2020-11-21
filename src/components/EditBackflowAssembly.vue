@@ -398,15 +398,15 @@ export default {
             fields: {
                 'property_id': {
                     name: 'Property',
-                    clear: true
+                    clear: false
                 },
                 'property_unit_id': {
                     name: 'Unit',
-                    clear: true
+                    clear: false
                 },
                 'contact_id': {
                     name: 'Contact',
-                    clear: true
+                    clear: false
                 },
                 'backflow_type_id': {
                     name: 'Type',
@@ -496,10 +496,10 @@ export default {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
                 this.client_id = response.data.data.property.client_id;
                 this.backflow_assembly = response.data.data;
-                this.getProperties();
-                this.getContacts();
-                this.getUnits();
-                this.getAccounts();
+                this.getProperties(false);
+                this.getContacts(false);
+                this.getUnits(false);
+                this.getAccounts(false);
             });
         }
     },
@@ -509,8 +509,10 @@ export default {
                 this.models = response.data.data;
             });
         },
-        getProperties() {
-          this.backflow_assembly.property_id = null;
+        getProperties(clear=true) {
+          if(clear){
+            this.backflow_assembly.property_id = null;
+          }
           if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
               this.properties = response.data
@@ -525,8 +527,10 @@ export default {
             this.properties = []
           }
         },
-        getUnits() {
-          this.backflow_assembly.unit_id = null;
+        getUnits(clear=true) {
+          if(clear){
+            this.backflow_assembly.unit_id = null;
+          }
           if(this.backflow_assembly.property_id){
             this.$http.get('/property_units?property_id=' + this.backflow_assembly.property_id).then(response => {
               this.units = response.data.data
@@ -536,8 +540,10 @@ export default {
             this.units = []
           }
         },
-        getAccounts() {
-          this.backflow_assembly.account_id = null;
+        getAccounts(clear=true) {
+          if(clear){
+            this.backflow_assembly.account_id = null;
+          }
           if(this.backflow_assembly.property_id){
             this.$http.get('/property_accounts?property_id=' + this.backflow_assembly.property_id).then(response => {
               this.accounts = response.data.data
@@ -550,8 +556,10 @@ export default {
             this.units = []
           }
         },
-        getContacts() {
-          this.backflow_assembly.contact_id = null;
+        getContacts(clear=true) {
+          if(clear){
+            this.backflow_assembly.contact_id = null;
+          }
           if(this.client_id){
             this.$http.get('/contacts?client_id=' + this.client_id).then(response => {
               this.contacts = response.data
@@ -588,6 +596,14 @@ export default {
             this.backflow_assembly.backflow_manufacturer_id = model.backflow_manufacturer_id
         },
         newAssembly(){
+            this.backflow_assembly = {id: null, property_id: null, use: null, placement: null, gps: null, backflow_type_id: null, backflow_manufacturer_id: null, backflow_model_id: null, backflow_size_id: null, serial_number:null, notes: null, active: true, need_access: false };
+            this.client_id = null;
+            this.properties = [];
+            this.units = [];
+            this.accounts = [];
+            this.contacts = [];
+        },
+        addAssembly(){
             this.backflow_assembly.id = null;
             Object.keys(this.fields).map(k => {
                 if(this.fields[k].clear){
@@ -606,9 +622,6 @@ export default {
                 this.accounts = [];
                 this.contacts = [];
             }
-        },
-        addAssembly(){
-            this.backflow_assembly = {...this.backflow_assembly, id: null, use: null, placement: null, gps: null, backflow_type_id: null, backflow_manufacturer_id: null, backflow_model_id: null, backflow_size_id: null, serial_number:null, notes: null, active: true, need_access: false };
         },
         addModel(){
             let name=prompt("Model Number?");
