@@ -26,7 +26,7 @@
                                 filterable
                                 default-first-option
                                 placeholder="Select Property"
-                                @change="getUnits();save();"
+                                @change="getUnits();getAccounts();save();"
                             >
                             <el-option
                               v-for="property in properties"
@@ -64,6 +64,7 @@
                                 default-first-option
                                 placeholder="Select Contact"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="contact in contacts"
@@ -83,6 +84,7 @@
                                 default-first-option
                                 placeholder="Select Month"
                                 @change="save"
+                                clearable
                             >
                                 <el-option
                                   v-for="index in 12"
@@ -104,12 +106,32 @@
                                 default-first-option
                                 placeholder="Select Water System"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="system in systems"
                               :key="system.id"
                               :label="system.name"
                               :value="system.id"
+                              >
+                            </el-option>
+                          </el-select>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Account">
+                            <el-select
+                                v-model="backflow_assembly.property_account_id"
+                                filterable
+                                placeholder="Select Account"
+                                @change="save"
+                                clearable
+                            >
+                            <el-option
+                              v-for="account in accounts"
+                              :key="account.id"
+                              :label="account.number"
+                              :value="account.id"
                               >
                             </el-option>
                           </el-select>
@@ -124,6 +146,7 @@
                                 default-first-option
                                 placeholder="Select Use"
                                 @change="save"
+                                clearable
                             >
                                 <el-option
                                   v-for="use in uses"
@@ -144,6 +167,7 @@
                                 default-first-option
                                 placeholder="Select Placement"
                                 @change="save"
+                                clearable
                             >
                                 <el-option
                                   v-for="placement in placements"
@@ -176,6 +200,7 @@
                                 default-first-option
                                 placeholder="Select Backflow Type"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="type in backflow_types"
@@ -195,6 +220,7 @@
                                 default-first-option
                                 placeholder="Select Manufacturer"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="manufacturer in manufacturers"
@@ -214,6 +240,7 @@
                                 default-first-option
                                 placeholder="Select Model"
                                 @change="setTypeAndManufacturer();save();"
+                                clearable
                             >
                             <el-option
                               v-for="model in filtered_models"
@@ -232,7 +259,13 @@
                           >
                             Active
                           </b-form-checkbox>
-
+                          <br />
+                          <b-form-checkbox
+                            v-model="backflow_assembly.need_access"
+                            @change="save"
+                          >
+                            Need Access
+                          </b-form-checkbox>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -244,6 +277,7 @@
                                 default-first-option
                                 placeholder="Select Size"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="size in filtered_sizes"
@@ -284,9 +318,23 @@
                         <b-button @click="$router.push('/backflow_assemblies')" style="margin:5px;">View Assemblies</b-button>
                         <b-button @click="newAssembly" style="margin:5px;">New</b-button>
                         <b-button @click="addAssembly" style="margin:5px;">Add Additional</b-button>
+                        <b-button v-b-modal.clearable>Clearable</b-button>
                     </b-col>
                 </b-row>
             </b-container>
+            <b-modal id="clearable" title="Clearable Fields">
+              <b-container>
+                <b-row v-for="field in fields" :key="field.name">
+                    <b-col>
+                        <b-form-checkbox
+                            v-model="field.clear"
+                          >
+                            {{ field.name }}
+                          </b-form-checkbox>
+                    </b-col>
+                </b-row>
+              </b-container>
+            </b-modal>
         </main>
     </div>
 </template>
@@ -314,7 +362,80 @@ export default {
             manufacturers: [],
             models: [],
             sizes: [],
-            placements: []
+            placements: [],
+            accounts: [],
+            fields: {
+                'property_id': {
+                    name: 'Property',
+                    clear: true
+                },
+                'property_unit_id': {
+                    name: 'Unit',
+                    clear: true
+                },
+                'contact_id': {
+                    name: 'Contact',
+                    clear: true
+                },
+                'backflow_type_id': {
+                    name: 'Type',
+                    clear: true
+                },
+                'backflow_water_system_id': {
+                    name: 'Water System',
+                    clear: true
+                },
+                'backflow_size_id': {
+                    name: 'Size',
+                    clear: true
+                },
+                'backflow_manufacturer_id': {
+                    name: 'Manufacture',
+                    clear: true
+                },
+                'backflow_model_id': {
+                    name: 'Model',
+                    clear: true
+                },
+                'active': {
+                    name: 'Active',
+                    clear: true,
+                    default: true
+                },
+                'month': {
+                    name: 'Month',
+                    clear: true
+                },
+                'use': {
+                    name: 'Use',
+                    clear: true
+                },
+                'placement': {
+                    name: 'Placement',
+                    clear: true
+                },
+                'gps': {
+                    name: 'GPS',
+                    clear: true
+                },
+                'property_account_id': {
+                    name: 'Account',
+                    clear: true
+                },
+                'need_access': {
+                    name: 'Need Access',
+                    clear: true,
+                    default: false
+                },
+                'serial_number': {
+                    name: 'Serial',
+                    clear: true
+                },
+                'notes': {
+                    name: 'Notes',
+                    clear: true
+                }
+            }
         };
     },
     created () {
@@ -349,6 +470,7 @@ export default {
                 this.getProperties();
                 this.getContacts();
                 this.getUnits();
+                this.getAccounts();
             });
         }
     },
@@ -360,6 +482,7 @@ export default {
               if(this.properties.length == 1){
                  this.backflow_assembly.property_id = this.properties[0].id;
                  this.getUnits();
+                 this.getAccounts();
               }
             })
           }
@@ -368,9 +491,24 @@ export default {
           }
         },
         getUnits() {
+          this.backflow_assembly.unit_id = null;
           if(this.backflow_assembly.property_id){
             this.$http.get('/property_units?property_id=' + this.backflow_assembly.property_id).then(response => {
               this.units = response.data.data
+            })
+          }
+          else{
+            this.units = []
+          }
+        },
+        getAccounts() {
+          this.backflow_assembly.account_id = null;
+          if(this.backflow_assembly.property_id){
+            this.$http.get('/property_accounts?property_id=' + this.backflow_assembly.property_id).then(response => {
+              this.accounts = response.data.data
+              if(this.accounts.length == 1){
+                this.backflow_assembly.account_id = this.accounts[0].id;
+              }
             })
           }
           else{
@@ -414,14 +552,27 @@ export default {
             this.backflow_assembly.backflow_manufacturer_id = model.backflow_manufacturer_id
         },
         newAssembly(){
-            this.backflow_assembly = { id: null, backflow_size_id: null, active: true };
-            this.client_id = null;
-            this.properties = [];
-            this.units = [];
-            this.contacts = [];
+            this.backflow_assembly.id = null;
+            Object.keys(this.fields).map(k => {
+                if(this.fields[k].clear){
+                    if(typeof this.fields[k].default !== 'undefined'){
+                        this.backflow_assembly[k] = this.fields[k].default;
+                    }
+                    else{
+                        this.backflow_assembly[k] = null;
+                    }
+                }
+            });
+            if(this.fields.property_id.clear){
+                this.client_id = null;
+                this.properties = [];
+                this.units = [];
+                this.accounts = [];
+                this.contacts = [];
+            }
         },
         addAssembly(){
-            this.backflow_assembly = {...this.backflow_assembly, id: null, use: null, placement: null, gps: null, backflow_type_id: null, backflow_manufacturer_id: null, backflow_model_id: null, backflow_size_id: null, serial_number:null, notes: null, active: true };
+            this.backflow_assembly = {...this.backflow_assembly, id: null, use: null, placement: null, gps: null, backflow_type_id: null, backflow_manufacturer_id: null, backflow_model_id: null, backflow_size_id: null, serial_number:null, notes: null, active: true, need_access: false };
         }
     },
     computed: {
