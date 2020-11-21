@@ -279,6 +279,19 @@
                         </b-form-group>
                     </b-col>
                 </b-row>
+                <b-row>
+                    <b-col>
+                        <b-form-group label="Upload Picture">
+                            <b-form-file
+                                v-model="new_picture"
+                                :state="Boolean(new_picture)"
+                                placeholder="Choose a file or drop it here..."
+                                drop-placeholder="Drop file here..."
+                                @change="upload"
+                            ></b-form-file>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
                <b-row>
                     <b-col>
                         <b-button @click="$router.push('/backflow_assemblies')" style="margin:5px;">View Assemblies</b-button>
@@ -314,7 +327,8 @@ export default {
             manufacturers: [],
             models: [],
             sizes: [],
-            placements: []
+            placements: [],
+            new_picture: null
         };
     },
     created () {
@@ -353,6 +367,12 @@ export default {
         }
     },
     methods: {
+        upload(){
+            this.$http.post('/backflow_assembly/picture',this.new_picture)
+                .then((results) => {
+                    console.log(results);
+            });
+        },
         getProperties() {
           if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
