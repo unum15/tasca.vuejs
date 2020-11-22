@@ -408,16 +408,32 @@ export default {
                     name: 'Contact',
                     clear: false
                 },
-                'backflow_type_id': {
-                    name: 'Type',
+                'month': {
+                    name: 'Month',
                     clear: true
                 },
                 'backflow_water_system_id': {
                     name: 'Water System',
                     clear: true
                 },
-                'backflow_size_id': {
-                    name: 'Size',
+                'property_account_id': {
+                    name: 'Account',
+                    clear: true
+                },
+                'use': {
+                    name: 'Use',
+                    clear: true
+                },
+                'placement': {
+                    name: 'Placement',
+                    clear: true
+                },
+                'gps': {
+                    name: 'GPS',
+                    clear: true
+                },
+                'backflow_type_id': {
+                    name: 'Type',
                     clear: true
                 },
                 'backflow_manufacturer_id': {
@@ -433,30 +449,14 @@ export default {
                     clear: true,
                     default: true
                 },
-                'month': {
-                    name: 'Month',
-                    clear: true
-                },
-                'use': {
-                    name: 'Use',
-                    clear: true
-                },
-                'placement': {
-                    name: 'Placement',
-                    clear: true
-                },
-                'gps': {
-                    name: 'GPS',
-                    clear: true
-                },
-                'property_account_id': {
-                    name: 'Account',
-                    clear: true
-                },
                 'need_access': {
                     name: 'Need Access',
                     clear: true,
                     default: false
+                },
+                'backflow_size_id': {
+                    name: 'Size',
+                    clear: true
                 },
                 'serial_number': {
                     name: 'Serial',
