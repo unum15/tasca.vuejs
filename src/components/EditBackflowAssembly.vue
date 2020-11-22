@@ -263,14 +263,14 @@
                     <b-col>
                          <b-form-checkbox
                             v-model="backflow_assembly.active"
-                            @change="save"
+                            @input="save"
                           >
                             Active
                           </b-form-checkbox>
                           <br />
                           <b-form-checkbox
                             v-model="backflow_assembly.need_access"
-                            @change="save"
+                            @input="save"
                           >
                             Need Access
                           </b-form-checkbox>
@@ -333,12 +333,13 @@
                     </b-col>
                 </b-row>
             </b-container>
-            <b-modal id="clearable" title="Clearable Fields">
+            <b-modal id="clearable" title="Clearable Fields" ok-only>
               <b-container>
-                <b-row v-for="field in fields" :key="field.name">
+                <b-row v-for="(field,key) in fields" :key="key">
                     <b-col>
                         <b-form-checkbox
                             v-model="field.clear"
+                            @input="saveClearable(key)"
                           >
                             {{ field.name }}
                           </b-form-checkbox>
@@ -492,6 +493,7 @@ export default {
         this.$http.get('/backflow_assembly/unique/placement').then(response => {
             this.placements = response.data.data;
         });
+        this.loadClearable();
         if(this.backflow_assembly_id !== null) {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
                 this.client_id = response.data.data.property.client_id;
@@ -647,6 +649,17 @@ export default {
             this.$http.patch('/backflow_model/'+this.backflow_assembly.backflow_model_id,model).then(() => {
                 this.getModels();
                 this.backflow_assembly.backflow_size_id = this.new_size;
+            });
+        },
+        saveClearable(field){
+            localStorage.setItem('edit_backflow_assemblies-'+field+'-clear', this.fields[field].clear)
+        },
+        loadClearable(){
+            Object.keys(this.fields).map(k => {
+                let clear = localStorage.getItem('edit_backflow_assemblies-'+k+'-clear');
+                if(clear !== null){
+                    this.fields[k].clear = clear;
+                }
             });
         }
     },
