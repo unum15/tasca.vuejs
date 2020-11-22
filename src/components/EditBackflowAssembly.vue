@@ -9,7 +9,12 @@
                 <b-row>
                     <b-col>
                         <b-form-group label="Client">
-                         <el-select v-model="client_id" filterable default-first-option placeholder="Select Client" @change="getProperties();getContacts();">
+                         <el-select
+                            v-model="client_id"
+                            filterable
+                            default-first-option
+                            placeholder="Select Client"
+                            @change="getProperties();getContacts();">
                             <el-option
                               v-for="client in clients"
                               :key="client.id"
@@ -26,7 +31,7 @@
                                 filterable
                                 default-first-option
                                 placeholder="Select Property"
-                                @change="getUnits();save();"
+                                @change="getUnits();getAccounts();save();"
                             >
                             <el-option
                               v-for="property in properties"
@@ -64,6 +69,7 @@
                                 default-first-option
                                 placeholder="Select Contact"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="contact in contacts"
@@ -83,6 +89,7 @@
                                 default-first-option
                                 placeholder="Select Month"
                                 @change="save"
+                                clearable
                             >
                                 <el-option
                                   v-for="index in 12"
@@ -104,12 +111,32 @@
                                 default-first-option
                                 placeholder="Select Water System"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="system in systems"
                               :key="system.id"
                               :label="system.name"
                               :value="system.id"
+                              >
+                            </el-option>
+                          </el-select>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Account">
+                            <el-select
+                                v-model="backflow_assembly.property_account_id"
+                                filterable
+                                placeholder="Select Account"
+                                @change="save"
+                                clearable
+                            >
+                            <el-option
+                              v-for="account in accounts"
+                              :key="account.id"
+                              :label="account.number"
+                              :value="account.id"
                               >
                             </el-option>
                           </el-select>
@@ -124,6 +151,7 @@
                                 default-first-option
                                 placeholder="Select Use"
                                 @change="save"
+                                clearable
                             >
                                 <el-option
                                   v-for="use in uses"
@@ -144,6 +172,7 @@
                                 default-first-option
                                 placeholder="Select Placement"
                                 @change="save"
+                                clearable
                             >
                                 <el-option
                                   v-for="placement in placements"
@@ -166,7 +195,6 @@
                         </b-form-group>
                     </b-col>
                 </b-row>
-
                 <b-row>
                     <b-col>
                         <b-form-group label="Backflow Type">
@@ -176,6 +204,7 @@
                                 default-first-option
                                 placeholder="Select Backflow Type"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="type in backflow_types"
@@ -195,6 +224,7 @@
                                 default-first-option
                                 placeholder="Select Manufacturer"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="manufacturer in manufacturers"
@@ -206,7 +236,7 @@
                           </el-select>
                         </b-form-group>
                     </b-col>
-                    <b-col>
+                    <b-col md="auto">
                         <b-form-group label="Model Number">
                             <el-select
                                 v-model="backflow_assembly.backflow_model_id"
@@ -214,6 +244,7 @@
                                 default-first-option
                                 placeholder="Select Model"
                                 @change="setTypeAndManufacturer();save();"
+                                clearable
                             >
                             <el-option
                               v-for="model in filtered_models"
@@ -224,15 +255,25 @@
                             </el-option>
                           </el-select>
                         </b-form-group>
+                        
+                    </b-col>
+                    <b-col>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="Add Model" @click.stop="addModel()" alt="x" style="width:20px;float:left;" />
                     </b-col>
                     <b-col>
                          <b-form-checkbox
                             v-model="backflow_assembly.active"
-                            @change="save"
+                            @input="save"
                           >
                             Active
                           </b-form-checkbox>
-
+                          <br />
+                          <b-form-checkbox
+                            v-model="backflow_assembly.need_access"
+                            @input="save"
+                          >
+                            Need Access
+                          </b-form-checkbox>
                     </b-col>
                 </b-row>
                 <b-row>
@@ -244,6 +285,7 @@
                                 default-first-option
                                 placeholder="Select Size"
                                 @change="save"
+                                clearable
                             >
                             <el-option
                               v-for="size in filtered_sizes"
@@ -256,6 +298,9 @@
                         </b-form-group>
                     </b-col>
                     <b-col>
+                        <img src="@/assets/add.png" v-b-tooltip.hover title="Add Size" @click.stop="$bvModal.show('add-size-modal')" alt="x" style="width:20px;float:left;" />
+                    </b-col>
+                    <b-col>
                         <b-form-group label="Serial Number">
                             <b-form-input
                                 v-model="backflow_assembly.serial_number"
@@ -266,7 +311,6 @@
                         </b-form-group>
                     </b-col>
                 </b-row>
-
                 <b-row>
                     <b-col>
                         <b-form-group label="Notes">
@@ -290,27 +334,61 @@
                         <b-button @click="$router.push('/backflow_assemblies')" style="margin:5px;">View Assemblies</b-button>
                         <b-button @click="newAssembly" style="margin:5px;">New</b-button>
                         <b-button @click="addAssembly" style="margin:5px;">Add Additional</b-button>
+                        <b-button v-b-modal.clearable>Clearable</b-button>
                     </b-col>
                 </b-row>
             </b-container>
-            <b-modal id="view-pictures" title="View Pictures">
-                <div v-for="picture in pictures" :key="picture.filename">
-                    <img :src="'/api/uploads/backflows/pictures/' + picture.filename" style="width:600px;" :alt="picture.original_filename" />
-                    {{ picture.original_filename }}
-                </div>
-            </b-modal>
-            <b-modal id="upload-pictures" title="Upload Pictures" @ok="uploadPictures">
-                <b-form-group label="Upload Picture">
-                    <b-form-file
-                        v-model="new_pictures"
-                        :state="Boolean(new_pictures)"
-                        placeholder="Choose files or drop them here..."
-                        drop-placeholder="Drop files here..."
-                        multiple
-                    ></b-form-file>
-                </b-form-group>
-            </b-modal>
         </main>
+        <b-modal id="view-pictures" title="View Pictures">
+            <div v-for="picture in pictures" :key="picture.filename">
+                <img :src="'/api/uploads/backflows/pictures/' + picture.filename" style="width:600px;" :alt="picture.original_filename" />
+                {{ picture.original_filename }}
+            </div>
+        </b-modal>
+        <b-modal id="upload-pictures" title="Upload Pictures" @ok="uploadPictures">
+            <b-form-group label="Upload Picture">
+                <b-form-file
+                    v-model="new_pictures"
+                    :state="Boolean(new_pictures)"
+                    placeholder="Choose files or drop them here..."
+                    drop-placeholder="Drop files here..."
+                    multiple
+                ></b-form-file>
+            </b-form-group>
+        </b-modal>
+        <b-modal id="clearable" title="Clearable Fields" ok-only>
+          <b-container>
+            <b-row v-for="(field,key) in fields" :key="key">
+                <b-col>
+                    <b-form-checkbox
+                        v-model="field.clear"
+                        @input="saveClearable(key)"
+                      >
+                        {{ field.name }}
+                      </b-form-checkbox>
+                </b-col>
+            </b-row>
+          </b-container>
+        </b-modal>
+        <b-modal id="add-size-modal" title="Add Size" @ok="addSize">
+            <b-form-group label="Size">
+                <el-select
+                    v-model="new_size"
+                    filterable
+                    default-first-option
+                    placeholder="Select Size"
+                    @change="save"
+                >
+                <el-option
+                  v-for="size in unfiltered_sizes"
+                  :key="size.id"
+                  :label="size.name"
+                  :value="size.id"
+                  >
+                </el-option>
+              </el-select>
+            </b-form-group>
+        </b-modal>
     </div>
 </template>
 <script>
@@ -339,7 +417,81 @@ export default {
             sizes: [],
             placements: [],
             new_pictures: [],
-            pictures: []
+            pictures: [],
+            accounts: [],
+            new_size: null,
+            fields: {
+                'property_id': {
+                    name: 'Property',
+                    clear: false
+                },
+                'property_unit_id': {
+                    name: 'Unit',
+                    clear: false
+                },
+                'contact_id': {
+                    name: 'Contact',
+                    clear: false
+                },
+                'month': {
+                    name: 'Month',
+                    clear: true
+                },
+                'backflow_water_system_id': {
+                    name: 'Water System',
+                    clear: true
+                },
+                'property_account_id': {
+                    name: 'Account',
+                    clear: true
+                },
+                'use': {
+                    name: 'Use',
+                    clear: true
+                },
+                'placement': {
+                    name: 'Placement',
+                    clear: true
+                },
+                'gps': {
+                    name: 'GPS',
+                    clear: true
+                },
+                'backflow_type_id': {
+                    name: 'Type',
+                    clear: true
+                },
+                'backflow_manufacturer_id': {
+                    name: 'Manufacture',
+                    clear: true
+                },
+                'backflow_model_id': {
+                    name: 'Model',
+                    clear: true
+                },
+                'active': {
+                    name: 'Active',
+                    clear: true,
+                    default: true
+                },
+                'need_access': {
+                    name: 'Need Access',
+                    clear: true,
+                    default: false
+                },
+                'backflow_size_id': {
+                    name: 'Size',
+                    clear: true
+                },
+                'serial_number': {
+                    name: 'Serial',
+                    clear: true
+                },
+                'notes': {
+                    name: 'Notes',
+                    clear: true
+                }
+            }
         };
     },
     created () {
@@ -352,29 +504,29 @@ export default {
         this.$http.get('/backflow_water_systems').then(response => {
             this.systems = response.data.data;
         });
-        this.$http.get('/backflow_sizes').then(response => {
-            this.sizes = response.data.data;
-        });
         this.$http.get('/backflow_manufacturers').then(response => {
             this.manufacturers = response.data.data;
         });
-        this.$http.get('/backflow_models?includes=backflow_sizes').then(response => {
-            this.models = response.data.data;
+        this.$http.get('/backflow_sizes').then(response => {
+            this.sizes = response.data.data;
         });
+        this.getModels();
         this.$http.get('/backflow_assembly/unique/use').then(response => {
             this.uses = response.data.data;
         });
         this.$http.get('/backflow_assembly/unique/placement').then(response => {
             this.placements = response.data.data;
         });
+        this.loadClearable();
         if(this.backflow_assembly_id !== null) {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
                 this.client_id = response.data.data.property.client_id;
                 this.backflow_assembly = response.data.data;
-                this.getProperties();
-                this.getContacts();
-                this.getUnits();
                 this.getPictures();
+                this.getProperties(false);
+                this.getContacts(false);
+                this.getUnits(false);
+                this.getAccounts(false);
             });
         }
     },
@@ -394,21 +546,33 @@ export default {
                 this.pictures = response.data.data;
             });
         },
-        getProperties() {
+        getModels(){
+            this.$http.get('/backflow_models?includes=backflow_sizes').then(response => {
+                this.models = response.data.data;
+            });
+        },
+        getProperties(clear=true) {
+          if(clear){
+            this.backflow_assembly.property_id = null;
+          }
           if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
               this.properties = response.data
               if(this.properties.length == 1){
                  this.backflow_assembly.property_id = this.properties[0].id;
-                 this.getUnits();
               }
+              this.getUnits();
+              this.getAccounts();
             })
           }
           else{
             this.properties = []
           }
         },
-        getUnits() {
+        getUnits(clear=true) {
+          if(clear){
+            this.backflow_assembly.unit_id = null;
+          }
           if(this.backflow_assembly.property_id){
             this.$http.get('/property_units?property_id=' + this.backflow_assembly.property_id).then(response => {
               this.units = response.data.data
@@ -418,7 +582,26 @@ export default {
             this.units = []
           }
         },
-        getContacts() {
+        getAccounts(clear=true) {
+          if(clear){
+            this.backflow_assembly.account_id = null;
+          }
+          if(this.backflow_assembly.property_id){
+            this.$http.get('/property_accounts?property_id=' + this.backflow_assembly.property_id).then(response => {
+              this.accounts = response.data.data
+              if(this.accounts.length == 1){
+                this.backflow_assembly.account_id = this.accounts[0].id;
+              }
+            })
+          }
+          else{
+            this.units = []
+          }
+        },
+        getContacts(clear=true) {
+          if(clear){
+            this.backflow_assembly.contact_id = null;
+          }
           if(this.client_id){
             this.$http.get('/contacts?client_id=' + this.client_id).then(response => {
               this.contacts = response.data
@@ -455,14 +638,69 @@ export default {
             this.backflow_assembly.backflow_manufacturer_id = model.backflow_manufacturer_id
         },
         newAssembly(){
-            this.backflow_assembly = { id: null, backflow_size_id: null, active: true };
+            this.backflow_assembly = {id: null, property_id: null, use: null, placement: null, gps: null, backflow_type_id: null, backflow_manufacturer_id: null, backflow_model_id: null, backflow_size_id: null, serial_number:null, notes: null, active: true, need_access: false };
             this.client_id = null;
             this.properties = [];
             this.units = [];
+            this.accounts = [];
             this.contacts = [];
         },
         addAssembly(){
-            this.backflow_assembly = {...this.backflow_assembly, id: null, use: null, placement: null, gps: null, backflow_type_id: null, backflow_manufacturer_id: null, backflow_model_id: null, backflow_size_id: null, serial_number:null, notes: null, active: true };
+            this.backflow_assembly.id = null;
+            Object.keys(this.fields).map(k => {
+                if(this.fields[k].clear){
+                    if(typeof this.fields[k].default !== 'undefined'){
+                        this.backflow_assembly[k] = this.fields[k].default;
+                    }
+                    else{
+                        this.backflow_assembly[k] = null;
+                    }
+                }
+            });
+            if(this.fields.property_id.clear){
+                this.client_id = null;
+                this.properties = [];
+                this.units = [];
+                this.accounts = [];
+                this.contacts = [];
+            }
+        },
+        addModel(){
+            let name=prompt("Model Number?");
+            if(name){
+                let model = {
+                    backflow_manufacturer_id: this.backflow_assembly.backflow_manufacturer_id,
+                    backflow_type_id: this.backflow_assembly.backflow_type_id,
+                    name : name
+                };
+                this.$http.post('/backflow_model',model).then(response => {
+                    this.getModels();
+                    this.backflow_assembly.backflow_model_id = response.data.data.id
+                });
+            }
+        },
+        showSizeModal(){
+         this.$refs['my-modal'].show();
+        },
+        addSize(){
+            let model = {
+                sizes: [this.new_size]
+            };
+            this.$http.patch('/backflow_model/'+this.backflow_assembly.backflow_model_id,model).then(() => {
+                this.getModels();
+                this.backflow_assembly.backflow_size_id = this.new_size;
+            });
+        },
+        saveClearable(field){
+            localStorage.setItem('edit_backflow_assemblies-'+field+'-clear', this.fields[field].clear)
+        },
+        loadClearable(){
+            Object.keys(this.fields).map(k => {
+                let clear = localStorage.getItem('edit_backflow_assemblies-'+k+'-clear');
+                if(clear !== null){
+                    this.fields[k].clear = clear;
+                }
+            });
         }
     },
     computed: {
@@ -493,6 +731,23 @@ export default {
                 return sizes;
             }
             return [];
+        },
+        unfiltered_sizes(){
+            if(!this.backflow_assembly.backflow_model_id){
+              return this.sizes;
+            }
+            let model = this.models.filter(m => (this.backflow_assembly.backflow_model_id == m.id))[0];
+            if(model){
+                let sizes = this.sizes.filter(s => {
+                    let matches = model.backflow_sizes.filter(ms => (s.id == ms.id));
+                    if(matches.length){
+                        return false;
+                    }
+                    return true;
+                });
+                return sizes;
+            }
+            return [];
         }
     },
     watch: {
@@ -500,7 +755,7 @@ export default {
             if(this.filtered_sizes.length == 1){
                 this.backflow_assembly.backflow_size_id = this.filtered_sizes[0].id;
             }
-        }
+        },
     }
 };
 </script>
