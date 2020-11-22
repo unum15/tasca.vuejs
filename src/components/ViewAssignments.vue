@@ -11,34 +11,8 @@
                     Clocked In At: {{ formatDateTime(clock_in.clock_in) }}
                     <b-button @click="showClockOut">Clock Out</b-button>
                 </span>
-                <b-button @click="showClockIn" v-show="!clock_in">Clock In</b-button>
-                <b-modal ref="modal-clock-in"  @ok="clockIn" :title="modal_clock_in.title">
-                    <b-container fluid>
-                        <b-row>
-                            <b-col>
-                                <b-form-group label="Date" class="mb-0">
-                                    <b-form-input type="date" v-model='modal_clock_in.date' />
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label="Time" class="mb-0">
-                                    <b-form-input type="time" v-model='modal_clock_in.time' />
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                    </b-container>
-                </b-modal>
-            </div>
-            <div v-show="clock_in">
-                <span v-if="sign_in">
-                    Signed In At: {{ formatDateTime(sign_in.sign_in) }}
-                    Signed In To: {{ sign_in.task_date ? sign_in.task_date.task.name : sign_in.overhead_assignment.name + ' - ' + sign_in.overhead_category.name }}
-                </span>
-                <span v-else>
-                    Not Signed In
-                </span>
-                <b-button @click="showSignInOverhead">Sign In - Overhead</b-button>
-                <b-modal ref="modal-sign-in-overhead" @ok="signInOverhead" :title="modal_overhead.title">
+                <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
+                <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
                     <b-container fluid>
                         <b-row>
                             <b-col>
@@ -175,13 +149,12 @@ export default {
                 title: null
             },
             clock_in: null,
-            sign_in: null,
             modal_overhead: {
                 date: null,
                 time: null,
                 overhead_assignment_id: null,
                 overhead_category_id: null,
-                title: 'Sign In - Overhead'
+                title: 'Clock In - Overhead'
             },
             categories: [],
             assignments: [],
@@ -253,11 +226,8 @@ export default {
 			this.crews = response.data;
             this.crews.unshift({id: null, name: 'All'});
 		});
-        this.$http.get('/clock_in/current').then(response => {
-			this.clock_in = response.data.data;
-		});
         this.$http.get('/sign_in/current').then(response => {
-			this.sign_in = response.data;
+			this.clock_in = response.data;
 		});
         this.$http.get('/overhead_assignments').then(response => {
 			this.assignments = response.data.data;
@@ -363,24 +333,12 @@ export default {
             }
             return null;
         },
-        showSignInOverhead(){
+        showClockInOverhead(){
             this.modal_overhead.date = moment().format('YYYY-MM-DD');
             this.modal_overhead.time = moment().format('HH:mm');
-            this.$refs['modal-sign-in-overhead'].show();
+            this.$refs['modal-clock-in-overhead'].show();
         },
-        showClockIn(){
-            this.modal_clock_in.title="Clock In";
-            this.modal_clock_in.date = moment().format('YYYY-MM-DD');
-            this.modal_clock_in.time = moment().format('HH:mm');
-            this.$refs['modal-clock-in'].show();
-        },
-        showClockOut(){
-            this.modal_clock_in.title="Clock Out";
-            this.modal_clock_in.date = moment().format('YYYY-MM-DD');
-            this.modal_clock_in.time = moment().format('HH:mm');
-            this.$refs['modal-clock-in'].show();
-        },
-        signInOverhead(event){
+        clockInOverhead(event){
             event.preventDefault();
             if(!this.modal_overhead.overhead_assignment_id){
                 alert('Please select assignment.');
@@ -390,48 +348,21 @@ export default {
                 alert('Please select category.');
                 return;
             }
-            if(this.sign_in){
-                let sign_in = {
+            if(this.clock_in){
+                let clock_in = {
                     sign_out : this.modal_overhead.date + ' ' + this.modal_overhead.time
                 };
-                this.$http.patch('/sign_in/'+this.sign_in.id, sign_in);
+                this.$http.patch('/sign_in/'+this.clock_in.id, clock_in);
             }
-            let sign_in = {
-                clock_in_id : this.clock_in.id,
-                sign_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
+            let clock_in = {
+                clock_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
                 overhead_assignment_id: this.modal_overhead.overhead_assignment_id,
                 overhead_category_id: this.modal_overhead.overhead_category_id
             };
-            this.$http.post('/sign_in', sign_in).then(response => {
-                this.sign_in = response.data;
-                this.$refs['modal-sign-in-overhead'].hide();
+            this.$http.post('/sign_in', clock_in).then(response => {
+                this.clock_in = response.data;
+                this.$refs['modal-clock-in-overhead'].hide();
             });
-        },
-        clockIn(){
-            if(!this.clock_in){
-                let clock_in = {
-                    clock_in : this.modal_clock_in.date + ' ' + this.modal_clock_in.time
-                };
-                this.$http.post('/clock_in', clock_in).then(response => {
-                    this.clock_in = response.data.data;
-                });
-            }
-            else{
-                let clock_in = {
-                    clock_out : this.modal_clock_in.date + ' ' + this.modal_clock_in.time
-                };
-                this.$http.patch('/clock_in/'+this.clock_in.id, clock_in).then(() => {
-                    this.clock_in = null;
-                });
-                if(this.sign_in){
-                    let sign_in = {
-                        sign_out : this.modal_clock_in.date + ' ' + this.modal_clock_in.time
-                    };
-                    this.$http.patch('/sign_in/'+this.sign_in.id, sign_in).then(() => {
-                        this.clock_in = null;
-                    });
-                }
-            }
         },
         treeNormalizer(node){
             return {
