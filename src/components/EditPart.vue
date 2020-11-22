@@ -7,8 +7,11 @@
         <main>
             <b-container>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Name">
+                    <b-col cols="6">
+                        <b-form-group
+                            label="Name"
+                            label-cols="4"
+                            >
                             <b-form-input
                                 v-model="part.name"
                                 @change="save"
@@ -21,8 +24,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="On Hand">
+                    <b-col cols="6">
+                        <b-form-group
+                            label="On Hand"
+                            label-cols="4"
+                            >
                             <b-form-input
                                 v-model="part.on_hand"
                                 @change="save"
@@ -33,8 +39,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Notes">
+                    <b-col cols="6">
+                        <b-form-group
+                            label="Notes"
+                            label-cols="4"
+                            >
                             <b-form-input
                                 v-model="part.notes"
                                 @change="save"

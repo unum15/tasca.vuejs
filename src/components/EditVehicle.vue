@@ -7,8 +7,11 @@
         <main>
             <b-container>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Name">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Name"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="vehicle.name"
                                 @change="save"
@@ -21,8 +24,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Vehicle Type Id">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Vehicle Type Id"
+                            label-cols="2"
+                            >
                             <b-form-select
                                 v-model="vehicle.vehicle_type_id"
                                 @change="save"
@@ -37,8 +43,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Year">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Year"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="vehicle.year"
                                 @change="save"
@@ -49,8 +58,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Make">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Make"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="vehicle.make"
                                 @change="save"
@@ -61,8 +73,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Model">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Model"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="vehicle.model"
                                 @change="save"
@@ -73,8 +88,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Trim">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Trim"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="vehicle.trim"
                                 @change="save"
@@ -85,8 +103,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Vin">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Vin"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="vehicle.vin"
                                 @change="save"
@@ -97,8 +118,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Notes">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Notes"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="vehicle.notes"
                                 @change="save"
@@ -107,7 +131,8 @@
                             </b-form-input>
                         </b-form-group>
                     </b-col>
-                </b-row>               <b-row>
+                </b-row>
+                <b-row>
                     <b-col>
                         <b-button @click="$router.push('/vehicles')">Done</b-button>
                     </b-col>

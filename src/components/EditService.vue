@@ -7,8 +7,11 @@
         <main>
             <b-container>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Vehicle Id">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Vehicle Id"
+							label-cols="4"
+						>
                             <b-form-select
                                 v-model="service.vehicle_id"
                                 @change="save"
@@ -23,8 +26,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Service Type Id">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Service Type Id"
+							label-cols="4"
+                            >
                             <b-form-select
                                 v-model="service.service_type_id"
                                 @change="save"
@@ -39,8 +45,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Description">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Description"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="service.description"
                                 @change="save"
@@ -53,8 +62,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Quantity">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Quantity"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="service.quantity"
                                 @change="save"
@@ -67,8 +79,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Usage Type Id">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Usage Type Id"
+							label-cols="4"
+						>
                             <b-form-select
                                 v-model="service.usage_type_id"
                                 @change="save"
@@ -83,8 +98,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Usage Interval">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Usage Interval"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="service.usage_interval"
                                 @change="save"
@@ -97,8 +115,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Part Number">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Part Number"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="service.part_number"
                                 @change="save"
@@ -109,8 +130,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Notes">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Notes"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="service.notes"
                                 @change="save"
@@ -121,8 +145,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Time Interval">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Time Interval"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="service.time_interval"
                                 @change="save"
@@ -131,7 +158,8 @@
                             </b-form-input>
                         </b-form-group>
                     </b-col>
-                </b-row>               <b-row>
+                </b-row>
+                <b-row>
                     <b-col>
                         <b-button @click="$router.push('/services')">Done</b-button>
                     </b-col>

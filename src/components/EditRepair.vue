@@ -7,8 +7,11 @@
         <main>
             <b-container>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Vehicle Id">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Vehicle Id"
+							label-cols="4"
+						>
                             <b-form-select
                                 v-model="repair.vehicle_id"
                                 @change="save"
@@ -23,8 +26,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Repair">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Repair"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="repair.repair"
                                 @change="save"
@@ -37,8 +43,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Ending Reading">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Ending Reading"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="repair.ending_reading"
                                 @change="save"
@@ -49,8 +58,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Date">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Date"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="repair.date"
                                 @change="save"
@@ -61,8 +73,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Amount">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Amount"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="repair.amount"
                                 @change="save"
@@ -73,8 +88,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Where">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Where"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="repair.where"
                                 @change="save"
@@ -85,8 +103,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Notes">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Notes"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="repair.notes"
                                 @change="save"
@@ -96,7 +117,7 @@
                         </b-form-group>
                     </b-col>
                 </b-row>               <b-row>
-                    <b-col>
+                    <b-col cols="6">
                         <b-button @click="$router.push('/repairs')">Done</b-button>
                     </b-col>
                 </b-row>

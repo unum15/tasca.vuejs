@@ -7,8 +7,11 @@
         <main>
             <b-container>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Vehicle Id">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Vehicle Id"
+                            label-cols="2"
+                            >
                             <b-form-select
                                 v-model="fueling.vehicle_id"
                                 @change="save"
@@ -23,8 +26,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Beginning Reading">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Beginning Reading"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="fueling.beginning_reading"
                                 @change="save"
@@ -35,8 +41,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Ending Reading">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Ending Reading"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="fueling.ending_reading"
                                 @change="save"
@@ -47,8 +56,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Date">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Date"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="fueling.date"
                                 @change="save"
@@ -59,8 +71,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Gallons">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Gallons"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="fueling.gallons"
                                 @change="save"
@@ -71,8 +86,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Amount">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Amount"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="fueling.amount"
                                 @change="save"
@@ -83,8 +101,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Notes">
+                    <b-col cols="4">
+                        <b-form-group
+                            label="Notes"
+                            label-cols="2"
+                            >
                             <b-form-input
                                 v-model="fueling.notes"
                                 @change="save"
@@ -93,7 +114,8 @@
                             </b-form-input>
                         </b-form-group>
                     </b-col>
-                </b-row>               <b-row>
+                </b-row>
+                <b-row>
                     <b-col>
                         <b-button @click="$router.push('/fuelings')">Done</b-button>
                     </b-col>

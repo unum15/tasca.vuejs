@@ -7,8 +7,11 @@
         <main>
             <b-container>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Service Id">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Service Id"
+							label-cols="4"
+						>
                             <b-form-select
                                 v-model="maintenance.service_id"
                                 @change="save"
@@ -23,8 +26,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Ending Reading">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Ending Reading"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="maintenance.ending_reading"
                                 @change="save"
@@ -35,8 +41,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Date">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Date"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="maintenance.date"
                                 @change="save"
@@ -47,8 +56,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Amount">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Amount"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="maintenance.amount"
                                 @change="save"
@@ -59,8 +71,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Where">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Where"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="maintenance.where"
                                 @change="save"
@@ -71,8 +86,11 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        <b-form-group label="Notes">
+                    <b-col cols="6">
+                        <b-form-group 
+							label="Notes"
+							label-cols="4"
+						>
                             <b-form-input
                                 v-model="maintenance.notes"
                                 @change="save"
@@ -82,7 +100,7 @@
                         </b-form-group>
                     </b-col>
                 </b-row>               <b-row>
-                    <b-col>
+                    <b-col cols="6">
                         <b-button @click="$router.push('/maintenances')">Done</b-button>
                     </b-col>
                 </b-row>

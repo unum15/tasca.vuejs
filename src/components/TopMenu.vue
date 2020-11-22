@@ -44,7 +44,7 @@
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
-                      <em>Vehicles</em>
+                      <em>Garage</em>
                     </template>
                     <b-dropdown-item href="/fueling">New Fueling</b-dropdown-item>
                     <b-dropdown-item href="/fuelings">View Fuelings</b-dropdown-item>
