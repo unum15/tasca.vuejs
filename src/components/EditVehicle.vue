@@ -7,10 +7,10 @@
         <main>
             <b-container>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Name"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="vehicle.name"
@@ -24,10 +24,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
-                            label="Vehicle Type Id"
-                            label-cols="2"
+                            label="Vehicle Type"
+                            label-cols="4"
                             >
                             <b-form-select
                                 v-model="vehicle.vehicle_type_id"
@@ -43,10 +43,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Year"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="vehicle.year"
@@ -58,10 +58,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Make"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="vehicle.make"
@@ -73,10 +73,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Model"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="vehicle.model"
@@ -88,10 +88,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Trim"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="vehicle.trim"
@@ -103,10 +103,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Vin"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="vehicle.vin"
@@ -118,10 +118,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Notes"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="vehicle.notes"

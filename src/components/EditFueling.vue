@@ -7,10 +7,10 @@
         <main>
             <b-container>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
-                            label="Vehicle Id"
-                            label-cols="2"
+                            label="Vehicle"
+                            label-cols="4"
                             >
                             <b-form-select
                                 v-model="fueling.vehicle_id"
@@ -26,10 +26,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Beginning Reading"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="fueling.beginning_reading"
@@ -41,10 +41,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Ending Reading"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="fueling.ending_reading"
@@ -56,10 +56,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Date"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="fueling.date"
@@ -71,10 +71,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Gallons"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="fueling.gallons"
@@ -86,10 +86,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Amount"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="fueling.amount"
@@ -101,10 +101,10 @@
                     </b-col>
                 </b-row>
                 <b-row>
-                    <b-col cols="4">
+                    <b-col cols="6">
                         <b-form-group
                             label="Notes"
-                            label-cols="2"
+                            label-cols="4"
                             >
                             <b-form-input
                                 v-model="fueling.notes"

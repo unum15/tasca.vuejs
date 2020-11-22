@@ -9,7 +9,7 @@
                 <b-row>
                     <b-col cols="6">
                         <b-form-group 
-							label="Vehicle Id"
+							label="Vehicle"
 							label-cols="4"
 						>
                             <b-form-select

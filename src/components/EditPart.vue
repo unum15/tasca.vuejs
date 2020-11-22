@@ -52,7 +52,8 @@
                             </b-form-input>
                         </b-form-group>
                     </b-col>
-                </b-row>               <b-row>
+                </b-row>
+                <b-row>
                     <b-col>
                         <b-button @click="$router.push('/parts')">Done</b-button>
                     </b-col>
