@@ -295,7 +295,8 @@
             </b-container>
             <b-modal id="view-pictures" title="View Pictures">
                 <div v-for="picture in pictures" :key="picture.filename">
-                    <img :src="'/api/uploads/backflows/pictures/' + picture.filename" style="width:600px;" />
+                    <img :src="'/api/uploads/backflows/pictures/' + picture.filename" style="width:600px;" :alt="picture.original_filename" />
+                    {{ picture.original_filename }}
                 </div>
             </b-modal>
             <b-modal id="upload-pictures" title="Upload Pictures" @ok="uploadPictures">
