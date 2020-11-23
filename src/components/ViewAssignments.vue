@@ -374,7 +374,7 @@ export default {
                 this.$http.patch('/sign_in/'+this.clock_in.id, clock_in);
             }
             let clock_in = {
-                clock_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
+                sign_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
                 overhead_assignment_id: this.modal_overhead.overhead_assignment_id,
                 overhead_category_id: this.modal_overhead.overhead_category_id,
                 contact_id: localStorage.getItem('id')
