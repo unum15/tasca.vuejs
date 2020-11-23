@@ -82,7 +82,7 @@ export default {
         },
         getBackflowAssemblies(){
             if(this.property_id){
-                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_super_type,backflow_type.backflow_super_type.backflow_valves,backflow_test_reports,backflow_test_reports.backflow_tests&property_id=' + this.property_id).then(response => {
+                this.$http.get('/backflow_assemblies?includes=backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_super_type,backflow_type.backflow_super_type.backflow_valves,backflow_test_reports,backflow_test_reports.backflow_tests&active=1&property_id=' + this.property_id).then(response => {
                     let bas = response.data.data;
                     bas.map(ba => {
                         if(ba.backflow_test_reports.length){

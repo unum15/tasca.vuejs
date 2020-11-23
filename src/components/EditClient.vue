@@ -163,6 +163,11 @@
               :properties="client.properties"
               ></ViewClientBackflowsTab>
           </b-tab>
+          <b-tab v-if="client.id && (client.properties.length > 0)" title="Irrigation Systems" :active="irrigation_system_id != null">
+            <ViewClientIrrigationSystemsTab
+              :properties="client.properties"
+              ></ViewClientIrrigationSystemsTab>
+          </b-tab>
         </b-tabs>
         <b-button v-if="!client.phreebooks_id" @click="createPhreeBooks">Add To Phree Books</b-button>
         <b-button v-if="client.phreebooks_id" @click="updatePhreeBooks">Update Phree Books</b-button>
@@ -174,6 +179,7 @@ import EditContacts from './EditContacts'
 import EditProperties from './EditProperties'
 import EditProjects from './EditProjects'
 import ViewClientBackflowsTab from './ViewClientBackflowsTab'
+import ViewClientIrrigationSystemsTab from './ViewClientIrrigationSystemsTab'
 import TopMenu from './TopMenu'
 export default {
   name: 'EditClient',
@@ -182,7 +188,8 @@ export default {
     'EditContacts': EditContacts,
     'EditProperties': EditProperties,
     'EditProjects': EditProjects,
-    'ViewClientBackflowsTab': ViewClientBackflowsTab
+    'ViewClientBackflowsTab': ViewClientBackflowsTab,
+    'ViewClientIrrigationSystemsTab': ViewClientIrrigationSystemsTab
   },
   props: {
     client_id: {default: null},
@@ -192,6 +199,7 @@ export default {
     order_id: {default: null},
     task_id: {default: null},
     backflow_id: {default: null},
+    irrigation_system_id: {default: null},
   },
   data () {
     return {

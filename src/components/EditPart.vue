@@ -5,10 +5,10 @@
             {{ part.name }}
         </h1>
         <main>
-            <b-container>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Name">
+            <b-container fluid="md">
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Name" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="part.name"
                                 @change="save"
@@ -17,37 +17,43 @@
                                 required
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="On Hand">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="On Hand" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="part.on_hand"
                                 @change="save"
                                 type="number"
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Notes">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Notes" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="part.notes"
                                 @change="save"
                                 type="text"
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>               <b-row>
+                </b-form-row>
+               <b-form-row>
                     <b-col>
                         <b-button @click="$router.push('/parts')">Done</b-button>
                     </b-col>
-                </b-row>
+                </b-form-row>
             </b-container>
         </main>
     </div>

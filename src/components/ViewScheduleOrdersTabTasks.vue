@@ -185,10 +185,10 @@ export default {
         getTotalHours(dates){
             var time = 0;
             dates.map(d =>{
-                d.sign_ins.map(si =>{
-                    var sign_in = moment(si.sign_in);
-                    var sign_out = moment(si.sign_out);
-                    time += Math.round(sign_out.diff(sign_in));
+                d.clock_ins.map(si =>{
+                    var clock_in = moment(si.clock_in);
+                    var clock_out = moment(si.clock_out);
+                    time += Math.round(clock_out.diff(clock_in));
                 });
             });
             return Math.round(time/36000)/100;

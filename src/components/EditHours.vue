@@ -40,7 +40,7 @@ export default {
         stop_date: null,
         filter: null,
         groups: [],      
-        sign_ins: [],
+        clock_ins: [],
         group_by: "name",
         total_hours: 0
     }
@@ -60,42 +60,42 @@ export default {
       var last = "";
       var parent = this;
       var total_hours = 0;
-      this.sign_ins.sort(this.sign_in_compare(this.group_by));
-      this.sign_ins.forEach(sign_in => {
-        if(last!=sign_in[parent.group_by]){
+      this.clock_ins.sort(this.clock_in_compare(this.group_by));
+      this.clock_ins.forEach(clock_in => {
+        if(last!=clock_in[parent.group_by]){
           if(last!=""){            
             groups[last]=({id:last,total: Math.round(Number.parseFloat(total_hours)*100)/100 ,data:group, filter: null});
           }
-          last=sign_in[parent.group_by];
+          last=clock_in[parent.group_by];
           total_hours = 0;
           group=[];
         }
-        if(sign_in.hours!=null){
-          total_hours += Math.round(Number.parseFloat(sign_in.hours)*100)/100;
+        if(clock_in.hours!=null){
+          total_hours += Math.round(Number.parseFloat(clock_in.hours)*100)/100;
         }
-        group.push(sign_in);
+        group.push(clock_in);
       });
       groups[last]=({id:last,total: Math.round(Number.parseFloat(total_hours)*100)/100 ,data:group, filter: null});      
       this.groups=groups;
       this.updateTotal(last,total_hours);
     },
-    sign_in_compare(group_by) {
+    clock_in_compare(group_by) {
       return function (a,b){
         if (a[group_by] < b[group_by])
           return -1;
         if (a[group_by] > b[group_by])
           return 1;
-        if (a.full_sign_in_time < b.full_sign_in_time)
+        if (a.full_clock_in_time < b.full_clock_in_time)
           return -1;
-        if (a.full_sign_in_time > b.full_sign_in_time)
+        if (a.full_clock_in_time > b.full_clock_in_time)
           return 1;
         return 0;
       };
     },    
     refresh(){
       if((this.start_date !== null) && (this.stop_date !== null)){
-        this.$http.get('/sign_ins?start_date=' + this.start_date + '&stop_date=' + this.stop_date).then(request => {
-              this.sign_ins = request.data;
+        this.$http.get('/clock_ins?start_date=' + this.start_date + '&stop_date=' + this.stop_date).then(request => {
+              this.clock_ins = request.data;
               this.updateGroups();
           });
        }

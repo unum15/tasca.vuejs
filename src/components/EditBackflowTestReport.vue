@@ -244,7 +244,7 @@
                             <b-form-group label="Date">
                                 <b-form-input
                                     v-model="repair_date"
-                                    @change="saveRepairs()"
+                                    @change="saveRepairs();saveCleanings();"
                                     type="date"
                                 >
                                 </b-form-input>
@@ -541,14 +541,12 @@ export default {
             }
         },
         getValves() {
-          if((this.backflow_assembly.backflow_type)&&(this.backflow_assembly.backflow_type.backflow_super_type_id)){
-            this.$http.get('/backflow_valves?includes=backflow_valve_parts&backflow_super_type_id=' + this.backflow_assembly.backflow_type.backflow_super_type_id).then(response => {
-              this.valves = response.data.data;
-            })
-          }
-          else{
-            this.valves = []
-          }
+            this.valves = [];
+            if((this.backflow_assembly.backflow_type)&&(this.backflow_assembly.backflow_type.backflow_super_type_id)){
+                this.$http.get('/backflow_valves?includes=backflow_valve_parts&backflow_super_type_id=' + this.backflow_assembly.backflow_type.backflow_super_type_id).then(response => {
+                  this.valves = response.data.data;
+                })
+            }
         },
         getReport() {
             this.repair_contact_id = localStorage.getItem('id');
@@ -678,6 +676,9 @@ export default {
             }
         },
         saveCleaning (values, valve_id){
+            if(!Array.isArray(values)){
+                return;
+            }
             let cleaning = {
                 parts: values,
                 valve_id: valve_id,

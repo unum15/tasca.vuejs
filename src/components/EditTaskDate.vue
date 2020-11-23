@@ -59,19 +59,19 @@
     </b-col>
   </b-row>
   <b-row>
-    <EditSignIns v-if="my_date.id"
+    <EditClockIns v-if="my_date.id"
       :task_date_id="my_date.id"
     >
-    </EditSignIns>
+    </EditClockIns>
   </b-row>
 </div>
 </template>
 <script>
-import EditSignIns from './EditSignIns';
+import EditClockIns from './EditClockIns';
 export default {
   name: 'EditTaskDate',
   components: {
-    'EditSignIns': EditSignIns
+    'EditClockIns': EditClockIns
   },
   props: {
     date: {required: true}

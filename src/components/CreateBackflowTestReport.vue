@@ -103,12 +103,12 @@ export default {
                     },
                     {
                         key: 'test_1',
-                        label: 'Test 1',
+                        label: 'Test 1, RV, or Air',
                         sortable: false
                     },
                     {
                         key: 'test_2',
-                        label: 'Test 2',
+                        label: 'Test 2, 3, or Check',
                         sortable: false
                     },
                     {

@@ -5,10 +5,10 @@
             {{ vehicle.name }}
         </h1>
         <main>
-            <b-container>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Name">
+            <b-container fluid="md">
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Name" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="vehicle.name"
                                 @change="save"
@@ -17,12 +17,14 @@
                                 required
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Vehicle Type Id">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Vehicle Type" label-cols="4" label-align="right">
                             <b-form-select
                                 v-model="vehicle.vehicle_type_id"
                                 @change="save"
@@ -35,83 +37,96 @@
                             </b-form-select>
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Year">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Year" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="vehicle.year"
                                 @change="save"
                                 type="number"
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Make">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Make" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="vehicle.make"
                                 @change="save"
                                 type="text"
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Model">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Model" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="vehicle.model"
                                 @change="save"
                                 type="text"
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Trim">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Trim" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="vehicle.trim"
                                 @change="save"
                                 type="text"
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Vin">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Vin" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="vehicle.vin"
                                 @change="save"
                                 type="text"
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>
-                <b-row>
-                    <b-col>
-                        <b-form-group label="Notes">
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Notes" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="vehicle.notes"
                                 @change="save"
                                 type="text"
                             >
                             </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
-                </b-row>               <b-row>
+                </b-form-row>
+               <b-form-row>
                     <b-col>
                         <b-button @click="$router.push('/vehicles')">Done</b-button>
                     </b-col>
-                </b-row>
+                </b-form-row>
             </b-container>
         </main>
     </div>

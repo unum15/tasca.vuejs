@@ -44,7 +44,7 @@
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
-                      <em>Vehicles</em>
+                      <em>Garage</em>
                     </template>
                     <b-dropdown-item href="/fueling">New Fueling</b-dropdown-item>
                     <b-dropdown-item href="/fuelings">View Fuelings</b-dropdown-item>
@@ -116,10 +116,6 @@
 <script>
     export default {
         name: 'TopMenu',
-        created() {
-            //var perms = localStorage.getItem('perms');
-            //console.log(perms);
-        },
         methods: {
             signOut(){
 				this.$http.post('/unauth')
