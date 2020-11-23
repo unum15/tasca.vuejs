@@ -209,8 +209,6 @@ export default {
             let ba = {
                 active: !item.active
             }
-            console.log(item);
-            console.log(ba);
             this.$http.patch('/backflow_assembly/' + item.id, ba);
         }
     },
