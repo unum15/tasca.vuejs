@@ -8,10 +8,9 @@
             <h2>Assignments for {{ contact_name }}</h2>
             <div>
                 <span v-if="clock_in">
-                    Clocked In At: {{ formatDateTime(clock_in.sign_in) }}<br />
-                    Clocked In On: {{ clock_in.overhead_assignment.name }} - {{ clock_in.overhead_category.name }}<br />
                     <b-button @click="showClockInOverhead">Change</b-button>
                     <b-button @click="clockOut">Clock Out</b-button>
+                    Clocked: {{ formatDateTimeToTime(clock_in.sign_in) }} - {{ clock_in.overhead_assignment.name }} - {{ clock_in.overhead_category.name }}
                 </span>
                 <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
                 <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
@@ -335,6 +334,12 @@ export default {
             }
             return null;
         },
+        formatDateTimeToTime(value){
+            if(value){
+                return moment(value).format('hh:mm A');
+            }
+            return null;
+        },
         showClockInOverhead(){
             this.modal_overhead.date = moment().format('YYYY-MM-DD');
             this.modal_overhead.time = moment().format('HH:mm');
@@ -376,6 +381,8 @@ export default {
             this.$http.post('/sign_in', clock_in).then(response => {
                 this.clock_in = response.data;
                 this.$refs['modal-clock-in-overhead'].hide();
+                this.modal_overhead.overhead_assignment_id = null;
+                this.modal_overhead.overhead_category_id = null;
             });
         },
         treeNormalizer(node){
