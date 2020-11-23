@@ -10,7 +10,7 @@
                 <span v-if="clock_in">
                     <b-button @click="showClockInOverhead">Change</b-button>
                     <b-button @click="clockOut">Clock Out</b-button>
-                    Clocked: {{ formatDateTimeToTime(clock_in.sign_in) }} - {{ clock_in.overhead_assignment.name }} - {{ clock_in.overhead_category.name }}
+                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.overhead_assignment_id ? clock_in.overhead_assignment.name : clock_in.task_date.task.order.name}} - {{ clock_in.overhead_category_id ? clock_in.overhead_category.name : clock_in.task_date.task.name}}
                 </span>
                 <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
                 <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
@@ -225,7 +225,7 @@ export default {
 			this.crews = response.data;
             this.crews.unshift({id: null, name: 'All'});
 		});
-        this.$http.get('/sign_in/current').then(response => {
+        this.$http.get('/clock_in/current').then(response => {
 			this.clock_in = response.data;
 		});
         this.$http.get('/overhead_assignments').then(response => {
@@ -349,9 +349,9 @@ export default {
         clockOut(){
             if(this.clock_in){
                 let clock_in = {
-                    sign_out : moment().format('YYYY-MM-DD HH:mm')
+                    clock_out : moment().format('YYYY-MM-DD HH:mm')
                 };
-                this.$http.patch('/sign_in/'+this.clock_in.id, clock_in).then(()=>{
+                this.$http.patch('/clock_in/'+this.clock_in.id, clock_in).then(()=>{
                     this.clock_in = null;
                 });
                 
@@ -369,17 +369,17 @@ export default {
             }
             if(this.clock_in){
                 let clock_in = {
-                    sign_out : this.modal_overhead.date + ' ' + this.modal_overhead.time
+                    clock_out : this.modal_overhead.date + ' ' + this.modal_overhead.time
                 };
-                this.$http.patch('/sign_in/'+this.clock_in.id, clock_in);
+                this.$http.patch('/clock_in/'+this.clock_in.id, clock_in);
             }
             let clock_in = {
-                sign_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
+                clock_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
                 overhead_assignment_id: this.modal_overhead.overhead_assignment_id,
                 overhead_category_id: this.modal_overhead.overhead_category_id,
                 contact_id: localStorage.getItem('id')
             };
-            this.$http.post('/sign_in', clock_in).then(response => {
+            this.$http.post('/clock_in', clock_in).then(response => {
                 this.clock_in = response.data;
                 this.$refs['modal-clock-in-overhead'].hide();
             });

@@ -8,8 +8,8 @@
                 <b-col class="data" cols="3">{{ task.task_hours }}</b-col>
                 <b-col class="label">Crew Time</b-col>
                 <b-col class="data" cols="3">{{ task.crew_hours }}</b-col>
-                <b-col cols="3"><b-button @click="signIn" v-if="task_date_id && !sign_in_id">Clock In</b-button></b-col>
-                <b-col cols="2"><b-button @click="signOut" v-if="sign_in_id">Clock Out</b-button></b-col>
+                <b-col cols="3"><b-button @click="clockIn" v-if="task_date_id && !clock_in_id">Clock In</b-button></b-col>
+                <b-col cols="2"><b-button @click="clockOut" v-if="clock_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Task Description</b-col>
@@ -17,22 +17,22 @@
             </b-row>
             <b-row>
                 <b-col class="header">Employee</b-col>
-                <b-col class="header">Sign In</b-col>
-                <b-col class="header">Sign Out</b-col>
+                <b-col class="header">Clock In</b-col>
+                <b-col class="header">Clock Out</b-col>
                 <b-col class="header">Hours</b-col>
                 <b-col class="header">Labor Category</b-col>
             </b-row>
-            <div v-for="sign_in in sign_ins" :key="sign_in.id">
+            <div v-for="clock_in in clock_ins" :key="clock_in.id">
                 <b-row>
-                    <b-col>{{ sign_in.contact.name }}</b-col>
-                    <b-col>{{ formatTime(sign_in.sign_in) }}</b-col>
-                    <b-col>{{ formatTime(sign_in.sign_out) }}</b-col>
-                    <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
+                    <b-col>{{ clock_in.contact.name }}</b-col>
+                    <b-col>{{ formatTime(clock_in.clock_in) }}</b-col>
+                    <b-col>{{ formatTime(clock_in.clock_out) }}</b-col>
+                    <b-col>{{ timeDiff(clock_in.clock_in, clock_in.clock_out) }}</b-col>
                     <b-col></b-col>
                 </b-row>
                 <b-row>
                     <b-col class="label">Notes For The Day</b-col>
-                    <b-col class="data"><b-form-input v-model="sign_in.notes" @input="saveNotes(sign_in)"></b-form-input></b-col>
+                    <b-col class="data"><b-form-input v-model="clock_in.notes" @input="saveNotes(clock_in)"></b-form-input></b-col>
                 </b-row>
             </div>
             <b-row>
@@ -75,7 +75,7 @@ export default {
             billed: false,
             completed: false,
             invoiced: false,
-            sign_ins: [],
+            clock_ins: [],
             task_dates: [],
             employees_hours: []
         };
@@ -84,7 +84,7 @@ export default {
         this.getTask();
         this.getEmployeesHours();
         this.getTaskDates();
-        this.getSignIns();
+        this.getClockIns();
 
     },
     methods: {
@@ -96,16 +96,16 @@ export default {
             });
         },
         getEmployeesHours() {
-            this.$http.get('/sign_ins/by_employee?task_id=' + this.task_id).then((results) => {
+            this.$http.get('/clock_ins/by_employee?task_id=' + this.task_id).then((results) => {
                 this.employees_hours = results.data;
             });
         },
-        getSignIns() {
+        getClockIns() {
             if(!this.task_date_id){
                 return;
             }
-            this.$http.get('/sign_ins?task_date_id=' + this.task_date_id).then((results) => {
-                this.sign_ins = results.data;
+            this.$http.get('/clock_ins?task_date_id=' + this.task_date_id).then((results) => {
+                this.clock_ins = results.data;
             });
         },
         getTaskDates() {
@@ -155,42 +155,42 @@ export default {
                 this.markCompleted();
             }
         },
-        editSignIn(sign_in,field){
+        editClockIn(clock_in,field){
             var new_value = null;
-            var old_value = !sign_in[field] ? '' : sign_in[field];
+            var old_value = !clock_in[field] ? '' : clock_in[field];
             new_value = prompt('Change ' + field, old_value);
             if(new_value != null){
-                sign_in[field] = new_value;
-                this.$http.patch('/sign_in/' + sign_in.id, sign_in);
+                clock_in[field] = new_value;
+                this.$http.patch('/clock_in/' + clock_in.id, clock_in);
             }
         },
-        signIn(){
-            var sign_in;
-            sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
-            if(sign_in !== null){
-                this.$http.post('/sign_in', {task_date_id : this.task_date_id, sign_in: sign_in, contact_id: localStorage.getItem('id')}).then(() => {
-                    this.getSignIns();
+        clockIn(){
+            var clock_in;
+            clock_in = prompt('Clock In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
+            if(clock_in !== null){
+                this.$http.post('/clock_in', {task_date_id : this.task_date_id, clock_in: clock_in, contact_id: localStorage.getItem('id')}).then(() => {
+                    this.getClockIns();
                 });
             }
         },
-        signOut(){
-            var sign_out;
-            sign_out = prompt('Sign Out Time', moment().format("YYYY-MM-DD h:mm:ss a"));
-            if(sign_out !== null){
-                this.$http.patch('/sign_in/' + this.sign_in_id, {sign_out : sign_out}).then(() => {
-                    this.getSignIns();
+        clockOut(){
+            var clock_out;
+            clock_out = prompt('Clock Out Time', moment().format("YYYY-MM-DD h:mm:ss a"));
+            if(clock_out !== null){
+                this.$http.patch('/clock_in/' + this.clock_in_id, {clock_out : clock_out}).then(() => {
+                    this.getClockIns();
                 });
             }
         },
-        saveNotes(sign_in){
-            this.$http.patch('/sign_in/' + sign_in.id, {notes : sign_in.notes})
+        saveNotes(clock_in){
+            this.$http.patch('/clock_in/' + clock_in.id, {notes : clock_in.notes})
         },
     },
     computed: {
-        sign_in_id() {
+        clock_in_id() {
             var id = null
             var my_id = localStorage.getItem('id')
-            var ids = this.sign_ins.filter( si => (si.contact_id == my_id && si.sign_out == null))
+            var ids = this.clock_ins.filter( si => (si.contact_id == my_id && si.clock_out == null))
             if(ids.length > 0){
                 id = ids[0].id
             }

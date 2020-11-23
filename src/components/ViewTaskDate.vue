@@ -130,7 +130,7 @@ export default {
                     }
                 }
             },
-            sign_ins: [],
+            clock_ins: [],
             billed: false,
             invoiced: false,
             completed: false,
@@ -149,7 +149,7 @@ export default {
                 this.completed = this.task_date.task.completion_date != null;
                 this.invoiced = this.task_date.task.invoiced_date != null;
                 this.billed = this.task_date.task.billed_date != null;
-                this.getSignIns();
+                this.getClockIns();
                 this.getTasks();
             });
         },
@@ -158,9 +158,9 @@ export default {
                 this.tasks = results.data;
             });
         },
-        getSignIns() {
-            this.$http.get('/sign_ins?task_date_id=' + this.task_date_id).then((results) => {
-                this.sign_ins = results.data;
+        getClockIns() {
+            this.$http.get('/clock_ins?task_date_id=' + this.task_date_id).then((results) => {
+                this.clock_ins = results.data;
             });
         },
         timeDiff(start_time, stop_time){
@@ -181,7 +181,6 @@ export default {
         },
         getContactType(client_id, contact){
             let type = contact.client_contact_types.map(t => {
-                console.log(t.client_id);
                 if (t.client_id === client_id ){
                     return t.contact_type.name;
                 }

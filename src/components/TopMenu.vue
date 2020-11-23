@@ -116,10 +116,6 @@
 <script>
     export default {
         name: 'TopMenu',
-        created() {
-            //var perms = localStorage.getItem('perms');
-            //console.log(perms);
-        },
         methods: {
             signOut(){
 				this.$http.post('/unauth')
