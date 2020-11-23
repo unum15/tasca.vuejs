@@ -8,8 +8,10 @@
             <h2>Assignments for {{ contact_name }}</h2>
             <div>
                 <span v-if="clock_in">
-                    Clocked In At: {{ formatDateTime(clock_in.clock_in) }}
-                    <b-button @click="showClockOut">Clock Out</b-button>
+                    Clocked In At: {{ formatDateTime(clock_in.sign_in) }}<br />
+                    Clocked In On: {{ clock_in.overhead_assignment.name }} - {{ clock_in.overhead_category.name }}<br />
+                    <b-button @click="showClockInOverhead">Change</b-button>
+                    <b-button @click="clockOut">Clock Out</b-button>
                 </span>
                 <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
                 <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
@@ -338,6 +340,17 @@ export default {
             this.modal_overhead.time = moment().format('HH:mm');
             this.$refs['modal-clock-in-overhead'].show();
         },
+        clockOut(){
+            if(this.clock_in){
+                let clock_in = {
+                    sign_out : moment().format('YYYY-MM-DD HH:mm')
+                };
+                this.$http.patch('/sign_in/'+this.clock_in.id, clock_in).then(()=>{
+                    this.clock_in = null;
+                });
+                
+            }
+        },
         clockInOverhead(event){
             event.preventDefault();
             if(!this.modal_overhead.overhead_assignment_id){
@@ -357,7 +370,8 @@ export default {
             let clock_in = {
                 clock_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
                 overhead_assignment_id: this.modal_overhead.overhead_assignment_id,
-                overhead_category_id: this.modal_overhead.overhead_category_id
+                overhead_category_id: this.modal_overhead.overhead_category_id,
+                contact_id: localStorage.getItem('id')
             };
             this.$http.post('/sign_in', clock_in).then(response => {
                 this.clock_in = response.data;
