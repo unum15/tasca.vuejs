@@ -168,7 +168,7 @@ export default {
             var sign_in;
             sign_in = prompt('Sign In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
             if(sign_in !== null){
-                this.$http.post('/sign_in', {task_date_id : this.task_date_id, sign_in: sign_in}).then(() => {
+                this.$http.post('/sign_in', {task_date_id : this.task_date_id, sign_in: sign_in, contact_id: localStorage.getItem('id')}).then(() => {
                     this.getSignIns();
                 });
             }
