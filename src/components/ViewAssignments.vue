@@ -22,13 +22,18 @@
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                <b-form-group label="Category">
-                                    <Treeselect v-model="category" :options="categories" />
+                                <b-form-group label="Time" class="mb-0">
+                                    <b-form-input type="time" v-model="modal_overhead.time" />
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label="Assignment">
-                                    <Treeselect v-model="assignment" :options="assignments" />
+                                    <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_assignment_id" @input="modal_overhead.overhead_category_id=null"/>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <b-form-group label="Category">
+                                    <Treeselect :options="filtered_categories" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_category_id"/>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -377,8 +382,6 @@ export default {
             this.$http.post('/sign_in', clock_in).then(response => {
                 this.clock_in = response.data;
                 this.$refs['modal-clock-in-overhead'].hide();
-                this.modal_overhead.overhead_assignment_id = null;
-                this.modal_overhead.overhead_category_id = null;
             });
         },
         treeNormalizer(node){
