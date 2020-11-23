@@ -399,6 +399,14 @@ export default {
                 text_filter: this.text_filter,
                 crew_id: this.crew_id
             };
+        },
+        filtered_categories(){
+            if(this.modal_overhead.overhead_assignment_id){
+                let parent_assignments = this.assignments.filter(a => a.id==this.modal_overhead.overhead_assignment_id || this.isParent(a));
+                let parent_assignment = parent_assignments[0];
+                return this.categories.filter(c => (parent_assignment.overhead_categories.filter(ac => (ac.id == c.id)).length));
+            }
+            return [];
         }
     }
 }
