@@ -127,12 +127,14 @@
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Parent Asset" label-cols="4" label-align="right">
-                            <b-form-input
+                            <b-form-select
                                 v-model="asset.parent_asset_id"
                                 @change="save"
-                                type="number"
+                                :options="parent_assets"
+                                value-field="id"
+                                text-field="name"
                             >
-                            </b-form-input>
+                            </b-form-select>
                         
                         </b-form-group>
                     </b-col>
@@ -175,6 +177,7 @@ export default {
             asset: { id: null },
             asset_types: [],
             asset_usage_types: [],
+            parent_assets: []
         };
     },
     created () {
@@ -183,6 +186,9 @@ export default {
         });
         this.$http.get('/asset_usage_types').then(response => {
             this.asset_usage_types = response.data.data;
+        });
+        this.$http.get('/assets').then(response => {
+            this.parent_assets = response.data.data;
         });
         if(this.asset_id !== null) {
             this.$http.get('/asset/' + this.asset_id).then(response => {
