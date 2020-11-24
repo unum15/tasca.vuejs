@@ -42,7 +42,7 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Usage" label-cols="4" label-align="right">
+                        <b-form-group label="Hours/Miles" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="asset_repair.usage"
                                 @change="save"

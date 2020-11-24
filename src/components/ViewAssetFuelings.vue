@@ -57,6 +57,11 @@ export default {
                         sortable: true
                     },
                     {
+                        key: 'asset_usage_type.name',
+                        label: 'Asset Usage Type',
+                        sortable: true
+                    },
+                    {
                         key: 'usage',
                         label: 'Usage',
                         sortable: true
@@ -95,7 +100,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/asset_fuelings?includes=asset').then(response => {
+        this.$http.get('/asset_fuelings?includes=asset_usage_type,asset').then(response => {
             this.asset_fuelings = response.data.data;
         });
     }

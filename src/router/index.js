@@ -335,7 +335,7 @@ var router = new Router({
       }
     },
     {
-      path: '/asset_fueling/:fueling_id',
+      path: '/asset_fueling/:asset_fueling_id',
       name: 'EditAssetFueling',
       props: true,
       component: EditAssetFueling,
@@ -360,7 +360,7 @@ var router = new Router({
         }
     },
     {
-        path: '/asset_service/:service_id',
+        path: '/asset_service/:asset_service_id',
         name: 'EditAssetService',
         component: EditAssetService,
         props: true,
@@ -385,7 +385,7 @@ var router = new Router({
         }
     },
     {
-        path: '/asset_part/:part_id',
+        path: '/asset_part/:asset_part_id',
         name: 'EditAssetPart',
         component: EditAssetPart,
         props: true,
@@ -410,7 +410,7 @@ var router = new Router({
         }
     },
     {
-        path: '/asset_repair/:repair_id',
+        path: '/asset_repair/:asset_repair_id',
         name: 'EditAssetRepair',
         component: EditAssetRepair,
         props: true,
@@ -435,7 +435,7 @@ var router = new Router({
         }
     },
     {
-        path: '/asset_maintenance/:maintenance_id',
+        path: '/asset_maintenance/:asset_maintenance_id',
         name: 'EditAssetMaintenance',
         component: EditAssetMaintenance,
         props: true,

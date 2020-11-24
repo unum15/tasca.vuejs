@@ -11,7 +11,7 @@
                         <b-form-group label="Asset" label-cols="4" label-align="right">
                             <b-form-select
                                 v-model="asset_fueling.asset_id"
-                                @change="save"
+                                @change="assetSelected();save();"
                                 :options="assets"
                                 value-field="id"
                                 text-field="name"
@@ -25,7 +25,24 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Usage" label-cols="4" label-align="right">
+                        <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
+                            <b-form-radio-group
+                                v-model="asset_fueling.asset_usage_type_id"
+                                @change="save"
+                                :options="asset_usage_types"
+                                value-field="id"
+                                text-field="name"
+                                :state="asset_fueling.asset_usage_type_id != null"
+                                required
+                            >
+                            </b-form-radio-group>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Hours/Miles" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="asset_fueling.usage"
                                 @change="save"
@@ -113,13 +130,17 @@ export default {
     },
     data () {
         return {
-            asset_fueling: { id: null },
+            asset_fueling: { id: null, asset_usage_type_id: null },
+            asset_usage_types: [],
             assets: [],
         };
     },
     created () {
         this.$http.get('/assets').then(response => {
             this.assets = response.data.data;
+        });
+        this.$http.get('/asset_usage_types').then(response => {
+            this.asset_usage_types = response.data.data;
         });
         if(this.asset_fueling_id !== null) {
             this.$http.get('/asset_fueling/' + this.asset_fueling_id).then(response => {
@@ -141,6 +162,14 @@ export default {
             else{
                 this.$http.patch('/asset_fueling/' + this.asset_fueling.id, this.asset_fueling);
             }
+        },
+        assetSelected(){
+            let assets = this.assets.filter(a => (a.id = this.asset_fueling.asset_id));
+            if(!assets.length){
+                return;
+            }
+            let asset = assets[0];
+            this.asset_fueling.asset_usage_type_id = asset.asset_usage_type_id;
         }
     }
 };
