@@ -11,7 +11,7 @@
                         <b-form-group label="Asset" label-cols="4" label-align="right">
                             <b-form-select
                                 v-model="asset_repair.asset_id"
-                                @change="save"
+                                @change="assetSelected();save();"
                                 :options="assets"
                                 value-field="id"
                                 text-field="name"
@@ -26,7 +26,7 @@
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
-                            <b-form-select
+                            <b-form-radio-group
                                 v-model="asset_repair.asset_usage_type_id"
                                 @change="save"
                                 :options="asset_usage_types"
@@ -35,7 +35,7 @@
                                 :state="asset_repair.asset_usage_type_id != null"
                                 required
                             >
-                            </b-form-select>
+                            </b-form-radio-group>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -147,7 +147,7 @@ export default {
     },
     data () {
         return {
-            asset_repair: { id: null },
+            asset_repair: { id: null, asset_usage_type_id: null },
             assets: [],
             asset_usage_types: [],
         };
@@ -179,6 +179,14 @@ export default {
             else{
                 this.$http.patch('/asset_repair/' + this.asset_repair.id, this.asset_repair);
             }
+        },
+        assetSelected(){
+            let assets = this.assets.filter(a => (a.id = this.asset_repair.asset_id));
+            if(!assets.length){
+                return;
+            }
+            let asset = assets[0];
+            this.asset_repair.asset_usage_type_id = asset.asset_usage_type_id;
         }
     }
 };

@@ -42,14 +42,14 @@
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
-                            <b-form-select
+                            <b-form-radio-group
                                 v-model="asset.asset_usage_type_id"
                                 @change="save"
                                 :options="asset_usage_types"
                                 value-field="id"
                                 text-field="name"
                             >
-                            </b-form-select>
+                            </b-form-radio-group>
                         </b-form-group>
                     </b-col>
                 </b-form-row>

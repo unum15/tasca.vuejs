@@ -11,7 +11,7 @@
                         <b-form-group label="Asset Service" label-cols="4" label-align="right">
                             <b-form-select
                                 v-model="asset_maintenance.asset_service_id"
-                                @change="save"
+                                @change="serviceSelected();save();"
                                 :options="asset_services"
                                 value-field="id"
                                 text-field="description"
@@ -26,7 +26,7 @@
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
-                            <b-form-select
+                            <b-form-radio-group
                                 v-model="asset_maintenance.asset_usage_type_id"
                                 @change="save"
                                 :options="asset_usage_types"
@@ -35,7 +35,7 @@
                                 :state="asset_maintenance.asset_usage_type_id != null"
                                 required
                             >
-                            </b-form-select>
+                            </b-form-radio-group>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -131,13 +131,13 @@ export default {
     },
     data () {
         return {
-            asset_maintenance: { id: null },
+            asset_maintenance: { id: null, asset_usage_type_id: null },
             asset_services: [],
             asset_usage_types: [],
         };
     },
     created () {
-        this.$http.get('/asset_services').then(response => {
+        this.$http.get('/asset_services?includes=asset').then(response => {
             this.asset_services = response.data.data;
         });
         this.$http.get('/asset_usage_types').then(response => {
@@ -163,6 +163,14 @@ export default {
             else{
                 this.$http.patch('/asset_maintenance/' + this.asset_maintenance.id, this.asset_maintenance);
             }
+        },
+        serviceSelected(){
+            let services = this.asset_services.filter(s => (s.id = this.asset_maintenance.asset_service_id));
+            if(!services.length){
+                return;
+            }
+            let service = services[0];
+            this.asset_maintenance.asset_usage_type_id = service.asset.asset_usage_type_id;
         }
     }
 };

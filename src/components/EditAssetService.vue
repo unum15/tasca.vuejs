@@ -11,7 +11,7 @@
                         <b-form-group label="Asset" label-cols="4" label-align="right">
                             <b-form-select
                                 v-model="asset_service.asset_id"
-                                @change="save"
+                                @change="assetSelected();save();"
                                 :options="assets"
                                 value-field="id"
                                 text-field="name"
@@ -75,7 +75,7 @@
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
-                            <b-form-select
+                            <b-form-radio-group
                                 v-model="asset_service.asset_usage_type_id"
                                 @change="save"
                                 :options="asset_usage_types"
@@ -84,7 +84,7 @@
                                 :state="asset_service.asset_usage_type_id != null"
                                 required
                             >
-                            </b-form-select>
+                            </b-form-radio-group>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -167,7 +167,7 @@ export default {
     },
     data () {
         return {
-            asset_service: { id: null },
+            asset_service: { id: null, asset_usage_type_id: null },
             assets: [],
             asset_service_types: [],
             asset_usage_types: [],
@@ -203,6 +203,14 @@ export default {
             else{
                 this.$http.patch('/asset_service/' + this.asset_service.id, this.asset_service);
             }
+        },
+        assetSelected(){
+            let assets = this.assets.filter(a => (a.id = this.asset_repair.asset_id));
+            if(!assets.length){
+                return;
+            }
+            let asset = assets[0];
+            this.asset_repair.asset_usage_type_id = asset.asset_usage_type_id;
         }
     }
 };
