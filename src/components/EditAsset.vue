@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <h1>
-            {{ vehicle.name }}
+            {{ asset.name }}
         </h1>
         <main>
             <b-container fluid="md">
@@ -10,10 +10,10 @@
                     <b-col md="6">
                         <b-form-group label="Name" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="vehicle.name"
+                                v-model="asset.name"
                                 @change="save"
                                 type="text"
-                                :state="vehicle.name != null"
+                                :state="asset.name != null"
                                 required
                             >
                             </b-form-input>
@@ -24,15 +24,30 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Vehicle Type" label-cols="4" label-align="right">
+                        <b-form-group label="Asset Type" label-cols="4" label-align="right">
                             <b-form-select
-                                v-model="vehicle.vehicle_type_id"
+                                v-model="asset.asset_type_id"
                                 @change="save"
-                                :options="vehicle_types"
+                                :options="asset_types"
                                 value-field="id"
                                 text-field="name"
-                                :state="vehicle.vehicle_type_id != null"
+                                :state="asset.asset_type_id != null"
                                 required
+                            >
+                            </b-form-select>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
+                            <b-form-select
+                                v-model="asset.asset_usage_type_id"
+                                @change="save"
+                                :options="asset_usage_types"
+                                value-field="id"
+                                text-field="name"
                             >
                             </b-form-select>
                         </b-form-group>
@@ -43,7 +58,7 @@
                     <b-col md="6">
                         <b-form-group label="Year" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="vehicle.year"
+                                v-model="asset.year"
                                 @change="save"
                                 type="number"
                             >
@@ -57,7 +72,7 @@
                     <b-col md="6">
                         <b-form-group label="Make" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="vehicle.make"
+                                v-model="asset.make"
                                 @change="save"
                                 type="text"
                             >
@@ -71,7 +86,7 @@
                     <b-col md="6">
                         <b-form-group label="Model" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="vehicle.model"
+                                v-model="asset.model"
                                 @change="save"
                                 type="text"
                             >
@@ -85,7 +100,7 @@
                     <b-col md="6">
                         <b-form-group label="Trim" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="vehicle.trim"
+                                v-model="asset.trim"
                                 @change="save"
                                 type="text"
                             >
@@ -99,7 +114,7 @@
                     <b-col md="6">
                         <b-form-group label="Vin" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="vehicle.vin"
+                                v-model="asset.vin"
                                 @change="save"
                                 type="text"
                             >
@@ -111,9 +126,23 @@
 
                 <b-form-row>
                     <b-col md="6">
+                        <b-form-group label="Parent Asset" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="asset.parent_asset_id"
+                                @change="save"
+                                type="number"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
                         <b-form-group label="Notes" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="vehicle.notes"
+                                v-model="asset.notes"
                                 @change="save"
                                 type="text"
                             >
@@ -122,9 +151,9 @@
                         </b-form-group>
                     </b-col>
                 </b-form-row>
-               <b-form-row>
+                <b-form-row>
                     <b-col>
-                        <b-button @click="$router.push('/vehicles')">Done</b-button>
+                        <b-button @click="$router.push('/assets')">Done</b-button>
                     </b-col>
                 </b-form-row>
             </b-container>
@@ -134,42 +163,46 @@
 <script>
 import TopMenu from './TopMenu'
 export default {
-    name: 'EditVehicle',
+    name: 'EditAsset',
     components: {
         'TopMenu': TopMenu
     },
     props: {
-        vehicle_id: {default: null}
+        asset_id: {default: null}
     },
     data () {
         return {
-            vehicle: { id: null },
-            vehicle_types: [],
+            asset: { id: null },
+            asset_types: [],
+            asset_usage_types: [],
         };
     },
     created () {
-        this.$http.get('/vehicle_types').then(response => {
-            this.vehicle_types = response.data.data;
+        this.$http.get('/asset_types').then(response => {
+            this.asset_types = response.data.data;
         });
-        if(this.vehicle_id !== null) {
-            this.$http.get('/vehicle/' + this.vehicle_id).then(response => {
-                this.vehicle = response.data.data;
+        this.$http.get('/asset_usage_types').then(response => {
+            this.asset_usage_types = response.data.data;
+        });
+        if(this.asset_id !== null) {
+            this.$http.get('/asset/' + this.asset_id).then(response => {
+                this.asset = response.data.data;
             });
         }
     },
     methods: {
         save () {
-            if((!this.vehicle.name)||(!this.vehicle.vehicle_type_id)){
+            if((!this.asset.name)||(!this.asset.asset_type_id)){
                 return;
             }
-            if(this.vehicle.id === null){
-                this.$http.post('/vehicle',this.vehicle)
+            if(this.asset.id === null){
+                this.$http.post('/asset',this.asset)
                     .then((results) => {
-                        this.vehicle.id = results.data.data.id;
+                        this.asset.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/vehicle/' + this.vehicle.id, this.vehicle);
+                this.$http.patch('/asset/' + this.asset.id, this.asset);
             }
         }
     }

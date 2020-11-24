@@ -2,20 +2,20 @@
     <div>
         <TopMenu></TopMenu>
         <h1>
-            {{ fueling.name }}
+            {{ asset_maintenance.name }}
         </h1>
         <main>
             <b-container fluid="md">
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Vehicle" label-cols="4" label-align="right">
+                        <b-form-group label="Asset Service" label-cols="4" label-align="right">
                             <b-form-select
-                                v-model="fueling.vehicle_id"
+                                v-model="asset_maintenance.asset_service_id"
                                 @change="save"
-                                :options="vehicles"
+                                :options="asset_services"
                                 value-field="id"
-                                text-field="name"
-                                :state="fueling.vehicle_id != null"
+                                text-field="description"
+                                :state="asset_maintenance.asset_service_id != null"
                                 required
                             >
                             </b-form-select>
@@ -25,23 +25,26 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Beginning Reading" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="fueling.beginning_reading"
+                        <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
+                            <b-form-select
+                                v-model="asset_maintenance.asset_usage_type_id"
                                 @change="save"
-                                type="number"
+                                :options="asset_usage_types"
+                                value-field="id"
+                                text-field="name"
+                                :state="asset_maintenance.asset_usage_type_id != null"
+                                required
                             >
-                            </b-form-input>
-                        
+                            </b-form-select>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Ending Reading" label-cols="4" label-align="right">
+                        <b-form-group label="Usage" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="fueling.ending_reading"
+                                v-model="asset_maintenance.usage"
                                 @change="save"
                                 type="number"
                             >
@@ -55,7 +58,7 @@
                     <b-col md="6">
                         <b-form-group label="Date" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="fueling.date"
+                                v-model="asset_maintenance.date"
                                 @change="save"
                                 type="date"
                             >
@@ -67,9 +70,9 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Gallons" label-cols="4" label-align="right">
+                        <b-form-group label="Amount" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="fueling.gallons"
+                                v-model="asset_maintenance.amount"
                                 @change="save"
                                 type="text"
                             >
@@ -81,9 +84,9 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Amount" label-cols="4" label-align="right">
+                        <b-form-group label="Where" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="fueling.amount"
+                                v-model="asset_maintenance.where"
                                 @change="save"
                                 type="text"
                             >
@@ -97,7 +100,7 @@
                     <b-col md="6">
                         <b-form-group label="Notes" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="fueling.notes"
+                                v-model="asset_maintenance.notes"
                                 @change="save"
                                 type="text"
                             >
@@ -106,9 +109,10 @@
                         </b-form-group>
                     </b-col>
                 </b-form-row>
-               <b-form-row>
+
+                <b-form-row>
                     <b-col>
-                        <b-button @click="$router.push('/fuelings')">Done</b-button>
+                        <b-button @click="$router.push('/asset_maintenances')">Done</b-button>
                     </b-col>
                 </b-form-row>
             </b-container>
@@ -118,42 +122,46 @@
 <script>
 import TopMenu from './TopMenu'
 export default {
-    name: 'EditFueling',
+    name: 'EditAssetMaintenance',
     components: {
         'TopMenu': TopMenu
     },
     props: {
-        fueling_id: {default: null}
+        asset_maintenance_id: {default: null}
     },
     data () {
         return {
-            fueling: { id: null },
-            vehicles: [],
+            asset_maintenance: { id: null },
+            asset_services: [],
+            asset_usage_types: [],
         };
     },
     created () {
-        this.$http.get('/vehicles').then(response => {
-            this.vehicles = response.data.data;
+        this.$http.get('/asset_services').then(response => {
+            this.asset_services = response.data.data;
         });
-        if(this.fueling_id !== null) {
-            this.$http.get('/fueling/' + this.fueling_id).then(response => {
-                this.fueling = response.data.data;
+        this.$http.get('/asset_usage_types').then(response => {
+            this.asset_usage_types = response.data.data;
+        });
+        if(this.asset_maintenance_id !== null) {
+            this.$http.get('/asset_maintenance/' + this.asset_maintenance_id).then(response => {
+                this.asset_maintenance = response.data.data;
             });
         }
     },
     methods: {
         save () {
-            if((!this.fueling.vehicle_id)){
+            if((!this.asset_maintenance.asset_service_id)||(!this.asset_maintenance.asset_usage_type_id)){
                 return;
             }
-            if(this.fueling.id === null){
-                this.$http.post('/fueling',this.fueling)
+            if(this.asset_maintenance.id === null){
+                this.$http.post('/asset_maintenance',this.asset_maintenance)
                     .then((results) => {
-                        this.fueling.id = results.data.data.id;
+                        this.asset_maintenance.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/fueling/' + this.fueling.id, this.fueling);
+                this.$http.patch('/asset_maintenance/' + this.asset_maintenance.id, this.asset_maintenance);
             }
         }
     }

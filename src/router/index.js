@@ -16,18 +16,18 @@ import ViewAssignments from '@/components/ViewAssignments';
 import EditHours from '@/components/EditHours';
 import EditList from '@/components/EditList';
 import EditProfile from '@/components/EditProfile';
-import ViewVehicles from '@/components/ViewVehicles';
-import EditVehicle from '@/components/EditVehicle';
-import EditFueling from '@/components/EditFueling';
-import ViewFuelings from '@/components/ViewFuelings';
-import EditService from '@/components/EditService';
-import ViewServices from '@/components/ViewServices';
-import EditPart from '@/components/EditPart';
-import ViewParts from '@/components/ViewParts';
-import EditRepair from '@/components/EditRepair';
-import ViewRepairs from '@/components/ViewRepairs';
-import EditMaintenance from '@/components/EditMaintenance';
-import ViewMaintenances from '@/components/ViewMaintenances';
+import ViewAssets from '@/components/ViewAssets';
+import EditAsset from '@/components/EditAsset';
+import EditAssetFueling from '@/components/EditAssetFueling';
+import ViewAssetFuelings from '@/components/ViewAssetFuelings';
+import EditAssetService from '@/components/EditAssetService';
+import ViewAssetServices from '@/components/ViewAssetServices';
+import EditAssetPart from '@/components/EditAssetPart';
+import ViewAssetParts from '@/components/ViewAssetParts';
+import EditAssetRepair from '@/components/EditAssetRepair';
+import ViewAssetRepairs from '@/components/ViewAssetRepairs';
+import EditAssetMaintenance from '@/components/EditAssetMaintenance';
+import ViewAssetMaintenances from '@/components/ViewAssetMaintenances';
 import GoogleCalendar from '@/components/GoogleCalendar';
 import EditBackflowAssembly from '@/components/EditBackflowAssembly';
 import ViewBackflowAssemblies from '@/components/ViewBackflowAssemblies';
@@ -282,18 +282,18 @@ var router = new Router({
       component: EditList
     },
     {
-      path: '/vehicle_types',
-      name: 'EditVehicleTypes',
+      path: '/asset_types',
+      name: 'EditAssetTypes',
       component: EditList
     },
     {
-      path: '/service_types',
-      name: 'EditServiceTypes',
+      path: '/asset_service_types',
+      name: 'EditAssetServiceTypes',
       component: EditList
     },
     {
-      path: '/usage_types',
-      name: 'EditUsageTypes',
+      path: '/asset_usage_types',
+      name: 'EditAssetUsageTypes',
       component: EditList
     },
     {
@@ -302,151 +302,151 @@ var router = new Router({
       component: EditProfile
     },
     {
-      path: '/vehicles',
-      name: 'ViewVehicles',
-      component: ViewVehicles,
+      path: '/assets',
+      name: 'ViewAssets',
+      component: ViewAssets,
       meta: {
-        title: 'View Vehicles'
+        title: 'View Assets'
       }
     },
     {
-      path: '/vehicle/:vehicle_id',
-      name: 'EditVehicle',
-      component: EditVehicle,
+      path: '/asset/:asset_id',
+      name: 'EditAsset',
+      component: EditAsset,
       props: true,
       meta: {
-        title: 'Edit Vehicle'
+        title: 'Edit Asset'
       }
     },
     {
-      path: '/vehicle',
-      name: 'NewVehicle',
-      component: EditVehicle,
+      path: '/asset',
+      name: 'NewAsset',
+      component: EditAsset,
       meta: {
-        title: 'New Vehicle'
+        title: 'New Asset'
       }
     },
     {
-      path: '/fueling',
-      name: 'NewFueling',
-      component: EditFueling,
+      path: '/asset_fueling',
+      name: 'NewAssetFueling',
+      component: EditAssetFueling,
       meta: {
         title: 'New Fueling'
       }
     },
     {
-      path: '/fueling/:fueling_id',
-      name: 'EditFueling',
+      path: '/asset_fueling/:fueling_id',
+      name: 'EditAssetFueling',
       props: true,
-      component: EditFueling,
+      component: EditAssetFueling,
       meta: {
         title: 'Edit Fueling'
       }
     },
     {
-      path: '/fuelings',
-      name: 'ViewFuelings',
-      component: ViewFuelings,
+      path: '/asset_fuelings',
+      name: 'ViewAssetFuelings',
+      component: ViewAssetFuelings,
       meta: {
         title: 'View Fuelings'
       }
     },
     {
-        path: '/service',
-        name: 'NewService',
-        component: EditService,
+        path: '/asset_service',
+        name: 'NewAssetService',
+        component: EditAssetService,
         meta: {
             title: 'New Service'
         }
     },
     {
-        path: '/service/:service_id',
-        name: 'EditService',
-        component: EditService,
+        path: '/asset_service/:service_id',
+        name: 'EditAssetService',
+        component: EditAssetService,
         props: true,
         meta: {
             title: 'Edit Service'
         }
     },
     {
-      path: '/services',
-      name: 'ViewServices',
-      component: ViewServices,
+      path: '/asset_services',
+      name: 'ViewAssetServices',
+      component: ViewAssetServices,
       meta: {
         title: 'View Services'
       }
     },
     {
-        path: '/part',
-        name: 'NewPart',
-        component: EditPart,
+        path: '/asset_part',
+        name: 'NewAssetPart',
+        component: EditAssetPart,
         meta: {
             title: 'New Part'
         }
     },
     {
-        path: '/part/:part_id',
-        name: 'EditPart',
-        component: EditPart,
+        path: '/asset_part/:part_id',
+        name: 'EditAssetPart',
+        component: EditAssetPart,
         props: true,
         meta: {
             title: 'Edit Part'
         }
     },
     {
-      path: '/parts',
-      name: 'ViewParts',
-      component: ViewParts,
+      path: '/asset_parts',
+      name: 'ViewAssetParts',
+      component: ViewAssetParts,
       meta: {
         title: 'View Parts'
       }
     },
     {
-        path: '/repair',
-        name: 'NewRepair',
-        component: EditRepair,
+        path: '/asset_repair',
+        name: 'NewAssetRepair',
+        component: EditAssetRepair,
         meta: {
             title: 'New Repair'
         }
     },
     {
-        path: '/repair/:repair_id',
-        name: 'EditRepair',
-        component: EditRepair,
+        path: '/asset_repair/:repair_id',
+        name: 'EditAssetRepair',
+        component: EditAssetRepair,
         props: true,
         meta: {
             title: 'Edit Repair'
         }
     },
     {
-      path: '/repairs',
-      name: 'ViewRepairs',
-      component: ViewRepairs,
+      path: '/asset_repairs',
+      name: 'ViewAssetRepairs',
+      component: ViewAssetRepairs,
       meta: {
         title: 'View Repairs'
       }
     },
     {
-        path: '/maintenance',
-        name: 'NewMaintenance',
-        component: EditMaintenance,
+        path: '/asset_maintenance',
+        name: 'NewAssetMaintenance',
+        component: EditAssetMaintenance,
         meta: {
             title: 'New Maintenance'
         }
     },
     {
-        path: '/maintenance/:maintenance_id',
-        name: 'EditMaintenance',
-        component: EditMaintenance,
+        path: '/asset_maintenance/:maintenance_id',
+        name: 'EditAssetMaintenance',
+        component: EditAssetMaintenance,
         props: true,
         meta: {
             title: 'Edit Maintenance'
         }
     },
     {
-      path: '/maintenances',
-      name: 'ViewMaintenances',
-      component: ViewMaintenances,
+      path: '/asset_maintenances',
+      name: 'ViewAssetMaintenances',
+      component: ViewAssetMaintenances,
       meta: {
         title: 'View Maintenances'
       }
@@ -530,11 +530,12 @@ var router = new Router({
         title: 'View Backflow Old'
       }
     },
-
+    {
+      path: '*',
+      redirect: '/'
+    }
   ]
 });
-
-
 
 router.beforeEach((to, from, next) => {
   const nearestWithTitle = to.matched.slice().reverse().find(r => r.meta && r.meta.title);

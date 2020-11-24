@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            View Services
+            View Asset Fuelings
         </head>
         <main>
             <b-container fluid>
@@ -24,11 +24,11 @@
                 striped
                 hover
                 :filter="filter"
-                :items="services"
+                :items="asset_fuelings"
                 :fields="fields"
             >
                 <template v-slot:cell(id)="data">
-                    <a :href="'/service/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/asset_fueling/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -37,13 +37,13 @@
 <script>
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewServices',
+    name: 'ViewAssetFuelings',
     components: {
         'TopMenu': TopMenu,
     },
     data() {
         return {
-            services: [],
+            asset_fuelings: [],
             filter: null,
             fields: [
                     {
@@ -52,38 +52,28 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'vehicle.name',
-                        label: 'Vehicle',
+                        key: 'asset.name',
+                        label: 'Asset',
                         sortable: true
                     },
                     {
-                        key: 'service_type.name',
-                        label: 'Service Type',
+                        key: 'usage',
+                        label: 'Usage',
                         sortable: true
                     },
                     {
-                        key: 'description',
-                        label: 'Description',
+                        key: 'date',
+                        label: 'Date',
                         sortable: true
                     },
                     {
-                        key: 'quantity',
-                        label: 'Quantity',
+                        key: 'gallons',
+                        label: 'Gallons',
                         sortable: true
                     },
                     {
-                        key: 'usage_type.name',
-                        label: 'Usage Type',
-                        sortable: true
-                    },
-                    {
-                        key: 'usage_interval',
-                        label: 'Usage Interval',
-                        sortable: true
-                    },
-                    {
-                        key: 'part_number',
-                        label: 'Part Number',
+                        key: 'amount',
+                        label: 'Amount',
                         sortable: true
                     },
                     {
@@ -101,17 +91,12 @@ export default {
                         label: 'Updated At',
                         sortable: true
                     },
-                    {
-                        key: 'time_interval',
-                        label: 'Time Interval',
-                        sortable: true
-                    },
             ]
         }
     },
     created() {
-        this.$http.get('/services?includes=usage_type,service_type,vehicle').then(response => {
-            this.services = response.data.data;
+        this.$http.get('/asset_fuelings?includes=asset').then(response => {
+            this.asset_fuelings = response.data.data;
         });
     }
 }

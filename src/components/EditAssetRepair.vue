@@ -2,20 +2,20 @@
     <div>
         <TopMenu></TopMenu>
         <h1>
-            {{ repair.name }}
+            {{ asset_repair.name }}
         </h1>
         <main>
             <b-container fluid="md">
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Vehicle" label-cols="4" label-align="right">
+                        <b-form-group label="Asset" label-cols="4" label-align="right">
                             <b-form-select
-                                v-model="repair.vehicle_id"
+                                v-model="asset_repair.asset_id"
                                 @change="save"
-                                :options="vehicles"
+                                :options="assets"
                                 value-field="id"
                                 text-field="name"
-                                :state="repair.vehicle_id != null"
+                                :state="asset_repair.asset_id != null"
                                 required
                             >
                             </b-form-select>
@@ -25,25 +25,26 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Repair" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="repair.repair"
+                        <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
+                            <b-form-select
+                                v-model="asset_repair.asset_usage_type_id"
                                 @change="save"
-                                type="text"
-                                :state="repair.repair != null"
+                                :options="asset_usage_types"
+                                value-field="id"
+                                text-field="name"
+                                :state="asset_repair.asset_usage_type_id != null"
                                 required
                             >
-                            </b-form-input>
-                        
+                            </b-form-select>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Ending Reading" label-cols="4" label-align="right">
+                        <b-form-group label="Usage" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="repair.ending_reading"
+                                v-model="asset_repair.usage"
                                 @change="save"
                                 type="number"
                             >
@@ -55,9 +56,25 @@
 
                 <b-form-row>
                     <b-col md="6">
+                        <b-form-group label="Repair" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="asset_repair.repair"
+                                @change="save"
+                                type="text"
+                                :state="asset_repair.repair != null"
+                                required
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
                         <b-form-group label="Date" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="repair.date"
+                                v-model="asset_repair.date"
                                 @change="save"
                                 type="date"
                             >
@@ -71,7 +88,7 @@
                     <b-col md="6">
                         <b-form-group label="Amount" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="repair.amount"
+                                v-model="asset_repair.amount"
                                 @change="save"
                                 type="text"
                             >
@@ -85,7 +102,7 @@
                     <b-col md="6">
                         <b-form-group label="Where" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="repair.where"
+                                v-model="asset_repair.where"
                                 @change="save"
                                 type="text"
                             >
@@ -99,7 +116,7 @@
                     <b-col md="6">
                         <b-form-group label="Notes" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="repair.notes"
+                                v-model="asset_repair.notes"
                                 @change="save"
                                 type="text"
                             >
@@ -108,9 +125,10 @@
                         </b-form-group>
                     </b-col>
                 </b-form-row>
-               <b-form-row>
+
+                <b-form-row>
                     <b-col>
-                        <b-button @click="$router.push('/repairs')">Done</b-button>
+                        <b-button @click="$router.push('/asset_repairs')">Done</b-button>
                     </b-col>
                 </b-form-row>
             </b-container>
@@ -120,42 +138,46 @@
 <script>
 import TopMenu from './TopMenu'
 export default {
-    name: 'EditRepair',
+    name: 'EditAssetRepair',
     components: {
         'TopMenu': TopMenu
     },
     props: {
-        repair_id: {default: null}
+        asset_repair_id: {default: null}
     },
     data () {
         return {
-            repair: { id: null },
-            vehicles: [],
+            asset_repair: { id: null },
+            assets: [],
+            asset_usage_types: [],
         };
     },
     created () {
-        this.$http.get('/vehicles').then(response => {
-            this.vehicles = response.data.data;
+        this.$http.get('/assets').then(response => {
+            this.assets = response.data.data;
         });
-        if(this.repair_id !== null) {
-            this.$http.get('/repair/' + this.repair_id).then(response => {
-                this.repair = response.data.data;
+        this.$http.get('/asset_usage_types').then(response => {
+            this.asset_usage_types = response.data.data;
+        });
+        if(this.asset_repair_id !== null) {
+            this.$http.get('/asset_repair/' + this.asset_repair_id).then(response => {
+                this.asset_repair = response.data.data;
             });
         }
     },
     methods: {
         save () {
-            if((!this.repair.vehicle_id)||(!this.repair.repair)){
+            if((!this.asset_repair.asset_id)||(!this.asset_repair.asset_usage_type_id)||(!this.asset_repair.repair)){
                 return;
             }
-            if(this.repair.id === null){
-                this.$http.post('/repair',this.repair)
+            if(this.asset_repair.id === null){
+                this.$http.post('/asset_repair',this.asset_repair)
                     .then((results) => {
-                        this.repair.id = results.data.data.id;
+                        this.asset_repair.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/repair/' + this.repair.id, this.repair);
+                this.$http.patch('/asset_repair/' + this.asset_repair.id, this.asset_repair);
             }
         }
     }

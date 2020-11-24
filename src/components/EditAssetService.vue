@@ -2,20 +2,20 @@
     <div>
         <TopMenu></TopMenu>
         <h1>
-            {{ service.name }}
+            {{ asset_service.name }}
         </h1>
         <main>
             <b-container fluid="md">
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Vehicle" label-cols="4" label-align="right">
+                        <b-form-group label="Asset" label-cols="4" label-align="right">
                             <b-form-select
-                                v-model="service.vehicle_id"
+                                v-model="asset_service.asset_id"
                                 @change="save"
-                                :options="vehicles"
+                                :options="assets"
                                 value-field="id"
                                 text-field="name"
-                                :state="service.vehicle_id != null"
+                                :state="asset_service.asset_id != null"
                                 required
                             >
                             </b-form-select>
@@ -25,14 +25,14 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Service Type" label-cols="4" label-align="right">
+                        <b-form-group label="Asset Service Type" label-cols="4" label-align="right">
                             <b-form-select
-                                v-model="service.service_type_id"
+                                v-model="asset_service.asset_service_type_id"
                                 @change="save"
-                                :options="service_types"
+                                :options="asset_service_types"
                                 value-field="id"
                                 text-field="name"
-                                :state="service.service_type_id != null"
+                                :state="asset_service.asset_service_type_id != null"
                                 required
                             >
                             </b-form-select>
@@ -44,10 +44,10 @@
                     <b-col md="6">
                         <b-form-group label="Description" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="service.description"
+                                v-model="asset_service.description"
                                 @change="save"
                                 type="text"
-                                :state="service.description != null"
+                                :state="asset_service.description != null"
                                 required
                             >
                             </b-form-input>
@@ -60,10 +60,10 @@
                     <b-col md="6">
                         <b-form-group label="Quantity" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="service.quantity"
+                                v-model="asset_service.quantity"
                                 @change="save"
                                 type="number"
-                                :state="service.quantity != null"
+                                :state="asset_service.quantity != null"
                                 required
                             >
                             </b-form-input>
@@ -74,14 +74,14 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Usage Type" label-cols="4" label-align="right">
+                        <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
                             <b-form-select
-                                v-model="service.usage_type_id"
+                                v-model="asset_service.asset_usage_type_id"
                                 @change="save"
-                                :options="usage_types"
+                                :options="asset_usage_types"
                                 value-field="id"
                                 text-field="name"
-                                :state="service.usage_type_id != null"
+                                :state="asset_service.asset_usage_type_id != null"
                                 required
                             >
                             </b-form-select>
@@ -93,10 +93,10 @@
                     <b-col md="6">
                         <b-form-group label="Usage Interval" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="service.usage_interval"
+                                v-model="asset_service.usage_interval"
                                 @change="save"
                                 type="number"
-                                :state="service.usage_interval != null"
+                                :state="asset_service.usage_interval != null"
                                 required
                             >
                             </b-form-input>
@@ -109,7 +109,7 @@
                     <b-col md="6">
                         <b-form-group label="Part Number" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="service.part_number"
+                                v-model="asset_service.part_number"
                                 @change="save"
                                 type="text"
                             >
@@ -123,7 +123,7 @@
                     <b-col md="6">
                         <b-form-group label="Notes" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="service.notes"
+                                v-model="asset_service.notes"
                                 @change="save"
                                 type="text"
                             >
@@ -137,7 +137,7 @@
                     <b-col md="6">
                         <b-form-group label="Time Interval" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="service.time_interval"
+                                v-model="asset_service.time_interval"
                                 @change="save"
                                 type="text"
                             >
@@ -148,7 +148,7 @@
                 </b-form-row>
                <b-form-row>
                     <b-col>
-                        <b-button @click="$router.push('/services')">Done</b-button>
+                        <b-button @click="$router.push('/asset_services')">Done</b-button>
                     </b-col>
                 </b-form-row>
             </b-container>
@@ -158,50 +158,50 @@
 <script>
 import TopMenu from './TopMenu'
 export default {
-    name: 'EditService',
+    name: 'EditAssetService',
     components: {
         'TopMenu': TopMenu
     },
     props: {
-        service_id: {default: null}
+        asset_service_id: {default: null}
     },
     data () {
         return {
-            service: { id: null },
-            service_types: [],
-            usage_types: [],
-            vehicles: [],
+            asset_service: { id: null },
+            assets: [],
+            asset_service_types: [],
+            asset_usage_types: [],
         };
     },
     created () {
-        this.$http.get('/service_types').then(response => {
-            this.service_types = response.data.data;
+        this.$http.get('/assets').then(response => {
+            this.assets = response.data.data;
         });
-        this.$http.get('/usage_types').then(response => {
-            this.usage_types = response.data.data;
+        this.$http.get('/asset_service_types').then(response => {
+            this.asset_service_types = response.data.data;
         });
-        this.$http.get('/vehicles').then(response => {
-            this.vehicles = response.data.data;
+        this.$http.get('/asset_usage_types').then(response => {
+            this.asset_usage_types = response.data.data;
         });
-        if(this.service_id !== null) {
-            this.$http.get('/service/' + this.service_id).then(response => {
-                this.service = response.data.data;
+        if(this.asset_service_id !== null) {
+            this.$http.get('/asset_service/' + this.asset_service_id).then(response => {
+                this.asset_service = response.data.data;
             });
         }
     },
     methods: {
         save () {
-            if((!this.service.vehicle_id)||(!this.service.service_type_id)||(!this.service.description)||(!this.service.quantity)||(!this.service.usage_type_id)||(!this.service.usage_interval)){
+            if((!this.asset_service.asset_id)||(!this.asset_service.asset_service_type_id)||(!this.asset_service.description)||(!this.asset_service.quantity)||(!this.asset_service.asset_usage_type_id)||(!this.asset_service.usage_interval)){
                 return;
             }
-            if(this.service.id === null){
-                this.$http.post('/service',this.service)
+            if(this.asset_service.id === null){
+                this.$http.post('/asset_service',this.asset_service)
                     .then((results) => {
-                        this.service.id = results.data.data.id;
+                        this.asset_service.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/service/' + this.service.id, this.service);
+                this.$http.patch('/asset_service/' + this.asset_service.id, this.asset_service);
             }
         }
     }

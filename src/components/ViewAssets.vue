@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            View Maintenances
+            View Assets
         </head>
         <main>
             <b-container fluid>
@@ -24,11 +24,11 @@
                 striped
                 hover
                 :filter="filter"
-                :items="maintenances"
+                :items="assets"
                 :fields="fields"
             >
                 <template v-slot:cell(id)="data">
-                    <a :href="'/maintenance/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/asset/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -37,13 +37,13 @@
 <script>
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewMaintenances',
+    name: 'ViewAssets',
     components: {
         'TopMenu': TopMenu,
     },
     data() {
         return {
-            maintenances: [],
+            assets: [],
             filter: null,
             fields: [
                     {
@@ -52,28 +52,48 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'service.name',
-                        label: 'Service',
+                        key: 'name',
+                        label: 'Name',
                         sortable: true
                     },
                     {
-                        key: 'ending_reading',
-                        label: 'Ending Reading',
+                        key: 'asset_type.name',
+                        label: 'Asset Type',
                         sortable: true
                     },
                     {
-                        key: 'date',
-                        label: 'Date',
+                        key: 'asset_usage_type.name',
+                        label: 'Asset Usage Type',
                         sortable: true
                     },
                     {
-                        key: 'amount',
-                        label: 'Amount',
+                        key: 'year',
+                        label: 'Year',
                         sortable: true
                     },
                     {
-                        key: 'where',
-                        label: 'Where',
+                        key: 'make',
+                        label: 'Make',
+                        sortable: true
+                    },
+                    {
+                        key: 'model',
+                        label: 'Model',
+                        sortable: true
+                    },
+                    {
+                        key: 'trim',
+                        label: 'Trim',
+                        sortable: true
+                    },
+                    {
+                        key: 'vin',
+                        label: 'Vin',
+                        sortable: true
+                    },
+                    {
+                        key: 'parent_asset_id',
+                        label: 'Parent Asset Id',
                         sortable: true
                     },
                     {
@@ -95,8 +115,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/maintenances?includes=service').then(response => {
-            this.maintenances = response.data.data;
+        this.$http.get('/assets?includes=asset_usage_type,asset_type').then(response => {
+            this.assets = response.data.data;
         });
     }
 }

@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            View Repairs
+            View Asset Maintenances
         </head>
         <main>
             <b-container fluid>
@@ -24,11 +24,11 @@
                 striped
                 hover
                 :filter="filter"
-                :items="repairs"
+                :items="asset_maintenances"
                 :fields="fields"
             >
                 <template v-slot:cell(id)="data">
-                    <a :href="'/repair/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/asset_maintenance/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -37,13 +37,13 @@
 <script>
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewRepairs',
+    name: 'ViewAssetMaintenances',
     components: {
         'TopMenu': TopMenu,
     },
     data() {
         return {
-            repairs: [],
+            asset_maintenances: [],
             filter: null,
             fields: [
                     {
@@ -52,18 +52,18 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'vehicle.name',
-                        label: 'Vehicle',
+                        key: 'asset_service.name',
+                        label: 'Asset Service',
                         sortable: true
                     },
                     {
-                        key: 'repair',
-                        label: 'Repair',
+                        key: 'asset_usage_type.name',
+                        label: 'Asset Usage Type',
                         sortable: true
                     },
                     {
-                        key: 'ending_reading',
-                        label: 'Ending Reading',
+                        key: 'usage',
+                        label: 'Usage',
                         sortable: true
                     },
                     {
@@ -100,8 +100,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/repairs?includes=vehicle').then(response => {
-            this.repairs = response.data.data;
+        this.$http.get('/asset_maintenances?includes=asset_usage_type,asset_service').then(response => {
+            this.asset_maintenances = response.data.data;
         });
     }
 }
