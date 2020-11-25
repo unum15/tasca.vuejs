@@ -245,12 +245,12 @@ export default {
             }
         },
         assetSelected(){
-            let assets = this.assets.filter(a => (a.id = this.asset_repair.asset_id));
+            let assets = this.assets.filter(a => (a.id = this.asset_service.asset_id));
             if(!assets.length){
                 return;
             }
             let asset = assets[0];
-            this.asset_repair.asset_usage_type_id = asset.asset_usage_type_id;
+            this.asset_service.asset_usage_type_id = asset.asset_usage_type_id;
         }
     },
     computed: {
