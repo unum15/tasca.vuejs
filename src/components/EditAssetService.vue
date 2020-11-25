@@ -8,11 +8,25 @@
             <b-container fluid="md">
                 <b-form-row>
                     <b-col md="6">
+                        <b-form-group label="Asset Type Filter" label-cols="4" label-align="right">
+                            <b-form-select
+                                v-model="filter.asset_type_id"
+                                :options="asset_types"
+                                value-field="id"
+                                text-field="name"
+                            >
+                            </b-form-select>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
                         <b-form-group label="Asset" label-cols="4" label-align="right">
                             <b-form-select
                                 v-model="asset_service.asset_id"
                                 @change="assetSelected();save();"
-                                :options="assets"
+                                :options="filtered_assets"
                                 value-field="id"
                                 text-field="name"
                                 :state="asset_service.asset_id != null"
@@ -68,6 +82,23 @@
                             >
                             </b-form-input>
                         
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Unit" label-cols="4" label-align="right">
+                            <b-form-select
+                                v-model="asset_service.asset_unit_id"
+                                @change="save"
+                                :options="asset_units"
+                                value-field="id"
+                                text-field="name"
+                                :state="asset_service.asset_unit_id != null"
+                                required
+                            >
+                            </b-form-select>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -171,9 +202,15 @@ export default {
             assets: [],
             asset_service_types: [],
             asset_usage_types: [],
+            asset_units: [],
+            asset_types: [],
+            filter: {asset_type_id: null}
         };
     },
     created () {
+        this.$http.get('/asset_types').then(response => {
+            this.asset_types = response.data.data;
+        });
         this.$http.get('/assets').then(response => {
             this.assets = response.data.data;
         });
@@ -182,6 +219,9 @@ export default {
         });
         this.$http.get('/asset_usage_types').then(response => {
             this.asset_usage_types = response.data.data;
+        });
+        this.$http.get('/asset_units').then(response => {
+            this.asset_units = response.data.data;
         });
         if(this.asset_service_id !== null) {
             this.$http.get('/asset_service/' + this.asset_service_id).then(response => {
@@ -211,6 +251,14 @@ export default {
             }
             let asset = assets[0];
             this.asset_repair.asset_usage_type_id = asset.asset_usage_type_id;
+        }
+    },
+    computed: {
+        filtered_assets(){
+            if(!this.filter.asset_type_id){
+                return this.assets;
+            }
+            return this.assets.filter(a => (a.asset_type_id === this.filter.asset_type_id));
         }
     }
 };

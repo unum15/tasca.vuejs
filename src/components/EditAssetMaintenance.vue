@@ -8,11 +8,37 @@
             <b-container fluid="md">
                 <b-form-row>
                     <b-col md="6">
+                        <b-form-group label="Asset Type Filter" label-cols="4" label-align="right">
+                            <b-form-select
+                                v-model="filter.asset_type_id"
+                                :options="asset_types"
+                                value-field="id"
+                                text-field="name"
+                            >
+                            </b-form-select>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Asset Filter" label-cols="4" label-align="right">
+                            <b-form-select
+                                v-model="filter.asset_id"
+                                :options="filtered_assets"
+                                value-field="id"
+                                text-field="name"
+                            >
+                            </b-form-select>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+                <b-form-row>
+                    <b-col md="6">
                         <b-form-group label="Asset Service" label-cols="4" label-align="right">
                             <b-form-select
                                 v-model="asset_maintenance.asset_service_id"
                                 @change="serviceSelected();save();"
-                                :options="asset_services"
+                                :options="filtered_asset_services"
                                 value-field="id"
                                 text-field="description"
                                 :state="asset_maintenance.asset_service_id != null"
@@ -134,9 +160,18 @@ export default {
             asset_maintenance: { id: null, asset_usage_type_id: null },
             asset_services: [],
             asset_usage_types: [],
+            asset_types: [],
+            assets: [],
+            filter: {asset_type_id: null, asset_id: null}
         };
     },
     created () {
+        this.$http.get('/asset_types').then(response => {
+            this.asset_types = response.data.data;
+        });
+        this.$http.get('/assets').then(response => {
+            this.assets = response.data.data;
+        });
         this.$http.get('/asset_services?includes=asset').then(response => {
             this.asset_services = response.data.data;
         });
@@ -171,6 +206,20 @@ export default {
             }
             let service = services[0];
             this.asset_maintenance.asset_usage_type_id = service.asset.asset_usage_type_id;
+        }
+    },
+    computed: {
+        filtered_assets(){
+            if(!this.filter.asset_type_id){
+                return this.assets;
+            }
+            return this.assets.filter(a => (a.asset_type_id === this.filter.asset_type_id));
+        },
+        filtered_asset_services(){
+            if(!this.filter.asset_id){
+                return this.asset_services;
+            }
+            return this.asset_services.filter(s => (s.asset_id === this.filter.asset_id));
         }
     }
 };
