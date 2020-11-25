@@ -33,6 +33,8 @@
                       <em>Time Cards</em>
                     </template>
                     <b-dropdown-item href="/hours">Hours</b-dropdown-item>
+                    <b-dropdown-item href="/clock_in">New Clock In</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins">View Clock Ins</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
@@ -77,6 +79,7 @@
                     <template slot="button-content">
                       <em>Settings</em>
                     </template>
+                    <b-dropdown-item href="/settings" v-if="false">General</b-dropdown-item>
                     <b-dropdown-item href="/activity_levels">Activity Levels</b-dropdown-item>
                     <b-dropdown-item href="/client_types">Client Types</b-dropdown-item>
                     <b-dropdown-item href="/contact_methods">Contact Methods</b-dropdown-item>

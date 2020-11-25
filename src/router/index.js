@@ -39,6 +39,10 @@ import PhreeBooksClients from '@/components/PhreeBooksClients';
 import PhreeBooksContacts from '@/components/PhreeBooksContacts';
 import PhreeBooksAddresses from '@/components/PhreeBooksAddresses';
 import ViewBackflowOld from '@/components/ViewBackflowOld';
+import EditClockIn from '@/components/EditClockIn';
+import ViewClockIns from '@/components/ViewClockIns';
+import EditSettings from '@/components/EditSettings';
+
 
 
 Vue.use(Router);
@@ -50,6 +54,11 @@ var router = new Router({
       path: '/',
       name: 'Login',
       component: LoginForm
+    },
+    {
+      path: '/settings',
+      name: 'EditSettings',
+      component: EditSettings
     },
     {
       path: '/client',
@@ -530,6 +539,32 @@ var router = new Router({
         title: 'View Backflow Old'
       }
     },
+    {
+        path: '/clock_in',
+        name: 'NewClockIn',
+        component: EditClockIn,
+        meta: {
+            title: 'New Clock In'
+        }
+    },
+    {
+        path: '/clock_in/:clock_in_id',
+        name: 'EditClockIn',
+        component: EditClockIn,
+        props: true,
+        meta: {
+            title: 'Edit Clock In'
+        }
+    },
+    {
+      path: '/clock_ins',
+      name: 'ViewClockIns',
+      component: ViewClockIns,
+      meta: {
+        title: 'View Clock Ins'
+      }
+    },
+
 
   ]
 });
