@@ -39,19 +39,6 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-row>
-                            <b-col cols="4" style="text-align:right;">
-                                Last Fueling
-                            </b-col>
-                            <b-col style="text-align:left;">
-                                {{ last_fueling.usage }} {{ last_fueling.asset_usage_type.name }}
-                            </b-col>
-                        </b-form-row>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
                         <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
                             <b-form-radio-group
                                 v-model="asset_fueling.asset_usage_type_id"
@@ -69,6 +56,19 @@
 
                 <b-form-row>
                     <b-col md="6">
+                        <b-form-row>
+                            <b-col cols="4" style="text-align:right;">
+                                Last Fueling
+                            </b-col>
+                            <b-col style="text-align:left;">
+                                {{ last_fueling.usage }} {{ last_fueling.asset_usage_type.name }}
+                            </b-col>
+                        </b-form-row>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
                         <b-form-group label="Hours/Miles" label-cols="4" label-align="right">
                             <b-form-input
                                 v-model="asset_fueling.usage"
@@ -78,6 +78,19 @@
                             </b-form-input>
                         
                         </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-row>
+                            <b-col cols="4" style="text-align:right;">
+                                Difference
+                            </b-col>
+                            <b-col style="text-align:left;">
+                                {{ asset_fueling.usage && last_fueling.usage ? asset_fueling.usage - last_fueling.usage : ''}}
+                            </b-col>
+                        </b-form-row>
                     </b-col>
                 </b-form-row>
 

@@ -109,7 +109,7 @@
                                 Last Maintenance
                             </b-col>
                             <b-col style="text-align:left;">
-                                {{ last_maintenance.usage }} {{ last_maintenance.asset_usage_type.name }}
+                                {{ last_maintenance.date }}
                             </b-col>
                         </b-form-row>
                     </b-col>
