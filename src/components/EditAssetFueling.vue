@@ -39,6 +39,19 @@
 
                 <b-form-row>
                     <b-col md="6">
+                        <b-form-row>
+                            <b-col cols="4" style="text-align:right;">
+                                Last Fueling
+                            </b-col>
+                            <b-col style="text-align:left;">
+                                {{ last_fueling.usage }} {{ last_fueling.asset_usage_type.name }}
+                            </b-col>
+                        </b-form-row>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
                         <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
                             <b-form-radio-group
                                 v-model="asset_fueling.asset_usage_type_id"
@@ -148,7 +161,8 @@ export default {
             asset_usage_types: [],
             assets: [],
             asset_types: [],
-            filter: {asset_type_id: null}
+            filter: {asset_type_id: null},
+            last_fueling: { asset_usage_type: {}}
         };
     },
     created () {
@@ -185,8 +199,15 @@ export default {
         assetSelected(){
             let assets = this.assets.filter(a => (a.id = this.asset_fueling.asset_id));
             if(!assets.length){
+                this.last_fueling = { asset_usage_type: {}};
                 return;
             }
+            this.$http.get('/asset_fueling/last?asset_id=' + this.asset_fueling.asset_id + '&includes=asset_usage_type').then(response => {
+                this.last_fueling = response.data.data;
+                if(!this.last_fueling.asset_usage_type){
+                    this.last_fueling = { asset_usage_type: {}};
+                }
+            });
             let asset = assets[0];
             this.asset_fueling.asset_usage_type_id = asset.asset_usage_type_id;
         }

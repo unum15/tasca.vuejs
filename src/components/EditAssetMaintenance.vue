@@ -32,6 +32,7 @@
                         </b-form-group>
                     </b-col>
                 </b-form-row>
+
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Asset Service" label-cols="4" label-align="right">
@@ -46,6 +47,71 @@
                             >
                             </b-form-select>
                         </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-row>
+                            <b-col cols="4" style="text-align:right;">
+                                Quantity
+                            </b-col>
+                            <b-col style="text-align:left;">
+                                {{ selected_service.quantity }} {{ selected_service.asset_unit.name }}
+                            </b-col>
+                        </b-form-row>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-row>
+                            <b-col cols="4" style="text-align:right;">
+                                Part Number
+                            </b-col>
+                            <b-col style="text-align:left;">
+                                {{ selected_service.part_number }}
+                            </b-col>
+                        </b-form-row>
+                    </b-col>
+                </b-form-row>
+                
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-row>
+                            <b-col cols="4" style="text-align:right;">
+                                Usage Interval
+                            </b-col>
+                            <b-col style="text-align:left;">
+                                {{ selected_service.usage_interval }} {{ selected_service.asset_usage_type.name }}
+                            </b-col>
+                        </b-form-row>
+                    </b-col>
+                </b-form-row>
+                
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-row>
+                            <b-col cols="4" style="text-align:right;">
+                                Time Interval
+                            </b-col>
+                            <b-col style="text-align:left;">
+                                {{ selected_service.time_interval }}
+                            </b-col>
+                        </b-form-row>
+                    </b-col>
+                </b-form-row>
+                
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-row>
+                            <b-col cols="4" style="text-align:right;">
+                                Last Maintenance
+                            </b-col>
+                            <b-col style="text-align:left;">
+                                {{ last_maintenance.usage }} {{ last_maintenance.asset_usage_type.name }}
+                            </b-col>
+                        </b-form-row>
                     </b-col>
                 </b-form-row>
 
@@ -162,7 +228,9 @@ export default {
             asset_usage_types: [],
             asset_types: [],
             assets: [],
-            filter: {asset_type_id: null, asset_id: null}
+            filter: {asset_type_id: null, asset_id: null},
+            selected_service: { asset_usage_type: {}, asset_unit: {}},
+            last_maintenance: { asset_usage_type: {}}
         };
     },
     created () {
@@ -172,7 +240,7 @@ export default {
         this.$http.get('/assets').then(response => {
             this.assets = response.data.data;
         });
-        this.$http.get('/asset_services?includes=asset').then(response => {
+        this.$http.get('/asset_services?includes=asset,asset_unit,asset_part,asset_usage_type').then(response => {
             this.asset_services = response.data.data;
         });
         this.$http.get('/asset_usage_types').then(response => {
@@ -202,10 +270,15 @@ export default {
         serviceSelected(){
             let services = this.asset_services.filter(s => (s.id = this.asset_maintenance.asset_service_id));
             if(!services.length){
+                this.selected_service = { asset_usage_type: {}, asset_unit: {}},
+                this.last_maintenance = { asset_usage_type: {}};
                 return;
             }
-            let service = services[0];
-            this.asset_maintenance.asset_usage_type_id = service.asset.asset_usage_type_id;
+            this.$http.get('/asset_maintenance/last?service_id=' + this.asset_maintenance.asset_service_id + '&includes=asset_usage_type').then(response => {
+                this.last_maintenance = response.data.data;
+            });
+            this.selected_service = services[0];
+            this.asset_maintenance.asset_usage_type_id = this.selected_service.asset.asset_usage_type_id;
         }
     },
     computed: {
@@ -220,7 +293,7 @@ export default {
                 return this.asset_services;
             }
             return this.asset_services.filter(s => (s.asset_id === this.filter.asset_id));
-        }
+        },
     }
 };
 </script>

@@ -52,7 +52,7 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'asset_service.name',
+                        key: 'asset_service.description',
                         label: 'Asset Service',
                         sortable: true
                     },
