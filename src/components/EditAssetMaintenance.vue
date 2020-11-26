@@ -177,12 +177,24 @@
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Where" label-cols="4" label-align="right">
-                            <b-form-input
+                            <el-select
                                 v-model="asset_maintenance.where"
+                                filterable
+                                allow-create
+                                default-first-option
+                                placeholder="Select Where"
                                 @change="save"
-                                type="text"
+                                clearable
+                                style="width:100%"
                             >
-                            </b-form-input>
+                                <el-option
+                                  v-for="where in wheres"
+                                  :key="where.where"
+                                  :label="where.where"
+                                  :value="where.where"
+                                  >
+                                </el-option>
+                            </el-select>
                         
                         </b-form-group>
                     </b-col>
@@ -230,7 +242,8 @@ export default {
             assets: [],
             filter: {asset_type_id: null, asset_id: null},
             selected_service: { asset_usage_type: {}, asset_unit: {}},
-            last_maintenance: { asset_usage_type: {}}
+            last_maintenance: { asset_usage_type: {}},
+            wheres: []
         };
     },
     created () {
@@ -245,6 +258,9 @@ export default {
         });
         this.$http.get('/asset_usage_types').then(response => {
             this.asset_usage_types = response.data.data;
+        });
+        this.$http.get('/asset_maintenances/unique/where').then(response => {
+            this.wheres = response.data.data;
         });
         if(this.asset_maintenance_id !== null) {
             this.$http.get('/asset_maintenance/' + this.asset_maintenance_id).then(response => {

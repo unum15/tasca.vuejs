@@ -115,12 +115,24 @@
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Where" label-cols="4" label-align="right">
-                            <b-form-input
+                            <el-select
                                 v-model="asset_repair.where"
+                                filterable
+                                allow-create
+                                default-first-option
+                                placeholder="Select Where"
                                 @change="save"
-                                type="text"
+                                clearable
+                                style="width:100%"
                             >
-                            </b-form-input>
+                                <el-option
+                                  v-for="where in wheres"
+                                  :key="where.where"
+                                  :label="where.where"
+                                  :value="where.where"
+                                  >
+                                </el-option>
+                            </el-select>
                         
                         </b-form-group>
                     </b-col>
@@ -135,7 +147,6 @@
                                 type="text"
                             >
                             </b-form-input>
-                        
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -165,7 +176,8 @@ export default {
             assets: [],
             asset_usage_types: [],
             asset_types: [],
-            filter: {asset_type_id: null}
+            filter: {asset_type_id: null},
+            wheres: []
         };
     },
     created () {
@@ -177,6 +189,9 @@ export default {
         });
         this.$http.get('/asset_usage_types').then(response => {
             this.asset_usage_types = response.data.data;
+        });
+        this.$http.get('/asset_repairs/unique/where').then(response => {
+            this.wheres = response.data.data;
         });
         if(this.asset_repair_id !== null) {
             this.$http.get('/asset_repair/' + this.asset_repair_id).then(response => {
