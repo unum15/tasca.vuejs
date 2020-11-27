@@ -8,12 +8,24 @@
             <b-container fluid>
                 <b-row>
                   <b-col>
-                    <b-form-group label="Employee">
+                    <b-form-group label="Assignments">
                         <b-form-select
-                          :options="contacts"
+                          :options="assignments"
                           value-field="id"
                           text-field="name"
-                          v-model="contact_id"
+                          v-model="assignment_id"
+                          @change="getClockIns"
+                          >
+                        </b-form-select>
+                    </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Categories">
+                        <b-form-select
+                          :options="categories"
+                          value-field="id"
+                          text-field="name"
+                          v-model="category_id"
                           @change="getClockIns"
                           >
                         </b-form-select>
@@ -39,24 +51,6 @@
                         </b-form-input>
                     </b-form-group>
                   </b-col>
-                  <b-col>
-                    <b-form-group label="Type">
-                        <b-form-select
-                          v-model="clock_in_type"
-                          @change="getClockIns"
-                          >
-                            <b-form-select-option value="all">
-                                All
-                            </b-form-select-option>
-                            <b-form-select-option value="task">
-                                Task
-                            </b-form-select-option>
-                            <b-form-select-option value="overhead">
-                                Overhead
-                            </b-form-select-option>
-                        </b-form-select>
-                    </b-form-group>
-                  </b-col>
                 </b-row>
                 <b-row>
                     <b-col>
@@ -70,18 +64,6 @@
                     </b-col>
                     <b-col>
                         {{ clock_ins.length }}
-                    </b-col>
-                    <b-col>
-                        Overhead Time
-                    </b-col>
-                    <b-col>
-                        {{ overhead_time }}
-                    </b-col>
-                    <b-col>
-                        Task Time
-                    </b-col>
-                    <b-col>
-                        {{ task_time }}
                     </b-col>
                 </b-row>
             </b-container>
@@ -113,7 +95,7 @@
 import moment from 'moment';
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewClockIns',
+    name: 'ViewOverheadClockIns',
     components: {
         'TopMenu': TopMenu,
     },
@@ -121,8 +103,8 @@ export default {
         return {
             clock_ins: [],
             filter: null,
-            contact_id: null,
-            contacts: [],
+            assignment_id: null,
+            category_id: null,
             start_date: null,
             stop_date: null,
             fields: [
@@ -162,24 +144,21 @@ export default {
         }
     },
     created() {
-        this.contact_id = localStorage.getItem('id');
         let last_sunday = moment().startOf('week');
         this.start_date = last_sunday.format('YYYY-MM-DD');
         this.stop_date = last_sunday.add('day', 6).format('YYYY-MM-DD');
-        this.$http.get('/settings').then(response => {
-            this.settings = response.data;
-            if(this.settings.operating_company_client_id){
-                this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
-                    this.contacts = response.data;
-                    this.contact_id = localStorage.getItem('id');
-                    this.getClockIns();
-                });
-            }
-        })
+        this.getClockIns();
     },
     methods: {
         getClockIns(){
-            this.$http.get('/clock_ins?contact_id=' + this.contact_id + '&start_date=' + this.start_date + '&stop_date=' + this.stop_date + '&type=' + this.clock_in_type).then(response => {
+            let params = '?start_date=' + this.start_date + '&stop_date=' + this.stop_date + '&type=overhead';
+            if(this.assignment_id){
+                params += '&overhead_assignment_id=' + this.assignment_id;
+            }
+            if(this.category_id){
+                params += '&overhead_category_id=' + this.category_id;
+            }
+            this.$http.get('/clock_ins' + params).then(response => {
                 this.clock_ins = response.data;
             });
         },
@@ -201,25 +180,24 @@ export default {
             });
             return Math.round(time*100)/100;
         },
-        overhead_time(){
-            let time = 0;
+        assignments(){
+            let assignments = [];
             this.clock_ins.map( c =>{
-                if(c.overhead_assignment_id){
-                    time += this.getDiff(c.clock_in, c.clock_out);
+                if(!assignments.includes(c.overhead_assignment)){
+                    assignments.push(c.overhead_assignment);
                 }
             });
-            return Math.round(time*100)/100;
+            return assignments;
         },
-        task_time(){
-            let time = 0;
+        categories(){
+            let categories = [];
             this.clock_ins.map( c =>{
-                if(c.task_date_id){
-                    time += this.getDiff(c.clock_in, c.clock_out);
+                if(!categories.includes(c.overhead_category)){
+                    categories.push(c.overhead_category);
                 }
             });
-            return Math.round(time*100)/100;
+            return categories;
         }
     }
 }
 </script>
-

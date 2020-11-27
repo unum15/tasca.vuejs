@@ -41,6 +41,8 @@ import PhreeBooksAddresses from '@/components/PhreeBooksAddresses';
 import ViewBackflowOld from '@/components/ViewBackflowOld';
 import EditClockIn from '@/components/EditClockIn';
 import ViewClockIns from '@/components/ViewClockIns';
+import ViewTaskClockIns from '@/components/ViewTaskClockIns';
+import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
 import EditSettings from '@/components/EditSettings';
 
 
@@ -561,7 +563,23 @@ var router = new Router({
       name: 'ViewClockIns',
       component: ViewClockIns,
       meta: {
-        title: 'View Clock Ins'
+        title: 'Timecard'
+      }
+    },
+    {
+      path: '/clock_ins/tasks',
+      name: 'ViewTaskClockIns',
+      component: ViewTaskClockIns,
+      meta: {
+        title: 'View Task Clock Ins'
+      }
+    },
+    {
+      path: '/clock_ins/overhead',
+      name: 'ViewOverheadClockIns',
+      component: ViewOverheadClockIns,
+      meta: {
+        title: 'View Overhead Clock Ins'
       }
     },
 

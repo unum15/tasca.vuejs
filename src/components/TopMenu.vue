@@ -30,11 +30,13 @@
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
-                      <em>Time Cards</em>
+                      <em>Hours</em>
                     </template>
-                    <b-dropdown-item href="/hours">Hours</b-dropdown-item>
+                    <b-dropdown-item href="/hours">All</b-dropdown-item>
                     <b-dropdown-item href="/clock_in">New Clock In</b-dropdown-item>
-                    <b-dropdown-item href="/clock_ins">View Clock Ins</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins">Timecard</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins/tasks">Tasks</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins/overhead">Overhead</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
