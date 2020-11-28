@@ -41,6 +41,7 @@ import PhreeBooksAddresses from '@/components/PhreeBooksAddresses';
 import ViewBackflowOld from '@/components/ViewBackflowOld';
 import EditClockIn from '@/components/EditClockIn';
 import ViewClockIns from '@/components/ViewClockIns';
+import Timecard from '@/components/Timecard';
 import ViewTaskClockIns from '@/components/ViewTaskClockIns';
 import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
 import EditSettings from '@/components/EditSettings';
@@ -562,6 +563,14 @@ var router = new Router({
       path: '/clock_ins',
       name: 'ViewClockIns',
       component: ViewClockIns,
+      meta: {
+        title: 'View Employee Clock Ins'
+      }
+    },
+    {
+      path: '/timecard',
+      name: 'Timecard',
+      component: Timecard,
       meta: {
         title: 'Timecard'
       }

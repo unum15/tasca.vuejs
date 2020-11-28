@@ -34,7 +34,8 @@
                     </template>
                     <b-dropdown-item href="/hours">All</b-dropdown-item>
                     <b-dropdown-item href="/clock_in">New Clock In</b-dropdown-item>
-                    <b-dropdown-item href="/clock_ins">Timecard</b-dropdown-item>
+                    <b-dropdown-item href="/timecard">Timecard</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins">Employees</b-dropdown-item>
                     <b-dropdown-item href="/clock_ins/tasks">Tasks</b-dropdown-item>
                     <b-dropdown-item href="/clock_ins/overhead">Overhead</b-dropdown-item>
                 </b-nav-item-dropdown>
