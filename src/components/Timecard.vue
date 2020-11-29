@@ -67,7 +67,7 @@
                         </b-col>
                     </b-row>
             </b-container>
-            <b-container v-for="(clock_ins,date) in dates" :key="date" style="border:1px solid black;">
+            <b-container v-for="(clock_ins,date) in dates" :key="date">
                 <b-row>
                     <b-col style="font-weight:bold;font-size:150%;">
                         {{ date }}
@@ -77,6 +77,7 @@
                     <b-table
                         small
                         striped
+                        outlined
                         hover
                         :items="clock_ins"
                         :fields="fields"
@@ -270,4 +271,3 @@ export default {
     }
 }
 </script>
-
