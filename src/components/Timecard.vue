@@ -189,7 +189,7 @@ export default {
     },
     methods: {
         getClockIns(){
-            for(let date=moment(this.start_date);date.format('YYYY-MM-DD')<=this.stop_date;date.add(1, 'day') ){
+            for(let date=moment(this.stop_date);date.format('YYYY-MM-DD')>=this.start_date;date.subtract(1, 'day') ){
                 this.dates[date.format('YYYY-MM-DD')] = [];
             }
             Object.keys(this.dates).map(d => {
