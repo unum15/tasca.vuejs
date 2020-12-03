@@ -81,6 +81,7 @@
                     <b-dropdown-item href="/appointment_statuses">Appointment Statuses</b-dropdown-item>                    
                     <b-dropdown-item href="/asset_service_types">Asset Service Types</b-dropdown-item>                    
                     <b-dropdown-item href="/asset_usage_types">Asset Usage Types</b-dropdown-item>
+                    <b-dropdown-item href="/asset_units">Asset Units</b-dropdown-item>
                     <b-dropdown-item href="/asset_types">Asset Types</b-dropdown-item>
                     <b-dropdown-item href="/client_types">Client Types</b-dropdown-item>
                     <b-dropdown-item href="/contact_methods">Contact Methods</b-dropdown-item>

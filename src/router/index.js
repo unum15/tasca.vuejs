@@ -297,6 +297,11 @@ var router = new Router({
       component: EditList
     },
     {
+      path: '/asset_units',
+      name: 'EditAssetUnits',
+      component: EditList
+    },
+    {
       path: '/profile',
       name: 'EditProfile',
       component: EditProfile
