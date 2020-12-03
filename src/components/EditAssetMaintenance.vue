@@ -25,6 +25,7 @@
                             <b-form-select
                                 v-model="filter.asset_id"
                                 :options="filtered_assets"
+                                @change="assetSelected"
                                 value-field="id"
                                 text-field="name"
                             >
@@ -181,7 +182,6 @@
                                 v-model="asset_maintenance.where"
                                 filterable
                                 allow-create
-                                default-first-option
                                 placeholder="Select Where"
                                 @change="save"
                                 clearable
@@ -291,10 +291,23 @@ export default {
                 return;
             }
             this.$http.get('/asset_maintenance/last?service_id=' + this.asset_maintenance.asset_service_id + '&includes=asset_usage_type').then(response => {
-                this.last_maintenance = response.data.data;
+                if(response.data.data){
+                    this.last_maintenance = response.data.data;
+                }
+                else{
+                    this.last_maintenance = { asset_usage_type: {}};
+                }
             });
             this.selected_service = services[0];
+            this.filter.asset_type_id = this.selected_service.asset.asset_type_id;
+            this.filter.asset_id = this.selected_service.asset_id;
             this.asset_maintenance.asset_usage_type_id = this.selected_service.asset.asset_usage_type_id;
+        },
+        assetSelected(){
+            let assets = this.assets.filter(a => (a.id === this.filter.asset_id))
+            if(assets.length){
+                this.filter.asset_type_id = assets[0].asset_type_id;
+            }
         }
     },
     computed: {

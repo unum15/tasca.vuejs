@@ -251,6 +251,7 @@ export default {
             }
             let asset = assets[0];
             this.asset_service.asset_usage_type_id = asset.asset_usage_type_id;
+            this.filter.asset_type_id = asset.asset_type_id;
         }
     },
     computed: {

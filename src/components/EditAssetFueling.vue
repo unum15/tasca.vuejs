@@ -216,13 +216,16 @@ export default {
                 return;
             }
             this.$http.get('/asset_fueling/last?asset_id=' + this.asset_fueling.asset_id + '&includes=asset_usage_type').then(response => {
-                this.last_fueling = response.data.data;
-                if(!this.last_fueling.asset_usage_type){
+                if(response.data.data){
+                    this.last_fueling = response.data.data;
+                }
+                else{
                     this.last_fueling = { asset_usage_type: {}};
                 }
             });
             let asset = assets[0];
             this.asset_fueling.asset_usage_type_id = asset.asset_usage_type_id;
+            this.filter.asset_type_id = asset.asset_type_id;
         }
     },
     computed: {

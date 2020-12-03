@@ -119,7 +119,6 @@
                                 v-model="asset_repair.where"
                                 filterable
                                 allow-create
-                                default-first-option
                                 placeholder="Select Where"
                                 @change="save"
                                 clearable
@@ -133,7 +132,7 @@
                                   >
                                 </el-option>
                             </el-select>
-                        
+
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -221,6 +220,7 @@ export default {
             }
             let asset = assets[0];
             this.asset_repair.asset_usage_type_id = asset.asset_usage_type_id;
+            this.filter.asset_type_id = asset.asset_type_id;
         }
     },
     computed: {
