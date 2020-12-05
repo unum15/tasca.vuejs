@@ -130,7 +130,7 @@
                             <b-form-select
                                 v-model="asset.parent_asset_id"
                                 @change="save"
-                                :options="parent_assets"
+                                :options="filtered_assets"
                                 value-field="id"
                                 text-field="name"
                             >
@@ -177,7 +177,7 @@ export default {
             asset: { id: null },
             asset_types: [],
             asset_usage_types: [],
-            parent_assets: []
+            assets: []
         };
     },
     created () {
@@ -188,7 +188,7 @@ export default {
             this.asset_usage_types = response.data.data;
         });
         this.$http.get('/assets').then(response => {
-            this.parent_assets = response.data.data;
+            this.assets = response.data.data;
         });
         if(this.asset_id !== null) {
             this.$http.get('/asset/' + this.asset_id).then(response => {
@@ -210,6 +210,14 @@ export default {
             else{
                 this.$http.patch('/asset/' + this.asset.id, this.asset);
             }
+        }
+    },
+    computed: {
+        filtered_assets(){
+            if(!this.asset.asset_type_id){
+                return this.assets;
+            }
+            return this.assets.filter(a => (a.asset_type_id === this.asset.asset_type_id));
         }
     }
 };

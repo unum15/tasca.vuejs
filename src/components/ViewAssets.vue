@@ -92,8 +92,8 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'parent_asset_id',
-                        label: 'Parent Asset Id',
+                        key: 'parent_asset.name',
+                        label: 'Parent',
                         sortable: true
                     },
                     {
@@ -115,7 +115,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/assets?includes=asset_usage_type,asset_type').then(response => {
+        this.$http.get('/assets?includes=asset_usage_type,asset_type,parent_asset').then(response => {
             this.assets = response.data.data;
         });
     }
