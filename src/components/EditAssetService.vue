@@ -77,8 +77,6 @@
                                 v-model="asset_service.quantity"
                                 @change="save"
                                 type="number"
-                                :state="asset_service.quantity != null"
-                                required
                             >
                             </b-form-input>
                         
@@ -95,8 +93,6 @@
                                 :options="asset_units"
                                 value-field="id"
                                 text-field="name"
-                                :state="asset_service.asset_unit_id != null"
-                                required
                             >
                             </b-form-select>
                         </b-form-group>
@@ -112,8 +108,6 @@
                                 :options="asset_usage_types"
                                 value-field="id"
                                 text-field="name"
-                                :state="asset_service.asset_usage_type_id != null"
-                                required
                             >
                             </b-form-radio-group>
                         </b-form-group>
@@ -127,15 +121,39 @@
                                 v-model="asset_service.usage_interval"
                                 @change="save"
                                 type="number"
-                                :state="asset_service.usage_interval != null"
-                                required
                             >
                             </b-form-input>
                         
                         </b-form-group>
                     </b-col>
                 </b-form-row>
-
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Time Usage Interval" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="asset_service.time_usage_interval"
+                                @change="save"
+                                type="number"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Time Unit" label-cols="4" label-align="right">
+                            <b-form-radio-group
+                                v-model="asset_service.asset_time_unit_id"
+                                @change="save"
+                                :options="asset_time_units"
+                                value-field="id"
+                                text-field="name"
+                            >
+                            </b-form-radio-group>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
                 <b-form-row>
                     <b-col md="6">
                         <b-form-group label="Part Number" label-cols="4" label-align="right">
@@ -164,19 +182,6 @@
                     </b-col>
                 </b-form-row>
 
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Time Interval" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="asset_service.time_interval"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
                <b-form-row>
                     <b-col>
                         <b-button @click="$router.push('/asset_services')">Done</b-button>
@@ -203,6 +208,7 @@ export default {
             asset_service_types: [],
             asset_usage_types: [],
             asset_units: [],
+            asset_time_units: [],
             asset_types: [],
             filter: {asset_type_id: null}
         };
@@ -223,9 +229,13 @@ export default {
         this.$http.get('/asset_units').then(response => {
             this.asset_units = response.data.data;
         });
+        this.$http.get('/asset_time_units').then(response => {
+            this.asset_time_units = response.data.data;
+        });
         if(this.asset_service_id !== null) {
             this.$http.get('/asset_service/' + this.asset_service_id).then(response => {
                 this.asset_service = response.data.data;
+                this.assetSelected();
             });
         }
     },
@@ -250,8 +260,12 @@ export default {
                 return;
             }
             let asset = assets[0];
-            this.asset_service.asset_usage_type_id = asset.asset_usage_type_id;
-            this.filter.asset_type_id = asset.asset_type_id;
+            if(!this.asset_service.asset_usage_type_id){
+                this.asset_service.asset_usage_type_id = asset.asset_usage_type_id;
+            }
+            if(!this.filter.asset_type_id){
+                this.filter.asset_type_id = asset.asset_type_id;
+            }
         }
     },
     computed: {

@@ -302,6 +302,11 @@ var router = new Router({
       component: EditList
     },
     {
+      path: '/asset_time_units',
+      name: 'EditAssetTimeUnits',
+      component: EditList
+    },
+    {
       path: '/profile',
       name: 'EditProfile',
       component: EditProfile
