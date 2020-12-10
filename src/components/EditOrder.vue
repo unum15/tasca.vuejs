@@ -20,7 +20,7 @@
                 value-field="id"
                 text-field="name"
                 required
-                :state="my_order.properties.length == 0"
+                :state="my_order.properties.length != 0"
                 v-model="my_order.properties"
                 multiple
                 >
