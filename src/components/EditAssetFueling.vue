@@ -210,7 +210,7 @@ export default {
             }
         },
         assetSelected(){
-            let assets = this.assets.filter(a => (a.id = this.asset_fueling.asset_id));
+            let assets = this.assets.filter(a => (a.id == this.asset_fueling.asset_id));
             if(!assets.length){
                 this.last_fueling = { asset_usage_type: {}};
                 return;

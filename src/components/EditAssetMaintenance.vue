@@ -10,12 +10,16 @@
                     <b-col md="6">
                         <b-form-group label="Asset Type Filter" label-cols="4" label-align="right">
                             <b-form-select
+                                v-if="!asset_maintenance_id"
                                 v-model="filter.asset_type_id"
                                 :options="asset_types"
                                 value-field="id"
                                 text-field="name"
                             >
                             </b-form-select>
+                            <span v-else>
+                                {{ asset_maintenance.asset_service.asset.asset_type.name }}
+                            </span>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -23,6 +27,7 @@
                     <b-col md="6">
                         <b-form-group label="Asset Filter" label-cols="4" label-align="right">
                             <b-form-select
+                                v-if="!asset_maintenance_id"
                                 v-model="filter.asset_id"
                                 :options="filtered_assets"
                                 @change="assetSelected"
@@ -30,6 +35,9 @@
                                 text-field="name"
                             >
                             </b-form-select>
+                            <span v-else>
+                                {{ asset_maintenance.asset_service.asset.name }}
+                            </span>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -38,6 +46,7 @@
                     <b-col md="6">
                         <b-form-group label="Asset Service" label-cols="4" label-align="right">
                             <b-form-select
+                                v-if="!asset_maintenance_id"
                                 v-model="asset_maintenance.asset_service_id"
                                 @change="serviceSelected();save();"
                                 :options="filtered_asset_services"
@@ -47,6 +56,9 @@
                                 required
                             >
                             </b-form-select>
+                            <span v-else>
+                                {{ asset_maintenance.asset_service.description }}
+                            </span>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -235,7 +247,7 @@ export default {
     },
     data () {
         return {
-            asset_maintenance: { id: null, asset_usage_type_id: null },
+            asset_maintenance: { id: null, asset_usage_type_id: null, asset_service: {asset: {asset_type: null} } },
             asset_services: [],
             asset_usage_types: [],
             asset_types: [],
@@ -263,7 +275,7 @@ export default {
             this.wheres = response.data.data;
         });
         if(this.asset_maintenance_id !== null) {
-            this.$http.get('/asset_maintenance/' + this.asset_maintenance_id).then(response => {
+            this.$http.get('/asset_maintenance/' + this.asset_maintenance_id + '?includes=asset_service,asset_service.asset,asset_service.asset.asset_type').then(response => {
                 this.asset_maintenance = response.data.data;
             });
         }
@@ -284,7 +296,7 @@ export default {
             }
         },
         serviceSelected(){
-            let services = this.asset_services.filter(s => (s.id = this.asset_maintenance.asset_service_id));
+            let services = this.asset_services.filter(s => (s.id === this.asset_maintenance.asset_service_id));
             if(!services.length){
                 this.selected_service = { asset_usage_type: {}, asset_unit: {}},
                 this.last_maintenance = { asset_usage_type: {}};
