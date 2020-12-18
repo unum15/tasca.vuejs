@@ -255,7 +255,7 @@ export default {
             }
         },
         assetSelected(){
-            let assets = this.assets.filter(a => (a.id = this.asset_service.asset_id));
+            let assets = this.assets.filter(a => (a.id === this.asset_service.asset_id));
             if(!assets.length){
                 return;
             }
