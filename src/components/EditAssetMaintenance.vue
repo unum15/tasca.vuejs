@@ -109,7 +109,7 @@
                                 Time Interval
                             </b-col>
                             <b-col style="text-align:left;">
-                                {{ selected_service.time_interval }}
+                                {{ selected_service.time_usage_interval }} {{ selected_service.asset_time_unit.name }}
                             </b-col>
                         </b-form-row>
                     </b-col>
@@ -247,13 +247,13 @@ export default {
     },
     data () {
         return {
-            asset_maintenance: { id: null, asset_usage_type_id: null, asset_service: {asset: {asset_type: null} } },
+            asset_maintenance: { id: null, asset_usage_type_id: null, asset_service: {asset: {asset_type: {name: null}} } },
             asset_services: [],
             asset_usage_types: [],
             asset_types: [],
             assets: [],
             filter: {asset_type_id: null, asset_id: null},
-            selected_service: { asset_usage_type: {}, asset_unit: {}},
+            selected_service: { asset_usage_type: {}, asset_unit: {}, asset_time_unit: {}},
             last_maintenance: { asset_usage_type: {}},
             wheres: []
         };
@@ -265,7 +265,7 @@ export default {
         this.$http.get('/assets').then(response => {
             this.assets = response.data.data;
         });
-        this.$http.get('/asset_services?includes=asset,asset_unit,asset_part,asset_usage_type').then(response => {
+        this.$http.get('/asset_services?includes=asset,asset_unit,asset_part,asset_usage_type,asset_time_unit').then(response => {
             this.asset_services = response.data.data;
         });
         this.$http.get('/asset_usage_types').then(response => {
@@ -277,6 +277,7 @@ export default {
         if(this.asset_maintenance_id !== null) {
             this.$http.get('/asset_maintenance/' + this.asset_maintenance_id + '?includes=asset_service,asset_service.asset,asset_service.asset.asset_type').then(response => {
                 this.asset_maintenance = response.data.data;
+                this.serviceSelected();
             });
         }
     },
