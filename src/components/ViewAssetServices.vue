@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            View Services
+            View Asset Services
         </head>
         <main>
             <b-container fluid>
@@ -24,11 +24,11 @@
                 striped
                 hover
                 :filter="filter"
-                :items="services"
+                :items="asset_services"
                 :fields="fields"
             >
                 <template v-slot:cell(id)="data">
-                    <a :href="'/service/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/asset_service/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -37,13 +37,13 @@
 <script>
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewServices',
+    name: 'ViewAssetServices',
     components: {
         'TopMenu': TopMenu,
     },
     data() {
         return {
-            services: [],
+            asset_services: [],
             filter: null,
             fields: [
                     {
@@ -52,13 +52,13 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'vehicle.name',
-                        label: 'Vehicle',
+                        key: 'asset.name',
+                        label: 'Asset',
                         sortable: true
                     },
                     {
-                        key: 'service_type.name',
-                        label: 'Service Type',
+                        key: 'asset_service_type.name',
+                        label: 'Asset Service Type',
                         sortable: true
                     },
                     {
@@ -72,8 +72,8 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'usage_type.name',
-                        label: 'Usage Type',
+                        key: 'asset_usage_type.name',
+                        label: 'Asset Usage Type',
                         sortable: true
                     },
                     {
@@ -110,8 +110,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/services?includes=usage_type,service_type,vehicle').then(response => {
-            this.services = response.data.data;
+        this.$http.get('/asset_services?includes=asset_usage_type,asset_service_type,asset').then(response => {
+            this.asset_services = response.data.data;
         });
     }
 }
