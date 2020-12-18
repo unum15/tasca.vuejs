@@ -241,7 +241,7 @@ export default {
     },
     methods: {
         save () {
-            if((!this.asset_service.asset_id)||(!this.asset_service.asset_service_type_id)||(!this.asset_service.description)||(!this.asset_service.quantity)){
+            if((!this.asset_service.asset_id)||(!this.asset_service.asset_service_type_id)||(!this.asset_service.description)){
                 return;
             }
             if(this.asset_service.id === null){
