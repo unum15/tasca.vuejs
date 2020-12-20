@@ -251,7 +251,7 @@
                             </template>
                         </b-table>
                     </b-container>
-                    <img src="@/assets/add.png" @click.stop="addAppraisal" fluid alt="-" style="width:20px;cursor:pointer;" />
+                    <img src="@/assets/add.png" @click.stop="addAppraisal" fluid alt="+" style="width:20px;cursor:pointer;" />
                 </b-tab>
                 <b-tab title="Improvements">
                     <b-container fluid="md">
@@ -293,9 +293,25 @@
                             </template>
                         </b-table>
                     </b-container>
-                    <img src="@/assets/add.png" @click.stop="addImprovement" fluid alt="-" style="width:20px;cursor:pointer;" />
+                    <img src="@/assets/add.png" @click.stop="addImprovement" fluid alt="+" style="width:20px;cursor:pointer;" />
                 </b-tab>
                 <b-tab title="Pictures">
+                    <div v-for="picture in pictures" :key="picture.filename">
+                        <img :src="'/api/uploads/assets/pictures/' + picture.filename" style="width:600px;" :alt="picture.original_filename" />
+                        {{ picture.original_filename }}
+                    </div>
+                    <img v-b-modal.upload-pictures src="@/assets/add.png" @click.stop="addImprovement" fluid alt="+" style="width:20px;cursor:pointer;" />
+                    <b-modal id="upload-pictures" title="Upload Pictures" @ok="uploadPictures">
+                        <b-form-group label="Upload Picture">
+                            <b-form-file
+                                v-model="new_pictures"
+                                :state="Boolean(new_pictures)"
+                                placeholder="Choose files or drop them here..."
+                                drop-placeholder="Drop files here..."
+                                multiple
+                            ></b-form-file>
+                        </b-form-group>
+                    </b-modal>
                 </b-tab>
             </b-tabs>
             <b-button @click="$router.push('/assets')">Done</b-button>
@@ -323,7 +339,9 @@ export default {
             appraisals: [],
             appraisal_fields: ['date','appraisal','delete'],
             improvements: [],
-            improvement_fields: ['description','details','date','cost','delete']
+            improvement_fields: ['description','details','date','cost','delete'],
+            new_pictures: [],
+            pictures: []
         };
     },
     created () {
@@ -349,6 +367,7 @@ export default {
             this.$http.get('/asset_improvements?asset_id=' + this.asset_id).then(response => {
                 this.improvements = response.data.data;
             });
+            this.getPictures();
         }
     },
     methods: {
@@ -418,7 +437,22 @@ export default {
         deleteImprovement(improvement) {
             this.$http.delete('/asset_improvement/' + improvement.id);
             this.improvements = this.improvements.filter(v => v.id !== improvement.id);
-        }
+        },
+        uploadPictures(){
+            this.new_pictures.map(p => {
+                let picture = new FormData();
+                picture.append('picture', p);
+                picture.append('asset_id', this.asset.id);
+                this.$http.post('/asset_picture',picture,{headers: {'Content-Type': 'multipart/form-data'}}).then(() => {
+                    this.getPictures();
+                });
+            });
+        },
+        getPictures(){
+            this.$http.get('/asset_pictures?asset_id=' + this.asset_id).then(response => {
+                this.pictures = response.data.data;
+            });
+        },
     },
     computed: {
         filtered_assets(){
