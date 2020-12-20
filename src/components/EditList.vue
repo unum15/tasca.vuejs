@@ -9,7 +9,7 @@
         <template v-slot:cell(sort_order)="data">
           <b-form-select
             :options="sort_options"
-						@input="save(data.item)"
+            @input="save(data.item)"
             v-model="data.item.sort_order"
           >
           </b-form-select>
@@ -17,7 +17,7 @@
         <template v-slot:cell(name)="data">
           <b-form-input
             type="text"
-						@change="save(data.item)"
+            @change="save(data.item)"
             v-model="data.item.name"
           >
           </b-form-input>
@@ -35,7 +35,7 @@
         <template v-slot:cell(notes)="data">
           <b-form-input
             type="text"
-						@change="save(data.item)"
+            @change="save(data.item)"
             v-model="data.item.notes"
           >
           </b-form-input>
