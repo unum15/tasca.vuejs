@@ -19,6 +19,7 @@
           :settings="settings"
           :contact="contact"
           :contact_types="contact_types"
+          :roles="roles"
           @remove-contact="removeContact"
           ></EditContact>
       </b-tab>
@@ -57,6 +58,7 @@ export default {
       my_contacts: [],
       all_contacts: [],
       contact_types: [],
+      roles: [],
       existing_contact_id: null,
       current_tab: 0,
       change_tab: false
@@ -65,10 +67,13 @@ export default {
   created () {
     this.$http.get('/contacts').then(response => {
       this.all_contacts = response.data
-    })
+    });
     this.$http.get('/contact_types').then(response => {
       this.contact_types = response.data
-    })
+    });
+    /*this.$http.get('/roles').then(response => {
+      this.roles = response.data.data
+    });*/
     this.my_contacts = this.contacts;
   },
   methods: {
