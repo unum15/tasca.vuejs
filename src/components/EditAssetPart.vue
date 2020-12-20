@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <h1>
-            {{ part.name }}
+            {{ asset_part.name }}
         </h1>
         <main>
             <b-container fluid="md">
@@ -10,10 +10,10 @@
                     <b-col md="6">
                         <b-form-group label="Name" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="part.name"
+                                v-model="asset_part.name"
                                 @change="save"
                                 type="text"
-                                :state="part.name != null"
+                                :state="asset_part.name != null"
                                 required
                             >
                             </b-form-input>
@@ -26,7 +26,7 @@
                     <b-col md="6">
                         <b-form-group label="On Hand" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="part.on_hand"
+                                v-model="asset_part.on_hand"
                                 @change="save"
                                 type="number"
                             >
@@ -40,7 +40,7 @@
                     <b-col md="6">
                         <b-form-group label="Notes" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="part.notes"
+                                v-model="asset_part.notes"
                                 @change="save"
                                 type="text"
                             >
@@ -51,7 +51,7 @@
                 </b-form-row>
                <b-form-row>
                     <b-col>
-                        <b-button @click="$router.push('/parts')">Done</b-button>
+                        <b-button @click="$router.push('/asset_parts')">Done</b-button>
                     </b-col>
                 </b-form-row>
             </b-container>
@@ -61,38 +61,38 @@
 <script>
 import TopMenu from './TopMenu'
 export default {
-    name: 'EditPart',
+    name: 'EditAssetPart',
     components: {
         'TopMenu': TopMenu
     },
     props: {
-        part_id: {default: null}
+        asset_part_id: {default: null}
     },
     data () {
         return {
-            part: { id: null },
+            asset_part: { id: null },
         };
     },
     created () {
-        if(this.part_id !== null) {
-            this.$http.get('/part/' + this.part_id).then(response => {
-                this.part = response.data.data;
+        if(this.asset_part_id !== null) {
+            this.$http.get('/asset_part/' + this.asset_part_id).then(response => {
+                this.asset_part = response.data.data;
             });
         }
     },
     methods: {
         save () {
-            if((!this.part.name)){
+            if((!this.asset_part.name)){
                 return;
             }
-            if(this.part.id === null){
-                this.$http.post('/part',this.part)
+            if(this.asset_part.id === null){
+                this.$http.post('/asset_part',this.asset_part)
                     .then((results) => {
-                        this.part.id = results.data.data.id;
+                        this.asset_part.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/part/' + this.part.id, this.part);
+                this.$http.patch('/asset_part/' + this.asset_part.id, this.asset_part);
             }
         }
     }

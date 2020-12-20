@@ -7,7 +7,7 @@
                 <b-col class="header">Rate</b-col>
                 <b-col class="header">Total</b-col>
                 <b-col>
-                     <b-button v-b-modal="'sign_ins-' + this.type + '-' + this.id">On-Site Hours</b-button>
+                     <b-button v-b-modal="'clock_ins-' + this.type + '-' + this.id">On-Site Hours</b-button>
                 </b-col>
                 <b-col>
                      <b-button v-b-modal="'dates-' + this.type + '-' + this.id">Scheduled Dates</b-button>
@@ -33,14 +33,14 @@
                  <b-col class="data" v-if="task_date.date>=today" :class="{highlight: task_date.id == task_date_id}">{{ formatTime(task_date.date,task_date.time) }}</b-col>
              </b-row>
         </b-container>
-        <b-modal :id="'sign_ins-' + this.type + '-' + this.id" title="Sign Ins" size="lg" ok-only>
+        <b-modal :id="'clock_ins-' + this.type + '-' + this.id" title="Clock Ins" size="lg" ok-only>
             <b-container>
-                <div v-for="employee in employees_hours" :key="employee.id" :id="'employee-sign_ins-' + employee.id">
+                <div v-for="employee in employees_hours" :key="employee.id" :id="'employee-clock_ins-' + employee.id">
                     <b-row>
                         <b-col class="header">{{ employee.name }}</b-col>
                         <b-col class="header">{{ employee.hours }}</b-col>
                     </b-row>
-                    <ViewSignIns :type="type" :id="id" :contact_id="employee.id"></ViewSignIns>
+                    <ViewClockIns :type="type" :id="id" :contact_id="employee.id"></ViewClockIns>
                 </div>
                 <b-row>
                     <b-col class="header">Total</b-col>
@@ -72,11 +72,11 @@
 </template>
 <script>
 import moment from 'moment'
-import ViewSignIns from './ViewSignIns'
+import ViewClockIns from './ViewClockIns'
 export default {
     name: 'ViewHours',
     components: {
-        'ViewSignIns': ViewSignIns,
+        'ViewClockIns': ViewClockIns,
     },
     props: {
         id : { required: true },
@@ -85,7 +85,7 @@ export default {
     },
     data() {
         return {
-            sign_ins: [],
+            clock_ins: [],
             task_dates: [],
             employees_hours: []
         };
@@ -93,22 +93,22 @@ export default {
     created() {
         this.getEmployeesHours();
         this.getTaskDates();
-        this.getSignIns();
+        this.getClockIns();
     },
     methods: {
         getEmployeesHours() {
-            this.$http.get('/sign_ins/by_employee?' + this.type + '_id=' + this.id).then((results) => {
+            this.$http.get('/clock_ins/by_employee?' + this.type + '_id=' + this.id).then((results) => {
                 this.employees_hours = results.data;
             });
         },
-        getSignIns() {
-            this.$http.get('/sign_ins?' + this.type + '_id=' + this.id).then((results) => {
-                this.sign_ins = results.data;
-                this.sign_ins.sort((a, b) => {
+        getClockIns() {
+            this.$http.get('/clock_ins?' + this.type + '_id=' + this.id).then((results) => {
+                this.clock_ins = results.data;
+                this.clock_ins.sort((a, b) => {
                     if(a.contact.name != b.contact.name){
                         return a.contact.name > b.contact.name;
                     }
-                    return a.sign_in > b.sign_in;
+                    return a.clock_in > b.clock_in;
                 });
             });
         },
@@ -139,13 +139,13 @@ export default {
             }
             return moment(date+' '+time).format('dddd MM-DD hh:mm A')
         },
-        editSignIn(sign_in,field){
+        editClockIn(clock_in,field){
             var new_value = null;
-            var old_value = !sign_in[field] ? '' : sign_in[field];
+            var old_value = !clock_in[field] ? '' : clock_in[field];
             new_value = prompt('Change ' + field, old_value);
             if(new_value != null){
-                sign_in[field] = new_value;
-                this.$http.patch('/sign_in/' + sign_in.id, sign_in);
+                clock_in[field] = new_value;
+                this.$http.patch('/clock_in/' + clock_in.id, clock_in);
             }
         }
     },

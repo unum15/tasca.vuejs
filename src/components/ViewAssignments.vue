@@ -7,23 +7,33 @@
         <main>
             <h2>Assignments for {{ contact_name }}</h2>
             <div>
-                <b-button v-b-modal.modal-1 v-show="false">Sign In</b-button>
-                <b-modal id="modal-1" title="BootstrapVue">
+                <span v-if="clock_in">
+                    <b-button @click="showClockInOverhead">Change</b-button>
+                    <b-button @click="clockOut">Clock Out</b-button>
+                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.overhead_assignment_id ? clock_in.overhead_assignment.name : clock_in.task_date.task.order.name}} - {{ clock_in.overhead_category_id ? clock_in.overhead_category.name : clock_in.task_date.task.name}}
+                </span>
+                <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
+                <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
                     <b-container fluid>
                         <b-row>
                             <b-col>
-                                <b-form-group label="Time" class="mb-0">
-                                    <b-form-input type="datetime" />
+                                <b-form-group label="Date" class="mb-0">
+                                    <b-form-input type="date" v-model="modal_overhead.date" />
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                <b-form-group label="Category">
-                                    <Treeselect v-model="category" :options="categories" />
+                                <b-form-group label="Time" class="mb-0">
+                                    <b-form-input type="time" v-model="modal_overhead.time" />
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label="Assignment">
-                                    <Treeselect v-model="assignment" :options="assignments" />
+                                    <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_assignment_id" @input="modal_overhead.overhead_category_id=null"/>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <b-form-group label="Category">
+                                    <Treeselect :options="filtered_categories" :normalizer="treeNormalizer" v-model="modal_overhead.overhead_category_id"/>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -137,58 +147,16 @@ export default {
             sort_by: 'time',
             category: null,
             assignment: null,
-            categories: [
-                {
-                    id: '1',
-                    label: 'Equipment Maintance',
-                    children: [
-                        {
-                            id: '2',
-                            label: 'Gas up',
-                            children: [
-                                {
-                                    id: '4',
-                                    label: 'truck'
-                                },
-                                {
-                                    id: '5',
-                                    label: 'other'
-                                }
-                            ]
-                        },
-                        {
-                            id: '3',
-                            label: 'Oil change',
-                        }
-                    ],
-                },
-                {
-                    id: '6',
-                    label: 'Driving',
-                },
-                {
-                    id: '7',
-                    label: 'Napping',
-                }
-            ],
-            assignments: [
-                {
-                    id: '1',
-                    label: 'Work Orders'
-                },
-                {
-                    id: '2',
-                    label: 'Shop'
-                },
-                {
-                    id: '3',
-                    label: 'Lunch'
-                },
-                {
-                    id: '4',
-                    label: 'Part Pickup'
-                }
-            ],
+            clock_in: null,
+            modal_overhead: {
+                date: null,
+                time: null,
+                overhead_assignment_id: null,
+                overhead_category_id: null,
+                title: 'Clock In - Overhead'
+            },
+            categories: [],
+            assignments: [],
             fields: [
                 {
                     key: 'order_name',
@@ -256,6 +224,15 @@ export default {
         this.$http.get('/crews').then(response => {
 			this.crews = response.data;
             this.crews.unshift({id: null, name: 'All'});
+		});
+        this.$http.get('/clock_in/current').then(response => {
+			this.clock_in = response.data;
+		});
+        this.$http.get('/overhead_assignments').then(response => {
+			this.assignments = response.data.data;
+		});
+        this.$http.get('/overhead_categories').then(response => {
+			this.categories = response.data.data;
 		});
         this.getTasks();
         this.contact_name = localStorage.getItem('name');
@@ -347,10 +324,75 @@ export default {
             return moment(value).format('MM-DD');
         },
         formatTime(value){
-            if(!value){
-                return "";
+            if(value){
+                return moment('2019-01-01 ' + value).format('hh:mm A');
             }
-            return moment('2019-01-01 ' + value).format('hh:mm A');
+            return null;
+        },
+        formatDateTime(value){
+            if(value){
+                return moment(value).format('MM/DD hh:mm A');
+            }
+            return null;
+        },
+        formatDateTimeToTime(value){
+            if(value){
+                return moment(value).format('hh:mm A');
+            }
+            return null;
+        },
+        showClockInOverhead(){
+            this.modal_overhead.date = moment().format('YYYY-MM-DD');
+            this.modal_overhead.time = moment().format('HH:mm');
+            this.$refs['modal-clock-in-overhead'].show();
+        },
+        clockOut(){
+            if(this.clock_in){
+                let clock_in = {
+                    clock_out : moment().format('YYYY-MM-DD HH:mm')
+                };
+                this.$http.patch('/clock_in/'+this.clock_in.id, clock_in).then(()=>{
+                    this.clock_in = null;
+                });
+                
+            }
+        },
+        clockInOverhead(event){
+            event.preventDefault();
+            if(!this.modal_overhead.overhead_assignment_id){
+                alert('Please select assignment.');
+                return;
+            }
+            if(!this.modal_overhead.overhead_category_id){
+                alert('Please select category.');
+                return;
+            }
+            if(this.clock_in){
+                let clock_in = {
+                    clock_out : this.modal_overhead.date + ' ' + this.modal_overhead.time
+                };
+                this.$http.patch('/clock_in/'+this.clock_in.id, clock_in);
+            }
+            let clock_in = {
+                clock_in : this.modal_overhead.date + ' ' + this.modal_overhead.time,
+                overhead_assignment_id: this.modal_overhead.overhead_assignment_id,
+                overhead_category_id: this.modal_overhead.overhead_category_id,
+                contact_id: localStorage.getItem('id')
+            };
+            this.$http.post('/clock_in', clock_in).then(response => {
+                this.clock_in = response.data;
+                this.$refs['modal-clock-in-overhead'].hide();
+            });
+        },
+        treeNormalizer(node){
+            return {
+                id: node.id,
+                label: node.name,
+                children: node.children,
+            }
+        },
+        isParent(node){
+            return (node.children.filter(a => a.id==this.modal_overhead.overhead_assignment_id || this.isParent(a)).length > 0);
         }
     },
     computed:{
@@ -360,6 +402,14 @@ export default {
                 text_filter: this.text_filter,
                 crew_id: this.crew_id
             };
+        },
+        filtered_categories(){
+            if(this.modal_overhead.overhead_assignment_id){
+                let parent_assignments = this.assignments.filter(a => a.id==this.modal_overhead.overhead_assignment_id || this.isParent(a));
+                let parent_assignment = parent_assignments[0];
+                return this.categories.filter(c => (parent_assignment.overhead_categories.filter(ac => (ac.id == c.id)).length));
+            }
+            return [];
         }
     }
 }

@@ -154,7 +154,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/orders?status=' + this.tab + '&includes=tasks,task.task_dates,task.task_dates.sign_ins,properties').then((results) => {
+        this.$http.get('/orders?status=' + this.tab + '&includes=tasks,task.task_dates,task.task_dates.clock_ins,properties').then((results) => {
             this.orders = results.data;
             this.filtered_orders = this.orders;
         });
@@ -193,10 +193,10 @@ export default {
             }
             order.tasks.map(t => {
                 t.dates.map(d =>{
-                    d.sign_ins.map(si =>{
-                        var sign_in = moment(si.sign_in);
-                        var sign_out = moment(si.sign_out);
-                        time += sign_out.diff(sign_in);
+                    d.clock_ins.map(si =>{
+                        var clock_in = moment(si.clock_in);
+                        var clock_out = moment(si.clock_out);
+                        time += clock_out.diff(clock_in);
                     });
                 });
             });

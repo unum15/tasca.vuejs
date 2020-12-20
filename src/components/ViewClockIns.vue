@@ -1,21 +1,21 @@
 <template>
     <div>
         <b-row>
-            <b-col class="header">Sign In</b-col>
-            <b-col class="header">Sign Out</b-col>
+            <b-col class="header">Clock In</b-col>
+            <b-col class="header">Clock Out</b-col>
             <b-col class="header">Hours</b-col>
             <b-col class="header">Labor Category</b-col>
         </b-row>
-        <div v-for="sign_in in sign_ins" :key="sign_in.id">
+        <div v-for="clock_in in clock_ins" :key="clock_in.id">
             <b-row>
-                <b-col @click="editSignIn(sign_in, 'sign_in')" style="cursor:pointer;">{{ formatTime(sign_in.sign_in) }}</b-col>
-                <b-col @click="editSignIn(sign_in, 'sign_out')" style="cursor:pointer;">{{ sign_in.sign_out ? formatTime(sign_in.sign_out) : 'Click to add.' }}</b-col>
-                <b-col>{{ timeDiff(sign_in.sign_in, sign_in.sign_out) }}</b-col>
+                <b-col @click="editClockIn(clock_in, 'clock_in')" style="cursor:pointer;">{{ formatTime(clock_in.clock_in) }}</b-col>
+                <b-col @click="editClockIn(clock_in, 'clock_out')" style="cursor:pointer;">{{ clock_in.clock_out ? formatTime(clock_in.clock_out) : 'Click to add.' }}</b-col>
+                <b-col>{{ timeDiff(clock_in.clock_in, clock_in.clock_out) }}</b-col>
                 <b-col></b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Notes For The Day</b-col>
-                <b-col  @click="editSignIn(sign_in, 'notes')" style="cursor:pointer;" class="data" cols="9">{{ sign_in.notes ? sign_in.notes : 'Click to add.' }}</b-col>
+                <b-col  @click="editClockIn(clock_in, 'notes')" style="cursor:pointer;" class="data" cols="9">{{ clock_in.notes ? clock_in.notes : 'Click to add.' }}</b-col>
             </b-row>
         </div>
     </div>
@@ -23,7 +23,7 @@
 <script>
 import moment from 'moment'
 export default {
-    name: 'ViewSignIns',
+    name: 'ViewClockIns',
     props: {
         contact_id : { required:true },
         id : { required:true },
@@ -31,21 +31,21 @@ export default {
     },
     data() {
         return {
-            sign_ins: [],
+            clock_ins: [],
         };
     },
     created() {
-        this.getSignIns();
+        this.getClockIns();
     },
     methods: {
-        getSignIns() {
-            this.$http.get('/sign_ins?' + this.type + '_id=' + this.id + '&contact_id=' + this.contact_id).then((results) => {
-                this.sign_ins = results.data;
-                this.sign_ins.sort((a, b) => {
+        getClockIns() {
+            this.$http.get('/clock_ins?' + this.type + '_id=' + this.id + '&contact_id=' + this.contact_id).then((results) => {
+                this.clock_ins = results.data;
+                this.clock_ins.sort((a, b) => {
                     if(a.contact.name != b.contact.name){
                         return a.contact.name > b.contact.name;
                     }
-                    return a.sign_in > b.sign_in;
+                    return a.clock_in > b.clock_in;
                 });
             });
         },
@@ -65,13 +65,13 @@ export default {
             }
             return moment(time).format('MM-DD hh:mm')
         },
-        editSignIn(sign_in,field){
+        editClockIn(clock_in,field){
             var new_value = null;
-            var old_value = !sign_in[field] ? '' : sign_in[field];
+            var old_value = !clock_in[field] ? '' : clock_in[field];
             new_value = prompt('Change ' + field, old_value);
             if(new_value != null){
-                sign_in[field] = new_value;
-                this.$http.patch('/sign_in/' + sign_in.id, sign_in);
+                clock_in[field] = new_value;
+                this.$http.patch('/clock_in/' + clock_in.id, clock_in);
             }
         }
     }

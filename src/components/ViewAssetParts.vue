@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            View Maintenances
+            View Asset Parts
         </head>
         <main>
             <b-container fluid>
@@ -24,11 +24,11 @@
                 striped
                 hover
                 :filter="filter"
-                :items="maintenances"
+                :items="asset_parts"
                 :fields="fields"
             >
                 <template v-slot:cell(id)="data">
-                    <a :href="'/maintenance/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/asset_part/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -37,13 +37,13 @@
 <script>
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewMaintenances',
+    name: 'ViewAssetParts',
     components: {
         'TopMenu': TopMenu,
     },
     data() {
         return {
-            maintenances: [],
+            asset_parts: [],
             filter: null,
             fields: [
                     {
@@ -52,28 +52,13 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'service.name',
-                        label: 'Service',
+                        key: 'name',
+                        label: 'Name',
                         sortable: true
                     },
                     {
-                        key: 'ending_reading',
-                        label: 'Ending Reading',
-                        sortable: true
-                    },
-                    {
-                        key: 'date',
-                        label: 'Date',
-                        sortable: true
-                    },
-                    {
-                        key: 'amount',
-                        label: 'Amount',
-                        sortable: true
-                    },
-                    {
-                        key: 'where',
-                        label: 'Where',
+                        key: 'on_hand',
+                        label: 'On Hand',
                         sortable: true
                     },
                     {
@@ -95,8 +80,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/maintenances?includes=service').then(response => {
-            this.maintenances = response.data.data;
+        this.$http.get('/asset_parts').then(response => {
+            this.asset_parts = response.data.data;
         });
     }
 }
