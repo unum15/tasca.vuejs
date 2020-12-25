@@ -161,6 +161,7 @@
                     :appointment_id="modalInfo.appointment_id"
                     :task_id="modalInfo.task_id"
                     :order_id="modalInfo.order_id"
+                    :labor_activities="labor_activities"
                 >
                 </ViewAppointment>
             </b-modal>
@@ -212,7 +213,7 @@ export default {
                     notes: null
                 },
             },
-            activities: [],
+            labor_activities: [],
             assignments: [],
             fields: [
                 {
@@ -287,7 +288,7 @@ export default {
             this.clockInToCurrent();
 		});
         this.$http.get('/labor_activities').then(response => {
-			this.activities = response.data.data;
+			this.labor_activities = response.data.data;
 		});
         this.getTasks();
         this.getAssignments();
@@ -538,13 +539,13 @@ export default {
         },
         filtered_current_activities(){
             if(this.modal_overhead.current.labor_assignment_id){
-                return this.treeFilter(this.modal_overhead.current.labor_assignment_id,this.activities);
+                return this.treeFilter(this.modal_overhead.current.labor_assignment_id,this.labor_activities);
             }
             return [];
         },
         filtered_new_activities(){
             if(this.modal_overhead.new.labor_assignment_id){
-                return this.treeFilter(this.modal_overhead.new.labor_assignment_id,this.activities);
+                return this.treeFilter(this.modal_overhead.new.labor_assignment_id,this.labor_activities);
             }
             return [];
         },

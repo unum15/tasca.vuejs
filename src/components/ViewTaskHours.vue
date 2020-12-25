@@ -135,7 +135,6 @@ export default {
         this.getEmployeesHours();
         this.getTaskDates();
         this.getClockIns();
-
     },
     methods: {
         treeFilter,
