@@ -240,7 +240,9 @@ export default {
         this.$http.put('/contact/' + this.my_contact.id + '/roles', this.selected_roles)
     },
     resetPassword(){
-      this.$http.post('/contact/' + this.my_contact.id+'/password')
+      this.$http.post('/auth/password/email', {'login' : this.contact.login}).then((response) => {
+        alert(response.data.message);
+      });
     },
     showCreateAccount(){
       this.$http.get('/emails?contact_id=' + this.my_contact.id).then( results => {
@@ -256,6 +258,7 @@ export default {
     createAccount(e){
       e.preventDefault();
       this.$http.post('/contact/' + this.my_contact.id + '/account',this.new_account).then(() => {
+        this.my_contact.login = this.new_account.login;
         this.$refs['new-account-modal'].hide();
       });
     },

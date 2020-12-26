@@ -10,14 +10,20 @@ var daxios = axios.create({
 })
 
 daxios.interceptors.response.use(
-  function (response) {
+  (response) => {
     return response;
   },
-  function (error) {
+  (error) => {
     switch (error.response.status) {
       case 401 :
-        window.location='/';
-        return 200;
+        if(error.response.data.error){
+          alert(error.response.data.error);
+        }
+        else{
+          window.location='/';
+          return 200;
+        }
+        break;
       case 422 :
         alert(error.response.request.responseText);
         break;
@@ -29,7 +35,7 @@ daxios.interceptors.response.use(
   });
 
 daxios.interceptors.request.use(
-  function (config) {
+  (config) => {
     config.headers.authorization = 'Bearer ' + localStorage.getItem('bearer_token');
     return config;
   }

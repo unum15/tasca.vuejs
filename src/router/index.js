@@ -11,6 +11,7 @@ import EditProjects from '@/components/EditProjects';
 import ViewOrders from '@/components/ViewOrders';
 import ViewTasks from '@/components/ViewTasks';
 import LoginForm from '@/components/LoginForm';
+import PasswordReset from '@/components/PasswordReset';
 import ViewSchedule from '@/components/ViewSchedule';
 import ViewAssignments from '@/components/ViewAssignments';
 import EditHours from '@/components/EditHours';
@@ -50,6 +51,11 @@ var router = new Router({
       path: '/',
       name: 'Login',
       component: LoginForm
+    },
+    {
+      path: '/auth/password/reset',
+      name: 'PasswordReset',
+      component: PasswordReset
     },
     {
       path: '/client',
