@@ -240,7 +240,9 @@ export default {
         this.$http.put('/contact/' + this.my_contact.id + '/roles', this.selected_roles)
     },
     resetPassword(){
-      this.$http.post('/contact/' + this.my_contact.id+'/password')
+      this.$http.post('/contact/' + this.my_contact.id+'/password').then((response) => {
+        alert(response.data.message);
+      });
     },
     showCreateAccount(){
       this.$http.get('/emails?contact_id=' + this.my_contact.id).then( results => {
