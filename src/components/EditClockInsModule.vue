@@ -11,11 +11,11 @@
     </b-card>
 </template>
 <script>
-import EditClockIn from './EditClockIn';
+import EditClockInModule from './EditClockInModule';
 export default {
-  name: 'EditClockIns',
+  name: 'EditClockInsModule',
   components: {
-    'EditClockIn': EditClockIn
+    'EditClockInModule': EditClockInModule
   },
   props: {
     task_date_id: {required: true}

@@ -1,93 +1,225 @@
 <template>
     <div>
-        <b-row>
-            <b-col class="header">Clock In</b-col>
-            <b-col class="header">Clock Out</b-col>
-            <b-col class="header">Hours</b-col>
-            <b-col class="header">Labor Category</b-col>
-        </b-row>
-        <div v-for="clock_in in clock_ins" :key="clock_in.id">
-            <b-row>
-                <b-col @click="editClockIn(clock_in, 'clock_in')" style="cursor:pointer;">{{ formatTime(clock_in.clock_in) }}</b-col>
-                <b-col @click="editClockIn(clock_in, 'clock_out')" style="cursor:pointer;">{{ clock_in.clock_out ? formatTime(clock_in.clock_out) : 'Click to add.' }}</b-col>
-                <b-col>{{ timeDiff(clock_in.clock_in, clock_in.clock_out) }}</b-col>
-                <b-col></b-col>
-            </b-row>
-            <b-row>
-                <b-col class="label">Notes For The Day</b-col>
-                <b-col  @click="editClockIn(clock_in, 'notes')" style="cursor:pointer;" class="data" cols="9">{{ clock_in.notes ? clock_in.notes : 'Click to add.' }}</b-col>
-            </b-row>
-        </div>
+        <TopMenu></TopMenu>
+        <head>
+            Time Cards
+        </head>
+        <main>
+            <b-container fluid>
+                <b-row>
+                  <b-col>
+                    <b-form-group label="Employee">
+                        <b-form-select
+                          :options="contacts"
+                          value-field="id"
+                          text-field="name"
+                          v-model="contact_id"
+                          @change="getClockIns"
+                          >
+                        </b-form-select>
+                    </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Start Date">
+                        <b-form-input
+                          type="date"
+                          v-model="start_date"
+                          @change="getClockIns"
+                          >
+                        </b-form-input>
+                    </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Stop Date">
+                        <b-form-input
+                          type="date"
+                          v-model="stop_date"
+                          @change="getClockIns"
+                          >
+                        </b-form-input>
+                    </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Type">
+                        <b-form-select
+                          v-model="clock_in_type"
+                          @change="getClockIns"
+                          >
+                            <b-form-select-option value="all">
+                                All
+                            </b-form-select-option>
+                            <b-form-select-option value="task">
+                                Task
+                            </b-form-select-option>
+                            <b-form-select-option value="overhead">
+                                Overhead
+                            </b-form-select-option>
+                        </b-form-select>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+                <b-row>
+                    <b-col>
+                        Total Time
+                    </b-col>
+                    <b-col>
+                        {{ total_time }}
+                    </b-col>
+                    <b-col>
+                        Total Clock Ins
+                    </b-col>
+                    <b-col>
+                        {{ clock_ins.length }}
+                    </b-col>
+                    <b-col>
+                        Overhead Time
+                    </b-col>
+                    <b-col>
+                        {{ overhead_time }}
+                    </b-col>
+                    <b-col>
+                        Task Time
+                    </b-col>
+                    <b-col>
+                        {{ task_time }}
+                    </b-col>
+                </b-row>
+            </b-container>
+            <b-table
+                small
+                striped
+                hover
+                :filter="filter"
+                :items="clock_ins"
+                :fields="fields"
+            >
+                <template v-slot:cell(id)="data">
+                    <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
+                </template>
+                <template v-slot:cell(time)="data">
+                    {{ getDiff(data.item.clock_in,data.item.clock_out) }}
+                </template>
+                <template v-slot:cell(order)="data">
+                    {{ data.item.task_date ? data.item.task_date.task.order.name : data.item.overhead_assignment ?  data.item.overhead_assignment.name : ''}}
+                </template>
+                <template v-slot:cell(task)="data">
+                    {{ data.item.task_date ? data.item.task_date.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
+                </template>
+            </b-table>
+        </main>
     </div>
 </template>
 <script>
-import moment from 'moment'
+import moment from 'moment';
+import TopMenu from './TopMenu';
 export default {
     name: 'ViewClockIns',
-    props: {
-        contact_id : { required:true },
-        id : { required:true },
-        type: {required:true}
+    components: {
+        'TopMenu': TopMenu,
     },
     data() {
         return {
             clock_ins: [],
-        };
+            filter: null,
+            contact_id: null,
+            contacts: [],
+            start_date: null,
+            stop_date: null,
+            fields: [
+                    {
+                        key: 'id',
+                        label: 'Id',
+                        sortable: true
+                    },
+                    {
+                        key: 'clock_in',
+                        label: 'Clock In',
+                        sortable: true
+                    },
+                    {
+                        key: 'clock_out',
+                        label: 'Clock Out',
+                        sortable: true
+                    },
+                    {
+                        key: 'time',
+                        label: 'Time',
+                        sortable: true
+                    },
+                    {
+                        key: 'order',
+                        label: 'Order',
+                        sortable: true
+                    },
+                    {
+                        key: 'task',
+                        label: 'Task',
+                        sortable: true
+                    }
+            ],
+            settings: {},
+            clock_in_type: 'all'
+        }
     },
     created() {
-        this.getClockIns();
+        this.contact_id = localStorage.getItem('id');
+        let last_sunday = moment().startOf('week');
+        this.start_date = last_sunday.format('YYYY-MM-DD');
+        this.stop_date = last_sunday.add('day', 6).format('YYYY-MM-DD');
+        this.$http.get('/settings').then(response => {
+            this.settings = response.data;
+            if(this.settings.operating_company_client_id){
+                this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
+                    this.contacts = response.data;
+                    this.contact_id = localStorage.getItem('id');
+                    this.getClockIns();
+                });
+            }
+        })
     },
     methods: {
-        getClockIns() {
-            this.$http.get('/clock_ins?' + this.type + '_id=' + this.id + '&contact_id=' + this.contact_id).then((results) => {
-                this.clock_ins = results.data;
-                this.clock_ins.sort((a, b) => {
-                    if(a.contact.name != b.contact.name){
-                        return a.contact.name > b.contact.name;
-                    }
-                    return a.clock_in > b.clock_in;
-                });
+        getClockIns(){
+            this.$http.get('/clock_ins?contact_id=' + this.contact_id + '&start_date=' + this.start_date + '&stop_date=' + this.stop_date + '&type=' + this.clock_in_type).then(response => {
+                this.clock_ins = response.data;
             });
         },
-        timeDiff(start_time, stop_time){
-            var start = moment(start_time)
+        getDiff(clock_in,clock_out){
+            var start = moment(clock_in);
             var stop = moment();
-            if(stop_time){
-                stop = moment(stop_time)
+            if(clock_out){
+                stop = moment(clock_out);
             }
-            var diff = Math.round(stop.diff(start)/36000)/100
-            
-            return diff
+            var diff = Math.round(stop.diff(start)/36000)/100;
+            return diff;
+        }
+    },
+    computed: {
+        total_time(){
+            let time = 0;
+            this.clock_ins.map( c =>{
+                time += this.getDiff(c.clock_in, c.clock_out);
+            });
+            return Math.round(time*100)/100;
         },
-        formatTime(time){
-            if(time == null){
-                return "";
-            }
-            return moment(time).format('MM-DD hh:mm')
+        overhead_time(){
+            let time = 0;
+            this.clock_ins.map( c =>{
+                if(c.overhead_assignment_id){
+                    time += this.getDiff(c.clock_in, c.clock_out);
+                }
+            });
+            return Math.round(time*100)/100;
         },
-        editClockIn(clock_in,field){
-            var new_value = null;
-            var old_value = !clock_in[field] ? '' : clock_in[field];
-            new_value = prompt('Change ' + field, old_value);
-            if(new_value != null){
-                clock_in[field] = new_value;
-                this.$http.patch('/clock_in/' + clock_in.id, clock_in);
-            }
+        task_time(){
+            let time = 0;
+            this.clock_ins.map( c =>{
+                if(c.task_date_id){
+                    time += this.getDiff(c.clock_in, c.clock_out);
+                }
+            });
+            return Math.round(time*100)/100;
         }
     }
 }
 </script>
-<style scoped>
-.label {
-    text-align: right;
-    font-weight: bold;
-}
 
-.header {
-    font-weight: bold;
-}
-
-.data {
-    text-align: left;
-}
-</style>

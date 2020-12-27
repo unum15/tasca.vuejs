@@ -67,11 +67,11 @@
 </div>
 </template>
 <script>
-import EditClockIns from './EditClockIns';
+import EditClockInsModule from './EditClockInsModule';
 export default {
   name: 'EditTaskDate',
   components: {
-    'EditClockIns': EditClockIns
+    'EditClockInsModule': EditClockInsModule
   },
   props: {
     date: {required: true}

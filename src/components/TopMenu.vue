@@ -30,9 +30,14 @@
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
-                      <em>Time Cards</em>
+                      <em>Hours</em>
                     </template>
-                    <b-dropdown-item href="/hours">Hours</b-dropdown-item>
+                    <b-dropdown-item href="/hours">All</b-dropdown-item>
+                    <b-dropdown-item href="/clock_in">New Clock In</b-dropdown-item>
+                    <b-dropdown-item href="/timecard">Timecard</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins">Employees</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins/tasks">Tasks</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins/overhead">Overhead</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
@@ -77,6 +82,7 @@
                     <template slot="button-content">
                       <em>Settings</em>
                     </template>
+                    <b-dropdown-item href="/settings" v-if="false">General</b-dropdown-item>
                     <b-dropdown-item href="/activity_levels">Activity Levels</b-dropdown-item>
                     <b-dropdown-item href="/appointment_statuses">Appointment Statuses</b-dropdown-item>                    
                     <b-dropdown-item href="/asset_service_types">Asset Service Types</b-dropdown-item>                    
