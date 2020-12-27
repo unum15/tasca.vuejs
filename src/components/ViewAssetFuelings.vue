@@ -2,7 +2,7 @@
     <div>
         <TopMenu></TopMenu>
         <head>
-            Fuelings
+            View Asset Fuelings
         </head>
         <main>
             <b-container fluid>
@@ -24,11 +24,11 @@
                 striped
                 hover
                 :filter="filter"
-                :items="fuelings"
+                :items="asset_fuelings"
                 :fields="fields"
             >
                 <template v-slot:cell(id)="data">
-                    <a :href="'/fueling/' + data.value"> {{ data.value }} </a>
+                    <a :href="'/asset_fueling/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>
         </main>
@@ -37,13 +37,13 @@
 <script>
 import TopMenu from './TopMenu';
 export default {
-    name: 'ViewFuelings',
+    name: 'ViewAssetFuelings',
     components: {
         'TopMenu': TopMenu,
     },
     data() {
         return {
-            fuelings: [],
+            asset_fuelings: [],
             filter: null,
             fields: [
                     {
@@ -52,18 +52,18 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'vehicle.name',
-                        label: 'Vehicle Name',
+                        key: 'asset.name',
+                        label: 'Asset',
                         sortable: true
                     },
                     {
-                        key: 'beginning_reading',
-                        label: 'Beginning Reading',
+                        key: 'asset_usage_type.name',
+                        label: 'Asset Usage Type',
                         sortable: true
                     },
                     {
-                        key: 'ending_reading',
-                        label: 'Ending Reading',
+                        key: 'usage',
+                        label: 'Usage',
                         sortable: true
                     },
                     {
@@ -100,8 +100,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/fuelings?includes=vehicle').then(response => {
-            this.fuelings = response.data.data;
+        this.$http.get('/asset_fuelings?includes=asset_usage_type,asset').then(response => {
+            this.asset_fuelings = response.data.data;
         });
     }
 }

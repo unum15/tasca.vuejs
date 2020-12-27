@@ -51,18 +51,18 @@
                     <template slot="button-content">
                       <em>Garage</em>
                     </template>
-                    <b-dropdown-item href="/fueling">New Fueling</b-dropdown-item>
-                    <b-dropdown-item href="/fuelings">View Fuelings</b-dropdown-item>
-                    <b-dropdown-item href="/service">New Service</b-dropdown-item>
-                    <b-dropdown-item href="/services">View Services</b-dropdown-item>
-                    <b-dropdown-item href="/part">New Part</b-dropdown-item>
-                    <b-dropdown-item href="/parts">View Parts</b-dropdown-item>
-                    <b-dropdown-item href="/repair">New Repair</b-dropdown-item>
-                    <b-dropdown-item href="/repairs">View Repairs</b-dropdown-item>
-                    <b-dropdown-item href="/maintenance">New Maintenance</b-dropdown-item>
-                    <b-dropdown-item href="/maintenances">View Maintenances</b-dropdown-item>
-                    <b-dropdown-item href="/vehicle">New Vehicle</b-dropdown-item>
-                    <b-dropdown-item href="/vehicles">View Vehicles</b-dropdown-item>
+                    <b-dropdown-item href="/asset_fueling">New Fueling</b-dropdown-item>
+                    <b-dropdown-item href="/asset_fuelings">View Fuelings</b-dropdown-item>
+                    <b-dropdown-item href="/asset_service">New Service</b-dropdown-item>
+                    <b-dropdown-item href="/asset_services">View Services</b-dropdown-item>
+                    <b-dropdown-item href="/asset_part">New Part</b-dropdown-item>
+                    <b-dropdown-item href="/asset_parts">View Parts</b-dropdown-item>
+                    <b-dropdown-item href="/asset_repair">New Repair</b-dropdown-item>
+                    <b-dropdown-item href="/asset_repairs">View Repairs</b-dropdown-item>
+                    <b-dropdown-item href="/asset_maintenance">New Maintenance</b-dropdown-item>
+                    <b-dropdown-item href="/asset_maintenances">View Maintenances</b-dropdown-item>
+                    <b-dropdown-item href="/asset">New Asset</b-dropdown-item>
+                    <b-dropdown-item href="/assets">View Assets</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
@@ -84,6 +84,13 @@
                     </template>
                     <b-dropdown-item href="/settings" v-if="false">General</b-dropdown-item>
                     <b-dropdown-item href="/activity_levels">Activity Levels</b-dropdown-item>
+                    <b-dropdown-item href="/appointment_statuses">Appointment Statuses</b-dropdown-item>                    
+                    <b-dropdown-item href="/asset_service_types">Asset Service Types</b-dropdown-item>                    
+                    <b-dropdown-item href="/asset_usage_types">Asset Usage Types</b-dropdown-item>
+                    <b-dropdown-item href="/asset_units">Asset Units</b-dropdown-item>
+                    <b-dropdown-item href="/asset_time_units">Asset Time Units</b-dropdown-item>
+                    <b-dropdown-item href="/asset_locations">Asset Locations</b-dropdown-item>
+                    <b-dropdown-item href="/asset_types">Asset Types</b-dropdown-item>
                     <b-dropdown-item href="/client_types">Client Types</b-dropdown-item>
                     <b-dropdown-item href="/contact_methods">Contact Methods</b-dropdown-item>
                     <b-dropdown-item href="/contact_types">Contact Types</b-dropdown-item>
@@ -96,14 +103,10 @@
                     <b-dropdown-item href="/order_types">Order Types</b-dropdown-item>
                     <b-dropdown-item href="/phone_number_types">Phone Number Types</b-dropdown-item>
                     <b-dropdown-item href="/property_types">Property Types</b-dropdown-item>
-                    <b-dropdown-item href="/service_types">Service Types</b-dropdown-item>
                     <b-dropdown-item href="/task_actions">Task Actions</b-dropdown-item>
-                    <b-dropdown-item href="/appointment_statuses">Appointment Statuses</b-dropdown-item>
                     <b-dropdown-item href="/task_categories">Task Categories</b-dropdown-item>
                     <b-dropdown-item href="/task_statuses">Task Statuses</b-dropdown-item>
                     <b-dropdown-item href="/task_types">Task Types</b-dropdown-item>
-                    <b-dropdown-item href="/usage_types">Usage Types</b-dropdown-item>
-                    <b-dropdown-item href="/vehicle_types">Vehicle Types</b-dropdown-item>
                     <b-dropdown-item href="/work_types">Work Types</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown right>
