@@ -22,11 +22,11 @@
             <b-form-checkbox-group v-model="selected_categories" v-if="assignment_id" @input="saveCategories">
               <b-row v-for="category in categories" :key="category.id">
                 <b-col  md="3" offset-md="4">
-                   <b-form-checkbox :value="category.id"><b-button variant="link" @click="editCategory(category.id,category.name)">{{ category.name }}</b-button></b-form-checkbox>
+                   <b-form-checkbox :value="category.id"><b-button variant="link" @click="editCategory(category.id,category.name,category.parent_id)">{{ category.name }}</b-button></b-form-checkbox>
                   <b-container>
                     <b-row v-for="subcategory in category.children" :key="subcategory.id">
                       <b-col md="3" offset-md="5">
-                        <b-form-checkbox :value="subcategory.id"><b-button variant="link" @click="editCategory(category.id,category.name)">{{ subcategory.name }}</b-button></b-form-checkbox>
+                        <b-form-checkbox :value="subcategory.id"><b-button variant="link" @click="editCategory(subcategory.id,subcategory.name,subcategory.parent_id)">{{ subcategory.name }}</b-button></b-form-checkbox>
                       </b-col>
                     </b-row>
                   </b-container>
@@ -133,36 +133,54 @@ export default {
       }
     },
     showAddAssignment(){
+      this.new_assignment.id = null;
       this.new_assignment.name = null;
       this.new_assignment.parent_id = null;
       this.$refs['modal-assignment'].show();
     },
     addAssignment(){
-      this.$http.post('/overhead_assignment', this.new_assignment).then(response => {
-        this.getAssignments();
-        this.assignment_id = response.data.data.id;
-        this.$refs['modal-assignment'].hide();
-      });
+      if(!this.new_assignment.id){
+        this.$http.post('/overhead_assignment', this.new_assignment).then(response => {
+          this.getAssignments();
+          this.assignment_id = response.data.data.id;
+          this.$refs['modal-assignment'].hide();
+        });
+      }
+      else{
+        this.$http.patch('/overhead_assignment/' + this.assignment_id, this.new_assignment).then(() => {
+          this.getAssignments();
+          this.$refs['modal-assignment'].hide();
+        });
+      }
     },
     showAddCategory(){
+      this.new_category.id = null;
       this.new_category.name = null;
       this.new_category.parent_id = null;
       this.$refs['modal-category'].show();
     },
     addCategory(){
-      this.$http.post('/overhead_category', this.new_category).then(response => {
-        this.getCategories();
-        this.category_id = response.data.data.id;
-        this.$refs['modal-category'].hide();
-      });
+      if(!this.new_category.id){
+        this.$http.post('/overhead_category', this.new_category).then(response => {
+          this.getCategories();
+          this.category_id = response.data.data.id;
+          this.$refs['modal-category'].hide();
+        });
+      }
+      else{
+        this.$http.patch('/overhead_category/' + this.new_category.id, this.new_category).then(() => {
+          this.getCategories();
+          this.$refs['modal-category'].hide();
+        });
+      }
     },
     assignmentSelected(){
       this.selected_categories = [];
-      let assignments = this.assignments.filter(a => (a.id == this.assignment_id));
-      if(!assignments.length){
+      let assignment = this.findAssignment(this.assignments);
+      if(!assignment){
         return;
       }
-      assignments[0].overhead_categories.map(c => {
+      assignment.overhead_categories.map(c => {
         this.selected_categories.push(c.id);
       });
     },
@@ -171,25 +189,35 @@ export default {
         this.getAssignments();
       });
     },
+    findAssignment(assignments){
+      let assignment = null;
+      assignments.map(a => {
+        if(a.id == this.assignment_id){
+          assignment = a;
+        }
+        else{
+          if(a.children.length){
+            assignment = this.findAssignment(a.children);
+          }
+        }
+      });
+      return assignment;
+    },
     editAssignment(){
-      let assignments = this.assignments.filter(a => (a.id == this.assignment_id));
-      if(!assignments.length){
+      let assignment = this.findAssignment(this.assignments);
+      if(!assignment){
         return;
       }
-      let name = prompt("Edit Assignment",assignments[0].name);
-      if(name){
-        this.$http.patch('/overhead_assignment/' + this.assignment_id, {name: name}).then(() => {
-          this.getAssignments();
-        });
-      }
+      this.new_assignment.id = assignment.id;
+      this.new_assignment.name = assignment.name;
+      this.new_assignment.parent_id = assignment.parent_id;
+      this.$refs['modal-assignment'].show()
     },
-    editCategory(id,old_name){
-      let name = prompt("Edit Category",old_name);
-      if(name){
-        this.$http.patch('/overhead_category/' + id, {name: name}).then(() => {
-          this.getCategories();
-        });
-      }
+    editCategory(id,name,parent_id){
+      this.new_category.id = id;
+      this.new_category.name = name;
+      this.new_category.parent_id = parent_id;
+      this.$refs['modal-category'].show()
     }
   }
 }
