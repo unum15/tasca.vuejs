@@ -463,8 +463,8 @@ export default {
                 children: node.children,
             }
         },
-        isParent(node){
-            return (node.children.filter(a => a.id==this.modal_overhead.overhead_assignment_id || this.isParent(a)).length > 0);
+        isParent(id,node){
+            return (node.children.filter(a => a.id==id || this.isParent(id,a)).length > 0);
         }
     },
     computed:{
@@ -477,7 +477,7 @@ export default {
         },
         filtered_current_categories(){
             if(this.modal_overhead.current.overhead_assignment_id){
-                let parent_assignments = this.assignments.filter(a => a.id==this.modal_overhead.current.overhead_assignment_id || this.isParent(a));
+                let parent_assignments = this.assignments.filter(a => a.id==this.modal_overhead.current.overhead_assignment_id || this.isParent(this.modal_overhead.current.overhead_assignment_id,a));
                 let parent_assignment = parent_assignments[0];
                 return this.categories.filter(c => (parent_assignment.overhead_categories.filter(ac => (ac.id == c.id)).length));
             }
@@ -485,7 +485,7 @@ export default {
         },
         filtered_new_categories(){
             if(this.modal_overhead.new.overhead_assignment_id){
-                let parent_assignments = this.assignments.filter(a => a.id==this.modal_overhead.new.overhead_assignment_id || this.isParent(a));
+                let parent_assignments = this.assignments.filter(a => (a.id==this.modal_overhead.new.overhead_assignment_id || this.isParent(this.modal_overhead.new.overhead_assignment_id,a)));
                 let parent_assignment = parent_assignments[0];
                 return this.categories.filter(c => (parent_assignment.overhead_categories.filter(ac => (ac.id == c.id)).length));
             }
