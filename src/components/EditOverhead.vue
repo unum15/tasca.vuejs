@@ -197,7 +197,10 @@ export default {
         }
         else{
           if(a.children.length){
-            assignment = this.findAssignment(a.children);
+            let child_assignment = this.findAssignment(a.children);
+            if(child_assignment){
+              assignment = child_assignment;
+            }
           }
         }
       });
