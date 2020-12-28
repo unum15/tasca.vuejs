@@ -15,15 +15,18 @@
               <b-col md="3" offset-md="4">
                 <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="assignment_id" @input="assignmentSelected"/>
               </b-col>
+              <b-col md="3">
+                <b-button @click="editAssignment" v-if="assignment_id">Edit</b-button>
+              </b-col>
             </b-row>
             <b-form-checkbox-group v-model="selected_categories" v-if="assignment_id" @input="saveCategories">
               <b-row v-for="category in categories" :key="category.id">
                 <b-col  md="3" offset-md="4">
-                   <b-form-checkbox :value="category.id">{{ category.name }}</b-form-checkbox>
+                   <b-form-checkbox :value="category.id"><b-button variant="link" @click="editCategory(category.id,category.name)">{{ category.name }}</b-button></b-form-checkbox>
                   <b-container>
                     <b-row v-for="subcategory in category.children" :key="subcategory.id">
                       <b-col md="3" offset-md="5">
-                        <b-form-checkbox :value="subcategory.id">{{ subcategory.name }}</b-form-checkbox>
+                        <b-form-checkbox :value="subcategory.id"><b-button variant="link" @click="editCategory(category.id,category.name)">{{ subcategory.name }}</b-button></b-form-checkbox>
                       </b-col>
                     </b-row>
                   </b-container>
@@ -168,6 +171,26 @@ export default {
         this.getAssignments();
       });
     },
+    editAssignment(){
+      let assignments = this.assignments.filter(a => (a.id == this.assignment_id));
+      if(!assignments.length){
+        return;
+      }
+      let name = prompt("Edit Assignment",assignments[0].name);
+      if(name){
+        this.$http.patch('/overhead_assignment/' + this.assignment_id, {name: name}).then(() => {
+          this.getAssignments();
+        });
+      }
+    },
+    editCategory(id,old_name){
+      let name = prompt("Edit Category",old_name);
+      if(name){
+        this.$http.patch('/overhead_category/' + id, {name: name}).then(() => {
+          this.getCategories();
+        });
+      }
+    }
   }
 }
 </script>
