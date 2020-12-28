@@ -45,6 +45,7 @@ import ViewClockIns from '@/components/ViewClockIns';
 import Timecard from '@/components/Timecard';
 import ViewTaskClockIns from '@/components/ViewTaskClockIns';
 import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
+import EditOverhead from '@/components/EditOverhead';
 import EditSettings from '@/components/EditSettings';
 
 
@@ -610,6 +611,14 @@ var router = new Router({
       component: ViewOverheadClockIns,
       meta: {
         title: 'View Overhead Clock Ins'
+      }
+    },
+    {
+      path: '/overhead',
+      name: 'EditOverhead',
+      component: EditOverhead,
+      meta: {
+        title: 'Edit Overhead'
       }
     },
     {

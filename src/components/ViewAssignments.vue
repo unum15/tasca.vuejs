@@ -182,8 +182,6 @@ export default {
             modalInfo: { title: '', content: '', id: null },
             date: null,
             sort_by: 'time',
-            category: null,
-            assignment: null,
             clock_in: null,
             modal_overhead: {
                 clock_in : true,
