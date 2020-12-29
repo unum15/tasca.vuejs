@@ -460,7 +460,7 @@ export default {
             return {
                 id: node.id,
                 label: node.name,
-                children: node.children,
+                children: node.children.length ? node.children : undefined,
             }
         },
         findSelectedCategories(id,categories){
