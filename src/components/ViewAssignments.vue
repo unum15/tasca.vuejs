@@ -468,9 +468,9 @@ export default {
             categories.map(c => {
                 if(c.overhead_assignments.filter(a => (a.id == id)).length){
                     let cat = c;
-                    if(c.children){
+                    if(c.children.length){
                         let children = this.findSelectedCategories(id,c.children);
-                        cat.childern = children;
+                        cat.children = children;
                     }
                     filtered_categories.push(cat);
                 }
