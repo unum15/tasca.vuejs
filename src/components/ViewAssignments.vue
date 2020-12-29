@@ -463,8 +463,23 @@ export default {
                 children: node.children,
             }
         },
-        isParent(id,node){
-            return (node.children.filter(a => a.id==id || this.isParent(id,a)).length > 0);
+        findSelectedCategories(id,categories){
+            let filtered_categories = [];
+            categories.map(c => {
+                if(c.overhead_assignments.filter(a => (a.id == id)).length){
+                    let cat = c;
+                    if(c.children){
+                        let children = this.findSelectedCategories(id,c.children);
+                        cat.childern = children;
+                    }
+                    filtered_categories.push(cat);
+                }
+                else{
+                    let children = this.findSelectedCategories(id,c.children);
+                    filtered_categories = filtered_categories.concat(children);
+                }
+            });
+            return filtered_categories;
         }
     },
     computed:{
@@ -477,17 +492,13 @@ export default {
         },
         filtered_current_categories(){
             if(this.modal_overhead.current.overhead_assignment_id){
-                let parent_assignments = this.assignments.filter(a => a.id==this.modal_overhead.current.overhead_assignment_id || this.isParent(this.modal_overhead.current.overhead_assignment_id,a));
-                let parent_assignment = parent_assignments[0];
-                return this.categories.filter(c => (parent_assignment.overhead_categories.filter(ac => (ac.id == c.id)).length));
+                return this.findSelectedCategories(this.modal_overhead.current.overhead_assignment_id,this.categories);
             }
             return [];
         },
         filtered_new_categories(){
             if(this.modal_overhead.new.overhead_assignment_id){
-                let parent_assignments = this.assignments.filter(a => (a.id==this.modal_overhead.new.overhead_assignment_id || this.isParent(this.modal_overhead.new.overhead_assignment_id,a)));
-                let parent_assignment = parent_assignments[0];
-                return this.categories.filter(c => (parent_assignment.overhead_categories.filter(ac => (ac.id == c.id)).length));
+                return this.findSelectedCategories(this.modal_overhead.new.overhead_assignment_id,this.categories);
             }
             return [];
         }
