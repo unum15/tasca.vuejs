@@ -391,6 +391,8 @@ export default {
             this.modal_overhead.clock_in = true;
             this.modal_overhead.new.date = moment().format('YYYY-MM-DD');
             this.modal_overhead.new.time = moment().format('HH:mm');
+            this.modal_overhead.new.overhead_assignment_id = null;
+            this.modal_overhead.new.overhead_category_id = null;
             if(this.clock_in){
                 this.modal_overhead.title = "Clock In";
             }
@@ -467,7 +469,7 @@ export default {
             let filtered_categories = [];
             categories.map(c => {
                 if(c.overhead_assignments.filter(a => (a.id == id)).length){
-                    let cat = c;
+                    let cat = JSON.parse(JSON.stringify(c));
                     if(c.children.length){
                         let children = this.findSelectedCategories(id,c.children);
                         cat.children = children;
