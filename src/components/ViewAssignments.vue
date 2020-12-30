@@ -37,7 +37,7 @@
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                <b-form-group label="Category">
+                                <b-form-group label="Activity">
                                     <Treeselect :options="filtered_current_categories" :normalizer="treeNormalizer" v-model="modal_overhead.current.overhead_category_id"/>
                                 </b-form-group>
                             </b-col>

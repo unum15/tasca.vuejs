@@ -45,7 +45,7 @@
         </b-row>
         <b-row>
 			<b-col>
-                <b-form-group label="Category">
+                <b-form-group label="Assignment">
                     <b-form-select
                         :options="current_categories"
 						@change="save"
