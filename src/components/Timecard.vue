@@ -81,6 +81,7 @@
                         hover
                         :items="clock_ins"
                         :fields="fields"
+                        style="text-align:right"
                     >
                         <template v-slot:cell(id)="data">
                             <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
@@ -94,11 +95,8 @@
                         <template v-slot:cell(time)="data">
                             {{ getDiff(data.item.clock_in,data.item.clock_out) }}
                         </template>
-                        <template v-slot:cell(order)="data">
-                            {{ data.item.task_date ? data.item.task_date.task.order.name : data.item.overhead_assignment ?  data.item.overhead_assignment.name : ''}}
-                        </template>
-                        <template v-slot:cell(task)="data">
-                            {{ data.item.task_date ? data.item.task_date.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
+                        <template v-slot:cell(activity)="data">
+                            {{ data.item.task_date ? '' : data.item.overhead_category ? data.item.overhead_category.name : ''}}
                         </template>
                     </b-table>
                 </b-row>
@@ -143,14 +141,35 @@ export default {
             dates: {},
             fields: [
                     {
+                        key: 'client',
+                        label: 'Client',
+                        sortable: true,
+                        sortByFormatted : true
+                    },
+                    {
+                        key: 'project',
+                        label: 'Project',
+                        sortable: true,
+                        sortByFormatted : true
+                    },
+                    {
                         key: 'order',
                         label: 'Order',
-                        sortable: true
+                        sortable: true,
+                        sortByFormatted : true
                     },
                     {
                         key: 'task',
                         label: 'Task',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'taskColumn',
+                        sortByFormatted : true
+                    },
+                    {
+                        key: 'activity',
+                        label: 'Activity',
+                        sortable: true,
+                        sortByFormatted : true
                     },
                     {
                         key: 'clock_in',
@@ -165,7 +184,8 @@ export default {
                     {
                         key: 'time',
                         label: 'Time',
-                        sortable: true
+                        sortable: true,
+                        sortByFormatted : true
                     },
                     
             ],
@@ -190,6 +210,7 @@ export default {
     },
     methods: {
         getClockIns(){
+            this.dates={};
             for(let date=moment(this.stop_date);date.format('YYYY-MM-DD')>=this.start_date;date.subtract(1, 'day') ){
                 this.dates[date.format('YYYY-MM-DD')] = [];
             }
@@ -267,6 +288,24 @@ export default {
                 });
             });
             return Math.round(time*100)/100;
+        },
+        clientColumn(value, key, item){
+            return item.task_date ? item.task_date.task.order.project.client.name : 'You';
+        },
+        projectColumn(value, key, item){
+            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+        },
+        orderColumn(value, key, item){
+            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+        },
+        taskColumn(value, key, item){
+            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+        },
+        activityColumn(value, key, item){
+            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+        },
+        timeColumn(value, key, item){
+            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
         }
     }
 }
