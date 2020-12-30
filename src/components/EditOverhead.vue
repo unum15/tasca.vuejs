@@ -2,7 +2,7 @@
   <div>
     <TopMenu></TopMenu>
     <header>
-        Overhead Assignments and Categories
+        Overhead Assignments and Activities
     </header>
     <main>
         <b-container style="text-align:left;">
