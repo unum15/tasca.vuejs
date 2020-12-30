@@ -35,7 +35,7 @@
             </b-form-checkbox-group>
             <b-row>
               <b-col md="3" offset-md="4">
-                <b-button @click="showAddCategory()">Add Category</b-button>
+                <b-button @click="showAddCategory()">Add Activity</b-button>
               </b-col>
             </b-row>
         </b-container>
@@ -64,18 +64,18 @@
         </b-row>
       </b-container>
     </b-modal>
-    <b-modal ref="modal-category" @ok="addCategory" title="New Category">
+    <b-modal ref="modal-category" @ok="addCategory" title="New Activity">
       <b-container fluid>
         <b-row>
           <b-col>
-            <b-form-group label="New Category">
+            <b-form-group label="New Activity">
               <b-form-input type="text" v-model="new_category.name" />
             </b-form-group>
           </b-col>
         </b-row>
         <b-row>
           <b-col>
-            <b-form-group label="Parent Category">
+            <b-form-group label="Parent Activity">
               <b-form-select
                   :options="categories"
                   value-field="id"

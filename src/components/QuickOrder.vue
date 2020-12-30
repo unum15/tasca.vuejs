@@ -183,7 +183,7 @@
                </b-row>
                <b-row>
                   <b-col>
-                      <b-form-group label="Category">
+                      <b-form-group label="Assignment">
                           <b-form-select
                               :options="task_categories"
                               value-field="id"
