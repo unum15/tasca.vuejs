@@ -295,13 +295,13 @@ export default {
             return item.task_date ? item.task_date.task.order.project.name : 'Overhead';
         },
         orderColumn(value, key, item){
-            return item.task_date ? item.task_date.task.name : 'General';
+            return item.task_date ? item.task_date.task.order.name : 'General';
         },
         taskColumn(value, key, item){
             return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
         },
         activityColumn(value, key, item){
-            return item.task_date ? item.task_date.task.name : item.overhead_category ? item.overhead_category.name : '';
+            return item.task_date ? '' : item.overhead_category ? item.overhead_category.name : '';
         },
         timeColumn(value, key, item){
             return this.getDiff(item.clock_in,item.clock_out);
