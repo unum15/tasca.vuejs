@@ -92,12 +92,6 @@
                         <template v-slot:cell(clock_out)="data">
                             {{ format_time(data.value) }}
                         </template>
-                        <template v-slot:cell(time)="data">
-                            {{ getDiff(data.item.clock_in,data.item.clock_out) }}
-                        </template>
-                        <template v-slot:cell(activity)="data">
-                            {{ data.item.task_date ? '' : data.item.overhead_category ? data.item.overhead_category.name : ''}}
-                        </template>
                     </b-table>
                 </b-row>
                 <b-row>
@@ -144,18 +138,21 @@ export default {
                         key: 'client',
                         label: 'Client',
                         sortable: true,
+                        formatter: 'clientColumn',
                         sortByFormatted : true
                     },
                     {
                         key: 'project',
                         label: 'Project',
                         sortable: true,
+                        formatter: 'projectColumn',
                         sortByFormatted : true
                     },
                     {
                         key: 'order',
                         label: 'Order',
                         sortable: true,
+                        formatter: 'orderColumn',
                         sortByFormatted : true
                     },
                     {
@@ -169,6 +166,7 @@ export default {
                         key: 'activity',
                         label: 'Activity',
                         sortable: true,
+                        formatter: 'activityColumn',
                         sortByFormatted : true
                     },
                     {
@@ -185,6 +183,7 @@ export default {
                         key: 'time',
                         label: 'Time',
                         sortable: true,
+                        formatter: 'timeColumn',
                         sortByFormatted : true
                     },
                     
@@ -290,22 +289,22 @@ export default {
             return Math.round(time*100)/100;
         },
         clientColumn(value, key, item){
-            return item.task_date ? item.task_date.task.order.project.client.name : 'You';
+            return item.task_date ? item.task_date.task.order.project.client.name : 'Waters Contracting';
         },
         projectColumn(value, key, item){
-            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+            return item.task_date ? item.task_date.task.order.project.name : 'Overhead';
         },
         orderColumn(value, key, item){
-            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+            return item.task_date ? item.task_date.task.name : 'General';
         },
         taskColumn(value, key, item){
             return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
         },
         activityColumn(value, key, item){
-            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+            return item.task_date ? item.task_date.task.name : item.overhead_category ? item.overhead_category.name : '';
         },
         timeColumn(value, key, item){
-            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+            return this.getDiff(item.clock_in,item.clock_out);
         }
     }
 }
