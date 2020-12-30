@@ -69,7 +69,7 @@
                                 </b-form-group>
                             </b-col>
                             <b-col v-if="modal_overhead.clock_in">
-                                <b-form-group label="Category">
+                                <b-form-group label="Activity">
                                     <Treeselect :options="filtered_new_categories" :normalizer="treeNormalizer" v-model="modal_overhead.new.overhead_category_id"/>
                                 </b-form-group>
                             </b-col>
