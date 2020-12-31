@@ -325,7 +325,7 @@
                 </b-row>
                 <b-row>
                     <b-col>
-                        <b-button v-b-modal.view-pictures style="margin:5px;">View Pictures</b-button>
+                        <b-button v-b-modal.view-pictures style="margin:5px;">View Pictures ({{ this.pictures.length }})</b-button>
                         <b-button v-b-modal.upload-pictures style="margin:5px;">Add Pictures</b-button>
                     </b-col>
                 </b-row>
