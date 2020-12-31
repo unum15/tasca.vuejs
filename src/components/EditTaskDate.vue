@@ -2,7 +2,7 @@
 <div>
   <b-row>
     <b-col>
-      <b-form-group label="Day Notes">
+      <b-form-group label="Appointment Notes">
           <b-form-textarea
             ref="notes"
             type="text"
