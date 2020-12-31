@@ -163,6 +163,13 @@ export default {
                         sortByFormatted : true
                     },
                     {
+                        key: 'assignment',
+                        label: 'Assignment',
+                        sortable: true,
+                        formatter: 'assignmentColumn',
+                        sortByFormatted : true
+                    },
+                    {
                         key: 'activity',
                         label: 'Activity',
                         sortable: true,
@@ -298,7 +305,10 @@ export default {
             return item.task_date ? item.task_date.task.order.name : 'General';
         },
         taskColumn(value, key, item){
-            return item.task_date ? item.task_date.task.name : item.overhead_assignment ? item.overhead_assignment.name : '';
+            return item.task_date ? item.task_date.task.name : '';
+        },
+        assignmentColumn(value, key, item){
+            return item.task_date ? item.task_date.task.task_category.name : item.overhead_assignment ? item.overhead_assignment.name : '';
         },
         activityColumn(value, key, item){
             return item.task_date ? '' : item.overhead_category ? item.overhead_category.name : '';
