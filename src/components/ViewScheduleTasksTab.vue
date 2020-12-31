@@ -267,7 +267,7 @@ export default {
                 },
                 {
                     key: 'task_category',
-                    label: 'Category',
+                    label: 'Assignment',
                     sortable: true,
                     filter: null
                 },

@@ -11,6 +11,7 @@ import EditProjects from '@/components/EditProjects';
 import ViewOrders from '@/components/ViewOrders';
 import ViewTasks from '@/components/ViewTasks';
 import LoginForm from '@/components/LoginForm';
+import PasswordReset from '@/components/PasswordReset';
 import ViewSchedule from '@/components/ViewSchedule';
 import ViewAssignments from '@/components/ViewAssignments';
 import EditHours from '@/components/EditHours';
@@ -39,6 +40,14 @@ import PhreeBooksClients from '@/components/PhreeBooksClients';
 import PhreeBooksContacts from '@/components/PhreeBooksContacts';
 import PhreeBooksAddresses from '@/components/PhreeBooksAddresses';
 import ViewBackflowOld from '@/components/ViewBackflowOld';
+import EditClockIn from '@/components/EditClockIn';
+import ViewClockIns from '@/components/ViewClockIns';
+import Timecard from '@/components/Timecard';
+import ViewTaskClockIns from '@/components/ViewTaskClockIns';
+import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
+import EditOverhead from '@/components/EditOverhead';
+import EditSettings from '@/components/EditSettings';
+
 
 
 Vue.use(Router);
@@ -50,6 +59,16 @@ var router = new Router({
       path: '/',
       name: 'Login',
       component: LoginForm
+    },
+    {
+      path: '/settings',
+      name: 'EditSettings',
+      component: EditSettings
+    },
+    {
+      path: '/auth/password/reset',
+      name: 'PasswordReset',
+      component: PasswordReset
     },
     {
       path: '/client',
@@ -307,6 +326,11 @@ var router = new Router({
       component: EditList
     },
     {
+      path: '/asset_locations',
+      name: 'EditAssetLocations',
+      component: EditList
+    },
+    {
       path: '/profile',
       name: 'EditProfile',
       component: EditProfile
@@ -538,6 +562,63 @@ var router = new Router({
       component: ViewBackflowOld,
       meta: {
         title: 'View Backflow Old'
+      }
+    },
+    {
+        path: '/clock_in',
+        name: 'NewClockIn',
+        component: EditClockIn,
+        meta: {
+            title: 'New Clock In'
+        }
+    },
+    {
+        path: '/clock_in/:clock_in_id',
+        name: 'EditClockIn',
+        component: EditClockIn,
+        props: true,
+        meta: {
+            title: 'Edit Clock In'
+        }
+    },
+    {
+      path: '/clock_ins',
+      name: 'ViewClockIns',
+      component: ViewClockIns,
+      meta: {
+        title: 'View Employee Clock Ins'
+      }
+    },
+    {
+      path: '/timecard',
+      name: 'Timecard',
+      component: Timecard,
+      meta: {
+        title: 'Timecard'
+      }
+    },
+    {
+      path: '/clock_ins/tasks',
+      name: 'ViewTaskClockIns',
+      component: ViewTaskClockIns,
+      meta: {
+        title: 'View Task Clock Ins'
+      }
+    },
+    {
+      path: '/clock_ins/overhead',
+      name: 'ViewOverheadClockIns',
+      component: ViewOverheadClockIns,
+      meta: {
+        title: 'View Overhead Clock Ins'
+      }
+    },
+    {
+      path: '/overhead',
+      name: 'EditOverhead',
+      component: EditOverhead,
+      meta: {
+        title: 'Edit Overhead'
       }
     },
     {
