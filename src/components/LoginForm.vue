@@ -74,9 +74,11 @@ export default {
         });
     },
     loginSuccessful (response) {
-      localStorage.setItem('bearer_token', response.data.bearer_token)
+      if(response.data.bearer_token){
+        localStorage.setItem('bearer_token', response.data.bearer_token);
+      }
       this.$store.dispatch('saveUser',response.data);
-      this.$router.push('/clients')
+      this.$router.push('/clients');
     },
     resetPassword(){
       this.$http.post('/auth/password/email', {'login' : this.login}).then((response) => {
