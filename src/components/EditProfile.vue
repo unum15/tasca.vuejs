@@ -101,7 +101,8 @@
   </div>
 </template>
 <script>
-import TopMenu from './TopMenu'
+import TopMenu from './TopMenu';
+import { mapState } from 'vuex';
 export default {
   name: 'EditProfile',
   components: {
@@ -116,15 +117,19 @@ export default {
     }
   },
   created () {
-    var id = localStorage.getItem('id')
-    this.$http.get('/contact/' + id).then(response => {
-      this.profile = response.data
-    })
+    this.getProfile();
     this.$http.get('/activity_levels').then(response => {
       this.activity_levels = response.data
     })
   },
   methods: {
+    getProfile(){
+      if(this.user_id){
+        this.$http.get('/contact/' + this.user_id).then(response => {
+          this.profile = response.data
+        });
+      }
+    },
     save () {
         this.$http.patch('/contact/' + this.profile.id, this.profile)
     },
@@ -139,6 +144,16 @@ export default {
       else{
         alert('Passwords do not match!');
       }
+    }
+  },
+  computed:{
+    ...mapState({
+      user_id: state => state.user.id,
+    })
+  },
+  watch:{
+    user_id(){
+        this.getProfile();
     }
   }
 }

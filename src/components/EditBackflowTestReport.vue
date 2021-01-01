@@ -336,6 +336,7 @@
 import TopMenu from './TopMenu'
 import moment from 'moment';
 import backflows from '../common/Backflows.js';
+import { mapState } from 'vuex';
 export default {
     name: 'EditBackflowTestReport',
     components: {
@@ -434,7 +435,6 @@ export default {
             ],
             valves: [],
             parts: [],
-            settings: {},
             test_fields: [
                     {
                         key: 'contact_id',
@@ -475,26 +475,19 @@ export default {
         };
     },
     created () {
-        this.$http.get('/settings').then(response => {
-            this.settings = response.data;
-            if(this.settings.operating_company_client_id){
-                this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
-                    this.contacts = response.data;
-                });
-            }
-        })
         this.$http.get('/clients?backflow_only=true').then(response => {
             this.clients = response.data;
         });
-        this.repair_contact_id = localStorage.getItem('id');
         this.repair_date = this.today;
         if(this.backflow_test_report_id !== null) {
             this.getRequestedReport();
         }
         this.passed = backflows.passed // shared code between here and CreateBackflowTestReport;
+        this.repair_contact_id = this.user_id;
+        this.getContacts();
     },
     methods: {
-        getRequestedReport () {
+        getRequestedReport() {
             this.$http.get('/backflow_test_report/' + this.backflow_test_report_id + '?includes=backflow_assembly,backflow_assembly.property,backflow_assembly.backflow_type,backflow_tests,backflow_assembly.backflow_type.backflow_super_type,backflow_assembly.backflow_test_reports,backflow_assembly.backflow_test_reports.backflow_tests').then(response => {
                 let report = response.data.data
                 this.client_id = report.backflow_assembly.property.client_id;
@@ -508,7 +501,14 @@ export default {
                 this.getReport();
             });
         },
-        getProperties () {
+        getContacts(){
+            if(this.operator_id){
+                this.$http.get('/contacts?client_id=' + this.operator_id).then(response => {
+                    this.contacts = response.data;
+                });
+            }
+        },
+        getProperties() {
             this.property_id = null;
             this.cleanings = [];
             this.repairs = [];
@@ -549,7 +549,6 @@ export default {
             }
         },
         getReport() {
-            this.repair_contact_id = localStorage.getItem('id');
             this.repair_date = this.today;
             this.repairs = [];
             this.cleanings = [];
@@ -599,6 +598,7 @@ export default {
             }
         },
         newReport(){
+            this.repair_contact_id = this.user_id;
             this.backflow_test_report = {
                 id: '',
                 backflow_tests: [],
@@ -616,8 +616,7 @@ export default {
             this.getValves();
         },
         addTest(){
-            let id = localStorage.getItem('id')
-            this.backflow_test_report.backflow_tests.push({backflow_test_report_id: this.backflow_test_report.id, tested_on: this.today, contact_id: id});
+            this.backflow_test_report.backflow_tests.push({backflow_test_report_id: this.backflow_test_report.id, tested_on: this.today, contact_id: this.user_id});
         },
         save () {
             if((!this.backflow_test_report.backflow_assembly_id)||(!this.backflow_test_report.backflow_installed_to_code)){
@@ -823,8 +822,17 @@ export default {
                 }
             });
             return reports;
-        }
+        },
+        ...mapState({
+          user_id: state => state.user.id,
+          operator_id: state => state.operating_company_client_id
+        })
     },
+    watch: {
+        operator_id (){
+            this.getContacts();
+        }
+    }
 };
 </script>
 <style>

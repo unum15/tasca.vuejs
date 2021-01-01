@@ -168,7 +168,7 @@ export default {
             var clock_in;
             clock_in = prompt('Clock In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
             if(clock_in !== null){
-                this.$http.post('/clock_in', {task_date_id : this.task_date_id, clock_in: clock_in, contact_id: localStorage.getItem('id')}).then(() => {
+                this.$http.post('/clock_in', {task_date_id : this.task_date_id, clock_in: clock_in, contact_id: this.$store.state.user.id}).then(() => {
                     this.getClockIns();
                 });
             }
@@ -189,7 +189,7 @@ export default {
     computed: {
         clock_in_id() {
             var id = null
-            var my_id = localStorage.getItem('id')
+            var my_id = this.$store.state.user.id
             var ids = this.clock_ins.filter( si => (si.contact_id == my_id && si.clock_out == null))
             if(ids.length > 0){
                 id = ids[0].id

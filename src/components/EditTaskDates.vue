@@ -1,5 +1,5 @@
 <template>
-    <b-card title="Dates" class="mb-2">
+    <b-card title="Appointments" class="mb-2">
         <div v-for="date in dates" :key="date.id">
             <EditTaskDate
                 :date="date"
@@ -7,7 +7,7 @@
             >
             </EditTaskDate>
         </div>
-        <b-button variant="secondary" @click="newDate()">Add Date</b-button>
+        <b-button variant="secondary" @click="newDate()">Add Appointment</b-button>
     </b-card>
 </template>
 <script>

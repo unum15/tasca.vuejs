@@ -610,7 +610,7 @@ export default {
             }
 
 
-            var pending_days_out = localStorage.getItem('pending_days_out');
+            var pending_days_out = this.$store.state.user.pending_days_out;
             var today = moment();
             var start_date = moment(this.my_order.start_date);
             var days_out = start_date.diff(today, 'days')
@@ -660,7 +660,7 @@ export default {
             if((this.my_order.order_status_type_id > 1) && (this.my_order.approval_date === null)){
                 return true;
             }
-            var pending_days_out = localStorage.getItem('pending_days_out');
+            var pending_days_out = this.$store.state.user.pending_days_out;
             var today = moment();
             var start_date = moment(this.my_order.start_date);
             var days_out = start_date.diff(today, 'days')
@@ -694,7 +694,7 @@ export default {
             if(this.my_order.approval_date === null){
                 return "Convert To Service Order";
             }
-            var pending_days_out = localStorage.getItem('pending_days_out');
+            var pending_days_out = this.$store.state.user.pending_days_out;
             var today = moment();
             var start_date = moment(this.my_order.start_date);
             var days_out = start_date.diff(today, 'days')

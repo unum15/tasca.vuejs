@@ -112,6 +112,7 @@
 <script>
 import moment from 'moment';
 import TopMenu from './TopMenu';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewClockIns',
     components: {
@@ -162,23 +163,25 @@ export default {
         }
     },
     created() {
-        this.contact_id = localStorage.getItem('id');
+        this.contact_id = this.user_id;
         let last_sunday = moment().startOf('week');
         this.start_date = last_sunday.format('YYYY-MM-DD');
-        this.stop_date = last_sunday.add('day', 6).format('YYYY-MM-DD');
-        this.$http.get('/settings').then(response => {
-            this.settings = response.data;
-            if(this.settings.operating_company_client_id){
-                this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
-                    this.contacts = response.data;
-                    this.contact_id = localStorage.getItem('id');
-                    this.getClockIns();
-                });
-            }
-        })
+        this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');
+        this.getContacts();
+        this.getClockIns();
     },
     methods: {
+        getContacts(){
+            if(this.operator_id){
+                this.$http.get('/contacts?client_id=' + this.operator_id).then(response => {
+                    this.contacts = response.data;
+                });
+            }
+        },
         getClockIns(){
+            if(!this.contact_id){
+                return;
+            }
             this.$http.get('/clock_ins?contact_id=' + this.contact_id + '&start_date=' + this.start_date + '&stop_date=' + this.stop_date + '&type=' + this.clock_in_type).then(response => {
                 this.clock_ins = response.data;
             });
@@ -218,6 +221,19 @@ export default {
                 }
             });
             return Math.round(time*100)/100;
+        },
+        ...mapState({
+          user_id: state => state.user.id,
+          operator_id: state => state.settings.operating_company_client_id
+        })
+    },
+    watch:{
+        user_id(){
+            this.contact_id = this.user_id;
+            this.getClockIns();
+        },
+        operator_id(){
+            this.getContacts();
         }
     }
 }

@@ -2,7 +2,7 @@
 <div>
   <b-row>
     <b-col>
-      <b-form-group label="Day Notes">
+      <b-form-group label="Appointment Notes">
           <b-form-textarea
             ref="notes"
             type="text"
@@ -59,10 +59,10 @@
     </b-col>
   </b-row>
   <b-row>
-    <EditClockIns v-if="my_date.id"
+    <EditClockInsModule v-if="my_date.id"
       :task_date_id="my_date.id"
     >
-    </EditClockIns>
+    </EditClockInsModule>
   </b-row>
 </div>
 </template>

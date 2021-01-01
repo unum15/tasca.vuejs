@@ -42,6 +42,7 @@
 </template>
 <script>
 import TopMenu from './TopMenu';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewContacts',
     components: {
@@ -86,14 +87,27 @@ export default {
         this.$http.get('/activity_levels').then((results) => {
             this.activity_levels = results.data;
         });
-        this.activity_level_id = localStorage.getItem('show_maximium_activity_level_id');
+        this.activity_level_id = this.vuex_show_maximium_activity_level_id;
         this.getContacts();
     },
     methods: {
         getContacts(){
-            this.$http.get('/contacts?maximium_activity_level_id=' + this.activity_level_id).then((results) => {
-                this.contacts = results.data;
-            });
+            if(this.activity_level_id){
+                this.$http.get('/contacts?maximium_activity_level_id=' + this.activity_level_id).then((results) => {
+                    this.contacts = results.data;
+                });
+            }
+        }
+    },
+    computed: {
+        ...mapState({
+          vuex_show_maximium_activity_level_id: state => state.user.show_maximium_activity_level_id
+        })
+    },
+    watch: {
+        vuex_show_maximium_activity_level_id (){
+            this.activity_level_id = this.vuex_show_maximium_activity_level_id;
+            this.getContacts();
         }
     }
 }

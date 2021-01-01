@@ -164,6 +164,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TopMenu from './TopMenu';
 import ViewTaskDate from './ViewTaskDate';
 import moment from 'moment';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewAssignments',
     components: {
@@ -175,7 +176,6 @@ export default {
         return {
             order_status_types: [],
             crews: [],
-            contact_name: null,
             crew_id: null,
             tasks: [],
             text_filter: null,
@@ -281,7 +281,6 @@ export default {
 			this.categories = response.data.data;
 		});
         this.getTasks();
-        this.contact_name = localStorage.getItem('name');
     },
     methods: {
         getTasks(){
@@ -443,7 +442,7 @@ export default {
                     clock_in : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time,
                     overhead_assignment_id: this.modal_overhead.new.overhead_assignment_id,
                     overhead_category_id: this.modal_overhead.new.overhead_category_id,
-                    contact_id: localStorage.getItem('id')
+                    contact_id: this.$store.state.user.id
                 };
                 this.$http.post('/clock_in', clock_in).then(response => {
                     this.clock_in = response.data;
@@ -503,7 +502,10 @@ export default {
                 return this.findSelectedCategories(this.modal_overhead.new.overhead_assignment_id,this.categories);
             }
             return [];
-        }
+        },
+        ...mapState({
+          contact_name: state => state.user.name
+        })
     }
 }
 </script>

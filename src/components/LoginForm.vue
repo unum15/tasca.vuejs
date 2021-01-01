@@ -54,12 +54,17 @@ export default {
     }
   },
   created() {
-    this.$http.get('/status')
-        .then(request => {
-          if(request.data.status == 'active'){
-            this.loginSuccessful(request)
-          }
-        })
+    this.$http.get('/settings')
+      .then(response => {
+        this.$store.dispatch('saveSettings',response.data);
+        this.$http.get('/status')
+          .then(response => {
+            if(response.data.status == 'active'){
+              this.loginSuccessful(response);
+            }
+          });
+      });
+    
   },
   methods: {
     signin() {
@@ -68,19 +73,9 @@ export default {
            this.loginSuccessful(request)
         });
     },
-    loginSuccessful (req) {
-      for (var prop in req.data) {
-        //test for string?
-        localStorage.setItem(prop, req.data[prop])
-      }
-      var perms = [];
-      for (var role in req.data.roles) {
-        for (var perm in req.data.roles[role].perms) {
-          perms.push(req.data.roles[role].perms[perm].name)
-        }
-      }
-      perms = perms.filter((value, index, perms) => (perms.indexOf(value) === index))
-      localStorage.setItem('perms', perms.toString())
+    loginSuccessful (response) {
+      localStorage.setItem('bearer_token', response.data.bearer_token)
+      this.$store.dispatch('saveUser',response.data);
       this.$router.push('/clients')
     },
     resetPassword(){
