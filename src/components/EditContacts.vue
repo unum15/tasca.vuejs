@@ -71,9 +71,9 @@ export default {
     this.$http.get('/contact_types').then(response => {
       this.contact_types = response.data
     });
-    /*this.$http.get('/roles').then(response => {
+    this.$http.get('/roles').then(response => {
       this.roles = response.data.data
-    });*/
+    });
     this.my_contacts = this.contacts;
   },
   methods: {
