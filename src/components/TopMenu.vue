@@ -104,6 +104,7 @@
                     <b-dropdown-item href="/overhead">Overhead</b-dropdown-item>
                     <b-dropdown-item href="/phone_number_types">Phone Number Types</b-dropdown-item>
                     <b-dropdown-item href="/property_types">Property Types</b-dropdown-item>
+                    <b-dropdown-item href="/roles">Roles</b-dropdown-item>
                     <b-dropdown-item href="/task_actions">Task Actions</b-dropdown-item>
                     <b-dropdown-item href="/task_categories">Task Assignments</b-dropdown-item>
                     <b-dropdown-item href="/task_statuses">Task Statuses</b-dropdown-item>

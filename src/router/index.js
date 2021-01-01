@@ -47,7 +47,7 @@ import ViewTaskClockIns from '@/components/ViewTaskClockIns';
 import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
 import EditOverhead from '@/components/EditOverhead';
 import EditSettings from '@/components/EditSettings';
-
+import EditRoles from '@/components/EditRoles';
 
 
 Vue.use(Router);
@@ -620,6 +620,14 @@ var router = new Router({
       meta: {
         title: 'Edit Overhead'
       }
+    },
+    {
+        path: '/roles',
+        name: 'EditRoles',
+        component: EditRoles,
+        meta: {
+            title: 'Edit Roles'
+        }
     },
     {
       path: '*',
