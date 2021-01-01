@@ -668,7 +668,7 @@ export default {
       this.order.approval_date = this.today
       this.order.start_date = this.today
       
-      this.order.service_window = localStorage.getItem('default_service_window')
+      this.order.service_window = this.$store.state.user.default_service_window;
       
       
       this.task.task_category_id = this.settings.default_billing_task_category_id

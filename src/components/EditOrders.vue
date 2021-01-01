@@ -98,12 +98,10 @@ export default {
 				completed: false,
 				expired: false
 			},
-			default_service_window: 7
 		};
 	},
 	created() {
 		this.loadOrders();
-		this.default_service_window = localStorage.getItem('default_service_window');
   },
 	methods: {
 		newOrder(){
@@ -129,7 +127,7 @@ export default {
 				properties: [ { id: this.default_property_id } ],
 				recurrences: 1,
 				renewable: false,
-				service_window: this.default_service_window,
+				service_window: this.$store.state.user.default_service_window,
 				notes: null,
 				tasks: []
 				

@@ -39,7 +39,7 @@
                     <b-dropdown-item href="/clock_ins/tasks">Tasks</b-dropdown-item>
                     <b-dropdown-item href="/clock_ins/overhead">Overhead</b-dropdown-item>
                 </b-nav-item-dropdown>
-                <b-nav-item-dropdown>
+                <b-nav-item-dropdown v-if="phreebooks">
                     <template slot="button-content">
                       <em>Phree Books</em>
                     </template>
@@ -64,7 +64,7 @@
                     <b-dropdown-item href="/asset">New Asset</b-dropdown-item>
                     <b-dropdown-item href="/assets">View Assets</b-dropdown-item>
                 </b-nav-item-dropdown>
-                <b-nav-item-dropdown>
+                <b-nav-item-dropdown v-if="backflows">
                     <template slot="button-content">
                       <em>Backflows</em>
                     </template>
@@ -84,30 +84,42 @@
                     </template>
                     <b-dropdown-item href="/settings" v-if="false">General</b-dropdown-item>
                     <b-dropdown-item href="/activity_levels">Activity Levels</b-dropdown-item>
-                    <b-dropdown-item href="/appointment_statuses">Appointment Statuses</b-dropdown-item>                    
-                    <b-dropdown-item href="/asset_service_types">Asset Service Types</b-dropdown-item>                    
-                    <b-dropdown-item href="/asset_usage_types">Asset Usage Types</b-dropdown-item>
-                    <b-dropdown-item href="/asset_units">Asset Units</b-dropdown-item>
-                    <b-dropdown-item href="/asset_time_units">Asset Time Units</b-dropdown-item>
-                    <b-dropdown-item href="/asset_locations">Asset Locations</b-dropdown-item>
-                    <b-dropdown-item href="/asset_types">Asset Types</b-dropdown-item>
+                    <b-dropdown-item href="/appointment_statuses">Appointment Statuses</b-dropdown-item>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-dropdown-group header="Assets">
+                        <b-dropdown-item href="/asset_service_types">Asset Service Types</b-dropdown-item>
+                        <b-dropdown-item href="/asset_usage_types">Asset Usage Types</b-dropdown-item>
+                        <b-dropdown-item href="/asset_units">Asset Units</b-dropdown-item>
+                        <b-dropdown-item href="/asset_time_units">Asset Time Units</b-dropdown-item>
+                        <b-dropdown-item href="/asset_locations">Asset Locations</b-dropdown-item>
+                        <b-dropdown-item href="/asset_types">Asset Types</b-dropdown-item>
+                    </b-dropdown-group>
+                    <b-dropdown-divider></b-dropdown-divider>
                     <b-dropdown-item href="/client_types">Client Types</b-dropdown-item>
                     <b-dropdown-item href="/contact_methods">Contact Methods</b-dropdown-item>
                     <b-dropdown-item href="/contact_types">Contact Types</b-dropdown-item>
                     <b-dropdown-item href="/crews">Crews</b-dropdown-item>
                     <b-dropdown-item href="/email_types">Email Types</b-dropdown-item>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-dropdown-group header="Orders">
                     <b-dropdown-item href="/order_actions">Order Actions</b-dropdown-item>
                     <b-dropdown-item href="/order_categories">Order Categories</b-dropdown-item>
                     <b-dropdown-item href="/order_priorities">Order Priorities</b-dropdown-item>
                     <b-dropdown-item href="/order_statuses">Order Statuses</b-dropdown-item>
                     <b-dropdown-item href="/order_types">Order Types</b-dropdown-item>
+                    </b-dropdown-group>
+                    <b-dropdown-divider></b-dropdown-divider>
                     <b-dropdown-item href="/overhead">Overhead</b-dropdown-item>
                     <b-dropdown-item href="/phone_number_types">Phone Number Types</b-dropdown-item>
                     <b-dropdown-item href="/property_types">Property Types</b-dropdown-item>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-dropdown-group header="Tasks">
                     <b-dropdown-item href="/task_actions">Task Actions</b-dropdown-item>
                     <b-dropdown-item href="/task_categories">Task Assignments</b-dropdown-item>
                     <b-dropdown-item href="/task_statuses">Task Statuses</b-dropdown-item>
                     <b-dropdown-item href="/task_types">Task Types</b-dropdown-item>
+                    </b-dropdown-group>
+                    <b-dropdown-divider></b-dropdown-divider>
                     <b-dropdown-item href="/work_types">Work Types</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown right>
@@ -124,6 +136,7 @@
     </div>
 </template>
 <script>
+    import { mapState } from 'vuex';
     export default {
         name: 'TopMenu',
         methods: {
@@ -134,6 +147,12 @@
                     this.$router.push('/');
 				})
 			},
+        },
+        computed: {
+            ...mapState({
+                backflows: state => state.settings.backflows,
+                phreebooks: state => state.settings.phreebooks,
+            }),
         }
     };
 </script>
