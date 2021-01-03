@@ -1,8 +1,10 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col md="2" offset-md="5">
-        <h2 class="form-signin-heading">Please sign in</h2>
+      <b-col md="4" offset-md="4">
+        <h1>{{ company_name }}</h1>
+        <h4>Tasca Customer Managment System</h4>
+        <h2>Please Sign In</h2>
       </b-col>
     </b-row>
     <b-row>
@@ -50,12 +52,14 @@ export default {
   data() {
     return {
       login: null,
-      password: null
+      password: null,
+      company_name: null
     }
   },
   created() {
     this.$http.get('/settings')
       .then(response => {
+        this.company_name = response.data.operating_company.name;
         this.$store.dispatch('saveSettings',response.data);
         this.$http.get('/status')
           .then(response => {
