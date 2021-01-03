@@ -17,6 +17,16 @@
                                   </b-form-input>
                                 </b-form-group>
                             </b-col>
+                            <b-col sm="1">
+                                <b-form-group label="Abbreviation">
+                                  <b-form-input
+                                    type="text"
+                                    @change="save"
+                                    v-model="my_property.abbreviation"
+                                    >
+                                  </b-form-input>
+                                </b-form-group>
+                            </b-col>
                             <b-col>
                                 <b-form-group label="Activity Level">
                                   <b-form-select
@@ -247,6 +257,7 @@ export default {
         this.my_property.contacts.map( c => {
             if(c){
                 contacts.push(c.id);
+                console.log(c.id);
             }
         });
         this.my_property.contacts = contacts;
