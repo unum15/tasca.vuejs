@@ -257,7 +257,6 @@ export default {
         this.my_property.contacts.map( c => {
             if(c){
                 contacts.push(c.id);
-                console.log(c.id);
             }
         });
         this.my_property.contacts = contacts;
