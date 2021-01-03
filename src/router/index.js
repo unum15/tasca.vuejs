@@ -47,8 +47,8 @@ import ViewTaskClockIns from '@/components/ViewTaskClockIns';
 import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
 import EditOverhead from '@/components/EditOverhead';
 import EditSettings from '@/components/EditSettings';
-
-
+import EditBackflowWaterSystem from '@/components/EditBackflowWaterSystem';
+import ViewBackflowWaterSystems from '@/components/ViewBackflowWaterSystems';
 
 Vue.use(Router);
 
@@ -621,6 +621,32 @@ var router = new Router({
         title: 'Edit Overhead'
       }
     },
+    {
+        path: '/backflow_water_system',
+        name: 'NewBackflowWaterSystem',
+        component: EditBackflowWaterSystem,
+        meta: {
+            title: 'New Backflow Water System'
+        }
+    },
+    {
+        path: '/backflow_water_system/:backflow_water_system_id',
+        name: 'EditBackflowWaterSystem',
+        component: EditBackflowWaterSystem,
+        props: true,
+        meta: {
+            title: 'Edit Backflow Water System'
+        }
+    },
+    {
+      path: '/backflow_water_systems',
+      name: 'ViewBackflowWaterSystems',
+      component: ViewBackflowWaterSystems,
+      meta: {
+        title: 'View Backflow Water Systems'
+      }
+    },
+
     {
       path: '*',
       redirect: '/'
