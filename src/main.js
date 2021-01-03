@@ -26,6 +26,8 @@ new Vue({
   store,
   render: h => h(App),
   created() {
-    this.$store.dispatch('restoreData');
+    if(this.$route.path!='/'){
+      this.$store.dispatch('restoreData');
+    }
   },
 }).$mount('#app');

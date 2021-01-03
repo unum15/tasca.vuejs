@@ -158,19 +158,19 @@
               :task_id="task_id"
               ></EditProjects>
           </b-tab>
-          <b-tab v-if="backflows && client.id && (client.properties.length > 0)" title="Backflows" :active="backflow_id != null">
+          <b-tab v-if="(backflows == 'true') && client.id && (client.properties.length > 0)" title="Backflows" :active="backflow_id != null">
             <ViewClientBackflowsTab
               :properties="client.properties"
               ></ViewClientBackflowsTab>
           </b-tab>
-          <b-tab v-if="irrigation_systems && client.id && (client.properties.length > 0)" title="Irrigation Systems" :active="irrigation_system_id != null">
+          <b-tab v-if="(irrigation_systems == 'true') && client.id && (client.properties.length > 0)" title="Irrigation Systems" :active="irrigation_system_id != null">
             <ViewClientIrrigationSystemsTab
               :properties="client.properties"
               ></ViewClientIrrigationSystemsTab>
           </b-tab>
         </b-tabs>
-        <b-button v-if="phreebooks && !client.phreebooks_id" @click="createPhreeBooks">Add To Phree Books</b-button>
-        <b-button v-if="phreebooks && client.phreebooks_id" @click="updatePhreeBooks">Update Phree Books</b-button>
+        <b-button v-if="(phreebooks == 'true') && !client.phreebooks_id" @click="createPhreeBooks">Add To Phree Books</b-button>
+        <b-button v-if="(phreebooks == 'true') && client.phreebooks_id" @click="updatePhreeBooks">Update Phree Books</b-button>
     </main>
   </div>
 </template>

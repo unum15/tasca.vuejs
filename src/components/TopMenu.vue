@@ -39,7 +39,7 @@
                     <b-dropdown-item href="/clock_ins/tasks">Tasks</b-dropdown-item>
                     <b-dropdown-item href="/clock_ins/overhead">Overhead</b-dropdown-item>
                 </b-nav-item-dropdown>
-                <b-nav-item-dropdown v-if="phreebooks">
+                <b-nav-item-dropdown v-if="phreebooks == 'true'">
                     <template slot="button-content">
                       <em>Phree Books</em>
                     </template>
@@ -64,7 +64,7 @@
                     <b-dropdown-item href="/asset">New Asset</b-dropdown-item>
                     <b-dropdown-item href="/assets">View Assets</b-dropdown-item>
                 </b-nav-item-dropdown>
-                <b-nav-item-dropdown v-if="backflows">
+                <b-nav-item-dropdown v-if="backflows == 'true'">
                     <template slot="button-content">
                       <em>Backflows</em>
                     </template>

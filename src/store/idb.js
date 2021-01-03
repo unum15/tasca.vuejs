@@ -56,7 +56,7 @@ export default {
 			};
 
 			let store = trans.objectStore('user');
-			store.add(user,'user');
+			store.put(user,'user');
 
 		});
 	
@@ -74,7 +74,7 @@ export default {
 			};
 
 			let store = trans.objectStore('user');
-			store.add(settings,'settings');
+			store.put(settings,'settings');
 
 		});
 	
@@ -97,6 +97,21 @@ export default {
             
         });    
             
+	},
+	async deleteSettings() {
+
+		let db = await this.getDb();
+
+		return new Promise(resolve => {
+
+			let trans = db.transaction(['user'],'readwrite');
+			trans.oncomplete = () => {
+				resolve();
+			};
+
+			let store = trans.objectStore('user');
+			store.delete('settings');
+		});	
 	},
     async getUser() {
 

@@ -14,6 +14,7 @@ const store = new Vuex.Store({
   },
   actions: {
     async saveSettings(context, settings) {
+      console.log(settings.backflows);
       context.state.settings = settings;
       await idb.saveSettings(settings);
     },
@@ -27,7 +28,13 @@ const store = new Vuex.Store({
       let user = await idb.getUser();
       context.state.user = user;
       
-    }
+    },
+    async clearData(context) {
+      context.state.settings = {};
+      context.state.user = {};
+      await idb.deleteSettings();
+      await idb.deleteUser();
+    },
   }
 });
 
