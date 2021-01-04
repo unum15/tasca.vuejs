@@ -9,6 +9,9 @@
             :fields="fields"
             responsive
         >
+            <template v-slot:cell(notes)="data">
+                <img src="@/assets/details.png" v-b-tooltip.hover.bottomleft :title="data.value" fluid alt="details" style="margin-left:5px;width:25px;" />
+            </template>
             <template v-slot:cell(serial_number)="data">
                 <a :href="'/backflow_assembly/'+data.item.id">
                     {{ data.value }}
@@ -36,7 +39,7 @@
                 >
                 </b-form-input>
             </template>
-            <template v-slot:cell(notes)="data">
+            <template v-slot:cell(reading_notes)="data">
                 <b-form-input
                   type="text"
                   v-model="data.item.reading_notes"
@@ -77,6 +80,11 @@ export default {
                         sortable: true
                     },
                     {
+                        key: 'notes',
+                        label: 'Notes',
+                        sortable: false
+                    },
+                    {
                         key: 'backflow_type.name',
                         label: 'Type',
                         sortable: true
@@ -112,7 +120,7 @@ export default {
                         sortable: false
                     },
                     {
-                        key: 'notes',
+                        key: 'reading_notes',
                         label: 'Notes',
                         sortable: false
                     },

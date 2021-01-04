@@ -95,6 +95,15 @@
                             </b-form-group>
                         </b-col>
                         <b-col>
+                            <b-form-group label="Assembly Notes">
+                                <b-form-textarea
+                                    v-model="backflow_assembly.notes"
+                                    @input="saveBackflowAssembly"
+                                >
+                                </b-form-textarea>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
                             <b-form-group label="Visual Inspection Notes">
                                 <b-form-textarea
                                     v-model="backflow_test_report.visual_inspection_notes"
@@ -634,6 +643,9 @@ export default {
             else{
                 this.$http.patch('/backflow_test_report/' + this.backflow_test_report.id, this.backflow_test_report);
             }
+        },
+        saveBackflowAssembly() {
+            this.$http.patch('/backflow_assembly/' + this.backflow_assembly.id, this.backflow_assembly);
         },
         saveTest (test) {
             if(!this.backflow_test_report.id){
