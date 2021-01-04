@@ -49,6 +49,11 @@
                         <template v-slot:cell(include)="data">
                                 <b-form-checkbox v-if="data.item.backflow_test_reports.length" v-model="data.item.include" />
                         </template>
+                        <template v-slot:cell(serial_number)="data">
+                            <a :href="'/backflow_assembly/'+data.item.id">
+                                {{ data.value }}
+                            </a>
+                        </template>
                     </b-table>
                     </b-col>
                 </b-row>
