@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Privacy from '@/components/Privacy';
 import EditClient from '@/components/EditClient';
 import QuickClient from '@/components/QuickClient';
 import QuickOrder from '@/components/QuickOrder';
@@ -47,8 +48,6 @@ import ViewTaskClockIns from '@/components/ViewTaskClockIns';
 import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
 import EditOverhead from '@/components/EditOverhead';
 import EditSettings from '@/components/EditSettings';
-
-
 
 Vue.use(Router);
 
@@ -620,6 +619,14 @@ var router = new Router({
       meta: {
         title: 'Edit Overhead'
       }
+    },
+    {
+        path: '/privacy',
+        name: 'Privacy',
+        component: Privacy,
+        meta: {
+            title: 'Privacy Policy'
+        }
     },
     {
       path: '*',
