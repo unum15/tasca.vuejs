@@ -75,6 +75,8 @@
                     <b-dropdown-item href="/backflow_test_report">Edit Backflow Test Reports</b-dropdown-item>
                     <b-dropdown-item href="/backflow_test_reports">View Backflow Test Reports</b-dropdown-item>
                     <b-dropdown-item href="/backflow_old">View Backflow Old</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_water_system">New Backflow Water System</b-dropdown-item>
+                    <b-dropdown-item href="/backflow_water_systems">View Backflow Water Systems</b-dropdown-item>
                 </b-nav-item-dropdown>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">

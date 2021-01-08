@@ -49,6 +49,8 @@ import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
 import EditOverhead from '@/components/EditOverhead';
 import EditSettings from '@/components/EditSettings';
 import EditRoles from '@/components/EditRoles';
+import EditBackflowWaterSystem from '@/components/EditBackflowWaterSystem';
+import ViewBackflowWaterSystems from '@/components/ViewBackflowWaterSystems';
 
 Vue.use(Router);
 
@@ -622,20 +624,45 @@ var router = new Router({
       }
     },
     {
-        path: '/privacy',
-        name: 'Privacy',
-        component: Privacy,
-        meta: {
-            title: 'Privacy Policy'
-        }
+      path: '/privacy',
+      name: 'Privacy',
+      component: Privacy,
+      meta: {
+          title: 'Privacy Policy'
+      }
     },
     {
-        path: '/roles',
-        name: 'EditRoles',
-        component: EditRoles,
-        meta: {
-            title: 'Edit Roles'
-        }
+      path: '/roles',
+      name: 'EditRoles',
+      component: EditRoles,
+      meta: {
+          title: 'Edit Roles'
+      }
+    },
+    {
+      path: '/backflow_water_system',
+      name: 'NewBackflowWaterSystem',
+      component: EditBackflowWaterSystem,
+      meta: {
+          title: 'New Backflow Water System'
+      }
+    },
+    {
+      path: '/backflow_water_system/:backflow_water_system_id',
+      name: 'EditBackflowWaterSystem',
+      component: EditBackflowWaterSystem,
+      props: true,
+      meta: {
+          title: 'Edit Backflow Water System'
+      }
+    },
+    {
+      path: '/backflow_water_systems',
+      name: 'ViewBackflowWaterSystems',
+      component: ViewBackflowWaterSystems,
+      meta: {
+        title: 'View Backflow Water Systems'
+      }
     },
     {
       path: '*',
