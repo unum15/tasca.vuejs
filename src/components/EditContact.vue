@@ -133,6 +133,7 @@
               :options="roles"
               value-field="id"
               text-field="display_name"
+              @change="saveRoles"
               >
             </b-form-checkbox-group>
           </b-row>
@@ -211,8 +212,11 @@ export default {
     var properties = [];
     this.my_contact.properties.forEach( p => {
       properties.push(p.id);
-    })
+    });
     this.my_contact.properties = properties;
+    this.my_contact.roles.forEach( r => {
+      this.selected_roles.push(r.id);
+    });
   },
   methods: {
     removeContact () {
@@ -237,7 +241,7 @@ export default {
         }
     },
     saveRoles() {
-        this.$http.put('/contact/' + this.my_contact.id + '/roles', this.selected_roles)
+        this.$http.put('/contact/' + this.my_contact.id + '/roles', {roles: this.selected_roles})
     },
     resetPassword(){
       this.$http.post('/auth/password/email', {'login' : this.contact.login}).then((response) => {
