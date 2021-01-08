@@ -56,6 +56,7 @@
 <script>
 import moment from 'moment';
 import backflows from '../common/Backflows.js';
+import { mapState } from 'vuex';
 export default {
     name: 'CreateBackflowTestReport',
     props: {
@@ -137,7 +138,6 @@ export default {
         };
     },
     created () {
-        this.contact_id = localStorage.getItem('id')
         this.passed = backflows.passed // shared code between here and EditBackflowTestReport;
         if(this.property_data){
             this.fields = this.property_fields.concat(this.fields);
@@ -194,6 +194,9 @@ export default {
         today() {
             return moment().format('YYYY-MM-DD');
         },
+        ...mapState({
+          contact_id: state => state.user.id
+        })
     },
 };
 </script>

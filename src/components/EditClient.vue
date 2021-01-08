@@ -158,29 +158,30 @@
               :task_id="task_id"
               ></EditProjects>
           </b-tab>
-          <b-tab v-if="client.id && (client.properties.length > 0)" title="Backflows" :active="backflow_id != null">
+          <b-tab v-if="(backflows == 'true') && client.id && (client.properties.length > 0)" title="Backflows" :active="backflow_id != null">
             <ViewClientBackflowsTab
               :properties="client.properties"
               ></ViewClientBackflowsTab>
           </b-tab>
-          <b-tab v-if="client.id && (client.properties.length > 0)" title="Irrigation Systems" :active="irrigation_system_id != null">
+          <b-tab v-if="(irrigation_systems == 'true') && client.id && (client.properties.length > 0)" title="Irrigation Systems" :active="irrigation_system_id != null">
             <ViewClientIrrigationSystemsTab
               :properties="client.properties"
               ></ViewClientIrrigationSystemsTab>
           </b-tab>
         </b-tabs>
-        <b-button v-if="!client.phreebooks_id" @click="createPhreeBooks">Add To Phree Books</b-button>
-        <b-button v-if="client.phreebooks_id" @click="updatePhreeBooks">Update Phree Books</b-button>
+        <b-button v-if="(phreebooks == 'true') && !client.phreebooks_id" @click="createPhreeBooks">Add To Phree Books</b-button>
+        <b-button v-if="(phreebooks == 'true') && client.phreebooks_id" @click="updatePhreeBooks">Update Phree Books</b-button>
     </main>
   </div>
 </template>
 <script>
-import EditContacts from './EditContacts'
-import EditProperties from './EditProperties'
-import EditProjects from './EditProjects'
-import ViewClientBackflowsTab from './ViewClientBackflowsTab'
-import ViewClientIrrigationSystemsTab from './ViewClientIrrigationSystemsTab'
-import TopMenu from './TopMenu'
+import EditContacts from './EditContacts';
+import EditProperties from './EditProperties';
+import EditProjects from './EditProjects';
+import ViewClientBackflowsTab from './ViewClientBackflowsTab';
+import ViewClientIrrigationSystemsTab from './ViewClientIrrigationSystemsTab';
+import TopMenu from './TopMenu';
+import { mapState } from 'vuex';
 export default {
   name: 'EditClient',
   components: {
@@ -279,6 +280,13 @@ export default {
     updatePhreeBooks () {
       this.$http.put('/phree_books/client/' + this.client.id).then(() => alert('Updated'));
     }
+  },
+  computed: {
+    ...mapState({
+      backflows: state => state.settings.backflows,
+      phreebooks: state => state.settings.phreebooks,
+      irrigation_systems: state => state.settings.irrigation_systems
+    }),
   }
 }
 

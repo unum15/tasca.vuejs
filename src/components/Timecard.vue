@@ -129,6 +129,7 @@
 <script>
 import moment from 'moment';
 import TopMenu from './TopMenu';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewClockIns',
     components: {
@@ -173,23 +174,18 @@ export default {
         }
     },
     created() {
-        this.contact_id = localStorage.getItem('id');
+        this.contact_id = this.user_id;
         let last_sunday = moment().startOf('week');
         this.start_date = last_sunday.format('YYYY-MM-DD');
         this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');
-        this.$http.get('/settings').then(response => {
-            this.settings = response.data;
-            if(this.settings.operating_company_client_id){
-                this.$http.get('/contacts?client_id=' + this.settings.operating_company_client_id).then(response => {
-                    this.contacts = response.data;
-                    this.contact_id = localStorage.getItem('id');
-                    this.getClockIns();
-                });
-            }
-        })
+        this.getContacts();
+        this.getClockIns();
     },
     methods: {
         getClockIns(){
+            if(!this.contact_id){
+                return;
+            }
             for(let date=moment(this.stop_date);date.format('YYYY-MM-DD')>=this.start_date;date.subtract(1, 'day') ){
                 this.dates[date.format('YYYY-MM-DD')] = [];
             }
@@ -199,6 +195,13 @@ export default {
                     this.$forceUpdate();
                 });
             });
+        },
+        getContacts(){
+            if(this.operator_id){
+                this.$http.get('/contacts?client_id=' + this.operator_id).then(response => {
+                    this.contacts = response.data;
+                });
+            }
         },
         getDiff(clock_in,clock_out){
             var start = moment(clock_in);
@@ -267,6 +270,21 @@ export default {
                 });
             });
             return Math.round(time*100)/100;
+        }
+    },
+    computed:{
+        ...mapState({
+          user_id: state => state.user.id,
+          operator_id: state => state.settings.operating_company_client_id
+        })
+    },
+    watch:{
+        user_id(){
+            this.contact_id = this.user_id;
+            this.getClockIns();
+        },
+        operator_id(){
+            this.getContacts();
         }
     }
 }

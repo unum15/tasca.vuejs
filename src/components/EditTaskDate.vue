@@ -59,10 +59,10 @@
     </b-col>
   </b-row>
   <b-row>
-    <EditClockIns v-if="my_date.id"
+    <EditClockInsModule v-if="my_date.id"
       :task_date_id="my_date.id"
     >
-    </EditClockIns>
+    </EditClockInsModule>
   </b-row>
 </div>
 </template>
