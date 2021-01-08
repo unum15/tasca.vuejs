@@ -12,7 +12,7 @@
               @row-clicked="rowClicked"
           >
               <template v-slot:cell(placement)="data">
-                <span v-b-popover.hover.top="data.item.backflow_water_system.name + (data.item.contact ? '-' + data.item.contact.name : '')">
+                <span v-b-popover.hover.top="(data.item.backflow_water_system ? data.item.backflow_water_system.name : '') + (data.item.contact ? '-' + data.item.contact.name : '')">
                   {{ data.value }}
                 </span>
               </template>
@@ -128,6 +128,7 @@
         </b-tabs>
       </b-tab>
     </b-tabs>
+>>>>>>> master
   </div>
 </template>
 <script>

@@ -311,7 +311,6 @@
                         </b-form-group>
                     </b-col>
                 </b-row>
-
                 <b-row>
                     <b-col>
                         <b-form-group label="Notes">
@@ -324,6 +323,12 @@
                         </b-form-group>
                     </b-col>
                 </b-row>
+                <b-row>
+                    <b-col>
+                        <b-button v-b-modal.view-pictures style="margin:5px;">View Pictures ({{ this.pictures.length }})</b-button>
+                        <b-button v-b-modal.upload-pictures style="margin:5px;">Add Pictures</b-button>
+                    </b-col>
+                </b-row>
                <b-row>
                     <b-col>
                         <b-button @click="$router.push('/backflow_assemblies')" style="margin:5px;">View Assemblies</b-button>
@@ -333,21 +338,38 @@
                     </b-col>
                 </b-row>
             </b-container>
-            <b-modal id="clearable" title="Clearable Fields" ok-only>
-              <b-container>
-                <b-row v-for="(field,key) in fields" :key="key">
-                    <b-col>
-                        <b-form-checkbox
-                            v-model="field.clear"
-                            @input="saveClearable(key)"
-                          >
-                            {{ field.name }}
-                          </b-form-checkbox>
-                    </b-col>
-                </b-row>
-              </b-container>
-            </b-modal>
-        </main>      
+        </main>
+        <b-modal id="view-pictures" title="View Pictures">
+            <div v-for="picture in pictures" :key="picture.filename">
+                <img :src="'/api/uploads/backflows/pictures/' + picture.filename" style="width:600px;" :alt="picture.original_filename" />
+                {{ picture.original_filename }}
+            </div>
+        </b-modal>
+        <b-modal id="upload-pictures" title="Upload Pictures" @ok="uploadPictures">
+            <b-form-group label="Upload Picture">
+                <b-form-file
+                    v-model="new_pictures"
+                    :state="Boolean(new_pictures)"
+                    placeholder="Choose files or drop them here..."
+                    drop-placeholder="Drop files here..."
+                    multiple
+                ></b-form-file>
+            </b-form-group>
+        </b-modal>
+        <b-modal id="clearable" title="Clearable Fields" ok-only>
+          <b-container>
+            <b-row v-for="(field,key) in fields" :key="key">
+                <b-col>
+                    <b-form-checkbox
+                        v-model="field.clear"
+                        @input="saveClearable(key)"
+                      >
+                        {{ field.name }}
+                      </b-form-checkbox>
+                </b-col>
+            </b-row>
+          </b-container>
+        </b-modal>
         <b-modal id="add-size-modal" title="Add Size" @ok="addSize">
             <b-form-group label="Size">
                 <el-select
@@ -394,6 +416,8 @@ export default {
             models: [],
             sizes: [],
             placements: [],
+            new_pictures: [],
+            pictures: [],
             accounts: [],
             new_size: null,
             fields: {
@@ -498,6 +522,7 @@ export default {
             this.$http.get('/backflow_assembly/' + this.backflow_assembly_id + '?includes=property').then(response => {
                 this.client_id = response.data.data.property.client_id;
                 this.backflow_assembly = response.data.data;
+                this.getPictures();
                 this.getProperties(false);
                 this.getContacts(false);
                 this.getUnits(false);
@@ -506,6 +531,21 @@ export default {
         }
     },
     methods: {
+        uploadPictures(){
+            this.new_pictures.map(p => {
+                let backflow_picture = new FormData();
+                backflow_picture.append('picture', p);
+                backflow_picture.append('backflow_assembly_id', this.backflow_assembly.id);
+                this.$http.post('/backflow_picture',backflow_picture,{headers: {'Content-Type': 'multipart/form-data'}}).then(() => {
+                    this.getPictures();
+                });
+            });
+        },
+        getPictures(){
+            this.$http.get('/backflow_pictures?backflow_assembly_id=' + this.backflow_assembly_id).then(response => {
+                this.pictures = response.data.data;
+            });
+        },
         getModels(){
             this.$http.get('/backflow_models?includes=backflow_sizes').then(response => {
                 this.models = response.data.data;
