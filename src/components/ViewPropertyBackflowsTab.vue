@@ -128,7 +128,6 @@
         </b-tabs>
       </b-tab>
     </b-tabs>
->>>>>>> master
   </div>
 </template>
 <script>
