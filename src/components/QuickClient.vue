@@ -331,10 +331,10 @@
                   <b-col>
                       <b-form-group label="Category">
                           <b-form-select
-                              :options="task_categories"
+                              :options="labor_assignments"
                               value-field="id"
                               text-field="name"
-                              v-model="task.task_category_id"
+                              v-model="task.labor_assignment_id"
                               >
                           </b-form-select>
                       </b-form-group>
@@ -396,7 +396,7 @@ export default {
       order_categories: [],
       order_priorities: [],
       order_types: [],
-      task_categories: [],
+      labor_assignments: [],
       task_statuses: [],
       task_actions: [],
       contact_methods_loading: true,
@@ -471,8 +471,8 @@ export default {
     this.$http.get('/order_types').then(response => {
       this.order_types = response.data
     })
-    this.$http.get('/task_categories').then(response => {
-      this.task_categories = response.data
+    this.$http.get('/labor_assignments').then(response => {
+      this.labor_assignments = response.data
     })
     this.$http.get('/task_statuses').then(response => {
       this.task_statuses = response.data
@@ -641,8 +641,8 @@ export default {
       };
       this.task= {
         id: null,
-        task_type_id: 2,
-        task_category_id: this.settings.default_billing_task_category_id,
+        labor_type_id: 2,
+        labor_assignment_id: this.settings.default_billing_labor_assignment_id,
         task_status_id: this.settings.default_billing_task_status_id,
         task_action_id: this.settings.default_billing_task_action_id,
       };
@@ -671,7 +671,7 @@ export default {
       this.order.service_window = this.$store.state.user.default_service_window;
       
       
-      this.task.task_category_id = this.settings.default_billing_task_category_id
+      this.task.labor_assignment_id = this.settings.default_billing_labor_assignment_id
       this.task.task_status_id = this.settings.default_billing_task_status_id
       this.task.task_action_id = this.settings.default_billing_task_action_id
       this.lastContactName = null;

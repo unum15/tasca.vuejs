@@ -8,7 +8,7 @@
                 <b-col class="data" cols="3">{{ task.task_hours }}</b-col>
                 <b-col class="label">Crew Time</b-col>
                 <b-col class="data" cols="3">{{ task.crew_hours }}</b-col>
-                <b-col cols="3"><b-button @click="clockIn" v-if="task_date_id && !clock_in_id">Clock In</b-button></b-col>
+                <b-col cols="3"><b-button @click="clockIn" v-if="appointment_id && !clock_in_id">Clock In</b-button></b-col>
                 <b-col cols="2"><b-button @click="clockOut" v-if="clock_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
@@ -53,7 +53,7 @@
                 </b-col>
             </b-row>
         </b-container>
-        <ViewHours :id="task_id" type="task" :task_date_id="task_date_id">
+        <ViewHours :id="task_id" type="task" :appointment_id="appointment_id">
         </ViewHours>
     </div>
 </template>
@@ -67,7 +67,7 @@ export default {
     },
     props: {
         task_id : { required:true },
-        task_date_id : { default: null }
+        appointment_id : { default: null }
     },
     data() {
         return {
@@ -76,7 +76,7 @@ export default {
             completed: false,
             invoiced: false,
             clock_ins: [],
-            task_dates: [],
+            appointments: [],
             employees_hours: []
         };
     },
@@ -101,16 +101,16 @@ export default {
             });
         },
         getClockIns() {
-            if(!this.task_date_id){
+            if(!this.appointment_id){
                 return;
             }
-            this.$http.get('/clock_ins?task_date_id=' + this.task_date_id).then((results) => {
+            this.$http.get('/clock_ins?appointment_id=' + this.appointment_id).then((results) => {
                 this.clock_ins = results.data;
             });
         },
         getTaskDates() {
-            this.$http.get('/task_dates?task_id=' + this.task_id).then((results) => {
-                this.task_dates = results.data;
+            this.$http.get('/appointments?task_id=' + this.task_id).then((results) => {
+                this.appointments = results.data;
             });
         },
         timeDiff(start_time, stop_time){
@@ -168,7 +168,7 @@ export default {
             var clock_in;
             clock_in = prompt('Clock In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
             if(clock_in !== null){
-                this.$http.post('/clock_in', {task_date_id : this.task_date_id, clock_in: clock_in, contact_id: this.$store.state.user.id}).then(() => {
+                this.$http.post('/clock_in', {appointment_id : this.appointment_id, clock_in: clock_in, contact_id: this.$store.state.user.id}).then(() => {
                     this.getClockIns();
                 });
             }

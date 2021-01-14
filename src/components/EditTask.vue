@@ -2,15 +2,16 @@
 	<b-container fluid-width>
         <b-row>
             <b-col>
-                <b-form-group label="Task Type">
+                <b-form-group label="Labor Type">
                     <b-form-radio-group
 						@change="save();change_defaults();"
-						v-model="my_task.task_type_id"
-						:state="my_task.task_type_id != null"
+						:options="labor_types"
+						value-field="id"
+                        text-field="name"
+						v-model="my_task.labor_type_id"
+						:state="my_task.labor_type_id != null"
 						required
 					>
-                        <b-form-radio value="1">Non Billing</b-form-radio>
-                        <b-form-radio value="2">Billing</b-form-radio>
                     </b-form-radio-group>
                 </b-form-group>
             </b-col>
@@ -51,7 +52,7 @@
 						@change="save"
                         value-field="id"
                         text-field="name"
-                        v-model="my_task.task_category_id"
+                        v-model="my_task.labor_assignment_id"
                         >
                     </b-form-select>
                 </b-form-group>
@@ -126,7 +127,7 @@
             </b-col>
         </b-row>
         <b-row>
-           <EditTaskDates :task_id="my_task.id"></EditTaskDates>
+           <EditAppointments :task_id="my_task.id"></EditAppointments>
         </b-row>
         <b-row>
             <b-col>
@@ -186,18 +187,18 @@
 	</b-container>
 </template>
 <script>
-import EditTaskDates from './EditTaskDates';
+import EditAppointments from './EditAppointments';
 export default {
     name: 'EditTask',
 	components: {
-		'EditTaskDates': EditTaskDates
+		'EditAppointments': EditAppointments
 	},	
 	props: {
 		task: {required: true},
-		task_types: {required: true},
+		labor_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
-		task_categories: {required: true},
+		labor_assignments: {required: true},
 		crews: {required: true},
 		project_close_date: {default: null},
 		settings: {required: true}
@@ -225,7 +226,7 @@ export default {
 			}
 			if(this.my_task.id === null){
 				this.$http.post('/task',this.my_task).then(response => {
-					this.my_task.id = response.data.id;
+					this.my_task.id = response.data.data.id;
 				})
 			}
 			else{
@@ -233,13 +234,13 @@ export default {
 			}
 		},
 		change_defaults(){
-			if(this.my_task.task_type_id == 2){
-				this.my_task.task_category_id = this.settings.default_nonbilling_task_category_id;
+			if(this.my_task.labor_type_id == 2){
+				this.my_task.labor_assignment_id = this.settings.default_nonbilling_labor_assignment_id;
 				this.my_task.task_status_id = this.settings.default_nonbilling_task_status_id;
 				this.my_task.task_action_id = this.settings.default_nonbilling_task_action_id;
 			}
 			else{
-				this.my_task.task_category_id = this.settings.default_billing_task_category_id;
+				this.my_task.labor_assignment_id = this.settings.default_billing_labor_assignment_id;
 				this.my_task.task_status_id = this.settings.default_billing_task_status_id;
 				this.my_task.task_action_id = this.settings.default_billing_task_action_id;
 			}
@@ -252,9 +253,9 @@ export default {
 	},
 	computed: {
 		current_categories() {
-			return this.task_categories.filter(category => {
-                for (var i=0; i < category.task_types.length; i++) {
-                  if (category.task_types[i].id == this.my_task.task_type_id) {
+			return this.labor_assignments.filter(category => {
+                for (var i=0; i < category.labor_types.length; i++) {
+                  if (category.labor_types[i].id == this.my_task.labor_type_id) {
                         return true;
                     }
                 }
@@ -263,8 +264,8 @@ export default {
 		},
 		current_statuses() {
 			return this.task_statuses.filter(status => {
-                for (var i=0; i < status.task_types.length; i++) {
-                    if (status.task_types[i].id == this.my_task.task_type_id) {
+                for (var i=0; i < status.labor_types.length; i++) {
+                    if (status.labor_types[i].id == this.my_task.labor_type_id) {
                         return true;
                     }
                 }
@@ -273,8 +274,8 @@ export default {
 		},
 		current_actions() {
 			return this.task_actions.filter(action => {
-                for (var i=0; i < action.task_types.length; i++) {
-                    if (action.task_types[i].id == this.my_task.task_type_id) {
+                for (var i=0; i < action.labor_types.length; i++) {
+                    if (action.labor_types[i].id == this.my_task.labor_type_id) {
                         return true;
                     }
                 }

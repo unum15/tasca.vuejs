@@ -111,16 +111,19 @@
                     <b-dropdown-item href="/order_types">Order Types</b-dropdown-item>
                     </b-dropdown-group>
                     <b-dropdown-divider></b-dropdown-divider>
-                    <b-dropdown-item href="/overhead">Overhead</b-dropdown-item>
                     <b-dropdown-item href="/phone_number_types">Phone Number Types</b-dropdown-item>
                     <b-dropdown-item href="/property_types">Property Types</b-dropdown-item>
                     <b-dropdown-item href="/roles">Roles</b-dropdown-item>
+                    </b-dropdown-group>
                     <b-dropdown-divider></b-dropdown-divider>
                     <b-dropdown-group header="Tasks">
                     <b-dropdown-item href="/task_actions">Task Actions</b-dropdown-item>
-                    <b-dropdown-item href="/task_categories">Task Assignments</b-dropdown-item>
                     <b-dropdown-item href="/task_statuses">Task Statuses</b-dropdown-item>
-                    <b-dropdown-item href="/task_types">Task Types</b-dropdown-item>
+                    <b-dropdown-divider></b-dropdown-divider>
+                    <b-dropdown-group header="Labor">
+                    <b-dropdown-item href="/overhead">Overhead</b-dropdown-item>
+                    <b-dropdown-item href="/labor_assignments">Labor Assignments</b-dropdown-item>
+                    <b-dropdown-item href="/labor_types">Labor Types</b-dropdown-item>
                     </b-dropdown-group>
                     <b-dropdown-divider></b-dropdown-divider>
                     <b-dropdown-item href="/work_types">Work Types</b-dropdown-item>

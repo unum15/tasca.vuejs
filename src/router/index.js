@@ -45,8 +45,7 @@ import EditClockIn from '@/components/EditClockIn';
 import ViewClockIns from '@/components/ViewClockIns';
 import Timecard from '@/components/Timecard';
 import ViewTaskClockIns from '@/components/ViewTaskClockIns';
-import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
-import EditOverhead from '@/components/EditOverhead';
+import EditLabor from '@/components/EditLabor';
 import EditSettings from '@/components/EditSettings';
 import EditRoles from '@/components/EditRoles';
 import EditBackflowWaterSystem from '@/components/EditBackflowWaterSystem';
@@ -293,8 +292,8 @@ var router = new Router({
       component: EditList
     },
     {
-      path: '/task_types',
-      name: 'EditTaskTypes',
+      path: '/labor_types',
+      name: 'EditLaborTypes',
       component: EditList
     },
     {
@@ -608,19 +607,11 @@ var router = new Router({
       }
     },
     {
-      path: '/clock_ins/overhead',
-      name: 'ViewOverheadClockIns',
-      component: ViewOverheadClockIns,
+      path: '/labor',
+      name: 'EditLabor',
+      component: EditLabor,
       meta: {
-        title: 'View Overhead Clock Ins'
-      }
-    },
-    {
-      path: '/overhead',
-      name: 'EditOverhead',
-      component: EditOverhead,
-      meta: {
-        title: 'Edit Overhead'
+        title: 'Edit Labor Tables'
       }
     },
     {

@@ -10,7 +10,7 @@
                 <span v-if="clock_in">
                     <b-button @click="showClockInOverhead">Change</b-button>
                     <b-button @click="showClockOutOverhead">Clock Out</b-button>
-                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.overhead_assignment_id ? clock_in.overhead_assignment.name : clock_in.task_date ? clock_in.task_date.task.order.name : 'Not Selected'}} - {{ clock_in.overhead_category_id ? clock_in.overhead_category.name : clock_in.task_date ? clock_in.task_date.task.name : 'Not Selected'}}
+                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.overhead_assignment_id ? clock_in.overhead_assignment.name : clock_in.appointment ? clock_in.appointment.task.order.name : 'Not Selected'}} - {{ clock_in.overhead_category_id ? clock_in.overhead_category.name : clock_in.appointment ? clock_in.appointment.task.name : 'Not Selected'}}
                 </span>
                 <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
                 <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
@@ -149,11 +149,11 @@
                 </template>
             </b-table>
             <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewTaskDate
+                <ViewAppointment
                      v-if="modalInfo.id"
-                    :task_date_id="modalInfo.id"
+                    :appointment_id="modalInfo.id"
                 >
-                </ViewTaskDate>
+                </ViewAppointment>
             </b-modal>
         </main>
     </div>
@@ -162,14 +162,14 @@
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TopMenu from './TopMenu';
-import ViewTaskDate from './ViewTaskDate';
+import ViewAppointment from './ViewAppointment';
 import moment from 'moment';
 import { mapState } from 'vuex';
 export default {
     name: 'ViewAssignments',
     components: {
         TopMenu,
-        ViewTaskDate,
+        ViewAppointment,
         Treeselect
     },
     data() {

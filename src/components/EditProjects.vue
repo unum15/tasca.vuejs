@@ -49,10 +49,10 @@
 						:order_statuses="order_statuses"
 						:order_actions="order_actions"
 						:order_categories="order_categories"
-						:task_categories="task_categories"
+						:labor_assignments="labor_assignments"
 						:task_statuses="task_statuses"
 						:task_actions="task_actions"
-						:task_types="task_types"
+						:labor_types="labor_types"
             :order_status_types="order_status_types"
             :default_property_id="default_property_id"
             :order_id="order_id"
@@ -96,10 +96,10 @@ export default {
 			order_actions: [],
 			order_statuses: [],
 			order_categories: [],
-			task_categories: [],
+			labor_assignments: [],
 			task_statuses: [],
 			task_actions: [],
-			task_types: [],
+			labor_types: [],
       order_status_types: [],
       my_settings: null,
       selected_project_id: null,
@@ -132,8 +132,8 @@ export default {
 		this.$http.get('/order_categories').then(response => {
 			this.order_categories = response.data;
 		});
-		this.$http.get('/task_categories').then(response => {
-			this.task_categories = response.data;
+		this.$http.get('/labor_assignments').then(response => {
+			this.labor_assignments = response.data.data;
 		});
 		this.$http.get('/task_statuses').then(response => {
 			this.task_statuses = response.data;
@@ -141,8 +141,8 @@ export default {
 		this.$http.get('/task_actions').then(response => {
 			this.task_actions = response.data;
 		});
-		this.$http.get('/task_types').then(response => {
-			this.task_types = response.data;
+		this.$http.get('/labor_types').then(response => {
+			this.labor_types = response.data.data;
 		});
     this.selected_project_id = this.project_id;
     this.getProjects()

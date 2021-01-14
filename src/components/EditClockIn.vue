@@ -103,7 +103,7 @@
                     <b-col md="6">
                         <b-form-group label="Task Date Id" label-cols="4" label-align="right">
                             <b-form-input
-                                v-model="clock_in.task_date_id"
+                                v-model="clock_in.appointment_id"
                                 @change="save"
                                 type="number"
                             >

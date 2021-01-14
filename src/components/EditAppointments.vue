@@ -1,22 +1,22 @@
 <template>
     <b-card title="Appointments" class="mb-2">
         <div v-for="date in dates" :key="date.id">
-            <EditTaskDate
+            <EditAppointment
                 :date="date"
                 @remove-task-date="removeDate"
             >
-            </EditTaskDate>
+            </EditAppointment>
         </div>
         <b-button variant="secondary" @click="newDate()">Add Appointment</b-button>
     </b-card>
 </template>
 <script>
-import EditTaskDate from './EditTaskDate';
+import EditAppointment from './EditAppointment';
 import moment from 'moment';
 export default {
-  name: 'EditTaskDates',
+  name: 'EditAppointments',
   components: {
-    'EditTaskDate': EditTaskDate
+    'EditAppointment': EditAppointment
   },
   props: {
     task_id: {required: true}
@@ -30,7 +30,7 @@ export default {
     if(this.task_id == null){
       return;
     }
-    this.$http.get('/task_dates?task_id=' + this.task_id).then(response => {
+    this.$http.get('/appointments?task_id=' + this.task_id).then(response => {
         if(response.data.length > 0){
           this.dates = response.data
         }

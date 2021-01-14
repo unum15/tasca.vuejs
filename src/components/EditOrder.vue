@@ -151,7 +151,7 @@
                                 <b-form-input
                                     type="date"
                                     @change="save"
-                                    v-model="my_order.completion_date"
+                                    v-model="my_order.close_date"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -254,10 +254,10 @@
                     v-if="my_order.id != null"
                     :crews="crews"
                     :order="my_order"
-                    :task_types="task_types"
+                    :labor_types="labor_types"
                     :task_statuses="task_statuses"
                     :task_actions="task_actions"
-                    :task_categories="task_categories"
+                    :labor_assignments="labor_assignments"
                     :task_id="task_id"
                     :settings="settings"
                     :project_close_date="project_close_date"
@@ -486,10 +486,10 @@ export default {
 		actions: {required: true},
 		priorities: {required: true},
         categories: {required: true},
-		task_types: {required: true},
+		labor_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
-		task_categories: {required: true},
+		labor_assignments: {required: true},
         task_id: {default: null},
         tab_index: {default: 0},
         project_close_date: {default: null},
@@ -673,7 +673,7 @@ export default {
             return false;
         },
         showCreateButton(){
-            if(this.my_order.completed_date != null){
+            if(this.my_order.close_date != null){
                 return false;
             }
             if(this.my_order.order_status_type_id > 1){
@@ -723,8 +723,8 @@ export default {
 	},
     watch:{
         project_close_date(date){
-            if(!this.my_order.completion_date){
-                this.my_order.completion_date = date;
+            if(!this.my_order.close_date){
+                this.my_order.close_date = date;
             }
         }
     }

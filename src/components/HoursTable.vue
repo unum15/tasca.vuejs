@@ -76,15 +76,15 @@ export default {
 				},
 				{
 					label: "Work Order",
-					key: "task_date.task.order.id"
+					key: "appointment.task.order.id"
 				},
 				{
 					label: "Client Name",
-					key: "task_date.task.order.project.client.name"
+					key: "appointment.task.order.project.client.name"
 				},
 				{
 					label: "Date",
-					key: "task_date.date"
+					key: "appointment.date"
 				},
 				{
 					label: "Start",

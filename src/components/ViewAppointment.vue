@@ -3,23 +3,23 @@
         <b-container style="padding-left:0px;">
             <b-row>
                 <b-col class="label">Project</b-col>
-                <b-col class="data" cols="3">{{ task_date.task.order.project.name }} </b-col>
+                <b-col class="data" cols="3">{{ appointment.task.order.project.name }} </b-col>
                 <b-col class="label">Client</b-col>
-                <b-col class="data" cols="2">{{ task_date.task.order.project.client.name }}</b-col>
+                <b-col class="data" cols="2">{{ appointment.task.order.project.client.name }}</b-col>
                 <b-col class="label">Order#</b-col>
-                <b-col class="data" cols="2">{{ task_date.task.order.id }}</b-col>
+                <b-col class="data" cols="2">{{ appointment.task.order.id }}</b-col>
             </b-row>
             <b-row>
-                <b-col class="data">{{ task_date.task.order.project.notes }}</b-col>
+                <b-col class="data">{{ appointment.task.order.project.notes }}</b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Order</b-col>
-                <b-col class="data" cols="2">{{ task_date.task.order.name }}</b-col>
+                <b-col class="data" cols="2">{{ appointment.task.order.name }}</b-col>
                 <b-col class="label" cols="2">Start Date</b-col>
-                <b-col class="data" cols="2">{{ task_date.task.order.start_date }}</b-col>
+                <b-col class="data" cols="2">{{ appointment.task.order.start_date }}</b-col>
             </b-row>
             <b-row>
-                <b-col class="data">{{ task_date.task.order.description }}</b-col>
+                <b-col class="data">{{ appointment.task.order.description }}</b-col>
             </b-row>
             <b-row>
                 <b-col>
@@ -27,20 +27,20 @@
                         <b-row>
                             <b-col class="label">Property</b-col>
                             <b-col class="data" cols="10">
-                                <a :href="'http://maps.google.com/maps?q=' + task_date.task.order.property.address1 + '+' + (task_date.task.order.property.address2 ? task_date.task.order.property.address2 + '+' : '') + task_date.task.order.property.city + '+' + task_date.task.order.property.state + '+' + task_date.task.order.property.zip" target="tasca_address">
-                                    {{ task_date.task.order.property.name }}<br />
-                                    {{ task_date.task.order.property.address1 }}<br />
-                                    {{ task_date.task.order.property.address2 }}<br v-if="task_date.task.order.property.address2" />
-                                    {{ task_date.task.order.property.unit }}<br v-if="task_date.task.order.property.unit" />
-                                    {{ task_date.task.order.property.city }},{{ task_date.task.order.property.state }} {{ task_date.task.order.property.zip }}
-                                    <b-col class="data"><a :href="'tel:' + task_date.task.order.property.phone_number">{{ task_date.task.order.property.phone_number }}</a></b-col>
+                                <a :href="'http://maps.google.com/maps?q=' + appointment.task.order.property.address1 + '+' + (appointment.task.order.property.address2 ? appointment.task.order.property.address2 + '+' : '') + appointment.task.order.property.city + '+' + appointment.task.order.property.state + '+' + appointment.task.order.property.zip" target="tasca_address">
+                                    {{ appointment.task.order.property.name }}<br />
+                                    {{ appointment.task.order.property.address1 }}<br />
+                                    {{ appointment.task.order.property.address2 }}<br v-if="appointment.task.order.property.address2" />
+                                    {{ appointment.task.order.property.unit }}<br v-if="appointment.task.order.property.unit" />
+                                    {{ appointment.task.order.property.city }},{{ appointment.task.order.property.state }} {{ appointment.task.order.property.zip }}
+                                    <b-col class="data"><a :href="'tel:' + appointment.task.order.property.phone_number">{{ appointment.task.order.property.phone_number }}</a></b-col>
                                 </a>
                             </b-col>
                         </b-row>
-                        <div v-for="contact in task_date.task.order.property.contacts" :key="contact.id">
+                        <div v-for="contact in appointment.task.order.property.contacts" :key="contact.id">
                             <b-row v-b-popover.hover.top="contact.notes">
                                 <b-col class="label">Contact</b-col>
-                                <b-col class="data" cols="10">{{ contact.name }} - {{ getContactType(task_date.task.order.project.client.id, contact) }}</b-col>
+                                <b-col class="data" cols="10">{{ contact.name }} - {{ getContactType(appointment.task.order.project.client.id, contact) }}</b-col>
                             </b-row>
                             <b-row v-for="phone_number in contact.phone_numbers" :key="phone_number.id">
                                 <b-col class="label">{{ phone_number.phone_number_type.name }}</b-col>
@@ -57,37 +57,37 @@
                     <b-container>
                         <b-row>
                             <b-col class="label">Location</b-col>
-                            <b-col class="data" cols="10">{{ task_date.task.order.location }}</b-col>
+                            <b-col class="data" cols="10">{{ appointment.task.order.location }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Instructions</b-col>
-                            <b-col class="data" cols="10">{{ task_date.task.order.instructions }}</b-col>
+                            <b-col class="data" cols="10">{{ appointment.task.order.instructions }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Notes</b-col>
-                            <b-col class="data" cols="10">{{ task_date.task.order.notes }}</b-col>
+                            <b-col class="data" cols="10">{{ appointment.task.order.notes }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Budget</b-col>
-                            <b-col class="data" cols="10">{{ task_date.task.order.budget }}+/-{{ task_date.task.order.budget_plus_minus }}</b-col>
+                            <b-col class="data" cols="10">{{ appointment.task.order.budget }}+/-{{ appointment.task.order.budget_plus_minus }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Bid</b-col>
-                            <b-col class="data" cols="10">{{ task_date.task.order.bid }}+/-{{ task_date.task.order.bid_plus_minus }}</b-col>
+                            <b-col class="data" cols="10">{{ appointment.task.order.bid }}+/-{{ appointment.task.order.bid_plus_minus }}</b-col>
                         </b-row>
                     </b-container>
                 </b-col>
             </b-row>
         </b-container>
-        <ViewHours :id="task_date.task.order.id" type="order" v-if="task_date.task.order.id">
+        <ViewHours :id="appointment.task.order.id" type="order" v-if="appointment.task.order.id">
         </ViewHours>
         <b-container>
             <b-row>
                 <b-col>
                     <b-tabs :key="tasks.length">
-                        <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == task_date.task_id">
+                        <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == appointment.task_id">
                             <b-container>
-                                <ViewTaskHours :task_id="task.id" :task_date_id="task.id == task_date.task_id ? task_date.id : null">
+                                <ViewTaskHours :task_id="task.id" :appointment_id="task.id == appointment.task_id ? appointment.id : null">
                                 </ViewTaskHours>
                             </b-container>
                         </b-tab>
@@ -108,11 +108,11 @@ export default {
         'ViewHours': ViewHours,
     },
     props: {
-        task_date_id : { required:true }
+        appointment_id : { required:true }
     },
     data() {
         return {
-            task_date: {
+            appointment: {
                 task: {
                     order: {
                         id: null,
@@ -142,24 +142,24 @@ export default {
     },
     methods: {
         getTaskDate() {
-            this.$http.get('/task_date/' + this.task_date_id).then((results) => {
-                this.task_date = results.data;
+            this.$http.get('/appointment/' + this.appointment_id).then((results) => {
+                this.appointment = results.data;
                 //only show first property information
-                this.task_date.task.order.property = this.task_date.task.order.properties[0];
-                this.completed = this.task_date.task.completion_date != null;
-                this.invoiced = this.task_date.task.invoiced_date != null;
-                this.billed = this.task_date.task.billed_date != null;
+                this.appointment.task.order.property = this.appointment.task.order.properties[0];
+                this.completed = this.appointment.task.completion_date != null;
+                this.invoiced = this.appointment.task.invoiced_date != null;
+                this.billed = this.appointment.task.billed_date != null;
                 this.getClockIns();
                 this.getTasks();
             });
         },
         getTasks() {
-            this.$http.get('/tasks?order_id=' + this.task_date.task.order_id).then((results) => {
+            this.$http.get('/tasks?order_id=' + this.appointment.task.order_id).then((results) => {
                 this.tasks = results.data;
             });
         },
         getClockIns() {
-            this.$http.get('/clock_ins?task_date_id=' + this.task_date_id).then((results) => {
+            this.$http.get('/clock_ins?appointment_id=' + this.appointment_id).then((results) => {
                 this.clock_ins = results.data;
             });
         },
@@ -189,7 +189,7 @@ export default {
         }
     },
     watch: {
-        task_date_id() {
+        appointment_id() {
             this.getTaskDate();
         }
     }

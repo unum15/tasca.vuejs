@@ -79,9 +79,9 @@
                :statuses="order_statuses"
                :types="order_types"   
                :task_actions="task_actions"
-               :task_categories="task_categories"
+               :labor_assignments="labor_assignments"
                :task_statuses="task_statuses"
-               :task_types="task_types"
+               :labor_types="labor_types"
                :default_property_id="default_property_id"
                :reload_count="reload_count"
                :order_id="selected_order_id"
@@ -130,9 +130,9 @@ export default {
       order_types: {required: true},      
       order_priorities: {required: true},
       task_actions: {required: true},
-      task_categories: {required: true},
+      labor_assignments: {required: true},
       task_statuses: {required: true},
-      task_types: {required: true},
+      labor_types: {required: true},
       default_property_id: {required: true},
       order_id: {default: null},
       task_id: {default: null},
