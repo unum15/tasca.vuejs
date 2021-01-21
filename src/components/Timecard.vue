@@ -86,21 +86,6 @@
                         <template v-slot:cell(id)="data">
                             <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
                         </template>
-                        <template v-slot:cell(clock_in)="data">
-                            {{ format_time(data.value) }}
-                        </template>
-                        <template v-slot:cell(clock_out)="data">
-                            {{ format_time(data.value) }}
-                        </template>
-                        <template v-slot:cell(time)="data">
-                            {{ getDiff(data.item.clock_in,data.item.clock_out) }}
-                        </template>
-                        <template v-slot:cell(order)="data">
-                            {{ data.item.appointment ? data.item.appointment.task.order.name : data.item.overhead_assignment ?  data.item.overhead_assignment.name : ''}}
-                        </template>
-                        <template v-slot:cell(task)="data">
-                            {{ data.item.appointment ? data.item.appointment.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
-                        </template>
                     </b-table>
                 </b-row>
                 <b-row>
@@ -145,56 +130,48 @@ export default {
             dates: {},
             fields: [
                     {
-                        key: 'client',
+                        key: 'appointment.task.order.project.client.name',
                         label: 'Client',
-                        sortable: true,
-                        formatter: 'clientColumn',
-                        sortByFormatted : true
+                        sortable: true
                     },
                     {
-                        key: 'project',
+                        key: 'appointment.task.order.project.name',
                         label: 'Project',
-                        sortable: true,
-                        formatter: 'projectColumn',
-                        sortByFormatted : true
+                        sortable: true
                     },
                     {
-                        key: 'order',
+                        key: 'appointment.task.order.name',
                         label: 'Order',
-                        sortable: true,
-                        formatter: 'orderColumn',
-                        sortByFormatted : true
+                        sortable: true
                     },
                     {
-                        key: 'task',
+                        key: 'appointment.task.name',
                         label: 'Task',
-                        sortable: true,
-                        formatter: 'taskColumn',
-                        sortByFormatted : true
+                        sortable: true
                     },
                     {
-                        key: 'assignment',
+                        key: 'appointment.task.assignment.name',
                         label: 'Assignment',
-                        sortable: true,
-                        formatter: 'assignmentColumn',
-                        sortByFormatted : true
+                        sortable: true
                     },
                     {
-                        key: 'activity',
+                        key: 'activity.name',
                         label: 'Activity',
-                        sortable: true,
-                        formatter: 'activityColumn',
-                        sortByFormatted : true
+                        sortable: true
                     },
                     {
                         key: 'clock_in',
                         label: 'Clock In',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'formatTime',
+                        sortByFormatted : true
                     },
                     {
                         key: 'clock_out',
                         label: 'Clock Out',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'formatTime',
+                        sortByFormatted : true
                     },
                     {
                         key: 'time',
@@ -273,7 +250,7 @@ export default {
             });
             return Math.round(time*100)/100;
         },
-        format_time(time){
+        formatTime(time){
             return moment(time).format('hh:mm A');
         },
         total_time(dates){
@@ -306,24 +283,6 @@ export default {
                 });
             });
             return Math.round(time*100)/100;
-        },
-        clientColumn(value, key, item){
-            return item.task_date ? item.task_date.task.order.project.client.name : 'Waters Contracting';
-        },
-        projectColumn(value, key, item){
-            return item.task_date ? item.task_date.task.order.project.name : 'Overhead';
-        },
-        orderColumn(value, key, item){
-            return item.task_date ? item.task_date.task.order.name : 'General';
-        },
-        taskColumn(value, key, item){
-            return item.task_date ? item.task_date.task.name : '';
-        },
-        assignmentColumn(value, key, item){
-            return item.task_date ? item.task_date.task.task_category ? item.task_date.task.task_category.name : '' : item.overhead_assignment ? item.overhead_assignment.name : '';
-        },
-        activityColumn(value, key, item){
-            return item.task_date ? '' : item.overhead_category ? item.overhead_category.name : '';
         },
         timeColumn(value, key, item){
             return this.getDiff(item.clock_in,item.clock_out);
