@@ -150,12 +150,12 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'appointment.task.assignment.name',
+                        key: 'appointment.task.labor_assignment.name',
                         label: 'Assignment',
                         sortable: true
                     },
                     {
-                        key: 'activity.name',
+                        key: 'labor_activity.name',
                         label: 'Activity',
                         sortable: true
                     },
