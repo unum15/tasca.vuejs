@@ -27,10 +27,10 @@
 					<EditTask
 						:order="order"
 						:task="task"
-						:task_types="task_types"
+						:labor_types="labor_types"
 						:task_statuses="task_statuses"
 						:task_actions="task_actions"
-						:task_categories="task_categories"
+						:labor_assignments="labor_assignments"
 						:crews="crews"
 						:project_close_date="project_close_date"
 						:settings="settings"
@@ -51,10 +51,10 @@ export default {
     },
 	props: {
 		order: {required: true},
-		task_types: {required: true},
+		labor_types: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
-		task_categories: {required: true},
+		labor_assignments: {required: true},
 		crews: {required: true},
 		project_close_date: {default: null},
 		task_id: {default: null},
@@ -86,8 +86,8 @@ export default {
 			var task = {
 				id: null,
 				order_id: this.order.id,
-				task_type_id: 2,
-				dates: [ {date: null, time:null, day: null}],
+				labor_type_id: 2,
+				appointments: [ {date: null, time:null, day: null}],
 				name: name,
 				description: name,
 				approval_date: null,
@@ -95,7 +95,7 @@ export default {
 				expiration_date: null,
 				closed_date: null,
 				billed_date: null,
-				task_category_id: this.settings.default_billing_task_category_id,
+				labor_assignment_id: this.settings.default_billing_labor_assignment_id,
 				task_status_id: this.settings.default_billing_task_status_id,
 				task_action_id: this.settings.default_billing_task_action_id,
 				notes: null,
@@ -139,19 +139,19 @@ export default {
 				if(a.closed_date < b.closed_date){
 					return -1;
 				}
-				if((a.dates.length == 0) && (b.dates.length > 0)){
+				if((a.appointments.length == 0) && (b.appointments.length > 0)){
 					return 1;
 				}
-				if((a.dates.length > 0) && (b.dates.length == 0)){
+				if((a.appointments.length > 0) && (b.appointments.length == 0)){
 					return -1;
 				}
-				if((a.dates.length == 0) && (b.dates.length == 0)){
+				if((a.appointments.length == 0) && (b.appointments.length == 0)){
 					return 0;
 				}
-				if(a.dates[0].date > b.dates[0].date){
+				if(a.appointments[0].date > b.appointments[0].date){
 					return 1;
 				}
-				if(a.dates[0].date < b.dates[0].date){
+				if(a.appointments[0].date < b.appointments[0].date){
 					return -1;
 				}
 				return 0;

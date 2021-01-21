@@ -97,13 +97,13 @@
                         >
                     </b-form-select>
                 </template>
-                <template v-slot:cell(task_category)="data">
+                <template v-slot:cell(labor_assignment)="data">
                     <b-form-select
-                        :options="task_categories"
+                        :options="labor_assignments"
                         @input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_category_id"
+                        v-model="data.item.labor_assignment_id"
                         >
                     </b-form-select>
                 </template>
@@ -180,29 +180,29 @@
                   </template>
             </b-table>
            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewTaskDate
+                <ViewAppointment
                     v-if="modalInfo.id"
-                    :task_date_id="modalInfo.id"
+                    :appointment_id="modalInfo.id"
                 >
-                </ViewTaskDate>
+                </ViewAppointment>
             </b-modal>
         
     </div>
 </template>
 <script>
 import moment from 'moment';
-import ViewTaskDate from './ViewTaskDate';
+import ViewAppointment from './ViewAppointment';
 export default {
     name: 'ViewScheduleTab',
     components: {
-        'ViewTaskDate': ViewTaskDate
+        'ViewAppointment': ViewAppointment
     },
     props: {
         tab: {default: null},
         task_actions: {required: true},
-        task_categories: {required: true},
+        labor_assignments: {required: true},
         task_statuses: {required: true},
-        task_types: {required: true},
+        labor_types: {required: true},
         appointment_statuses: {required: true}
     },
     data() {
@@ -266,7 +266,7 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'task_category',
+                    key: 'labor_assignment',
                     label: 'Assignment',
                     sortable: true,
                     filter: null
@@ -372,7 +372,7 @@ export default {
             item.date = item.date_tmp;
         },
         save(item){
-            var task_date = {
+            var appointment = {
                 appointment_status_id: item.appointment_status_id,
                 task_id: item.task_id,
                 day: item.day,
@@ -381,15 +381,15 @@ export default {
                 sort_order : item.sort_order
             }
             if(item.id){
-                this.$http.patch('/task_date/' + item.id, task_date);
+                this.$http.patch('/appointment/' + item.id, appointment);
             }
             else{
-                this.$http.post('/task_date', task_date).then(response =>{
+                this.$http.post('/appointment', appointment).then(response =>{
                     item.id = response.data.id;
                 })
             }
             var task = {
-                task_category_id: item.task_category_id,
+                labor_assignment_id: item.labor_assignment_id,
                 task_status_id: item.task_status_id,
                 task_action_id: item.task_action_id,
                 crew_hours: item.crew_hours
@@ -404,7 +404,7 @@ export default {
             if(window_date < today){
                 classes.push('font-weight-bold');
             }
-            if(item.task_type_id == 1){
+            if(item.labor_type_id == 1){
                 switch(item.order_status_type_id){
                     case 1:
                         classes.push('table-danger');

@@ -100,10 +100,10 @@
                     {{ getDiff(data.item.clock_in,data.item.clock_out) }}
                 </template>
                 <template v-slot:cell(order)="data">
-                    {{ data.item.task_date ? data.item.task_date.task.order.name : data.item.overhead_assignment ?  data.item.overhead_assignment.name : ''}}
+                    {{ data.item.appointment ? data.item.appointment.task.order.name : data.item.overhead_assignment ?  data.item.overhead_assignment.name : ''}}
                 </template>
                 <template v-slot:cell(task)="data">
-                    {{ data.item.task_date ? data.item.task_date.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
+                    {{ data.item.appointment ? data.item.appointment.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
                 </template>
             </b-table>
         </main>
@@ -216,7 +216,7 @@ export default {
         task_time(){
             let time = 0;
             this.clock_ins.map( c =>{
-                if(c.task_date_id){
+                if(c.appointment_id){
                     time += this.getDiff(c.clock_in, c.clock_out);
                 }
             });

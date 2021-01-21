@@ -36,13 +36,13 @@
                 <template v-slot:cell(name)="data">
                     <span v-b-popover.hover="data.item.description" :id="'name_' + data.item.id">{{ data.value }}</span>
                 </template>                
-                <template v-slot:cell(task_category.name)="data">
+                <template v-slot:cell(labor_assignment.name)="data">
                     <b-form-select
-                        :options="task_categories"
+                        :options="labor_assignments"
                         @input="save(data.item)"
                         value-field="id"
                         text-field="name"
-                        v-model="data.item.task_category_id"
+                        v-model="data.item.labor_assignment_id"
                         >
                     </b-form-select>
                 </template>
@@ -111,7 +111,7 @@ export default {
             tasks: [],
             filter: null,
             task_actions: [],
-            task_categories: [],
+            labor_assignments: [],
             task_statuses: [],
             crews: [],
             fields: [
@@ -146,7 +146,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'task_category.name',
+                    key: 'labor_assignment.name',
                     label: 'Task Category',
                     sortable: true
                 },
@@ -184,8 +184,8 @@ export default {
         }
     },
     created() {
-        this.$http.get('/task_categories').then(response => {
-			this.task_categories = response.data;
+        this.$http.get('/labor_assignments').then(response => {
+			this.labor_assignments = response.data;
 		});
 		this.$http.get('/task_statuses').then(response => {
 			this.task_statuses = response.data;

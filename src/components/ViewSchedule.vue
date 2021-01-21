@@ -10,9 +10,9 @@
                     <ViewScheduleTasksTab
                         :tab="tab"
                         :task_actions="task_actions"
-                        :task_categories="task_categories"
+                        :labor_assignments="labor_assignments"
                         :task_statuses="task_statuses"
-                        :task_types="task_types"
+                        :labor_types="labor_types"
                         :appointment_statuses="appointment_statuses"
                     >
                     </ViewScheduleTasksTab>
@@ -42,10 +42,10 @@ export default {
             order_tabs: {'Non-Completed' : 'Partly Completed Orders', 'Completed' : 'Completed Orders'},
             order_status_types: [],
             appointment_statuses: [],
-            task_categories: [],
+            labor_assignments: [],
             task_statuses: [],
             task_actions: [],
-            task_types: [],
+            labor_types: [],
             tab_index: 4
         }
     },
@@ -56,8 +56,8 @@ export default {
         this.$http.get('/appointment_statuses').then(response => {
 			this.appointment_statuses = response.data;
 		});
-        this.$http.get('/task_categories').then(response => {
-			this.task_categories = response.data;
+        this.$http.get('/labor_assignments').then(response => {
+			this.labor_assignments = response.data;
 		});
 		this.$http.get('/task_statuses').then(response => {
 			this.task_statuses = response.data;
@@ -65,8 +65,8 @@ export default {
 		this.$http.get('/task_actions').then(response => {
 			this.task_actions = response.data;
 		});
-        this.$http.get('/task_types').then(response => {
-			this.task_types = response.data;
+        this.$http.get('/labor_types').then(response => {
+			this.labor_types = response.data;
 		});
     }
 }

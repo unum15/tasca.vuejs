@@ -29,8 +29,8 @@
                 <b-col></b-col>
                 <b-col></b-col>
             </b-row>
-            <b-row v-if="type=='task'" v-for="task_date in task_dates" :key="task_date.id">
-                 <b-col class="data" v-if="task_date.date>=today" :class="{highlight: task_date.id == task_date_id}">{{ formatTime(task_date.date,task_date.time) }}</b-col>
+            <b-row v-if="type=='task'" v-for="appointment in appointments" :key="appointment.id">
+                 <b-col class="data" v-if="appointment.date>=today" :class="{highlight: appointment.id == appointment_id}">{{ formatTime(appointment.date,appointment.time) }}</b-col>
              </b-row>
         </b-container>
         <b-modal :id="'clock_ins-' + this.type + '-' + this.id" title="Clock Ins" size="lg" ok-only>
@@ -56,14 +56,14 @@
                 <b-row>
                     <b-col class="header">Task Dates</b-col>
                 </b-row>
-                <div v-for="task_date in task_dates" :key="task_date.id">
+                <div v-for="appointment in appointments" :key="appointment.id">
                     <b-row>
                         <b-col class="label">Schedule Date & Time</b-col>
-                        <b-col class="data">{{ formatTime(task_date.date,task_date.time) }}</b-col>
+                        <b-col class="data">{{ formatTime(appointment.date,appointment.time) }}</b-col>
                     </b-row>
                     <b-row>
                         <b-col class="label">Day Notes</b-col>
-                        <b-col class="data">{{ task_date.notes }}</b-col>
+                        <b-col class="data">{{ appointment.notes }}</b-col>
                     </b-row>
                 </div>
             </b-container>
@@ -80,13 +80,13 @@ export default {
     },
     props: {
         id : { required: true },
-        task_date_id : { default: null },
+        appointment_id : { default: null },
         type : { required: true }
     },
     data() {
         return {
             clock_ins: [],
-            task_dates: [],
+            appointments: [],
             employees_hours: []
         };
     },
@@ -113,8 +113,8 @@ export default {
             });
         },
         getTaskDates() {
-            this.$http.get('/task_dates?' + this.type + '_id=' + this.id).then((results) => {
-                this.task_dates = results.data;
+            this.$http.get('/appointments?' + this.type + '_id=' + this.id).then((results) => {
+                this.appointments = results.data;
             });
         },
         timeDiff(start_time, stop_time){

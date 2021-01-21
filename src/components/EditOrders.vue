@@ -43,10 +43,10 @@
 									:statuses="statuses"
 									:actions="actions"
 									:categories="categories"
-									:task_categories="task_categories"
+									:labor_assignments="labor_assignments"
 									:task_statuses="task_statuses"
 									:task_actions="task_actions"
-									:task_types="task_types"
+									:labor_types="labor_types"
 									:settings="settings"
 									:project_name="project_name"
 									:project_close_date="project.close_date"
@@ -79,10 +79,10 @@ export default {
 		categories: {required: true},
 		priorities: {required: true},
 		properties: {required: true},
-		task_categories: {required: true},
+		labor_assignments: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
-		task_types: {required: true},
+		labor_types: {required: true},
 		settings: {required: true},
 		default_property_id: {required: true},
 		reload_count: {default: 0},

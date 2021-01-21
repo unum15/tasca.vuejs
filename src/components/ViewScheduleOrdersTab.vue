@@ -154,7 +154,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/orders?status=' + this.tab + '&includes=tasks,task.task_dates,task.task_dates.clock_ins,properties').then((results) => {
+        this.$http.get('/orders?status=' + this.tab + '&includes=tasks,task.appointments,task.appointments.clock_ins,properties').then((results) => {
             this.orders = results.data;
             this.filtered_orders = this.orders;
         });

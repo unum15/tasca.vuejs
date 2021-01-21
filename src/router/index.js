@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Privacy from '@/components/Privacy';
 import EditClient from '@/components/EditClient';
 import QuickClient from '@/components/QuickClient';
 import QuickOrder from '@/components/QuickOrder';
@@ -44,8 +45,7 @@ import EditClockIn from '@/components/EditClockIn';
 import ViewClockIns from '@/components/ViewClockIns';
 import Timecard from '@/components/Timecard';
 import ViewTaskClockIns from '@/components/ViewTaskClockIns';
-import ViewOverheadClockIns from '@/components/ViewOverheadClockIns';
-import EditOverhead from '@/components/EditOverhead';
+import EditLabor from '@/components/EditLabor';
 import EditSettings from '@/components/EditSettings';
 import EditRoles from '@/components/EditRoles';
 import EditBackflowWaterSystem from '@/components/EditBackflowWaterSystem';
@@ -282,8 +282,8 @@ var router = new Router({
       component: EditList
     },
     {
-      path: '/task_categories',
-      name: 'EditTaskCategories',
+      path: '/labor_assignments',
+      name: 'EditLaborAssignments',
       component: EditList
     },
     {
@@ -292,8 +292,8 @@ var router = new Router({
       component: EditList
     },
     {
-      path: '/task_types',
-      name: 'EditTaskTypes',
+      path: '/labor_types',
+      name: 'EditLaborTypes',
       component: EditList
     },
     {
@@ -607,19 +607,19 @@ var router = new Router({
       }
     },
     {
-      path: '/clock_ins/overhead',
-      name: 'ViewOverheadClockIns',
-      component: ViewOverheadClockIns,
+      path: '/labor',
+      name: 'EditLabor',
+      component: EditLabor,
       meta: {
-        title: 'View Overhead Clock Ins'
+        title: 'Edit Labor Tables'
       }
     },
     {
-      path: '/overhead',
-      name: 'EditOverhead',
-      component: EditOverhead,
+      path: '/privacy',
+      name: 'Privacy',
+      component: Privacy,
       meta: {
-        title: 'Edit Overhead'
+          title: 'Privacy Policy'
       }
     },
     {
@@ -639,13 +639,21 @@ var router = new Router({
         }
     },
     {
-        path: '/backflow_water_system/:backflow_water_system_id',
-        name: 'EditBackflowWaterSystem',
-        component: EditBackflowWaterSystem,
-        props: true,
-        meta: {
-            title: 'Edit Backflow Water System'
-        }
+      path: '/backflow_water_system',
+      name: 'NewBackflowWaterSystem',
+      component: EditBackflowWaterSystem,
+      meta: {
+          title: 'New Backflow Water System'
+      }
+    },
+    {
+      path: '/backflow_water_system/:backflow_water_system_id',
+      name: 'EditBackflowWaterSystem',
+      component: EditBackflowWaterSystem,
+      props: true,
+      meta: {
+          title: 'Edit Backflow Water System'
+      }
     },
     {
       path: '/backflow_water_systems',
@@ -655,7 +663,6 @@ var router = new Router({
         title: 'View Backflow Water Systems'
       }
     },
-
     {
       path: '*',
       redirect: '/'

@@ -166,7 +166,7 @@
                        <b-form-group label="Task Date">
                            <b-form-input
                                type="date"
-                               v-model="task_date.date"
+                               v-model="appointment.date"
                            >
                            </b-form-input>
                        </b-form-group>
@@ -175,7 +175,7 @@
                        <b-form-group label="Sort order">
                            <b-form-input
                                type="text"
-                               v-model="task_date.sort_order"
+                               v-model="appointment.sort_order"
                            >
                            </b-form-input>
                        </b-form-group>
@@ -185,10 +185,10 @@
                   <b-col>
                       <b-form-group label="Assignment">
                           <b-form-select
-                              :options="task_categories"
+                              :options="labor_assignments"
                               value-field="id"
                               text-field="name"
-                              v-model="task.task_category_id"
+                              v-model="task.labor_assignment_id"
                               >
                           </b-form-select>
                       </b-form-group>
@@ -246,7 +246,7 @@ export default {
       order_categories: [],
       order_priorities: [],
       order_types: [],
-      task_categories: [],
+      labor_assignments: [],
       task_statuses: [],
       task_actions: [],
       settings: {},
@@ -264,7 +264,7 @@ export default {
         id: null,
         task_billing_type_id: 1
       },
-      task_date: {
+      appointment: {
         id: null,
         date: null,
         sort_order: null
@@ -291,8 +291,8 @@ export default {
     this.$http.get('/order_types').then(response => {
       this.order_types = response.data
     })
-    this.$http.get('/task_categories').then(response => {
-      this.task_categories = response.data
+    this.$http.get('/labor_assignments').then(response => {
+      this.labor_assignments = response.data
     })
     this.$http.get('/task_statuses').then(response => {
       this.task_statuses = response.data
@@ -393,16 +393,16 @@ export default {
       }
     },
     saveTaskDate() {
-      this.task_date.task_id = this.task.id;
-      if(this.task_date.id === null){
-        this.$http.post('/task_date',this.task_date)
+      this.appointment.task_id = this.task.id;
+      if(this.appointment.id === null){
+        this.$http.post('/appointment',this.appointment)
           .then((results) => {
-            this.task_date.id = results.data.id;
+            this.appointment.id = results.data.id;
             this.nextTask();
           })
       }
       else{
-        this.$http.patch('/task_date/' + this.task_date.id,this.task_date)
+        this.$http.patch('/appointment/' + this.appointment.id,this.appointment)
         .then(() => {this.nextTask()})
       }
     },
@@ -422,8 +422,8 @@ export default {
       };
       this.task= {
         id: null,
-        task_type_id: 2,
-        task_category_id: this.settings.default_billing_task_category_id,
+        labor_type_id: 2,
+        labor_assignment_id: this.settings.default_billing_labor_assignment_id,
         task_status_id: this.settings.default_billing_task_status_id,
         task_action_id: this.settings.default_billing_task_action_id,
       };
@@ -446,13 +446,13 @@ export default {
       this.order.service_window = this.$store.state.user.default_service_window
       
       
-      this.task.task_category_id = this.settings.default_billing_task_category_id
+      this.task.labor_assignment_id = this.settings.default_billing_labor_assignment_id
       this.task.task_status_id = this.settings.default_billing_task_status_id
       this.task.task_action_id = this.settings.default_billing_task_action_id
       
-      this.task_date.id = null;
-      this.task_date.date = null;
-      this.task_date.sort_order = null;
+      this.appointment.id = null;
+      this.appointment.date = null;
+      this.appointment.sort_order = null;
  
     },
     orderNameChanged(){

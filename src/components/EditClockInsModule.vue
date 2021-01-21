@@ -1,11 +1,11 @@
 <template>
     <b-card title="Clock Ins" class="mb-2">
         <div v-for="clock_in in clock_ins" :key="clock_in.id">
-            <EditClockIn
+            <EditClockInModule
                 :clock_in="clock_in"
                 @remove-clock-in="removeClockIn"
             >
-            </EditClockIn>
+            </EditClockInModule>
         </div>
         <b-button variant="secondary" @click="newClockIn()" v-if="false">Add Clock In</b-button>
     </b-card>
@@ -18,7 +18,7 @@ export default {
     'EditClockInModule': EditClockInModule
   },
   props: {
-    task_date_id: {required: true}
+    appointment_id: {required: true}
   },
   data() {
     return {
@@ -26,7 +26,7 @@ export default {
     }
   },
   created() {
-    this.$http.get('/clock_ins?task_date_id=' + this.task_date_id).then(response => {
+    this.$http.get('/clock_ins?appointment_id=' + this.appointment_id).then(response => {
       this.clock_ins = response.data
     })
   },
@@ -37,7 +37,7 @@ export default {
         clock_in: null,
         clock_out: null,
         notes: null,
-        task_date_id: this.task_date_id
+        appointment_id: this.appointment_id
       };
       this.clock_ins.push(clock_in);
     },

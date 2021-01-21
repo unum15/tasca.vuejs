@@ -60,7 +60,7 @@
   </b-row>
   <b-row>
     <EditClockInsModule v-if="my_date.id"
-      :task_date_id="my_date.id"
+      :appointment_id="my_date.id"
     >
     </EditClockInsModule>
   </b-row>
@@ -69,7 +69,7 @@
 <script>
 import EditClockInsModule from './EditClockInsModule';
 export default {
-  name: 'EditTaskDate',
+  name: 'EditAppointment',
   components: {
     'EditClockInsModule': EditClockInsModule
   },
@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     deleteDate(){
-      this.$http.delete('/task_date/' + this.my_date.id);
+      this.$http.delete('/appointment/' + this.my_date.id);
       this.$emit('remove-task-date', this.my_date);
     },
     save(){
@@ -104,13 +104,13 @@ export default {
         return;
       }
       if((this.my_date.id === null)||(this.my_date.id === undefined)){
-          this.$http.post('/task_date',this.my_date)
+          this.$http.post('/appointment',this.my_date)
             .then((results) => {
               this.my_date.id = results.data.id;
             })
       }
       else{
-        this.$http.patch('/task_date/' + this.my_date.id,this.my_date)
+        this.$http.patch('/appointment/' + this.my_date.id,this.my_date)
       }
     }
   }
