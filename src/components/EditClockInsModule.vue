@@ -1,11 +1,11 @@
 <template>
     <b-card title="Clock Ins" class="mb-2">
         <div v-for="clock_in in clock_ins" :key="clock_in.id">
-            <EditClockIn
+            <EditClockInModule
                 :clock_in="clock_in"
                 @remove-clock-in="removeClockIn"
             >
-            </EditClockIn>
+            </EditClockInModule>
         </div>
         <b-button variant="secondary" @click="newClockIn()" v-if="false">Add Clock In</b-button>
     </b-card>

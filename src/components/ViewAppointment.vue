@@ -87,7 +87,7 @@
                     <b-tabs :key="tasks.length">
                         <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == appointment.task_id">
                             <b-container>
-                                <ViewTaskHours :task_id="task.id" :appointment_id="task.id == appointment.task_id ? appointment.id : null">
+                                <ViewTaskHours :task_id="task.id" :appointment_id="task.id == appointment.task_id ? appointment.id : null" :labor_activities="labor_activities">
                                 </ViewTaskHours>
                             </b-container>
                         </b-tab>
@@ -108,7 +108,8 @@ export default {
         'ViewHours': ViewHours,
     },
     props: {
-        appointment_id : { required:true }
+        appointment_id : { required:true },
+        labor_activities: { default: [] }
     },
     data() {
         return {

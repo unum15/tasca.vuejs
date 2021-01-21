@@ -282,8 +282,8 @@ var router = new Router({
       component: EditList
     },
     {
-      path: '/task_categories',
-      name: 'EditTaskCategories',
+      path: '/labor_assignments',
+      name: 'EditLaborAssignments',
       component: EditList
     },
     {

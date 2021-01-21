@@ -10,7 +10,7 @@
                 <span v-if="clock_in">
                     <b-button @click="showClockInOverhead">Change</b-button>
                     <b-button @click="showClockOutOverhead">Clock Out</b-button>
-                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.overhead_assignment_id ? clock_in.overhead_assignment.name : clock_in.appointment ? clock_in.appointment.task.order.name : 'Not Selected'}} - {{ clock_in.overhead_category_id ? clock_in.overhead_category.name : clock_in.appointment ? clock_in.appointment.task.name : 'Not Selected'}}
+                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.appointment.task.labor_assignment ? clock_in.appointment.task.labor_assignment.name:''}} - {{ clock_in.labor_activity.name }}
                 </span>
                 <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
                 <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
@@ -33,12 +33,12 @@
                             </b-col>
                             <b-col>
                                 <b-form-group label="Assignment">
-                                    <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="modal_overhead.current.overhead_assignment_id" @input="modal_overhead.current.overhead_category_id=null"/>
+                                    <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="modal_overhead.current.labor_assignment_id" @input="modal_overhead.current.labor_activity_id=null"/>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label="Activity">
-                                    <Treeselect :options="filtered_current_categories" :normalizer="treeNormalizer" v-model="modal_overhead.current.overhead_category_id"/>
+                                    <Treeselect :options="filtered_current_activities" :normalizer="treeNormalizer" v-model="modal_overhead.current.labor_activity_id"/>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -65,12 +65,12 @@
                             </b-col>
                             <b-col v-if="modal_overhead.clock_in">
                                 <b-form-group label="Assignment">
-                                    <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="modal_overhead.new.overhead_assignment_id" @input="modal_overhead.new.overhead_category_id=null"/>
+                                    <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="modal_overhead.new.labor_assignment_id" @input="modal_overhead.new.labor_activity_id=null"/>
                                 </b-form-group>
                             </b-col>
                             <b-col v-if="modal_overhead.clock_in">
                                 <b-form-group label="Activity">
-                                    <Treeselect :options="filtered_new_categories" :normalizer="treeNormalizer" v-model="modal_overhead.new.overhead_category_id"/>
+                                    <Treeselect :options="filtered_new_activities" :normalizer="treeNormalizer" v-model="modal_overhead.new.labor_activity_id"/>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -152,6 +152,7 @@
                 <ViewAppointment
                      v-if="modalInfo.id"
                     :appointment_id="modalInfo.id"
+                    :labor_activities="activities"
                 >
                 </ViewAppointment>
             </b-modal>
@@ -188,19 +189,19 @@ export default {
                 new: {
                     date: null,
                     time: null,
-                    overhead_assignment_id: null,
-                    overhead_category_id: null,
+                    labor_assignment_id: null,
+                    labor_activity_id: null,
                     title: 'Clock In - Overhead'
                 },
                 current: {
                     date: null,
                     time: null,
-                    overhead_assignment_id: null,
-                    overhead_category_id: null,
+                    labor_assignment_id: null,
+                    labor_activity_id: null,
                     title: 'Clock In - Overhead'
                 },
             },
-            categories: [],
+            activities: [],
             assignments: [],
             fields: [
                 {
@@ -274,11 +275,11 @@ export default {
 			this.clock_in = response.data;
             this.clockInToCurrent();
 		});
-        this.$http.get('/overhead_assignments').then(response => {
+        this.$http.get('/labor_assignments').then(response => {
 			this.assignments = response.data.data;
 		});
-        this.$http.get('/overhead_categories').then(response => {
-			this.categories = response.data.data;
+        this.$http.get('/labor_activities').then(response => {
+			this.activities = response.data.data;
 		});
         this.getTasks();
     },
@@ -390,8 +391,8 @@ export default {
             this.modal_overhead.clock_in = true;
             this.modal_overhead.new.date = moment().format('YYYY-MM-DD');
             this.modal_overhead.new.time = moment().format('HH:mm');
-            this.modal_overhead.new.overhead_assignment_id = null;
-            this.modal_overhead.new.overhead_category_id = null;
+            this.modal_overhead.new.labor_assignment_id = this.$store.state.settings['default_labor_assignment_id-labor_type_id-'+this.overhead_labor_type_id];
+            this.modal_overhead.new.labor_activity_id = this.default_activity_id;
             if(this.clock_in){
                 this.modal_overhead.title = "Clock In";
             }
@@ -405,25 +406,27 @@ export default {
             this.modal_overhead.title = "Clock Out";
             this.modal_overhead.new.date = moment().format('YYYY-MM-DD');
             this.modal_overhead.new.time = moment().format('HH:mm');
-            this.modal_overhead.new.overhead_assignment_id = null;
-            this.modal_overhead.new.overhead_category_id = null;
+            this.modal_overhead.new.labor_assignment_id = this;
+            this.modal_overhead.new.labor_activity_id = null;
             this.$refs['modal-clock-in-overhead'].show();
         },
         clockInOverhead(event){
             event.preventDefault();
             if(this.clock_in){
-                if(!this.modal_overhead.current.overhead_assignment_id){
+                if(!this.modal_overhead.current.labor_assignment_id){
                    alert('Please select current assignment.');
                    return;
                 }
-                if(!this.modal_overhead.current.overhead_category_id){
-                   alert('Please select current category.');
+                if(!this.modal_overhead.current.labor_activity_id){
+                   alert('Please select current activity.');
                    return;
                 }
+                let assignment = this.getAssignmentName(this.modal_overhead.current.labor_assignment_id);
+                this.$http.patch('/task/'+this.clock_in.appointment.task_id, { name: assignment.name, labor_assignment_id: this.modal_overhead.new.labor_assignment_id, order_id: assignment.order_id });
                 let clock_in = {
                     clock_in : this.modal_overhead.current.date + ' ' + this.modal_overhead.current.time,
-                    overhead_assignment_id: this.modal_overhead.current.overhead_assignment_id,
-                    overhead_category_id: this.modal_overhead.current.overhead_category_id,
+                    labor_assignment_id: this.modal_overhead.current.labor_assignment_id,
+                    labor_activity_id: this.modal_overhead.current.labor_activity_id,
                     clock_out : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time
                 };
                 this.$http.patch('/clock_in/'+this.clock_in.id, clock_in).then(() => {
@@ -431,56 +434,71 @@ export default {
                         this.clock_in = null;
                         this.modal_overhead.current.date = null;
                         this.modal_overhead.current.time = null;
-                        this.modal_overhead.current.overhead_assignment_id = null;
-                        this.modal_overhead.current.overhead_category_id = null;
+                        this.modal_overhead.current.labor_assignment_id = null;
+                        this.modal_overhead.current.labor_activity_id = null;
                         this.$refs['modal-clock-in-overhead'].hide();
                     }
                 });
             }
             if(this.modal_overhead.clock_in){
-                let clock_in = {
-                    clock_in : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time,
-                    overhead_assignment_id: this.modal_overhead.new.overhead_assignment_id,
-                    overhead_category_id: this.modal_overhead.new.overhead_category_id,
-                    contact_id: this.$store.state.user.id
-                };
-                this.$http.post('/clock_in', clock_in).then(response => {
-                    this.clock_in = response.data;
-                    this.clockInToCurrent();
-                    this.$refs['modal-clock-in-overhead'].hide();
+                let assignment = this.getAssignmentName(this.modal_overhead.new.labor_assignment_id);
+                this.$http.post('/task', { name: assignment.name, labor_assignment_id: this.modal_overhead.new.labor_assignment_id, order_id: assignment.order_id }).then(response => {
+                    this.$http.post('/appointment', {task_id: response.data.data.id, date: this.modal_overhead.new.date,time:this.modal_overhead.new.time}).then(response => {
+                        let clock_in = {
+                            appointment_id: response.data.data.id,
+                            clock_in : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time,
+                            labor_activity_id: this.modal_overhead.new.labor_activity_id,
+                            contact_id: this.$store.state.user.id
+                        };
+                        console.log(clock_in);
+                        this.$http.post('/clock_in', clock_in).then(response => {
+                            this.clock_in = response.data.data;
+                            this.clockInToCurrent();
+                            this.$refs['modal-clock-in-overhead'].hide();
+                        });
+                    });
                 });
             }
         },
         clockInToCurrent(){
             this.modal_overhead.current.date = moment(this.clock_in.clock_in).format('YYYY-MM-DD');
             this.modal_overhead.current.time = moment(this.clock_in.clock_in).format('HH:mm');
-            this.modal_overhead.current.overhead_assignment_id = this.clock_in.overhead_assignment_id;
-            this.modal_overhead.current.overhead_category_id = this.clock_in.overhead_category_id;
+            this.modal_overhead.current.labor_assignment_id = this.clock_in.appointment.task.labor_assignment_id;
+            this.modal_overhead.current.labor_activity_id = this.clock_in.labor_activity_id;
         },
         treeNormalizer(node){
             return {
                 id: node.id,
                 label: node.name,
-                children: node.children.length ? node.children : undefined,
+                children: node.children && node.children.length ? node.children : undefined,
             }
         },
-        findSelectedCategories(id,categories){
-            let filtered_categories = [];
-            categories.map(c => {
-                if(c.overhead_assignments.filter(a => (a.id == id)).length){
+        findSelectedActivities(id,activities){
+            let filtered_activities = [];
+            activities.map(c => {
+                if(c.labor_assignments.filter(a => (a.id == id)).length){
                     let cat = JSON.parse(JSON.stringify(c));
-                    if(c.children.length){
-                        let children = this.findSelectedCategories(id,c.children);
+                    if(c.children && c.children.length){
+                        let children = this.findSelectedActivities(id,c.children);
                         cat.children = children;
                     }
-                    filtered_categories.push(cat);
+                    filtered_activities.push(cat);
                 }
                 else{
-                    let children = this.findSelectedCategories(id,c.children);
-                    filtered_categories = filtered_categories.concat(children);
+                    if(c.children){
+                        let children = this.findSelectedActivities(id,c.children);
+                        filtered_activities = filtered_activities.concat(children);
+                    }
                 }
             });
-            return filtered_categories;
+            return filtered_activities;
+        },
+        getAssignmentName(id){
+            let assignments = this.assignments.filter(a => a.id == id);
+            if(!assignments.length){
+                return;
+            }
+            return assignments[0];
         }
     },
     computed:{
@@ -491,20 +509,22 @@ export default {
                 crew_id: this.crew_id
             };
         },
-        filtered_current_categories(){
-            if(this.modal_overhead.current.overhead_assignment_id){
-                return this.findSelectedCategories(this.modal_overhead.current.overhead_assignment_id,this.categories);
+        filtered_current_activities(){
+            if(this.modal_overhead.current.labor_assignment_id){
+                return this.findSelectedActivities(this.modal_overhead.current.labor_assignment_id,this.activities);
             }
             return [];
         },
-        filtered_new_categories(){
-            if(this.modal_overhead.new.overhead_assignment_id){
-                return this.findSelectedCategories(this.modal_overhead.new.overhead_assignment_id,this.categories);
+        filtered_new_activities(){
+            if(this.modal_overhead.new.labor_assignment_id){
+                return this.findSelectedActivities(this.modal_overhead.new.labor_assignment_id,this.activities);
             }
             return [];
         },
         ...mapState({
-          contact_name: state => state.user.name
+          contact_name: state => state.user.name,
+          overhead_labor_type_id: state => state.settings.overhead_labor_type_id,
+          default_activity_id: state => state.settings.default_labor_activity_id
         })
     }
 }

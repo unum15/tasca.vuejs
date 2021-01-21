@@ -842,7 +842,7 @@ export default {
         },
         ...mapState({
           user_id: state => state.user.id,
-          operator_id: state => state.operating_company_client_id
+          operator_id: state => state.settings.operating_company_client_id
         })
     },
     watch: {

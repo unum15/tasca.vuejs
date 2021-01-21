@@ -234,16 +234,10 @@ export default {
 			}
 		},
 		change_defaults(){
-			if(this.my_task.labor_type_id == 2){
-				this.my_task.labor_assignment_id = this.settings.default_nonbilling_labor_assignment_id;
-				this.my_task.task_status_id = this.settings.default_nonbilling_task_status_id;
-				this.my_task.task_action_id = this.settings.default_nonbilling_task_action_id;
-			}
-			else{
-				this.my_task.labor_assignment_id = this.settings.default_billing_labor_assignment_id;
-				this.my_task.task_status_id = this.settings.default_billing_task_status_id;
-				this.my_task.task_action_id = this.settings.default_billing_task_action_id;
-			}
+			console.log(this.$store.state.settings['default_labor_assignment_id-labor_type_id-' + this.my_task.labor_type_id]);
+			this.my_task.labor_assignment_id = this.$store.state.settings['default_labor_assignment_id-labor_type_id-' + this.my_task.labor_type_id];
+			this.my_task.task_status_id = this.$store.state.settings['default_task_status_id-labor_type_id-' + this.my_task.labor_type_id];
+			this.my_task.task_action_id = this.$store.state.settings['default_task_action_id-labor_type_id-' + this.my_task.labor_type_id];
 		},
 		name_changed(){
 			if(this.my_task.description === null){

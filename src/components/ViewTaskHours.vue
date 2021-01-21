@@ -8,7 +8,7 @@
                 <b-col class="data" cols="3">{{ task.task_hours }}</b-col>
                 <b-col class="label">Crew Time</b-col>
                 <b-col class="data" cols="3">{{ task.crew_hours }}</b-col>
-                <b-col cols="3"><b-button @click="clockIn" v-if="appointment_id && !clock_in_id">Clock In</b-button></b-col>
+                <b-col cols="3"><b-button @click="showClockIn" v-if="appointment_id && !clock_in_id">Clock In</b-button></b-col>
                 <b-col cols="2"><b-button @click="clockOut" v-if="clock_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
@@ -55,19 +55,44 @@
         </b-container>
         <ViewHours :id="task_id" type="task" :appointment_id="appointment_id">
         </ViewHours>
+        <b-modal ref="modal-clock-in" @ok="clockIn" title="Clock In">
+            <b-container fluid>
+                <b-row>
+                    <b-col>
+                        <b-form-group label="Date" class="mb-0">
+                            <b-form-input type="date" v-model="new_clock_in.date" />
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Time" class="mb-0">
+                            <b-form-input type="time" v-model="new_clock_in.time" />
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Activity">
+                            <Treeselect :options="labor_activities" :normalizer="treeNormalizer" v-model="new_clock_in.labor_activity_id"/>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+            </b-container>
+        </b-modal>
     </div>
 </template>
 <script>
-import moment from 'moment'
-import ViewHours from './ViewHours'
+import moment from 'moment';
+import ViewHours from './ViewHours';
+import { mapState } from 'vuex';
+import Treeselect from '@riophae/vue-treeselect';
 export default {
     name: 'ViewTaskHours',
     components: {
         'ViewHours': ViewHours,
+        'Treeselect': Treeselect
     },
     props: {
         task_id : { required:true },
-        appointment_id : { default: null }
+        appointment_id : { default: null },
+        labor_activities: { default: (() => ([]))}
     },
     data() {
         return {
@@ -77,7 +102,8 @@ export default {
             invoiced: false,
             clock_ins: [],
             appointments: [],
-            employees_hours: []
+            employees_hours: [],
+            new_clock_in: {date: null, time: null, labor_activity_id: null}
         };
     },
     created() {
@@ -164,14 +190,22 @@ export default {
                 this.$http.patch('/clock_in/' + clock_in.id, clock_in);
             }
         },
+        showClockIn(){
+            this.new_clock_in.date = moment().format('YYYY-MM-DD');
+            this.new_clock_in.time = moment().format('HH:mm');
+            this.new_clock_in.labor_activity_id = this.default_activity_id;
+            this.$refs['modal-clock-in'].show();
+        },
         clockIn(){
-            var clock_in;
-            clock_in = prompt('Clock In Time', moment().format("YYYY-MM-DD h:mm:ss a"));
-            if(clock_in !== null){
-                this.$http.post('/clock_in', {appointment_id : this.appointment_id, clock_in: clock_in, contact_id: this.$store.state.user.id}).then(() => {
-                    this.getClockIns();
-                });
+            var clock_in = {
+                appointment_id : this.appointment_id,
+                clock_in: this.new_clock_in.date+' '+this.new_clock_in.time,
+                labor_activity_id: this.new_clock_in.labor_activity_id,
+                contact_id: this.user_id
             }
+            this.$http.post('/clock_in', clock_in).then(() => {
+                this.getClockIns();
+            });
         },
         clockOut(){
             var clock_out;
@@ -185,17 +219,28 @@ export default {
         saveNotes(clock_in){
             this.$http.patch('/clock_in/' + clock_in.id, {notes : clock_in.notes})
         },
+        treeNormalizer(node){
+            return {
+                id: node.id,
+                label: node.name,
+                children: node.children && node.children.length ? node.children : undefined,
+            }
+        },
     },
     computed: {
         clock_in_id() {
             var id = null
-            var my_id = this.$store.state.user.id
+            var my_id = this.user_id
             var ids = this.clock_ins.filter( si => (si.contact_id == my_id && si.clock_out == null))
             if(ids.length > 0){
                 id = ids[0].id
             }
             return id;
-        }
+        },
+        ...mapState({
+            user_id: state => state.user.id,
+            default_activity_id: state => state.settings.default_labor_activity_id
+        })
     },
 }
 </script>
