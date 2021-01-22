@@ -329,7 +329,7 @@
                </b-row>
                <b-row>
                   <b-col>
-                      <b-form-group label="Category">
+                      <b-form-group label="Assignment">
                           <b-form-select
                               :options="labor_assignments"
                               value-field="id"
@@ -472,7 +472,7 @@ export default {
       this.order_types = response.data
     })
     this.$http.get('/labor_assignments').then(response => {
-      this.labor_assignments = response.data
+      this.labor_assignments = response.data.data
     })
     this.$http.get('/task_statuses').then(response => {
       this.task_statuses = response.data

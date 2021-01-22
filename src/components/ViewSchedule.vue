@@ -57,7 +57,7 @@ export default {
 			this.appointment_statuses = response.data;
 		});
         this.$http.get('/labor_assignments').then(response => {
-			this.labor_assignments = response.data;
+			this.labor_assignments = response.data.data;
 		});
 		this.$http.get('/task_statuses').then(response => {
 			this.task_statuses = response.data;

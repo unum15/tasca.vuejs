@@ -9,7 +9,7 @@
                 <b-col class="label">Crew Time</b-col>
                 <b-col class="data" cols="3">{{ task.crew_hours }}</b-col>
                 <b-col cols="3"><b-button @click="showClockIn" v-if="appointment_id && !clock_in_id">Clock In</b-button></b-col>
-                <b-col cols="2"><b-button @click="clockOut" v-if="clock_in_id">Clock Out</b-button></b-col>
+                <b-col cols="2"><b-button @click="showClockOut" v-if="clock_in_id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Task Description</b-col>
@@ -76,6 +76,27 @@
                 </b-row>
             </b-container>
         </b-modal>
+        <b-modal ref="modal-clock-out" @ok="clockOut" title="Clock Out">
+            <b-container fluid>
+                <b-row>
+                    <b-col>
+                        <b-form-group label="Date" class="mb-0">
+                            <b-form-input type="date" v-model="new_clock_out.date" />
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Time" class="mb-0">
+                            <b-form-input type="time" v-model="new_clock_out.time" />
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Activity">
+                            <Treeselect :options="labor_activities" :normalizer="treeNormalizer" v-model="new_clock_out.labor_activity_id"/>
+                        </b-form-group>
+                    </b-col>
+                </b-row>
+            </b-container>
+        </b-modal>
     </div>
 </template>
 <script>
@@ -103,7 +124,8 @@ export default {
             clock_ins: [],
             appointments: [],
             employees_hours: [],
-            new_clock_in: {date: null, time: null, labor_activity_id: null}
+            new_clock_in: {date: null, time: null, labor_activity_id: null},
+            new_clock_out: {date: null, time: null, labor_activity_id: null}
         };
     },
     created() {
@@ -207,14 +229,20 @@ export default {
                 this.getClockIns();
             });
         },
+        showClockOut(){
+            this.new_clock_out.date = moment().format('YYYY-MM-DD');
+            this.new_clock_out.time = moment().format('HH:mm');
+            this.new_clock_out.labor_activity_id = this.default_activity_id;
+            this.$refs['modal-clock-out'].show();
+        },
         clockOut(){
-            var clock_out;
-            clock_out = prompt('Clock Out Time', moment().format("YYYY-MM-DD h:mm:ss a"));
-            if(clock_out !== null){
-                this.$http.patch('/clock_in/' + this.clock_in_id, {clock_out : clock_out}).then(() => {
-                    this.getClockIns();
-                });
+            var clock_in = {
+                clock_out: this.new_clock_out.date+' '+this.new_clock_out.time,
+                labor_activity_id: this.new_clock_out.labor_activity_id,
             }
+            this.$http.patch('/clock_in/' + this.clock_in_id, clock_in).then(() => {
+                this.getClockIns();
+            });
         },
         saveNotes(clock_in){
             this.$http.patch('/clock_in/' + clock_in.id, {notes : clock_in.notes})
