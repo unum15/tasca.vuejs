@@ -275,18 +275,24 @@ export default {
 			this.clock_in = response.data;
             this.clockInToCurrent();
 		});
-        this.$http.get('/labor_assignments').then(response => {
-			this.assignments = response.data.data;
-		});
         this.$http.get('/labor_activities').then(response => {
 			this.activities = response.data.data;
 		});
         this.getTasks();
+        this.getAssignments();
     },
     methods: {
         getTasks(){
             this.$http.get('/schedule?status=today&date='+this.date).then((results) => {
                 this.tasks = results.data;
+            });
+        },
+        getAssignments(){
+            if(!this.overhead_labor_type_id){
+                return;
+            }
+            this.$http.get('/labor_assignments?labor_type_id=' + this.overhead_labor_type_id).then(response => {
+                this.assignments = response.data.data;
             });
         },
         previousDate(){
@@ -306,6 +312,10 @@ export default {
             this.$refs['modalInfo'].show()
         },
         resetModal() {
+            this.$http.get('/clock_in/current').then(response => {
+                this.clock_in = response.data;
+                this.clockInToCurrent();
+            });
             this.modalInfo.title = ''
             this.modalInfo.content = ''
             this.modalInfo.id = null
@@ -526,6 +536,11 @@ export default {
           overhead_labor_type_id: state => state.settings.overhead_labor_type_id,
           default_activity_id: state => state.settings.default_labor_activity_id
         })
+    },
+    watch:{
+        overhead_labor_type_id(){
+            this.getAssignments();
+        }
     }
 }
 </script>

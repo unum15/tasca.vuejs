@@ -229,8 +229,9 @@
   </div>
 </template>
 <script>
-import moment from 'moment'
-import TopMenu from './TopMenu'
+import moment from 'moment';
+import TopMenu from './TopMenu';
+import { mapState } from 'vuex';
 export default {
   name: 'QuickOrder',
   components: {
@@ -275,10 +276,6 @@ export default {
     }
   },
   created () {
-    this.$http.get('/settings').then(response => {
-      this.settings = response.data
-      this.resetForm();
-    })
     this.$http.get('/clients').then(response => {
       this.clients = response.data
     })
@@ -292,7 +289,7 @@ export default {
       this.order_types = response.data
     })
     this.$http.get('/labor_assignments').then(response => {
-      this.labor_assignments = response.data
+      this.labor_assignments = response.data.data
     })
     this.$http.get('/task_statuses').then(response => {
       this.task_statuses = response.data
@@ -423,21 +420,21 @@ export default {
       this.task= {
         id: null,
         labor_type_id: 2,
-        labor_assignment_id: this.settings.default_billing_labor_assignment_id,
-        task_status_id: this.settings.default_billing_task_status_id,
-        task_action_id: this.settings.default_billing_task_action_id,
+        labor_assignment_id: this.$store.settings.default_billing_labor_assignment_id,
+        task_status_id: this.$store.settings.default_billing_task_status_id,
+        task_action_id: this.$store.settings.default_billing_task_action_id,
       };
       this.project = {
         id: null,
         contact_id: null
       };
       this.client_id = null;
-      this.order.order_category_id = this.settings.default_order_category_id
-      this.order.order_priority_id = this.settings.default_order_priority_id
-      this.order.order_type_id = this.settings.default_order_type_id
+      this.order.order_category_id = this.$store.settings.default_order_category_id
+      this.order.order_priority_id = this.$store.settings.default_order_priority_id
+      this.order.order_type_id = this.$store.settings.default_order_type_id
       
-      this.order.order_status_id = this.settings.default_order_status_id
-      this.order.order_action_id = this.settings.default_order_action_id
+      this.order.order_status_id = this.$store.settings.default_order_status_id
+      this.order.order_action_id = this.$store.settings.default_order_action_id
       
       
       this.order.approval_date = this.today
@@ -446,9 +443,9 @@ export default {
       this.order.service_window = this.$store.state.user.default_service_window
       
       
-      this.task.labor_assignment_id = this.settings.default_billing_labor_assignment_id
-      this.task.task_status_id = this.settings.default_billing_task_status_id
-      this.task.task_action_id = this.settings.default_billing_task_action_id
+      this.task.labor_assignment_id = this.$store.settings.default_billing_labor_assignment_id
+      this.task.task_status_id = this.$store.settings.default_billing_task_status_id
+      this.task.task_action_id = this.$store.settings.default_billing_task_action_id
       
       this.appointment.id = null;
       this.appointment.date = null;
@@ -465,6 +462,30 @@ export default {
     today() {
 			return moment().format('YYYY-MM-DD');
 		},
+    ...mapState({
+      default_order_category_id: state => state.settings.default_order_category_id,
+      default_order_priority_id: state => state.settings.default_order_priority_id,
+      default_order_type_id: state => state.settings.default_order_type_id,
+      default_order_status_id: state => state.settings.default_order_status_id,
+      default_order_action_id: state => state.settings.default_order_action_id
+    })
+  },
+  watch: {
+    default_order_category_id() {
+      this.order.order_category_id = this.default_order_category_id;
+    },
+    default_order_priority_id() {
+      this.order.order_priority_id = this.default_order_priority_id;
+    },
+    default_order_type_id() {
+      this.order.order_type_id = this.default_order_type_id;
+    },
+    default_order_status_id() {
+      this.order.order_status_id = this.default_order_status_id;
+    },
+    default_order_action_id() {
+      this.order.order_action_id = this.default_order_action_id;
+    },
   }
 }
 
