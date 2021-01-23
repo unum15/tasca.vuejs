@@ -10,7 +10,7 @@
                 <span v-if="clock_in">
                     <b-button @click="showClockInOverhead">Change</b-button>
                     <b-button @click="showClockOutOverhead">Clock Out</b-button>
-                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.appointment.task.labor_assignment ? clock_in.appointment.task.labor_assignment.name:''}} - {{ clock_in.labor_activity.name }}
+                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.appointment.task.labor_assignment ? clock_in.appointment.task.labor_assignment.name:''}} - {{ clock_in.labor_activity ? clock_in.labor_activity.name : 'Unassigned' }}
                 </span>
                 <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
                 <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
