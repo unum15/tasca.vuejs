@@ -70,7 +70,7 @@
                     </b-col>
                     <b-col>
                         <b-form-group label="Activity">
-                            <Treeselect :options="labor_activities" :normalizer="treeNormalizer" v-model="new_clock_in.labor_activity_id"/>
+                            <Treeselect :options="filtered_labor_activities" :normalizer="treeNormalizer" v-model="new_clock_in.labor_activity_id"/>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -91,7 +91,7 @@
                     </b-col>
                     <b-col>
                         <b-form-group label="Activity">
-                            <Treeselect :options="labor_activities" :normalizer="treeNormalizer" v-model="new_clock_out.labor_activity_id"/>
+                            <Treeselect :options="filtered_labor_activities" :normalizer="treeNormalizer" v-model="new_clock_out.labor_activity_id"/>
                         </b-form-group>
                     </b-col>
                 </b-row>
@@ -215,7 +215,7 @@ export default {
         showClockIn(){
             this.new_clock_in.date = moment().format('YYYY-MM-DD');
             this.new_clock_in.time = moment().format('HH:mm');
-            this.new_clock_in.labor_activity_id = this.default_activity_id;
+            //this.new_clock_in.labor_activity_id = this.default_activity_id;
             this.$refs['modal-clock-in'].show();
         },
         clockIn(){
@@ -232,7 +232,6 @@ export default {
         showClockOut(){
             this.new_clock_out.date = moment().format('YYYY-MM-DD');
             this.new_clock_out.time = moment().format('HH:mm');
-            this.new_clock_out.labor_activity_id = this.default_activity_id;
             this.$refs['modal-clock-out'].show();
         },
         clockOut(){
@@ -254,6 +253,26 @@ export default {
                 children: node.children && node.children.length ? node.children : undefined,
             }
         },
+        findSelectedActivities(id,activities){
+            let filtered_activities = [];
+            activities.map(c => {
+                if(c.labor_assignments.filter(a => (a.id == id)).length){
+                    let cat = JSON.parse(JSON.stringify(c));
+                    if(c.children && c.children.length){
+                        let children = this.findSelectedActivities(id,c.children);
+                        cat.children = children;
+                    }
+                    filtered_activities.push(cat);
+                }
+                else{
+                    if(c.children){
+                        let children = this.findSelectedActivities(id,c.children);
+                        filtered_activities = filtered_activities.concat(children);
+                    }
+                }
+            });
+            return filtered_activities;
+        },
     },
     computed: {
         clock_in_id() {
@@ -268,7 +287,13 @@ export default {
         ...mapState({
             user_id: state => state.user.id,
             default_activity_id: state => state.settings.default_labor_activity_id
-        })
+        }),
+        filtered_labor_activities(){
+            if(this.task.labor_assignment_id){
+                return this.findSelectedActivities(this.task.labor_assignment_id,this.labor_activities);
+            }
+            return [];
+        },
     },
 }
 </script>
