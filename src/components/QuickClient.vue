@@ -36,15 +36,23 @@
                 </b-col>
                 <b-col>
                     <b-form-group label="Contact Type">
-                      <b-form-select
-                        :options="contact_types"
-                        :disabled="client_types_loading"
-                        value-field="id"
-                        text-field="name"
+                      <el-select
                         required
                         :state="contact.contact_type_id != null"
-                        v-model="contact.contact_type_id">
-                      </b-form-select>
+                        :disabled="client_types_loading"
+                        v-model="contact.contact_type_id"
+                        filterable
+                        placeholder="Select Contact Type"
+                        default-first-option
+                       >
+                        <el-option
+                          v-for="contact_type in contact_types"
+                              :key="contact_type.id"
+                              :label="contact_type.name"
+                              :value="contact_type.id"
+                              >
+                            </el-option>
+                        </el-select>
                     </b-form-group>
                 </b-col>
               </b-row>
@@ -379,6 +387,7 @@ import moment from 'moment'
 import TopMenu from './TopMenu'
 import EditEmails from './EditEmails'
 import EditPhoneNumbers from './EditPhoneNumbers'
+import { mapState } from 'vuex';
 export default {
   name: 'QuickClient',
   components: {
@@ -403,7 +412,6 @@ export default {
       contact_types_loading: true,
       client_types_loading: true,
       property_types_loading: true,
-      settings: {},
       billing_contact: true,
       showSaveFailed: false,
       showSaveSuccess: false,
@@ -419,7 +427,8 @@ export default {
         referred_by: '',
       },
       contact: {
-        id: null
+        id: null,
+        contact_type_id: null
       },
       property: {
         id: null,
@@ -442,48 +451,44 @@ export default {
     }
   },
   created () {
-    this.$http.get('/settings').then(response => {
-      this.settings = response.data
-      this.resetForm();
-    })
     this.$http.get('/client_types').then(response => {
-      this.client_types = response.data
-      this.client_types_loading = false
-    })
+      this.client_types = response.data;
+      this.client_types_loading = false;
+    });
     this.$http.get('/contact_methods').then(response => {
-      this.contact_methods = response.data
-      this.contact_methods_loading = false
-    })
+      this.contact_methods = response.data;
+      this.contact_methods_loading = false;
+    });
     this.$http.get('/contact_types').then(response => {
-      this.contact_types = response.data
-      this.contact_types_loading = false
-    })
+      this.contact_types = response.data;
+      this.contact_types_loading = false;
+    });
     this.$http.get('/property_types').then(response => {
-      this.property_types = response.data
-      this.property_types_loading = false
-    })
+      this.property_types = response.data;
+      this.property_types_loading = false;
+    });
     this.$http.get('/order_categories').then(response => {
-      this.order_categories = response.data
-    })
+      this.order_categories = response.data;
+    });
     this.$http.get('/order_priorities').then(response => {
-      this.order_priorities = response.data
-    })
+      this.order_priorities = response.data;
+    });
     this.$http.get('/order_types').then(response => {
-      this.order_types = response.data
-    })
+      this.order_types = response.data;
+    });
     this.$http.get('/labor_assignments').then(response => {
-      this.labor_assignments = response.data.data
-    })
+      this.labor_assignments = response.data.data;
+    });
     this.$http.get('/task_statuses').then(response => {
-      this.task_statuses = response.data
-    })
+      this.task_statuses = response.data;
+    });
     this.$http.get('/task_actions').then(response => {
-      this.task_actions = response.data
-    })
+      this.task_actions = response.data;
+    });
     this.$http.get('/activity_levels').then(response => {
-      this.activity_levels = response.data
-      this.activity_levels_loading = false
-    })
+      this.activity_levels = response.data;
+      this.activity_levels_loading = false;
+    });
   },
   methods: {
     saveClient() {
@@ -616,28 +621,42 @@ export default {
     resetForm(){
       this.client = {
         id: null,
-        client_type_id: null,
         name: null,
         billing_property_id: null,
         billing_contact_id: null,
         referred_by: '',
+        client_type_id: parseInt(this.settings.default_client_type_id),
+        activity_level_id: parseInt(this.settings.default_activity_level_id),
+        contact_method_id: parseInt(this.settings.default_contact_method_id)
       };
       this.contact = {
         id: null,
         name: null,
-        contact_method_id: this.settings.default_contact_method_id
+        contact_method_id: parseInt(this.settings.default_contact_method_id),
+        contact_type_id: parseInt(this.settings.default_contact_type_id),
+        activity_level_id: parseInt(this.settings.default_activity_level_id)
       };
       this.property = {
         id: null,
         name: 'Home',
         billing_property: true,
-        work_property: true
+        work_property: true,
+        property_type_id: this.settings.default_property_type_id,
+        activity_level_id: this.settings.default_activity_level_id
       };
       this.order = {
         id: null,
         name: null,
         description: null,
-        date: this.today
+        date: this.today,
+        order_category_id: this.settings.default_order_category_id,
+        order_priority_id: this.settings.default_order_priority_id,
+        order_type_id: this.settings.default_order_type_id,
+        order_status_id: this.settings.default_order_status_id,
+        order_action_id: this.settings.default_order_action_id,
+        approval_date: this.today,
+        start_date: this.today,
+        service_window: this.$store.state.user.default_service_window
       };
       this.task= {
         id: null,
@@ -649,31 +668,6 @@ export default {
       this.project = {
         id: null
       };
-      this.client.client_type_id = this.settings.default_client_type_id
-      this.client.activity_level_id = this.settings.default_activity_level_id
-      this.client.contact_method_id = this.settings.default_contact_method_id
-      this.contact.contact_type_id = this.settings.default_contact_type_id
-      this.property.property_type_id = this.settings.default_property_type_id
-      this.client.activity_level_id = this.settings.default_activity_level_id
-      this.contact.activity_level_id = this.settings.default_activity_level_id
-      this.property.activity_level_id = this.settings.default_activity_level_id
-      this.order.order_category_id = this.settings.default_order_category_id
-      this.order.order_priority_id = this.settings.default_order_priority_id
-      this.order.order_type_id = this.settings.default_order_type_id
-      
-      this.order.order_status_id = this.settings.default_order_status_id
-      this.order.order_action_id = this.settings.default_order_action_id
-      
-      
-      this.order.approval_date = this.today
-      this.order.start_date = this.today
-      
-      this.order.service_window = this.$store.state.user.default_service_window;
-      
-      
-      this.task.labor_assignment_id = this.settings.default_billing_labor_assignment_id
-      this.task.task_status_id = this.settings.default_billing_task_status_id
-      this.task.task_action_id = this.settings.default_billing_task_action_id
       this.lastContactName = null;
     },
     contactNameChanged() {
@@ -698,6 +692,14 @@ export default {
     today() {
 			return moment().format('YYYY-MM-DD');
 		},
+    ...mapState({
+      settings: state => state.settings
+    })
+  },
+  watch:{
+    settings(){
+      this.resetForm();
+    }
   },
   updated() {
     if(!this.first_update){
