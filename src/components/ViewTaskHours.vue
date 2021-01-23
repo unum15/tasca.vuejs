@@ -8,8 +8,8 @@
                 <b-col class="data" cols="3">{{ task.task_hours }}</b-col>
                 <b-col class="label">Crew Time</b-col>
                 <b-col class="data" cols="3">{{ task.crew_hours }}</b-col>
-                <b-col cols="3"><b-button @click="showClockIn" v-if="appointment_id && !clock_in_id">Clock In</b-button></b-col>
-                <b-col cols="2"><b-button @click="showClockOut" v-if="clock_in_id">Clock Out</b-button></b-col>
+                <b-col cols="3"><b-button @click="showClockIn" v-if="appointment_id && !clock_in.id">Clock In</b-button></b-col>
+                <b-col cols="2"><b-button @click="showClockOut" v-if="clock_in.id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Task Description</b-col>
@@ -218,7 +218,12 @@ export default {
             //this.new_clock_in.labor_activity_id = this.default_activity_id;
             this.$refs['modal-clock-in'].show();
         },
-        clockIn(){
+        clockIn(e){
+            if(!this.new_clock_in.labor_activity_id){
+                e.preventDefault();
+                alert('Must select activity.');
+                return;
+            }
             var clock_in = {
                 appointment_id : this.appointment_id,
                 clock_in: this.new_clock_in.date+' '+this.new_clock_in.time,
@@ -232,14 +237,20 @@ export default {
         showClockOut(){
             this.new_clock_out.date = moment().format('YYYY-MM-DD');
             this.new_clock_out.time = moment().format('HH:mm');
+            this.new_clock_out.labor_activity_id = this.clock_in.labor_activity_id;
             this.$refs['modal-clock-out'].show();
         },
-        clockOut(){
+        clockOut(e){
+            if(!this.new_clock_out.labor_activity_id){
+                e.preventDefault();
+                alert('Must select activity.');
+                return;
+            }
             var clock_in = {
                 clock_out: this.new_clock_out.date+' '+this.new_clock_out.time,
                 labor_activity_id: this.new_clock_out.labor_activity_id,
             }
-            this.$http.patch('/clock_in/' + this.clock_in_id, clock_in).then(() => {
+            this.$http.patch('/clock_in/' + this.clock_in.id, clock_in).then(() => {
                 this.getClockIns();
             });
         },
@@ -275,14 +286,12 @@ export default {
         },
     },
     computed: {
-        clock_in_id() {
-            var id = null
-            var my_id = this.user_id
-            var ids = this.clock_ins.filter( si => (si.contact_id == my_id && si.clock_out == null))
-            if(ids.length > 0){
-                id = ids[0].id
+        clock_in() {
+            let clock_ins = this.clock_ins.filter( si => (si.contact_id == this.user_id && si.clock_out == null))
+            if(!clock_ins.length){
+                return {id: null};
             }
-            return id;
+            return clock_ins[0];
         },
         ...mapState({
             user_id: state => state.user.id,
