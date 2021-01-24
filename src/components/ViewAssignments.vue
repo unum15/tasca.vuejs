@@ -416,7 +416,7 @@ export default {
             this.modal_overhead.title = "Clock Out";
             this.modal_overhead.new.date = moment().format('YYYY-MM-DD');
             this.modal_overhead.new.time = moment().format('HH:mm');
-            this.modal_overhead.new.labor_assignment_id = this;
+            this.modal_overhead.new.labor_assignment_id = null;
             this.modal_overhead.new.labor_activity_id = null;
             this.$refs['modal-clock-in-overhead'].show();
         },
@@ -435,7 +435,6 @@ export default {
                 this.$http.patch('/task/'+this.clock_in.appointment.task_id, { name: assignment.name, labor_assignment_id: this.modal_overhead.new.labor_assignment_id, order_id: assignment.order_id });
                 let clock_in = {
                     clock_in : this.modal_overhead.current.date + ' ' + this.modal_overhead.current.time,
-                    labor_assignment_id: this.modal_overhead.current.labor_assignment_id,
                     labor_activity_id: this.modal_overhead.current.labor_activity_id,
                     clock_out : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time
                 };
@@ -460,15 +459,27 @@ export default {
                    return;
                 }
                 let assignment = this.getAssignmentName(this.modal_overhead.new.labor_assignment_id);
-                this.$http.post('/task', { name: assignment.name, labor_assignment_id: this.modal_overhead.new.labor_assignment_id, order_id: assignment.order_id }).then(response => {
-                    this.$http.post('/appointment', {task_id: response.data.data.id, date: this.modal_overhead.new.date,time:this.modal_overhead.new.time}).then(response => {
+                                    
+                let task = {
+                    name: assignment.name,
+                    labor_type_id: this.overhead_labor_type_id,
+                    labor_assignment_id: this.modal_overhead.new.labor_assignment_id,
+                    order_id: assignment.order_id
+                };
+                console.log(task.labor_assignment_id);
+                this.$http.post('/task', task).then(response => {
+                    let appointment = {
+                        task_id: response.data.data.id,
+                        date: this.modal_overhead.new.date,
+                        time:this.modal_overhead.new.time
+                    };
+                    this.$http.post('/appointment', appointment).then(response => {
                         let clock_in = {
                             appointment_id: response.data.data.id,
                             clock_in : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time,
                             labor_activity_id: this.modal_overhead.new.labor_activity_id,
                             contact_id: this.$store.state.user.id
                         };
-                        console.log(clock_in);
                         this.$http.post('/clock_in', clock_in).then(response => {
                             this.clock_in = response.data.data;
                             this.clockInToCurrent();

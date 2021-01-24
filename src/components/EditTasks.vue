@@ -86,7 +86,7 @@ export default {
 			var task = {
 				id: null,
 				order_id: this.order.id,
-				labor_type_id: 2,
+				labor_type_id: this.settings.default_labor_type_id,
 				appointments: [ {date: null, time:null, day: null}],
 				name: name,
 				description: name,
@@ -95,9 +95,9 @@ export default {
 				expiration_date: null,
 				closed_date: null,
 				billed_date: null,
-				labor_assignment_id: this.settings.default_billing_labor_assignment_id,
-				task_status_id: this.settings.default_billing_task_status_id,
-				task_action_id: this.settings.default_billing_task_action_id,
+				labor_assignment_id: this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id],
+				task_status_id: this.settings['default_task_status_id-labor_type_id-' + this.settings.default_labor_type_id],
+				task_action_id: this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id],
 				notes: null,
 				job_hours: null,
 				crew_hours: null

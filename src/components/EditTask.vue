@@ -48,7 +48,7 @@
 			<b-col>
                 <b-form-group label="Assignment">
                     <b-form-select
-                        :options="current_categories"
+                        :options="current_assignments"
 						@change="save"
                         value-field="id"
                         text-field="name"
@@ -234,7 +234,6 @@ export default {
 			}
 		},
 		change_defaults(){
-			console.log(this.$store.state.settings['default_labor_assignment_id-labor_type_id-' + this.my_task.labor_type_id]);
 			this.my_task.labor_assignment_id = this.$store.state.settings['default_labor_assignment_id-labor_type_id-' + this.my_task.labor_type_id];
 			this.my_task.task_status_id = this.$store.state.settings['default_task_status_id-labor_type_id-' + this.my_task.labor_type_id];
 			this.my_task.task_action_id = this.$store.state.settings['default_task_action_id-labor_type_id-' + this.my_task.labor_type_id];
@@ -246,7 +245,7 @@ export default {
 		}
 	},
 	computed: {
-		current_categories() {
+		current_assignments() {
 			return this.labor_assignments.filter(category => {
                 for (var i=0; i < category.labor_types.length; i++) {
                   if (category.labor_types[i].id == this.my_task.labor_type_id) {
