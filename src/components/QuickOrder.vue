@@ -250,7 +250,6 @@ export default {
       labor_assignments: [],
       task_statuses: [],
       task_actions: [],
-      settings: {},
       showSaveFailed: false,
       showSaveSuccess: false,
       reroute: false,
@@ -381,7 +380,7 @@ export default {
         this.$http.post('/task',this.task)
           .then((results) => {
             this.task.id = results.data.id;
-            this.saveTaskDate();
+            this.saveAppointment();
           })
       }
       else{
@@ -389,7 +388,7 @@ export default {
         .then(() => {this.nextTask()})
       }
     },
-    saveTaskDate() {
+    saveAppointment() {
       this.appointment.task_id = this.task.id;
       if(this.appointment.id === null){
         this.$http.post('/appointment',this.appointment)
@@ -415,41 +414,39 @@ export default {
       this.order = {
         id: null,
         name: null,
-        description: null
+        description: null,
+        order_category_id: this.settings.default_order_category_id,
+        order_priority_id: this.settings.default_order_priority_id,
+        order_type_id: this.settings.default_order_type_id,      
+        order_status_id: this.settings.default_order_status_id,
+        order_action_id: this.settings.default_order_action_id,
+        approval_date: this.today,
+        start_date: this.today,
+        order_date: this.today,
+        service_window: this.$store.state.user.default_service_window
       };
-      this.task= {
+      this.task = {
         id: null,
-        labor_type_id: 2,
-        labor_assignment_id: this.$store.settings.default_billing_labor_assignment_id,
-        task_status_id: this.$store.settings.default_billing_task_status_id,
-        task_action_id: this.$store.settings.default_billing_task_action_id,
+        labor_type_id: this.settings.default_labor_type_id,
+        labor_assignment_id: parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]),
+        task_status_id: parseInt(this.settings['default_task_status_id-labor_type_id-' + this.settings.default_labor_type_id]),
+        task_action_id: parseInt(this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id]),
+      };
+      this.appointment = {
+        id: null,
+        date: null,
+        sort_order: null
       };
       this.project = {
         id: null,
         contact_id: null
       };
       this.client_id = null;
-      this.order.order_category_id = this.$store.settings.default_order_category_id
-      this.order.order_priority_id = this.$store.settings.default_order_priority_id
-      this.order.order_type_id = this.$store.settings.default_order_type_id
-      
-      this.order.order_status_id = this.$store.settings.default_order_status_id
-      this.order.order_action_id = this.$store.settings.default_order_action_id
       
       
-      this.order.approval_date = this.today
-      this.order.start_date = this.today
-      this.order.order_date = this.today
-      this.order.service_window = this.$store.state.user.default_service_window
       
       
-      this.task.labor_assignment_id = this.$store.settings.default_billing_labor_assignment_id
-      this.task.task_status_id = this.$store.settings.default_billing_task_status_id
-      this.task.task_action_id = this.$store.settings.default_billing_task_action_id
       
-      this.appointment.id = null;
-      this.appointment.date = null;
-      this.appointment.sort_order = null;
  
     },
     orderNameChanged(){
@@ -463,30 +460,44 @@ export default {
 			return moment().format('YYYY-MM-DD');
 		},
     ...mapState({
-      default_order_category_id: state => state.settings.default_order_category_id,
-      default_order_priority_id: state => state.settings.default_order_priority_id,
-      default_order_type_id: state => state.settings.default_order_type_id,
-      default_order_status_id: state => state.settings.default_order_status_id,
-      default_order_action_id: state => state.settings.default_order_action_id
-    })
+      settings: state => state.settings
+    }),
+    current_assignments() {
+			return this.labor_assignments.filter(a => {
+                for (var i=0; i < a.labor_types.length; i++) {
+                  if (a.labor_types[i].id == this.task.labor_type_id) {
+                        return true;
+                    }
+                }
+				return false;
+			})
+		},
+		current_statuses() {
+			return this.task_statuses.filter(status => {
+                for (var i=0; i < status.labor_types.length; i++) {
+                    if (status.labor_types[i].id == this.task.labor_type_id) {
+                        return true;
+                    }
+                }
+				return false;
+			})
+		},
+		current_actions() {
+			return this.task_actions.filter(action => {
+                for (var i=0; i < action.labor_types.length; i++) {
+                    if (action.labor_types[i].id == this.task.labor_type_id) {
+                        return true;
+                    }
+                }
+				return false;
+			})
+		}
   },
-  watch: {
-    default_order_category_id() {
-      this.order.order_category_id = this.default_order_category_id;
-    },
-    default_order_priority_id() {
-      this.order.order_priority_id = this.default_order_priority_id;
-    },
-    default_order_type_id() {
-      this.order.order_type_id = this.default_order_type_id;
-    },
-    default_order_status_id() {
-      this.order.order_status_id = this.default_order_status_id;
-    },
-    default_order_action_id() {
-      this.order.order_action_id = this.default_order_action_id;
-    },
-  }
+  watch:{
+    settings(){
+      this.resetForm();
+    }
+  },
 }
 
 </script>
