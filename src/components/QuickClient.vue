@@ -434,7 +434,6 @@
                        <b-form-group label="Approval Date">
                            <b-form-input
                                type="date"
-                               @change="updateStartDate();"
                                v-model="order.approval_date"
                            >
                            </b-form-input>
@@ -448,9 +447,103 @@
                                :disabled="order.approval_date == null"
                            >
                            </b-form-input>
+                        </b-form-group>
+                  </b-col>
+                   <b-col>
+                   <b-form-group label="Appointment Date">
+                           <b-form-input
+                               type="date"
+                               v-model="appointment.date"
+                           >
+                           </b-form-input>
                        </b-form-group>
                    </b-col>
+                   
                </b-row>
+               <b-row>
+                <b-col>
+                  <b-form-group label="Sort Order">
+                      <b-form-input
+                          type="text"
+                          v-model="appointment.sort_order"
+                      >
+                      </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Time">
+                      <b-form-input
+                          type="time"
+                          v-model="appointment.time"
+                      >
+                      </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Hours">
+                      <b-form-input
+                          type="text"
+                          v-model="task.task_hours"
+                      >
+                      </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Budget">
+                      <b-form-input
+                          type="text"
+                          v-model="order.budget"
+                      >
+                      </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Budget +/-">
+                      <b-form-input
+                          type="number"
+                          v-model="order.budget_plus_minus"
+                      >
+                      </b-form-input>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+                <b-row>
+                <b-col>
+                  <b-form-group label="Order Location">
+                      <b-form-textarea
+                          type="text"
+                          v-model="order.location"
+                      >
+                      </b-form-textarea>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Order Instructions">
+                      <b-form-textarea
+                          v-model="order.instructions"
+                      >
+                      </b-form-textarea>
+                      </b-form-group>
+                  </b-col>
+                  </b-row>
+                  <b-row>
+                  <b-col>
+                    <b-form-group label="Order Notes">
+                      <b-form-textarea
+                          v-model="order.notes"
+                      >
+                      </b-form-textarea>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Appointment Notes">
+                      <b-form-textarea
+                          v-model="appointment.notes"
+                      >
+                      </b-form-textarea>
+                      </b-form-group>
+                  </b-col>
+                </b-row>
               <b-button @click="saveClient();">New</b-button>
               <b-button @click="reroute=true;saveClient();">Edit</b-button>
             </b-container>
@@ -528,6 +621,9 @@ export default {
         task_billing_type_id: 1
       },
       project: {
+        id: null
+      },
+      appointment: {
         id: null
       }
     }
@@ -676,17 +772,30 @@ export default {
     },
     saveTask() {
       this.task.order_id = this.order.id;
-			this.task.description = this.order.description;
       this.task.crew_id = this.settings.default_crew_id;
       if(this.task.id === null){
         this.$http.post('/task',this.task)
           .then((results) => {
-            this.task.id = results.data.id;
-            this.nextTask();
+            this.task.id = results.data.data.id;
+            this.saveAppointment();
           })
       }
       else{
         this.$http.patch('/task/' + this.task.id,this.task)
+        .then(() => {this.saveAppointment();})
+      }
+    },
+    saveAppointment() {
+      this.appointment.task_id = this.task.id;
+      if(this.appointment.id === null){
+        this.$http.post('/appointment',this.appointment)
+          .then((results) => {
+            this.appointment.id = results.data.data.id;
+            this.nextTask();
+          })
+      }
+      else{
+        this.$http.patch('/appointment/' + this.appointment.id,this.appointment)
         .then(() => {this.nextTask();})
       }
     },
@@ -725,6 +834,7 @@ export default {
         name: 'Home',
         billing_property: true,
         work_property: true,
+        state: this.settings.default_state,
         property_type_id: parseInt(this.settings.default_property_type_id),
         activity_level_id: parseInt(this.settings.default_activity_level_id)
       };
@@ -740,7 +850,9 @@ export default {
         order_action_id: parseInt(this.settings.default_order_action_id),
         approval_date: this.order.approval_date ? this.order.approval_date : this.today,
         start_date: this.order.start_date ? this.order.start_date : this.today,
-        service_window: this.$store.state.user.default_service_window
+        service_window: this.$store.state.user.default_service_window,
+        budget: null,
+        budget_plus_minus: null
       };
       this.task = {
         id: null,
@@ -749,8 +861,15 @@ export default {
         labor_type_id: this.settings.default_labor_type_id,
         labor_assignment_id: parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]),
         task_status_id : parseInt(this.settings['default_task_status_id-labor_type_id-' + this.settings.default_labor_type_id]),
-        task_action_id : parseInt(this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id])
+        task_action_id : parseInt(this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id]),
+        task_hours: null
       };
+      this.appointment = {
+        id: null,
+        date: null,
+        time: null,
+        sort_order: null
+      }
       this.project = {
         id: null
       };
