@@ -14,8 +14,8 @@
                       <em>Clients</em>
                     </template>
                     <b-dropdown-item href="/clients">Clients</b-dropdown-item>
-                    <b-dropdown-item href="/quick_client">New Client Quick Form</b-dropdown-item>
-                    <b-dropdown-item href="/client">New Client Full Form</b-dropdown-item>
+                    <b-dropdown-item href="/client/quick">New Client</b-dropdown-item>
+                    <b-dropdown-item href="/client">New Client - Full</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown>
                     <template slot="button-content">
@@ -37,7 +37,6 @@
                     <b-dropdown-item href="/timecard">Timecard</b-dropdown-item>
                     <b-dropdown-item href="/clock_ins">Employees</b-dropdown-item>
                     <b-dropdown-item href="/clock_ins/tasks">Tasks</b-dropdown-item>
-                    <b-dropdown-item href="/clock_ins/overhead">Overhead</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown v-if="phreebooks == 'true'">
                     <template slot="button-content">
@@ -126,7 +125,6 @@
                     <b-dropdown-item href="/labor_types">Labor Types</b-dropdown-item>
                     </b-dropdown-group>
                     <b-dropdown-divider></b-dropdown-divider>
-                    <b-dropdown-item href="/work_types">Work Types</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown right>
                     <template slot="button-content">

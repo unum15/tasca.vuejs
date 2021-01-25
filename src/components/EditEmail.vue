@@ -77,7 +77,7 @@ export default {
   },
   computed: {
     verifyEmail () {
-      var regex = /\w+@\w+\.\w+/;
+      var regex = /[\w-]+@[-\w]+\.\w+/;
       return regex.test(this.my_email.email);
     }
   },

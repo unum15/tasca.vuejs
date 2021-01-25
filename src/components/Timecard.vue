@@ -81,24 +81,10 @@
                         hover
                         :items="clock_ins"
                         :fields="fields"
+                        style="text-align:right"
                     >
                         <template v-slot:cell(id)="data">
                             <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
-                        </template>
-                        <template v-slot:cell(clock_in)="data">
-                            {{ format_time(data.value) }}
-                        </template>
-                        <template v-slot:cell(clock_out)="data">
-                            {{ format_time(data.value) }}
-                        </template>
-                        <template v-slot:cell(time)="data">
-                            {{ getDiff(data.item.clock_in,data.item.clock_out) }}
-                        </template>
-                        <template v-slot:cell(order)="data">
-                            {{ data.item.appointment ? data.item.appointment.task.order.name : data.item.overhead_assignment ?  data.item.overhead_assignment.name : ''}}
-                        </template>
-                        <template v-slot:cell(task)="data">
-                            {{ data.item.appointment ? data.item.appointment.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
                         </template>
                     </b-table>
                 </b-row>
@@ -144,29 +130,55 @@ export default {
             dates: {},
             fields: [
                     {
-                        key: 'order',
+                        key: 'appointment.task.order.project.client.name',
+                        label: 'Client',
+                        sortable: true
+                    },
+                    {
+                        key: 'appointment.task.order.project.name',
+                        label: 'Project',
+                        sortable: true
+                    },
+                    {
+                        key: 'appointment.task.order.name',
                         label: 'Order',
                         sortable: true
                     },
                     {
-                        key: 'task',
+                        key: 'appointment.task.name',
                         label: 'Task',
+                        sortable: true
+                    },
+                    {
+                        key: 'appointment.task.labor_assignment.name',
+                        label: 'Assignment',
+                        sortable: true
+                    },
+                    {
+                        key: 'labor_activity.name',
+                        label: 'Activity',
                         sortable: true
                     },
                     {
                         key: 'clock_in',
                         label: 'Clock In',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'formatTime',
+                        sortByFormatted : true
                     },
                     {
                         key: 'clock_out',
                         label: 'Clock Out',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'formatTime',
+                        sortByFormatted : true
                     },
                     {
                         key: 'time',
                         label: 'Time',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'timeColumn',
+                        sortByFormatted : true
                     },
                     
             ],
@@ -186,6 +198,7 @@ export default {
             if(!this.contact_id){
                 return;
             }
+            this.dates={};
             for(let date=moment(this.stop_date);date.format('YYYY-MM-DD')>=this.start_date;date.subtract(1, 'day') ){
                 this.dates[date.format('YYYY-MM-DD')] = [];
             }
@@ -237,7 +250,7 @@ export default {
             });
             return Math.round(time*100)/100;
         },
-        format_time(time){
+        formatTime(time){
             return moment(time).format('hh:mm A');
         },
         total_time(dates){
@@ -270,6 +283,9 @@ export default {
                 });
             });
             return Math.round(time*100)/100;
+        },
+        timeColumn(value, key, item){
+            return this.getDiff(item.clock_in,item.clock_out);
         }
     },
     computed:{

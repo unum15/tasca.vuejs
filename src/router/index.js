@@ -80,11 +80,11 @@ var router = new Router({
       },
     },
     {
-      path: '/quick_client',
+      path: '/client/quick',
       name: 'QuickClient',
       component: QuickClient,
       meta: {
-        title: 'Quick Client'
+        title: 'New Client'
       },
     },
     {

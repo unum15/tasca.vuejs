@@ -10,7 +10,7 @@
                 <span v-if="clock_in">
                     <b-button @click="showClockInOverhead">Change</b-button>
                     <b-button @click="showClockOutOverhead">Clock Out</b-button>
-                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.appointment.task.labor_assignment ? clock_in.appointment.task.labor_assignment.name:''}} - {{ clock_in.labor_activity.name }}
+                    Clocked: {{ formatDateTimeToTime(clock_in.clock_in) }} - {{ clock_in.appointment.task.labor_assignment ? clock_in.appointment.task.labor_assignment.name:'Unassigned'}} - {{ clock_in.labor_activity ? clock_in.labor_activity.name: 'Unassigned'  }}
                 </span>
                 <b-button @click="showClockInOverhead" v-show="!clock_in">Clock In</b-button>
                 <b-modal ref="modal-clock-in-overhead" @ok="clockInOverhead" :title="modal_overhead.title">
@@ -275,18 +275,24 @@ export default {
 			this.clock_in = response.data;
             this.clockInToCurrent();
 		});
-        this.$http.get('/labor_assignments').then(response => {
-			this.assignments = response.data.data;
-		});
         this.$http.get('/labor_activities').then(response => {
 			this.activities = response.data.data;
 		});
         this.getTasks();
+        this.getAssignments();
     },
     methods: {
         getTasks(){
             this.$http.get('/schedule?status=today&date='+this.date).then((results) => {
                 this.tasks = results.data;
+            });
+        },
+        getAssignments(){
+            if(!this.overhead_labor_type_id){
+                return;
+            }
+            this.$http.get('/labor_assignments?labor_type_id=' + this.overhead_labor_type_id).then(response => {
+                this.assignments = response.data.data;
             });
         },
         previousDate(){
@@ -306,6 +312,10 @@ export default {
             this.$refs['modalInfo'].show()
         },
         resetModal() {
+            this.$http.get('/clock_in/current').then(response => {
+                this.clock_in = response.data;
+                this.clockInToCurrent();
+            });
             this.modalInfo.title = ''
             this.modalInfo.content = ''
             this.modalInfo.id = null
@@ -406,7 +416,7 @@ export default {
             this.modal_overhead.title = "Clock Out";
             this.modal_overhead.new.date = moment().format('YYYY-MM-DD');
             this.modal_overhead.new.time = moment().format('HH:mm');
-            this.modal_overhead.new.labor_assignment_id = this;
+            this.modal_overhead.new.labor_assignment_id = null;
             this.modal_overhead.new.labor_activity_id = null;
             this.$refs['modal-clock-in-overhead'].show();
         },
@@ -425,7 +435,6 @@ export default {
                 this.$http.patch('/task/'+this.clock_in.appointment.task_id, { name: assignment.name, labor_assignment_id: this.modal_overhead.new.labor_assignment_id, order_id: assignment.order_id });
                 let clock_in = {
                     clock_in : this.modal_overhead.current.date + ' ' + this.modal_overhead.current.time,
-                    labor_assignment_id: this.modal_overhead.current.labor_assignment_id,
                     labor_activity_id: this.modal_overhead.current.labor_activity_id,
                     clock_out : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time
                 };
@@ -441,16 +450,36 @@ export default {
                 });
             }
             if(this.modal_overhead.clock_in){
+                if(!this.modal_overhead.new.labor_assignment_id){
+                   alert('Please select new assignment.');
+                   return;
+                }
+                if(!this.modal_overhead.new.labor_activity_id){
+                   alert('Please select new activity.');
+                   return;
+                }
                 let assignment = this.getAssignmentName(this.modal_overhead.new.labor_assignment_id);
-                this.$http.post('/task', { name: assignment.name, labor_assignment_id: this.modal_overhead.new.labor_assignment_id, order_id: assignment.order_id }).then(response => {
-                    this.$http.post('/appointment', {task_id: response.data.data.id, date: this.modal_overhead.new.date,time:this.modal_overhead.new.time}).then(response => {
+                                    
+                let task = {
+                    name: assignment.name,
+                    labor_type_id: this.overhead_labor_type_id,
+                    labor_assignment_id: this.modal_overhead.new.labor_assignment_id,
+                    order_id: assignment.order_id
+                };
+                console.log(task.labor_assignment_id);
+                this.$http.post('/task', task).then(response => {
+                    let appointment = {
+                        task_id: response.data.data.id,
+                        date: this.modal_overhead.new.date,
+                        time:this.modal_overhead.new.time
+                    };
+                    this.$http.post('/appointment', appointment).then(response => {
                         let clock_in = {
                             appointment_id: response.data.data.id,
                             clock_in : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time,
                             labor_activity_id: this.modal_overhead.new.labor_activity_id,
                             contact_id: this.$store.state.user.id
                         };
-                        console.log(clock_in);
                         this.$http.post('/clock_in', clock_in).then(response => {
                             this.clock_in = response.data.data;
                             this.clockInToCurrent();
@@ -526,6 +555,11 @@ export default {
           overhead_labor_type_id: state => state.settings.overhead_labor_type_id,
           default_activity_id: state => state.settings.default_labor_activity_id
         })
+    },
+    watch:{
+        overhead_labor_type_id(){
+            this.getAssignments();
+        }
     }
 }
 </script>
