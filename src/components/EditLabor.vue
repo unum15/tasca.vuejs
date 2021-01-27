@@ -33,32 +33,34 @@
                   </b-form-group>
               </b-col>
             </b-row>
-            <b-row v-if="overhead_type_selected">
-              <b-col style="text-align:center">
-                <b-form-group label="Overhead Project">
-                        <b-form-select
-                          @change="getOverheadOrders();"
-                          :options="overhead_projects"
-                          value-field="id"
-                          text-field="name"
-                          v-model="overhead_project_id"
-                        >
-                      </b-form-select>
-                  </b-form-group>
-              </b-col>
-              <b-col style="text-align:center">
-                <b-form-group label="Overhead Order">
-                        <b-form-select
-                          @change="saveAssignmentOrderId"
-                          :options="overhead_orders"
-                          value-field="id"
-                          text-field="name"
-                          v-model="overhead_order_id"
-                        >
-                      </b-form-select>
-                  </b-form-group>
-              </b-col>
-            </b-row>
+            <div v-for="type in selected_labor_types" :key="type">
+              <b-row v-if="typeAssigned(type)">
+                <b-col style="text-align:center">
+                  <b-form-group :label="typeName(type) + ' Project'">
+                          <b-form-select
+                            @change="getOverheadOrders(type);"
+                            :options="overhead_projects"
+                            value-field="id"
+                            text-field="name"
+                            v-model="type_project[type]"
+                          >
+                        </b-form-select>
+                    </b-form-group>
+                </b-col>
+                <b-col style="text-align:center">
+                  <b-form-group :label="typeName(type) + ' Order'">
+                          <b-form-select
+                            @change="saveLaborTypes"
+                            :options="type_orders[type]"
+                            value-field="id"
+                            text-field="name"
+                            v-model="type_order[type]"
+                          >
+                        </b-form-select>
+                    </b-form-group>
+                </b-col>
+              </b-row>
+            </div>
             <b-form-checkbox-group v-model="selected_activities" v-if="assignment_id" @input="saveActivities">
               <b-row v-for="activity in activities" :key="activity.id">
                 <b-col  md="3" offset-md="4">
@@ -152,9 +154,9 @@ export default {
       labor_types: [],
       selected_labor_types: [],
       overhead_projects: [],
-      overhead_orders: [],
-      overhead_project_id: null,
-      overhead_order_id: null
+      type_order: {},
+      type_orders: {},
+      type_project: {},
     }
   },
   created () {
@@ -185,21 +187,20 @@ export default {
       }
       this.$http.get('/projects?client_id=' + this.operator_id).then(response => {
         this.overhead_projects = response.data;
-        if(this.overhead_projects.length == 1){
-          this.overhead_project_id = this.overhead_projects[0].id;
-          this.getOverheadOrders();
-        }
       });
     },
-    getOverheadOrders(){
-      if(!this.overhead_project_id){
+    getOverheadOrders(type){
+      if(!this.type_project[type]){
         return;
       }
-      this.$http.get('/orders?project_id=' + this.overhead_project_id).then(response => {
-        this.overhead_orders = response.data;
-        if(this.overhead_orders.length == 1){
-          this.overhead_order_id = this.overhead_orders[0].id;
-          this.saveAssignmentOrderId();
+      this.$http.get('/orders?project_id=' + this.type_project[type]).then(response => {
+        this.type_orders[type] = response.data;
+        this.$forceUpdate();
+        console.log(type);
+        console.log(this.type_orders[type]);
+        if(this.type_orders[type].length == 1){
+          this.type_order[type] = this.overhead_orders[0].id;
+          this.saveLaborType();
         }
       });
     },
@@ -290,10 +291,16 @@ export default {
       });
     },
     saveLaborTypes(){
-      if(this.overhead_type_selected){
-        this.saveAssignmentOrderId();
-      }
-      this.$http.put('/labor_assignment/' + this.assignment_id + '/labor_types', {labor_types: this.selected_labor_types}).then(() => {
+      let mapped_types = {};
+      this.selected_labor_types.map(t => {
+        if(this.type_order[t]){
+          mapped_types[t]={order_id: this.type_order[t]};
+        }
+        else{
+          mapped_types[t]={};
+        }
+      });
+      this.$http.put('/labor_assignment/' + this.assignment_id + '/labor_types', {labor_types: mapped_types}).then(() => {
         this.getAssignments();
       });
     },
@@ -329,6 +336,20 @@ export default {
       this.new_activity.name = name;
       this.new_activity.parent_id = parent_id;
       this.$refs['modal-activity'].show()
+    },
+    typeName(type){
+      let types = this.labor_types.filter(t => (t.id == type));
+      if(!types.length){
+        return;
+      }
+      return types[0].name;
+    },
+    typeAssigned(type){
+      let types = this.labor_types.filter(t => (t.id == type));
+      if(!types.length){
+        return false;
+      }
+      return types[0].assigned;
     }
   },
   computed:{
