@@ -235,14 +235,6 @@ export default {
         });
       }
     },
-    saveAssignmentOrderId(){
-      if(!this.assignment_id){
-        return;
-      }
-      this.$http.patch('/labor_assignment/' + this.assignment_id, {order_id: this.overhead_order_id}).then(() => {
-        this.getAssignments();
-      });
-    },
     showAddActivity(){
       this.new_activity.id = null;
       this.new_activity.name = null;
@@ -280,10 +272,11 @@ export default {
       assignment.labor_types.map(c => {
         this.selected_labor_types.push(c.id);
       });
-      if(assignment.order){
-        this.overhead_project_id = assignment.order.project_id;
-        this.overhead_order_id = assignment.order.id;
-      }
+      assignment.orders.map(o => {
+        this.type_project[o.pivot.labor_type_id] = o.project_id;
+        this.getOverheadOrders(o.pivot.labor_type_id);
+        this.type_order[o.pivot.labor_type_id] = o.id;
+      });
     },
     saveActivities(){
       this.$http.put('/labor_assignment/' + this.assignment_id + '/labor_activities', {labor_activities: this.selected_activities}).then(() => {
