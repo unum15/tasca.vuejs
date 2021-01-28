@@ -639,14 +639,6 @@ var router = new Router({
         }
     },
     {
-      path: '/backflow_water_system',
-      name: 'NewBackflowWaterSystem',
-      component: EditBackflowWaterSystem,
-      meta: {
-          title: 'New Backflow Water System'
-      }
-    },
-    {
       path: '/backflow_water_system/:backflow_water_system_id',
       name: 'EditBackflowWaterSystem',
       component: EditBackflowWaterSystem,
