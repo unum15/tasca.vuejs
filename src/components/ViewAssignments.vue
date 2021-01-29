@@ -429,7 +429,12 @@ export default {
                    return;
                 }
                 let assignment = this.getAssignmentName(this.modal_overhead.current.labor_assignment_id);
-                this.$http.patch('/task/'+this.clock_in.appointment.task_id, { name: assignment.name, labor_assignment_id: this.modal_overhead.new.labor_assignment_id, order_id: assignment.order_id });
+                let task = {
+                    name: assignment.name,
+                    labor_assignment_id: assignment.id,
+                    order_id: assignment.order_id
+                }
+                this.$http.patch('/task/'+this.clock_in.appointment.task_id, task);
                 let clock_in = {
                     clock_in : this.modal_overhead.current.date + ' ' + this.modal_overhead.current.time,
                     labor_activity_id: this.modal_overhead.current.labor_activity_id,
@@ -463,7 +468,6 @@ export default {
                     labor_assignment_id: this.modal_overhead.new.labor_assignment_id,
                     order_id: assignment.order_id
                 };
-                console.log(task.labor_assignment_id);
                 this.$http.post('/task', task).then(response => {
                     let appointment = {
                         task_id: response.data.data.id,
