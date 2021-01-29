@@ -288,10 +288,7 @@ export default {
             });
         },
         getAssignments(){
-            if(!this.overhead_labor_type_id){
-                return;
-            }
-            this.$http.get('/labor_assignments?labor_type_id=' + this.overhead_labor_type_id).then(response => {
+            this.$http.get('/labor_assignments?assigned=true').then(response => {
                 this.assignments = response.data.data;
             });
         },
