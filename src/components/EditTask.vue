@@ -246,14 +246,7 @@ export default {
 	},
 	computed: {
 		current_assignments() {
-			return this.labor_assignments.filter(category => {
-                for (var i=0; i < category.labor_types.length; i++) {
-                  if (category.labor_types[i].id == this.my_task.labor_type_id) {
-                        return true;
-                    }
-                }
-				return false;
-			})
+			return this.labor_assignments.filter(a => (a.labor_type_id == this.my_task.labor_type_id));
 		},
 		current_statuses() {
 			return this.task_statuses.filter(status => {
