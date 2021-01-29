@@ -3,15 +3,18 @@
       <b-container style="text-align:left;">
         <b-row>
           <b-col md="3" offset-md="4">
-            <b-button @click="showAddAssignment">Add Assignment</b-button>
-          </b-col>
-        </b-row>
-        <b-row>
-          <b-col md="3" offset-md="4">
             <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="assignment.id" @input="assignmentSelected"/>
           </b-col>
           <b-col md="3">
             <b-button @click="editAssignment" v-if="assignment.id">Edit</b-button>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col md="2" offset-md="4">
+            <b-button @click="showAddActivity()">Add Activity</b-button>
+          </b-col>
+          <b-col>
+            <b-button @click="showAddAssignment">Add Assignment</b-button>
           </b-col>
         </b-row>
         <b-row v-if="assignment.id && labor_type.assigned">
@@ -54,11 +57,6 @@
             </b-col>
           </b-row>
         </b-form-checkbox-group>
-        <b-row>
-          <b-col md="3" offset-md="4">
-            <b-button @click="showAddActivity()">Add Activity</b-button>
-          </b-col>
-        </b-row>
     </b-container>
   
     <b-modal ref="modal-assignment" @ok="addAssignment" title="New Assignment">
