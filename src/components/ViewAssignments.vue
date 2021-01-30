@@ -464,8 +464,8 @@ export default {
                                     
                 let task = {
                     name: assignment.name,
-                    labor_type_id: this.overhead_labor_type_id,
-                    labor_assignment_id: this.modal_overhead.new.labor_assignment_id,
+                    labor_type_id: assignment.labor_type_id,
+                    labor_assignment_id: assignment.id,
                     order_id: assignment.order_id
                 };
                 console.log(task.labor_assignment_id);
