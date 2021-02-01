@@ -42,6 +42,13 @@
                                 </b-form-group>
                             </b-col>
                         </b-row>
+                        <b-row v-if="clock_in">
+                            <b-col>
+                                <b-form-group label="Notes" class="mb-0">
+                                    <b-form-input type="text" v-model="modal_overhead.current.notes" />
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
                         <b-row v-if="modal_overhead.clock_in">
                             <b-col style="text-align:center;font-weight:bold;">
                                 New Clock In
@@ -198,7 +205,8 @@ export default {
                     time: null,
                     labor_assignment_id: null,
                     labor_activity_id: null,
-                    title: 'Clock In - Overhead'
+                    title: 'Clock In - Overhead',
+                    notes: null
                 },
             },
             activities: [],
@@ -415,6 +423,7 @@ export default {
             this.modal_overhead.new.time = moment().format('HH:mm');
             this.modal_overhead.new.labor_assignment_id = null;
             this.modal_overhead.new.labor_activity_id = null;
+            this.modal_overhead.current.notes = null;
             this.$refs['modal-clock-in-overhead'].show();
         },
         clockInOverhead(event){
@@ -429,67 +438,60 @@ export default {
                    return;
                 }
                 let assignment = this.getAssignmentName(this.modal_overhead.current.labor_assignment_id);
-                let task = {
-                    name: assignment.name,
-                    labor_assignment_id: assignment.id,
-                    order_id: assignment.order_id
-                }
-                this.$http.patch('/task/'+this.clock_in.appointment.task_id, task);
+                if(!assignment.order_id){
+                   alert('This labor assignment has no associated order_id please update in labor mappings');
+                   return;
+                }                    
                 let clock_in = {
                     clock_in : this.modal_overhead.current.date + ' ' + this.modal_overhead.current.time,
+                    labor_assignment_id: this.modal_overhead.current.labor_assignment_id,
                     labor_activity_id: this.modal_overhead.current.labor_activity_id,
-                    clock_out : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time
+                    clock_out : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time,
+                    notes: this.modal_overhead.current.notes
                 };
-                this.$http.patch('/clock_in/'+this.clock_in.id, clock_in).then(() => {
+                this.$http.patch('/clock_out/assigned/'+this.clock_in.id, clock_in).then(() => {
                     if(!this.modal_overhead.clock_in){
                         this.clock_in = null;
-                        this.modal_overhead.current.date = null;
-                        this.modal_overhead.current.time = null;
-                        this.modal_overhead.current.labor_assignment_id = null;
-                        this.modal_overhead.current.labor_activity_id = null;
+                    }
+                    if(this.modal_overhead.clock_in){
+                        this.postClockIn();
+                    }
+                    else{
                         this.$refs['modal-clock-in-overhead'].hide();
                     }
                 });
             }
-            if(this.modal_overhead.clock_in){
-                if(!this.modal_overhead.new.labor_assignment_id){
-                   alert('Please select new assignment.');
-                   return;
+            else{
+                if(this.modal_overhead.clock_in){
+                    this.postClockIn();
                 }
-                if(!this.modal_overhead.new.labor_activity_id){
-                   alert('Please select new activity.');
-                   return;
-                }
-                let assignment = this.getAssignmentName(this.modal_overhead.new.labor_assignment_id);
-                                    
-                let task = {
-                    name: assignment.name,
-                    labor_type_id: assignment.labor_type_id,
-                    labor_assignment_id: assignment.id,
-                    order_id: assignment.order_id
-                };
-                console.log(task.labor_assignment_id);
-                this.$http.post('/task', task).then(response => {
-                    let appointment = {
-                        task_id: response.data.data.id,
-                        date: this.modal_overhead.new.date,
-                        time:this.modal_overhead.new.time
-                    };
-                    this.$http.post('/appointment', appointment).then(response => {
-                        let clock_in = {
-                            appointment_id: response.data.data.id,
-                            clock_in : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time,
-                            labor_activity_id: this.modal_overhead.new.labor_activity_id,
-                            contact_id: this.$store.state.user.id
-                        };
-                        this.$http.post('/clock_in', clock_in).then(response => {
-                            this.clock_in = response.data.data;
-                            this.clockInToCurrent();
-                            this.$refs['modal-clock-in-overhead'].hide();
-                        });
-                    });
-                });
-            }
+            }            
+        },
+        postClockIn(){
+            if(!this.modal_overhead.new.labor_assignment_id){
+                alert('Please select new assignment.');
+                return;
+             }
+             if(!this.modal_overhead.new.labor_activity_id){
+                alert('Please select new activity.');
+                return;
+             }
+             let assignment = this.getAssignmentName(this.modal_overhead.new.labor_assignment_id);
+             if(!assignment.order_id){
+                alert('This labor assignment has no associated order_id please update in labor mappings');
+                return;
+             }                    
+             let clock_in = {
+                 clock_in : this.modal_overhead.new.date + ' ' + this.modal_overhead.new.time,
+                 labor_assignment_id: this.modal_overhead.new.labor_assignment_id,
+                 labor_activity_id: this.modal_overhead.new.labor_activity_id,
+                 contact_id: this.$store.state.user.id
+             };
+             this.$http.post('/clock_in/assigned', clock_in).then(response => {
+                 this.clock_in = response.data.data;
+                 this.clockInToCurrent();
+                 this.$refs['modal-clock-in-overhead'].hide();
+             });
         },
         clockInToCurrent(){
             this.modal_overhead.current.date = moment(this.clock_in.clock_in).format('YYYY-MM-DD');
