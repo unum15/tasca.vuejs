@@ -26,7 +26,7 @@
                         
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Category" label-cols="4" label-align="right">
+                                <b-form-group label="Category" label-cols="4" label-align="right">
                                     <b-form-select
                                         v-model="asset.asset_category_id"
                                         @change="save"
@@ -48,7 +48,7 @@
                         
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Brand" label-cols="4" label-align="right">
+                                <b-form-group label="Brand" label-cols="4" label-align="right">
                                     <b-form-select
                                         v-model="asset.asset_brand_id"
                                         @change="save"
@@ -76,7 +76,7 @@
         
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Type" label-cols="4" label-align="right">
+                                <b-form-group label="Type" label-cols="4" label-align="right">
                                     <b-form-select
                                         v-model="asset.asset_type_id"
                                         @change="save"
@@ -104,7 +104,7 @@
                         
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Group" label-cols="4" label-align="right">
+                                <b-form-group label="Group" label-cols="4" label-align="right">
                                     <b-form-select
                                         v-model="asset.asset_group_id"
                                         @change="save"
@@ -131,7 +131,7 @@
                         </b-form-row>
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Sub" label-cols="4" label-align="right">
+                                <b-form-group label="Sub" label-cols="4" label-align="right">
                                     <b-form-select
                                         v-model="asset.asset_sub_id"
                                         @change="save"
@@ -156,7 +156,19 @@
                                     @reload="reloadNumbers"/>
                             </b-col>
                         </b-form-row>
-        
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Item" label-cols="4" label-align="right">
+                                    <b-form-select
+                                        v-model="asset.item_number"
+                                        @change="save"
+                                        :options="item_numbers"
+                                    >
+                                    </b-form-select>
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
@@ -258,13 +270,7 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Asset Number" label-cols="4" label-align="right">
-                                    <b-form-input
-                                        v-model="asset.number"
-                                        @change="save"
-                                        type="text"
-                                    >
-                                    </b-form-input>
-                                
+                                    {{ number_string }}                                
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
@@ -449,7 +455,7 @@ export default {
     },
     data () {
         return {
-            asset: { id: null, asset_category_id: null },
+            asset: { id: null, asset_category_id: null, item_number: null },
             asset_categories: [],
             asset_brands: [],
             asset_types: [],
@@ -509,7 +515,6 @@ export default {
             this.$http.get('/' + item.list).then(response => {
                 this[item.list] = response.data.data;
                 this.asset[item.key] = item.value;
-                
             });
         },
         save() {
@@ -594,6 +599,16 @@ export default {
                 this.pictures = response.data.data;
             });
         },
+        getNumberString(numbers_type,number_key){
+            if(!this.asset[number_key]){
+                return '0';
+            }
+            let numbers = this[numbers_type].filter(x => (x.id == this.asset[number_key]));
+            if(!numbers.length){
+                return '0';
+            }
+            return numbers[0].number;
+        }
     },
     computed: {
         filtered_assets(){
@@ -601,6 +616,24 @@ export default {
                 return this.assets;
             }
             return this.assets.filter(a => (a.asset_type_id === this.asset.asset_type_id));
+        },
+        number_string(){
+            let number = '';
+            number += this.getNumberString('asset_categories','asset_category_id');
+            number += this.getNumberString('asset_brands','asset_brand_id');
+            number += this.getNumberString('asset_types','asset_type_id');
+            number += this.getNumberString('asset_groups','asset_group_id');
+            number += this.getNumberString('asset_subs','asset_sub_id');
+            return number;
+        },
+        item_numbers(){
+            let free_numbers = [];
+            for(let x=1;x<10;x++){
+                if(!this.assets.filter(a => (a.item_number == x && a.asset_sub_id == this.asset.asset_sub_id && a.id != this.asset.id )).length){
+                    free_numbers.push(x+'');
+                }
+            }
+            return free_numbers;
         }
     }
 };

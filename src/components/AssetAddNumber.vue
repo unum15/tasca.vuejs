@@ -75,18 +75,19 @@ export default {
             free_numbers: []
         };
     },
-    created () {
-        if(this.parent_type){
-            this.$http.get('/' + this.parent_type).then(response => {
-                this.parents = response.data.data;
-            });
-        }
-        this.$http.get('/' + this.numbers_type).then(response => {
-            this.numbers = response.data.data;
-        });
-    },
     methods: {
+        getLists() {
+            if(this.parent_type){
+                    this.$http.get('/' + this.parent_type).then(response => {
+                    this.parents = response.data.data;
+                });
+            }
+            this.$http.get('/' + this.numbers_type).then(response => {
+                this.numbers = response.data.data;
+            });
+        },
         showAdd() {
+            this.getLists();
             this.my_item = {
                 id: null,
                 name: null,
