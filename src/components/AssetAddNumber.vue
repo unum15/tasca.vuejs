@@ -80,10 +80,12 @@ export default {
             if(this.parent_type){
                     this.$http.get('/' + this.parent_type).then(response => {
                     this.parents = response.data.data;
+                    this.parentSelected();
                 });
             }
             this.$http.get('/' + this.numbers_type).then(response => {
                 this.numbers = response.data.data;
+                this.parentSelected();
             });
         },
         showAdd() {
