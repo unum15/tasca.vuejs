@@ -624,6 +624,7 @@ export default {
             number += this.getNumberString('asset_types','asset_type_id');
             number += this.getNumberString('asset_groups','asset_group_id');
             number += this.getNumberString('asset_subs','asset_sub_id');
+            number += this.asset.item_number ? this.asset.item_number : '0';
             return number;
         },
         item_numbers(){
