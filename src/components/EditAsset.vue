@@ -34,13 +34,13 @@
                                         clearable
                                         default-first-option
                                     >
-                                     <el-option
-                                        v-for="option in asset_categories"
-                                        :value="option.id"
-                                        :key="option.id"
-                                        :label="option.number+' '+option.name"
-                                        >
-                                    </el-option>
+                                        <el-option
+                                            v-for="option in asset_categories"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.number+' '+option.name"
+                                            >
+                                        </el-option>
                                     </el-select>
                                 </b-form-group>
                             </b-col>
@@ -174,12 +174,21 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Item" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.item_number"
                                         @change="save"
                                         :options="item_numbers"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                    </b-form-select>
+                                        <el-option
+                                            v-for="number in item_numbers"
+                                            :value="number"
+                                            :key="number"
+                                            >
+                                        </el-option>
+                                    </el-select>
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
@@ -320,14 +329,24 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Location" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.asset_location_id"
                                         @change="save"
                                         :options="locations"
                                         value-field="id"
                                         text-field="name"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                    </b-form-select>
+                                        <el-option
+                                            v-for="option in locations"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
                                 
                                 </b-form-group>
                             </b-col>
@@ -336,14 +355,24 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Parent Asset" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.parent_asset_id"
                                         @change="save"
                                         :options="filtered_assets"
                                         value-field="id"
                                         text-field="name"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                    </b-form-select>
+                                        <el-option
+                                            v-for="option in filtered_assets"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
                                 
                                 </b-form-group>
                             </b-col>
