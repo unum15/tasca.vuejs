@@ -654,7 +654,7 @@ export default {
             return numbers[0].number;
         },
         updateParent(list,my_key,parent_key){
-            let selected = list.filter(i => (i.id = this.asset[my_key]));
+            let selected = list.filter(i => (i.id == this.asset[my_key]));
             if(!selected.length){
                 return;
             }
@@ -687,6 +687,8 @@ export default {
         subChanged(){
             if(!this.asset.asset_group_id){
                 this.updateParent(this.asset_subs,'asset_sub_id','asset_group_id');
+                console.log(this.asset.asset_sub_id);
+                console.log(this.asset.asset_group_id);
                 this.groupChanged();
             }
             else{
