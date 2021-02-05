@@ -45,6 +45,9 @@
                 <template v-slot:cell(asset_sub)="data">
                     {{ data.value.number }} {{ data.value.name }}
                 </template>
+                <template v-slot:cell(number)="data">
+                    {{(data.item.asset_category ? data.item.asset_category.number : '0')}}{{data.item.asset_brand ? data.item.asset_brand.number : '0'}}{{data.item.asset_type ? data.item.asset_type.number : '0'}}{{data.item.asset_group ? data.item.asset_group.number : '0'}}{{data.item.asset_sub ? data.item.asset_sub.number : '0'}}{{data.item.item_number ? data.item.item_number : '0'}}
+                </template>
             </b-table>
         </main>
     </div>
@@ -94,6 +97,11 @@ export default {
                     {
                         key: 'asset_sub',
                         label: 'Sub',
+                        sortable: true
+                    },
+                    {
+                        key: 'number',
+                        label: 'Number',
                         sortable: true
                     },
                     {
