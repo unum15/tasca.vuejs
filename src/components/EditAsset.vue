@@ -687,8 +687,6 @@ export default {
         subChanged(){
             if(!this.asset.asset_group_id){
                 this.updateParent(this.asset_subs,'asset_sub_id','asset_group_id');
-                console.log(this.asset.asset_sub_id);
-                console.log(this.asset.asset_group_id);
                 this.groupChanged();
             }
             else{
