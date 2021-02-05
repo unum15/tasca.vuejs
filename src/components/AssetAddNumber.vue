@@ -120,19 +120,26 @@ export default {
             });
         },
         parentSelected() {
+            let all_numbers = [];
+            for(let x=0;x<10;x++){
+                all_numbers.push(x + '');
+            }
+            for(let x=65;x<91;x++){
+                all_numbers.push(String.fromCharCode(x));
+            }
             this.free_numbers = [];
-            for(let x=1;x<10;x++){
+            all_numbers.map(x => {
                 if(!this.parent_key){
                     if(!this.numbers.filter(n => (n.number == x)).length){
-                        this.free_numbers.push(x+'');
+                        this.free_numbers.push(x);
                     }
                 }
                 else{
                     if(!this.numbers.filter(n => (n.number == x && n[this.parent_key] == this.item[this.parent_key])).length){
-                        this.free_numbers.push(x+'');
+                        this.free_numbers.push(x);
                     }
                 }
-            }
+            });
         }
     }
 };

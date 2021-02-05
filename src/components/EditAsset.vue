@@ -27,18 +27,21 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Category" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.asset_category_id"
                                         @change="save"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                     <b-form-select-option
+                                     <el-option
                                         v-for="option in asset_categories"
                                         :value="option.id"
                                         :key="option.id"
+                                        :label="option.number+' '+option.name"
                                         >
-                                        {{ option.number }} {{ option.name }}
-                                    </b-form-select-option>
-                                    </b-form-select>
+                                    </el-option>
+                                    </el-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -49,18 +52,21 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Brand" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.asset_brand_id"
-                                        @change="save"
+                                        @change="brandChanged"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                        <b-form-select-option
-                                            v-for="option in asset_brands.filter(n => (n.asset_category_id == this.asset.asset_category_id))"
+                                        <el-option
+                                            v-for="option in asset_brands.filter(n => (!this.asset.asset_category_id || n.asset_category_id == this.asset.asset_category_id))"
                                             :value="option.id"
                                             :key="option.id"
+                                            :label="option.number+' '+option.name"
                                             >
-                                            {{ option.number }} {{ option.name }}
-                                        </b-form-select-option>
-                                    </b-form-select>
+                                        </el-option>
+                                    </el-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -77,18 +83,21 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Type" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.asset_type_id"
-                                        @change="save"
+                                        @change="typeChanged"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                        <b-form-select-option
-                                            v-for="option in asset_types.filter(n => (n.asset_brand_id == this.asset.asset_brand_id))"
+                                        <el-option
+                                            v-for="option in asset_types.filter(n => (!this.asset.asset_brand_id || n.asset_brand_id == this.asset.asset_brand_id))"
                                             :value="option.id"
                                             :key="option.id"
+                                            :label="option.number+' '+option.name"
                                             >
-                                            {{ option.number }} {{ option.name }}
-                                        </b-form-select-option>
-                                    </b-form-select>
+                                        </el-option>
+                                    </el-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -105,18 +114,21 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Group" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.asset_group_id"
-                                        @change="save"
+                                        @change="groupChanged"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                        <b-form-select-option
-                                            v-for="option in asset_groups.filter(n => (n.asset_type_id == this.asset.asset_type_id))"
+                                        <el-option
+                                            v-for="option in asset_groups.filter(n => (!this.asset.asset_type_id || n.asset_type_id == this.asset.asset_type_id))"
                                             :value="option.id"
                                             :key="option.id"
+                                            :label="option.number+' '+option.name"
                                             >
-                                            {{ option.number }} {{ option.name }}
-                                        </b-form-select-option>
-                                    </b-form-select>
+                                        </el-option>
+                                    </el-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -132,18 +144,21 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Sub" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.asset_sub_id"
-                                        @change="save"
+                                        @change="subChanged"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                        <b-form-select-option
-                                            v-for="option in asset_subs.filter(n => (n.asset_group_id == this.asset.asset_group_id))"
+                                        <el-option
+                                            v-for="option in asset_subs.filter(n => (!this.asset.asset_group_id || n.asset_group_id == this.asset.asset_group_id))"
                                             :value="option.id"
                                             :key="option.id"
+                                            :label="option.number+' '+option.name"
                                             >
-                                            {{ option.number }} {{ option.name }}
-                                        </b-form-select-option>
-                                    </b-form-select>
+                                        </el-option>
+                                    </el-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -608,6 +623,46 @@ export default {
                 return '0';
             }
             return numbers[0].number;
+        },
+        updateParent(list,my_key,parent_key){
+            let selected = list.filter(i => (i.id = this.asset[my_key]));
+            if(!selected.length){
+                return;
+            }
+            this.asset[parent_key] = selected[0][parent_key];
+        },
+        brandChanged(){
+            if(!this.asset.asset_category_id){
+                this.updateParent(this.asset_brands,'asset_brand_id','asset_category_id');
+            }
+            this.save();
+        },
+        typeChanged(){
+            if(!this.asset.asset_brand_id){
+                this.updateParent(this.asset_types,'asset_type_id','asset_brand_id');
+                this.brandChanged();
+            }
+            else{
+                this.save();
+            }
+        },
+        groupChanged(){
+            if(!this.asset.asset_type_id){
+                this.updateParent(this.asset_groups,'asset_group_id','asset_type_id');
+                this.typeChanged();
+            }
+            else{
+                this.save();
+            }
+        },
+        subChanged(){
+            if(!this.asset.asset_group_id){
+                this.updateParent(this.asset_subs,'asset_sub_id','asset_group_id');
+                this.groupChanged();
+            }
+            else{
+                this.save();
+            }
         }
     },
     computed: {
@@ -629,11 +684,18 @@ export default {
         },
         item_numbers(){
             let free_numbers = [];
-            for(let x=1;x<10;x++){
+            let all_numbers = [];
+            for(let x=0;x<10;x++){
+                all_numbers.push(x + '');
+            }
+            for(let x=65;x<91;x++){
+                all_numbers.push(String.fromCharCode(x));
+            }
+            all_numbers.map(x => {
                 if(!this.assets.filter(a => (a.item_number == x && a.asset_sub_id == this.asset.asset_sub_id && a.id != this.asset.id )).length){
                     free_numbers.push(x+'');
                 }
-            }
+            });
             return free_numbers;
         }
     }
