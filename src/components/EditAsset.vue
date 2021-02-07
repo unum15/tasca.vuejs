@@ -749,6 +749,8 @@ export default {
         currencyFormatter(value){
             const valid_chars = /[^\d$,.]/g;
             value = value.replace(valid_chars, '');
+            const dollar_sign = /^\$?/;
+            value = value.replace(dollar_sign, '$');
             return value;
         }
     },
