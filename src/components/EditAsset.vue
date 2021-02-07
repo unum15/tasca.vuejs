@@ -195,19 +195,26 @@
 
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
-                                    <b-form-radio-group
-                                        v-model="asset.asset_usage_type_id"
-                                        @change="save"
-                                        :options="asset_usage_types"
-                                        value-field="id"
-                                        text-field="name"
-                                    >
-                                    </b-form-radio-group>
+                                <b-form-group label="Asset Number" label-cols="4" label-align="right">
+                                    {{ number_string }}                                
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
-        
+
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Manufacture" label-cols="4" label-align="right">
+                                    <b-form-input
+                                        v-model="asset.manufacture"
+                                        @change="save"
+                                        type="text"
+                                    >
+                                    </b-form-input>
+                                
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+      
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Year" label-cols="4" label-align="right">
@@ -277,41 +284,7 @@
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
-                        
-                        <b-form-row>
-                            <b-col md="6">
-                                <b-form-group label="Manufacture" label-cols="4" label-align="right">
-                                    <b-form-input
-                                        v-model="asset.manufacture"
-                                        @change="save"
-                                        type="text"
-                                    >
-                                    </b-form-input>
-                                
-                                </b-form-group>
-                            </b-col>
-                        </b-form-row>
-                        <b-form-row>
-                            <b-col md="6">
-                                <b-form-group label="Asset Number" label-cols="4" label-align="right">
-                                    {{ number_string }}                                
-                                </b-form-group>
-                            </b-col>
-                        </b-form-row>
-                        <b-form-row>
-                            <b-col md="6">
-                                <b-form-group label="Purchase Cost" label-cols="4" label-align="right">
-                                    <b-form-input
-                                        v-model="asset.purchase_cost"
-                                        @change="save"
-                                        type="number"
-                                    >
-                                    </b-form-input>
-                                
-                                </b-form-group>
-                            </b-col>
-                        </b-form-row>
-                        
+                                              
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Purchase Date" label-cols="4" label-align="right">
@@ -319,6 +292,20 @@
                                         v-model="asset.purchase_date"
                                         @change="save"
                                         type="date"
+                                    >
+                                    </b-form-input>
+                                
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Purchase Cost" label-cols="4" label-align="right">
+                                    <b-form-input
+                                        v-model="asset.purchase_cost"
+                                        @change="save"
+                                        :formatter="currencyFormatter"
                                     >
                                     </b-form-input>
                                 
@@ -350,6 +337,42 @@
                                 
                                 </b-form-group>
                             </b-col>
+                            <b-col>
+                                <img src="@/assets/add.png" v-b-tooltip.hover title="Add Location" @click.stop="showAddLocation" alt="x" style="width:20px;float:left;" />
+                                <b-modal ref="add-location-modal" title="Add Location" @ok="addLocation">
+                                    <b-container>
+                                        <b-row>
+                                            <b-col>
+                                                <b-form-group label="Name">
+                                                    <b-form-input
+                                                        type="text"
+                                                        v-model="new_location.name"
+                                                    >
+                                                    </b-form-input>
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col>
+                                                <b-form-group label="Notes">
+                                                    <b-form-input
+                                                        type="text"
+                                                        v-model="new_location.notes"
+                                                    >
+                                                    </b-form-input>
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col>
+                                                <b-form-group label="Sort">
+                                                    <b-form-input
+                                                        type="text"
+                                                        v-model="new_location.sort_order"
+                                                    >
+                                                    </b-form-input>
+                                                </b-form-group>
+                                            </b-col>
+                                        </b-row>
+                                    </b-container>
+                                </b-modal>
+                            </b-col>
                         </b-form-row>
                         
                         <b-form-row>
@@ -358,9 +381,6 @@
                                     <el-select
                                         v-model="asset.parent_asset_id"
                                         @change="save"
-                                        :options="filtered_assets"
-                                        value-field="id"
-                                        text-field="name"
                                         filterable
                                         clearable
                                         default-first-option
@@ -374,6 +394,21 @@
                                         </el-option>
                                     </el-select>
                                 
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
+                                    <b-form-radio-group
+                                        v-model="asset.asset_usage_type_id"
+                                        @change="save"
+                                        :options="asset_usage_types"
+                                        value-field="id"
+                                        text-field="name"
+                                    >
+                                    </b-form-radio-group>
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
@@ -513,7 +548,8 @@ export default {
             improvements: [],
             improvement_fields: ['description','details','date','cost','delete'],
             new_pictures: [],
-            pictures: []
+            pictures: [],
+            new_location: {}
         };
     },
     created () {
@@ -692,14 +728,37 @@ export default {
             else{
                 this.save();
             }
+        },
+        showAddLocation() {
+            this.$refs['add-location-modal'].show();
+        },
+        addLocation(event) {
+            event.preventDefault();
+            if(!this.new_location.name){
+                alert('Name required');
+                return;
+            }
+            this.$http.post('/asset_location',this.new_location).then(() => {
+                this.new_location = {};
+                this.$refs['add-location-modal'].hide();
+                this.$http.get('/asset_locations').then(response => {
+                    this.locations = response.data.data;
+                });     
+            });
+        },
+        currencyFormatter(value){
+            const valid_chars = /[^\d$,.]/g;
+            value = value.replace(valid_chars, '');
+            return value;
         }
     },
     computed: {
         filtered_assets(){
+            let assets = this.assets.filter(a => (a.id !== this.asset.id));
             if(!this.asset.asset_type_id){
-                return this.assets;
+                return assets;
             }
-            return this.assets.filter(a => (a.asset_type_id === this.asset.asset_type_id));
+            return assets.filter(a => (a.asset_type_id === this.asset.asset_type_id));
         },
         number_string(){
             let number = '';
