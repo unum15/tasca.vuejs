@@ -47,7 +47,9 @@
           <b-row v-for="activity in activities" :key="activity.id">
             <b-col  md="3" offset-md="4">
                <b-form-checkbox :value="activity.id"><b-button variant="link" @click="editActivity(activity.id,activity.name,activity.parent_id)">{{ activity.name }}</b-button></b-form-checkbox>
-              <b-container>
+               <img src="@/assets/expand.png" v-b-tooltip.hover title="Expand" @click.stop="activity.collapsed = false" alt="+" style="width:20px;"  v-show="activity.collapsed" />
+               <img src="@/assets/collapse.png" v-b-tooltip.hover title="Collapse" @click.stop="activity.collapsed = true" alt="" style="width:20px;"  v-show="!activity.collapsed" />
+              <b-container v-show="!activity.collapsed">
                 <b-row v-for="subactivity in activity.children" :key="subactivity.id">
                   <b-col md="3" offset-md="5">
                     <b-form-checkbox :value="subactivity.id"><b-button variant="link" @click="editActivity(subactivity.id,subactivity.name,subactivity.parent_id)">{{ subactivity.name }}</b-button></b-form-checkbox>
@@ -145,7 +147,11 @@ export default {
     },
     getActivities(){
       this.$http.get('/labor_activities').then(response => {
-        this.activities = response.data.data;
+        let activities = response.data.data;
+        activities.map(a => {
+          a.collapsed = true;
+        });
+        this.activities = activities;
       });
     },
     getOrders(){
