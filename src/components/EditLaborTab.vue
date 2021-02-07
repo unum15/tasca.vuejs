@@ -1,6 +1,6 @@
 <template>
   <div>
-      <b-container style="text-align:left;">
+      <b-container style="text-align:left;" fluid>
         <b-row>
           <b-col md="3" offset-md="4">
             <Treeselect :options="assignments" :normalizer="treeNormalizer" v-model="assignment.id" @input="assignmentSelected"/>
@@ -46,12 +46,13 @@
         <b-form-checkbox-group v-model="selected_activities" v-if="assignment.id" @input="saveActivities">
           <b-row v-for="activity in activities" :key="activity.id">
             <b-col  md="3" offset-md="4">
-               <b-form-checkbox :value="activity.id"><b-button variant="link" @click="editActivity(activity.id,activity.name,activity.parent_id)">{{ activity.name }}</b-button></b-form-checkbox>
-               <img src="@/assets/expand.png" v-b-tooltip.hover title="Expand" @click.stop="activity.collapsed = false" alt="+" style="width:20px;"  v-show="activity.collapsed" />
-               <img src="@/assets/collapse.png" v-b-tooltip.hover title="Collapse" @click.stop="activity.collapsed = true" alt="" style="width:20px;"  v-show="!activity.collapsed" />
-              <b-container v-show="!activity.collapsed">
+              <img src="@/assets/expand.png" v-b-tooltip.hover title="Expand" @click.stop="activity.collapsed = false" alt="+" style="width:20px;verticle-align:top"  v-show="activity.collapsed" />
+              <img src="@/assets/collapse.png" v-b-tooltip.hover title="Collapse" @click.stop="activity.collapsed = true" alt="" style="width:20px;verticle-align:top"  v-show="!activity.collapsed" />
+              <span :class="childrenSelected(activity.children) ? 'children-selected' : ''" style="padding-left:10px;"></span>
+              <b-form-checkbox :value="activity.id"><b-button variant="link" @click="editActivity(activity.id,activity.name,activity.parent_id)">{{ activity.name }}</b-button></b-form-checkbox>
+              <b-container v-show="!activity.collapsed" fluid>
                 <b-row v-for="subactivity in activity.children" :key="subactivity.id">
-                  <b-col md="3" offset-md="5">
+                  <b-col offset-md="1">
                     <b-form-checkbox :value="subactivity.id"><b-button variant="link" @click="editActivity(subactivity.id,subactivity.name,subactivity.parent_id)">{{ subactivity.name }}</b-button></b-form-checkbox>
                   </b-col>
                 </b-row>
@@ -275,6 +276,15 @@ export default {
       this.new_activity.parent_id = parent_id;
       this.$refs['modal-activity'].show()
     },
+    childrenSelected(children){
+      let selected = children.filter(c => this.selected_activities.indexOf(c.id) > 0);
+      return selected.length;
+    }
   }
 }
 </script>
+<style>
+.children-selected{
+  background-color: #AAFFAA;
+}
+</style>
