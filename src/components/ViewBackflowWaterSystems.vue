@@ -26,8 +26,9 @@
                 :filter="filter"
                 :items="backflow_water_systems"
                 :fields="fields"
+                 style="text-align:left;"
             >
-                <template v-slot:cell(id)="data">
+                <template v-slot:cell(name)="data">
                     <a :href="'/backflow_water_system/' + data.value"> {{ data.value }} </a>
                 </template>
             </b-table>
@@ -46,11 +47,6 @@ export default {
             backflow_water_systems: [],
             filter: null,
             fields: [
-                    {
-                        key: 'id',
-                        label: 'Id',
-                        sortable: true
-                    },
                     {
                         key: 'name',
                         label: 'Name',
