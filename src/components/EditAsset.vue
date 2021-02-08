@@ -23,39 +23,198 @@
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
+                        
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Category" label-cols="4" label-align="right">
+                                    <el-select
+                                        v-model="asset.asset_category_id"
+                                        @change="save"
+                                        filterable
+                                        clearable
+                                        default-first-option
+                                    >
+                                        <el-option
+                                            v-for="option in asset_categories"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.number+' '+option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <AssetAddNumber number_type='asset_category' numbers_type='asset_categories' @reload="reloadNumbers"/>
+                            </b-col>
+                        </b-form-row>
+                        
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Brand" label-cols="4" label-align="right">
+                                    <el-select
+                                        v-model="asset.asset_brand_id"
+                                        @change="brandChanged"
+                                        filterable
+                                        clearable
+                                        default-first-option
+                                    >
+                                        <el-option
+                                            v-for="option in asset_brands.filter(n => (!this.asset.asset_category_id || n.asset_category_id == this.asset.asset_category_id))"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.number+' '+option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <AssetAddNumber
+                                    parent_type='asset_categories'
+                                    parent_key='asset_category_id'
+                                    number_type='asset_brand'
+                                    numbers_type='asset_brands'
+                                    :item="{asset_category_id: asset.asset_category_id }"
+                                    @reload="reloadNumbers"/>
+                            </b-col>
+                        </b-form-row>
         
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Type" label-cols="4" label-align="right">
-                                    <b-form-select
+                                <b-form-group label="Type" label-cols="4" label-align="right">
+                                    <el-select
                                         v-model="asset.asset_type_id"
-                                        @change="save"
-                                        :options="asset_types"
-                                        value-field="id"
-                                        text-field="name"
-                                        :state="asset.asset_type_id != null"
-                                        required
+                                        @change="typeChanged"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                    </b-form-select>
+                                        <el-option
+                                            v-for="option in asset_types.filter(n => (!this.asset.asset_brand_id || n.asset_brand_id == this.asset.asset_brand_id))"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.number+' '+option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
                                 </b-form-group>
                             </b-col>
+                            <b-col>
+                                <AssetAddNumber
+                                    parent_type='asset_brands'
+                                    parent_key='asset_brand_id'
+                                    number_type='asset_type'
+                                    numbers_type='asset_types'
+                                    :item="{asset_brand_id: asset.asset_brand_id }"
+                                    @reload="reloadNumbers"/>
+                            </b-col>
                         </b-form-row>
-        
+                        
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
-                                    <b-form-radio-group
-                                        v-model="asset.asset_usage_type_id"
-                                        @change="save"
-                                        :options="asset_usage_types"
-                                        value-field="id"
-                                        text-field="name"
+                                <b-form-group label="Group" label-cols="4" label-align="right">
+                                    <el-select
+                                        v-model="asset.asset_group_id"
+                                        @change="groupChanged"
+                                        filterable
+                                        clearable
+                                        default-first-option
                                     >
-                                    </b-form-radio-group>
+                                        <el-option
+                                            v-for="option in asset_groups.filter(n => (!this.asset.asset_type_id || n.asset_type_id == this.asset.asset_type_id))"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.number+' '+option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <AssetAddNumber
+                                    parent_type='asset_types'
+                                    parent_key='asset_type_id'
+                                    number_type='asset_group'
+                                    numbers_type='asset_groups'
+                                    :item="{asset_type_id: asset.asset_type_id }"
+                                    @reload="reloadNumbers"/>
+                            </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Sub" label-cols="4" label-align="right">
+                                    <el-select
+                                        v-model="asset.asset_sub_id"
+                                        @change="subChanged"
+                                        filterable
+                                        clearable
+                                        default-first-option
+                                    >
+                                        <el-option
+                                            v-for="option in asset_subs.filter(n => (!this.asset.asset_group_id || n.asset_group_id == this.asset.asset_group_id))"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.number+' '+option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <AssetAddNumber
+                                    parent_type='asset_groups'
+                                    parent_key='asset_group_id'
+                                    number_type='asset_sub'
+                                    numbers_type='asset_subs'
+                                    :item="{asset_group_id: asset.asset_group_id }"
+                                    @reload="reloadNumbers"/>
+                            </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Item" label-cols="4" label-align="right">
+                                    <el-select
+                                        v-model="asset.item_number"
+                                        @change="save"
+                                        :options="item_numbers"
+                                        filterable
+                                        clearable
+                                        default-first-option
+                                    >
+                                        <el-option
+                                            v-for="number in item_numbers"
+                                            :value="number"
+                                            :key="number"
+                                            >
+                                        </el-option>
+                                    </el-select>
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
-        
+
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Asset Number" label-cols="4" label-align="right">
+                                    {{ number_string }}                                
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Manufacture" label-cols="4" label-align="right">
+                                    <b-form-input
+                                        v-model="asset.manufacture"
+                                        @change="save"
+                                        type="text"
+                                    >
+                                    </b-form-input>
+                                
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+      
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Year" label-cols="4" label-align="right">
@@ -125,47 +284,7 @@
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
-                        
-                        <b-form-row>
-                            <b-col md="6">
-                                <b-form-group label="Manufacture" label-cols="4" label-align="right">
-                                    <b-form-input
-                                        v-model="asset.manufacture"
-                                        @change="save"
-                                        type="text"
-                                    >
-                                    </b-form-input>
-                                
-                                </b-form-group>
-                            </b-col>
-                        </b-form-row>
-                        <b-form-row>
-                            <b-col md="6">
-                                <b-form-group label="Asset Number" label-cols="4" label-align="right">
-                                    <b-form-input
-                                        v-model="asset.number"
-                                        @change="save"
-                                        type="text"
-                                    >
-                                    </b-form-input>
-                                
-                                </b-form-group>
-                            </b-col>
-                        </b-form-row>
-                        <b-form-row>
-                            <b-col md="6">
-                                <b-form-group label="Purchase Cost" label-cols="4" label-align="right">
-                                    <b-form-input
-                                        v-model="asset.purchase_cost"
-                                        @change="save"
-                                        type="number"
-                                    >
-                                    </b-form-input>
-                                
-                                </b-form-group>
-                            </b-col>
-                        </b-form-row>
-                        
+                                              
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Purchase Date" label-cols="4" label-align="right">
@@ -179,18 +298,16 @@
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
-                        
+
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Location" label-cols="4" label-align="right">
-                                    <b-form-select
-                                        v-model="asset.asset_location_id"
+                                <b-form-group label="Purchase Cost" label-cols="4" label-align="right">
+                                    <b-form-input
+                                        v-model="asset.purchase_cost"
                                         @change="save"
-                                        :options="locations"
-                                        value-field="id"
-                                        text-field="name"
+                                        :formatter="currencyFormatter"
                                     >
-                                    </b-form-select>
+                                    </b-form-input>
                                 
                                 </b-form-group>
                             </b-col>
@@ -198,16 +315,100 @@
                         
                         <b-form-row>
                             <b-col md="6">
+                                <b-form-group label="Location" label-cols="4" label-align="right">
+                                    <el-select
+                                        v-model="asset.asset_location_id"
+                                        @change="save"
+                                        :options="locations"
+                                        value-field="id"
+                                        text-field="name"
+                                        filterable
+                                        clearable
+                                        default-first-option
+                                    >
+                                        <el-option
+                                            v-for="option in locations"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
+                                
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
+                                <img src="@/assets/add.png" v-b-tooltip.hover title="Add Location" @click.stop="showAddLocation" alt="x" style="width:20px;float:left;" />
+                                <b-modal ref="add-location-modal" title="Add Location" @ok="addLocation">
+                                    <b-container>
+                                        <b-row>
+                                            <b-col>
+                                                <b-form-group label="Name">
+                                                    <b-form-input
+                                                        type="text"
+                                                        v-model="new_location.name"
+                                                    >
+                                                    </b-form-input>
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col>
+                                                <b-form-group label="Notes">
+                                                    <b-form-input
+                                                        type="text"
+                                                        v-model="new_location.notes"
+                                                    >
+                                                    </b-form-input>
+                                                </b-form-group>
+                                            </b-col>
+                                            <b-col>
+                                                <b-form-group label="Sort">
+                                                    <b-form-input
+                                                        type="text"
+                                                        v-model="new_location.sort_order"
+                                                    >
+                                                    </b-form-input>
+                                                </b-form-group>
+                                            </b-col>
+                                        </b-row>
+                                    </b-container>
+                                </b-modal>
+                            </b-col>
+                        </b-form-row>
+                        
+                        <b-form-row>
+                            <b-col md="6">
                                 <b-form-group label="Parent Asset" label-cols="4" label-align="right">
-                                    <b-form-select
+                                    <el-select
                                         v-model="asset.parent_asset_id"
                                         @change="save"
-                                        :options="filtered_assets"
+                                        filterable
+                                        clearable
+                                        default-first-option
+                                    >
+                                        <el-option
+                                            v-for="option in filtered_assets"
+                                            :value="option.id"
+                                            :key="option.id"
+                                            :label="option.name"
+                                            >
+                                        </el-option>
+                                    </el-select>
+                                
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
+                                    <b-form-radio-group
+                                        v-model="asset.asset_usage_type_id"
+                                        @change="save"
+                                        :options="asset_usage_types"
                                         value-field="id"
                                         text-field="name"
                                     >
-                                    </b-form-select>
-                                
+                                    </b-form-radio-group>
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
@@ -321,18 +522,24 @@
 <script>
 import moment from 'moment'
 import TopMenu from './TopMenu'
+import AssetAddNumber from './AssetAddNumber'
 export default {
     name: 'EditAsset',
     components: {
-        'TopMenu': TopMenu
+        TopMenu,
+        AssetAddNumber
     },
     props: {
         asset_id: {default: null}
     },
     data () {
         return {
-            asset: { id: null },
+            asset: { id: null, asset_category_id: null, item_number: null },
+            asset_categories: [],
+            asset_brands: [],
             asset_types: [],
+            asset_groups: [],
+            asset_subs: [],
             asset_usage_types: [],
             assets: [],
             locations: [],
@@ -341,12 +548,25 @@ export default {
             improvements: [],
             improvement_fields: ['description','details','date','cost','delete'],
             new_pictures: [],
-            pictures: []
+            pictures: [],
+            new_location: {}
         };
     },
     created () {
+        this.$http.get('/asset_categories').then(response => {
+            this.asset_categories = response.data.data;
+        });
+        this.$http.get('/asset_brands').then(response => {
+            this.asset_brands = response.data.data;
+        });
         this.$http.get('/asset_types').then(response => {
             this.asset_types = response.data.data;
+        });
+        this.$http.get('/asset_groups').then(response => {
+            this.asset_groups = response.data.data;
+        });
+        this.$http.get('/asset_subs').then(response => {
+            this.asset_subs = response.data.data;
         });
         this.$http.get('/asset_usage_types').then(response => {
             this.asset_usage_types = response.data.data;
@@ -371,8 +591,14 @@ export default {
         }
     },
     methods: {
+        reloadNumbers(item){
+            this.$http.get('/' + item.list).then(response => {
+                this[item.list] = response.data.data;
+                this.asset[item.key] = item.value;
+            });
+        },
         save() {
-            if((!this.asset.name)||(!this.asset.asset_type_id)){
+            if(!this.asset.name){
                 return;
             }
             if(this.asset.id === null){
@@ -453,13 +679,114 @@ export default {
                 this.pictures = response.data.data;
             });
         },
+        getNumberString(numbers_type,number_key){
+            if(!this.asset[number_key]){
+                return '0';
+            }
+            let numbers = this[numbers_type].filter(x => (x.id == this.asset[number_key]));
+            if(!numbers.length){
+                return '0';
+            }
+            return numbers[0].number;
+        },
+        updateParent(list,my_key,parent_key){
+            let selected = list.filter(i => (i.id == this.asset[my_key]));
+            if(!selected.length){
+                return;
+            }
+            this.asset[parent_key] = selected[0][parent_key];
+        },
+        brandChanged(){
+            if(!this.asset.asset_category_id){
+                this.updateParent(this.asset_brands,'asset_brand_id','asset_category_id');
+            }
+            this.save();
+        },
+        typeChanged(){
+            if(!this.asset.asset_brand_id){
+                this.updateParent(this.asset_types,'asset_type_id','asset_brand_id');
+                this.brandChanged();
+            }
+            else{
+                this.save();
+            }
+        },
+        groupChanged(){
+            if(!this.asset.asset_type_id){
+                this.updateParent(this.asset_groups,'asset_group_id','asset_type_id');
+                this.typeChanged();
+            }
+            else{
+                this.save();
+            }
+        },
+        subChanged(){
+            if(!this.asset.asset_group_id){
+                this.updateParent(this.asset_subs,'asset_sub_id','asset_group_id');
+                this.groupChanged();
+            }
+            else{
+                this.save();
+            }
+        },
+        showAddLocation() {
+            this.$refs['add-location-modal'].show();
+        },
+        addLocation(event) {
+            event.preventDefault();
+            if(!this.new_location.name){
+                alert('Name required');
+                return;
+            }
+            this.$http.post('/asset_location',this.new_location).then(() => {
+                this.new_location = {};
+                this.$refs['add-location-modal'].hide();
+                this.$http.get('/asset_locations').then(response => {
+                    this.locations = response.data.data;
+                });     
+            });
+        },
+        currencyFormatter(value){
+            const valid_chars = /[^\d$,.]/g;
+            value = value.replace(valid_chars, '');
+            const dollar_sign = /^\$?/;
+            value = value.replace(dollar_sign, '$');
+            return value;
+        }
     },
     computed: {
         filtered_assets(){
+            let assets = this.assets.filter(a => (a.id !== this.asset.id));
             if(!this.asset.asset_type_id){
-                return this.assets;
+                return assets;
             }
-            return this.assets.filter(a => (a.asset_type_id === this.asset.asset_type_id));
+            return assets.filter(a => (a.asset_type_id === this.asset.asset_type_id));
+        },
+        number_string(){
+            let number = '';
+            number += this.getNumberString('asset_categories','asset_category_id');
+            number += this.getNumberString('asset_brands','asset_brand_id');
+            number += this.getNumberString('asset_types','asset_type_id');
+            number += this.getNumberString('asset_groups','asset_group_id');
+            number += this.getNumberString('asset_subs','asset_sub_id');
+            number += this.asset.item_number ? this.asset.item_number : '0';
+            return number;
+        },
+        item_numbers(){
+            let free_numbers = [];
+            let all_numbers = [];
+            for(let x=0;x<10;x++){
+                all_numbers.push(x + '');
+            }
+            for(let x=65;x<91;x++){
+                all_numbers.push(String.fromCharCode(x));
+            }
+            all_numbers.map(x => {
+                if(!this.assets.filter(a => (a.item_number == x && a.asset_sub_id == this.asset.asset_sub_id && a.id != this.asset.id )).length){
+                    free_numbers.push(x+'');
+                }
+            });
+            return free_numbers;
         }
     }
 };

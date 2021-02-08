@@ -30,6 +30,24 @@
                 <template v-slot:cell(id)="data">
                     <a :href="'/asset/' + data.value"> {{ data.value }} </a>
                 </template>
+                <template v-slot:cell(asset_category)="data">
+                    {{ data.value.number }} {{ data.value.name }}
+                </template>
+                <template v-slot:cell(asset_brand)="data">
+                    {{ data.value.number }} {{ data.value.name }}
+                </template>
+                <template v-slot:cell(asset_type)="data">
+                    {{ data.value.number }} {{ data.value.name }}
+                </template>
+                <template v-slot:cell(asset_group)="data">
+                    {{ data.value.number }} {{ data.value.name }}
+                </template>
+                <template v-slot:cell(asset_sub)="data">
+                    {{ data.value.number }} {{ data.value.name }}
+                </template>
+                <template v-slot:cell(number)="data">
+                    {{(data.item.asset_category ? data.item.asset_category.number : '0')}}{{data.item.asset_brand ? data.item.asset_brand.number : '0'}}{{data.item.asset_type ? data.item.asset_type.number : '0'}}{{data.item.asset_group ? data.item.asset_group.number : '0'}}{{data.item.asset_sub ? data.item.asset_sub.number : '0'}}{{data.item.item_number ? data.item.item_number : '0'}}
+                </template>
             </b-table>
         </main>
     </div>
@@ -57,8 +75,33 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'asset_type.name',
-                        label: 'Asset Type',
+                        key: 'asset_category',
+                        label: 'Category',
+                        sortable: true
+                    },
+                    {
+                        key: 'asset_brand',
+                        label: 'Brand',
+                        sortable: true
+                    },
+                    {
+                        key: 'asset_type',
+                        label: 'Type',
+                        sortable: true
+                    },
+                    {
+                        key: 'asset_group',
+                        label: 'Group',
+                        sortable: true
+                    },
+                    {
+                        key: 'asset_sub',
+                        label: 'Sub',
+                        sortable: true
+                    },
+                    {
+                        key: 'number',
+                        label: 'Number',
                         sortable: true
                     },
                     {
@@ -115,7 +158,7 @@ export default {
         }
     },
     created() {
-        this.$http.get('/assets?includes=asset_usage_type,asset_type,parent_asset').then(response => {
+        this.$http.get('/assets?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset').then(response => {
             this.assets = response.data.data;
         });
     }
