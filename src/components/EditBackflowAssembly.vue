@@ -124,6 +124,9 @@
                         </b-form-group>
                     </b-col>
                     <b-col>
+                        <img src="@/assets/add.png" v-b-tooltip.hover title="Add Water System" @click.stop="showWaterSystemModal()" alt="x" style="width:20px;float:left;" />
+                    </b-col>
+                    <b-col>
                         <b-form-group label="Account">
                             <el-select
                                 v-model="backflow_assembly.property_account_id"
@@ -370,7 +373,7 @@
             </b-row>
           </b-container>
         </b-modal>
-        <b-modal id="add-size-modal" title="Add Size" @ok="addSize">
+        <b-modal ref="add-size-modal" title="Add Size" @ok="addSize">
             <b-form-group label="Size">
                 <el-select
                     v-model="new_size"
@@ -388,6 +391,166 @@
                 </el-option>
               </el-select>
             </b-form-group>
+        </b-modal>
+
+        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="addWaterSystem">
+            <b-container fluid="md">
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Name" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.name"
+                                @change="save"
+                                type="text"
+                                :state="backflow_water_system.name != null"
+                                required
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Address" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.address"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="City" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.city"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="State" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.state"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Zip" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.zip"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Phone" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.phone"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Contact" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.contact"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Email" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.email"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Notes" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.notes"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Sort Order" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.sort_order"
+                                @change="save"
+                                type="number"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Abbreviation" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="backflow_water_system.abbreviation"
+                                @change="save"
+                                type="text"
+                            >
+                            </b-form-input>
+                        
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+            </b-container>
         </b-modal>
     </div>
 </template>
@@ -420,6 +583,7 @@ export default {
             pictures: [],
             accounts: [],
             new_size: null,
+            backflow_water_system: {},
             fields: {
                 'property_id': {
                     name: 'Property',
@@ -680,7 +844,7 @@ export default {
             }
         },
         showSizeModal(){
-         this.$refs['my-modal'].show();
+         this.$refs['add-size-modal'].show();
         },
         addSize(){
             let model = {
@@ -689,6 +853,17 @@ export default {
             this.$http.patch('/backflow_model/'+this.backflow_assembly.backflow_model_id,model).then(() => {
                 this.getModels();
                 this.backflow_assembly.backflow_size_id = this.new_size;
+            });
+        },
+        showWaterSystemModal(){
+         this.$refs['add-water-system-modal'].show();
+        },
+        addWaterSystem(){
+            this.$http.post('/backflow_water_system',this.backflow_water_system).then(system_response => {
+                this.$http.get('/backflow_water_systems').then(response => {
+                    this.systems = response.data.data;
+                    this.backflow_assembly.backflow_water_system_id = system_response.data.data.id;
+                });
             });
         },
         saveClearable(field){
