@@ -24,29 +24,34 @@
                 striped
                 hover
                 :filter="filter"
-                :items="assets"
+                :items="filtered_assets"
                 :fields="fields"
+                style="text-align:left"
             >
-                <template v-slot:cell(id)="data">
-                    <a :href="'/asset/' + data.value"> {{ data.value }} </a>
+                <template #thead-top="data">
+                    <b-tr>
+                        <b-th v-for="field in fields" :key="field.key">
+                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                        </b-th>  
+                    </b-tr>
                 </template>
-                <template v-slot:cell(asset_category)="data">
-                    {{ data.value.number }} {{ data.value.name }}
-                </template>
-                <template v-slot:cell(asset_brand)="data">
-                    {{ data.value.number }} {{ data.value.name }}
-                </template>
-                <template v-slot:cell(asset_type)="data">
-                    {{ data.value.number }} {{ data.value.name }}
-                </template>
-                <template v-slot:cell(asset_group)="data">
-                    {{ data.value.number }} {{ data.value.name }}
-                </template>
-                <template v-slot:cell(asset_sub)="data">
-                    {{ data.value.number }} {{ data.value.name }}
+                <template v-slot:cell(name)="data">
+                    <a :href="'/asset/' + data.item.id"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(number)="data">
                     {{(data.item.asset_category ? data.item.asset_category.number : '0')}}{{data.item.asset_brand ? data.item.asset_brand.number : '0'}}{{data.item.asset_type ? data.item.asset_type.number : '0'}}{{data.item.asset_group ? data.item.asset_group.number : '0'}}{{data.item.asset_sub ? data.item.asset_sub.number : '0'}}{{data.item.item_number ? data.item.item_number : '0'}}
+                </template>
+                <template v-slot:cell(purchase_date)="data">
+                    {{formatTime(data.value)}}
+                </template>
+                <template v-slot:cell(created_at)="data">
+                    {{formatTime(data.value)}}
+                </template>
+                <template v-slot:cell(updated_at)="data">
+                    {{formatTime(data.value)}}
+                </template>
+                <template v-slot:cell(actions)="data">
+                    <img src="@/assets/details.png" v-b-tooltip.hover :title="data.item.notes" fluid alt="DTS" style="width:20px;" />
                 </template>
             </b-table>
         </main>
@@ -54,6 +59,7 @@
 </template>
 <script>
 import TopMenu from './TopMenu';
+import moment from 'moment';
 export default {
     name: 'ViewAssets',
     components: {
@@ -62,105 +68,156 @@ export default {
     data() {
         return {
             assets: [],
+            filtered_assets: [],
             filter: null,
             fields: [
                     {
-                        key: 'id',
-                        label: 'Id',
-                        sortable: true
-                    },
-                    {
                         key: 'name',
                         label: 'Name',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
-                        key: 'asset_category',
+                        key: 'asset_category.name',
                         label: 'Category',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
-                        key: 'asset_brand',
+                        key: 'asset_brand.name',
                         label: 'Brand',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
-                        key: 'asset_type',
+                        key: 'asset_type.name',
                         label: 'Type',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
-                        key: 'asset_group',
+                        key: 'asset_group.name',
                         label: 'Group',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
-                        key: 'asset_sub',
+                        key: 'asset_sub.name',
                         label: 'Sub',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'number',
                         label: 'Number',
-                        sortable: true
-                    },
-                    {
-                        key: 'asset_usage_type.name',
-                        label: 'Asset Usage Type',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'year',
                         label: 'Year',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'make',
                         label: 'Make',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'model',
                         label: 'Model',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'trim',
                         label: 'Trim',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'vin',
                         label: 'Vin',
-                        sortable: true
+                        sortable: true,
+                        filter: null
+                    },
+                    {
+                        key: 'purchase_cost',
+                        label: 'Cost',
+                        sortable: true,
+                        filter: null
+                    },
+                    {
+                        key: 'purchase_date',
+                        label: 'Purchase Date',
+                        sortable: true,
+                        filter: null
+                    },
+                    {
+                        key: 'asset_location.name',
+                        label: 'Location',
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'parent_asset.name',
                         label: 'Parent',
-                        sortable: true
-                    },
-                    {
-                        key: 'notes',
-                        label: 'Notes',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'created_at',
                         label: 'Created At',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'updated_at',
                         label: 'Updated At',
-                        sortable: true
+                        sortable: true,
+                        filter: null
+                    },
+                    {
+                        key: 'actions',
+                        label: '',
+                        sortable: false
                     },
             ]
         }
     },
     created() {
-        this.$http.get('/assets?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset').then(response => {
+        this.$http.get('/assets?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_location').then(response => {
             this.assets = response.data.data;
+            this.filterColumns();
         });
+    },
+    methods: {
+        formatTime(time){
+            return moment(time).format('MM-YY');
+        },
+        filterColumns(){
+            this.filtered_assets = this.assets;
+            for(var x = 0;x < this.fields.length; x++){
+                if(this.fields[x].filter){
+                    var regex = new RegExp(this.fields[x].filter, "i");
+                    this.filtered_assets = this.filtered_assets.filter(t => {
+                        var keys = this.fields[x].key.split('.');
+                        var value = t;
+                        for(var key_num = 0; key_num < keys.length; key_num++){
+                            if(value){
+                                value = value[keys[key_num]];
+                            }
+                        }
+                        if(!value){
+                            value = "";
+                        }
+                        return value.match(regex) !== null
+                    })
+                }
+            }
+        },
     }
 }
 </script>

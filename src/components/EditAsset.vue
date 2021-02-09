@@ -601,14 +601,16 @@ export default {
             if(!this.asset.name){
                 return;
             }
+            let asset = this.asset;
+            asset.purchase_cost = asset.purchase_cost.replace(/[^\d.]/g,'');
             if(this.asset.id === null){
-                this.$http.post('/asset',this.asset)
+                this.$http.post('/asset',asset)
                     .then((results) => {
                         this.asset.id = results.data.data.id;
                     });
             }
             else{
-                this.$http.patch('/asset/' + this.asset.id, this.asset);
+                this.$http.patch('/asset/' + this.asset.id, asset);
             }
         },
         saveAppraisal(appraisal) {
