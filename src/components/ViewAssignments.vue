@@ -476,7 +476,9 @@ export default {
                 alert('Please select new activity.');
                 return;
              }
+             console.log(this.modal_overhead.new.labor_assignment_id);
              let assignment = this.getAssignmentName(this.modal_overhead.new.labor_assignment_id);
+             console.log(assignment);
              if(!assignment.order_id){
                 alert('This labor assignment has no associated order_id please update in labor mappings');
                 return;
@@ -529,7 +531,18 @@ export default {
         getAssignmentName(id){
             let assignments = this.assignments.filter(a => a.id == id);
             if(!assignments.length){
-                return;
+                this.assignments.map(a => {
+                    if(a.children.length){
+                        let myassignments = a.children.filter(c => c.id == id);
+                        if(myassignments.length > 0){
+                            assignments = myassignments;
+                        }
+                    }
+                });
+                if(!assignments.length){
+                    return;
+                }
+                return assignments[0];
             }
             return assignments[0];
         }
