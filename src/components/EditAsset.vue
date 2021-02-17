@@ -515,6 +515,7 @@
                     </b-modal>
                 </b-tab>
             </b-tabs>
+            <b-button @click="resetForm">New</b-button>
             <b-button @click="$router.push('/assets')">Done</b-button>
         </main>
     </div>
@@ -591,6 +592,9 @@ export default {
         }
     },
     methods: {
+        resetForm(){
+            this.asset = { id: null, asset_category_id: null, item_number: null };
+        },
         reloadNumbers(item){
             this.$http.get('/' + item.list).then(response => {
                 this[item.list] = response.data.data;
@@ -751,8 +755,8 @@ export default {
         currencyFormatter(value){
             const valid_chars = /[^\d$,.]/g;
             value = value.replace(valid_chars, '');
-            const dollar_sign = /^\$?/;
-            value = value.replace(dollar_sign, '$');
+            //const dollar_sign = /^\$?/;
+            //value = value.replace(dollar_sign, '$');
             return value;
         }
     },

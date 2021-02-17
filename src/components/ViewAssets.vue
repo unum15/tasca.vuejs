@@ -39,7 +39,7 @@
                     <a :href="'/asset/' + data.item.id"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(number)="data">
-                    {{(data.item.asset_category ? data.item.asset_category.number : '0')}}{{data.item.asset_brand ? data.item.asset_brand.number : '0'}}{{data.item.asset_type ? data.item.asset_type.number : '0'}}{{data.item.asset_group ? data.item.asset_group.number : '0'}}{{data.item.asset_sub ? data.item.asset_sub.number : '0'}}{{data.item.item_number ? data.item.item_number : '0'}}
+                    <a :href="'/asset/number/' + assetNumber(data.item)">{{ assetNumber(data.item) }}</a>
                 </template>
                 <template v-slot:cell(purchase_date)="data">
                     {{formatTime(data.value)}}
@@ -218,6 +218,9 @@ export default {
                 }
             }
         },
+        assetNumber(asset){
+            return (asset.asset_category ? asset.asset_category.number : '0') + (asset.asset_brand ? asset.asset_brand.number : '0') + (asset.asset_type ? asset.asset_type.number : '0') + (asset.asset_group ? asset.asset_group.number : '0') + (asset.asset_sub ? asset.asset_sub.number : '0') + (asset.item_number ? asset.item_number : '0')
+        }
     }
 }
 </script>
