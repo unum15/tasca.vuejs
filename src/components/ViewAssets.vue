@@ -195,6 +195,9 @@ export default {
     },
     methods: {
         formatTime(time){
+            if(!time){
+                return '';
+            }
             return moment(time).format('MM-YY');
         },
         filterColumns(){
