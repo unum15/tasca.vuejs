@@ -476,9 +476,7 @@ export default {
                 alert('Please select new activity.');
                 return;
              }
-             console.log(this.modal_overhead.new.labor_assignment_id);
              let assignment = this.getAssignmentName(this.modal_overhead.new.labor_assignment_id);
-             console.log(assignment);
              if(!assignment.order_id){
                 alert('This labor assignment has no associated order_id please update in labor mappings');
                 return;
