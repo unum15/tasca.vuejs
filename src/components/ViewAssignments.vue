@@ -529,7 +529,18 @@ export default {
         getAssignmentName(id){
             let assignments = this.assignments.filter(a => a.id == id);
             if(!assignments.length){
-                return;
+                this.assignments.map(a => {
+                    if(a.children.length){
+                        let myassignments = a.children.filter(c => c.id == id);
+                        if(myassignments.length > 0){
+                            assignments = myassignments;
+                        }
+                    }
+                });
+                if(!assignments.length){
+                    return;
+                }
+                return assignments[0];
             }
             return assignments[0];
         }
