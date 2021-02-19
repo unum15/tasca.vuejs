@@ -416,12 +416,11 @@
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Notes" label-cols="4" label-align="right">
-                                    <b-form-input
+                                    <b-form-textarea
                                         v-model="asset.notes"
                                         @change="save"
-                                        type="text"
                                     >
-                                    </b-form-input>
+                                    </b-form-textarea>
                                 
                                 </b-form-group>
                             </b-col>
