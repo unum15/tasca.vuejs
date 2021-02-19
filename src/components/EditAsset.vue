@@ -605,7 +605,9 @@ export default {
                 return;
             }
             let asset = this.asset;
-            asset.purchase_cost = asset.purchase_cost.replace(/[^\d.]/g,'');
+            if(asset.purchase_cost){
+                asset.purchase_cost = asset.purchase_cost.replace(/[^\d.]/g,'');
+            }
             if(this.asset.id === null){
                 this.$http.post('/asset',asset)
                     .then((results) => {
