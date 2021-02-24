@@ -28,6 +28,9 @@
                 :fields="fields"
                 style="text-align:left"
             >
+                <template v-slot:cell(export)="data">
+                    <b-form-checkbox v-model="data.item.export" />
+                </template>
                 <template #thead-top="data">
                     <b-tr>
                         <b-th v-for="field in fields" :key="field.key">
@@ -54,12 +57,14 @@
                     <img src="@/assets/details.png" v-b-tooltip.hover :title="data.item.notes" fluid alt="DTS" style="width:20px;" />
                 </template>
             </b-table>
+            <b-button @click="exportAssets">Export</b-button>
         </main>
     </div>
 </template>
 <script>
 import TopMenu from './TopMenu';
 import moment from 'moment';
+import FileSaver from 'file-saver';
 export default {
     name: 'ViewAssets',
     components: {
@@ -71,6 +76,12 @@ export default {
             filtered_assets: [],
             filter: null,
             fields: [
+                    {
+                        key: 'export',
+                        label: 'Export',
+                        sortable: true,
+                        filter: null
+                    },
                     {
                         key: 'name',
                         label: 'Name',
@@ -189,7 +200,11 @@ export default {
     },
     created() {
         this.$http.get('/assets?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_location').then(response => {
-            this.assets = response.data.data;
+            let assets = response.data.data;
+            assets.map( a => {
+                a.export = false;
+            });
+            this.assets = assets;
             this.filterColumns();
         });
     },
@@ -223,6 +238,31 @@ export default {
         },
         assetNumber(asset){
             return (asset.asset_category ? asset.asset_category.number : '0') + (asset.asset_brand ? asset.asset_brand.number : '0') + (asset.asset_type ? asset.asset_type.number : '0') + (asset.asset_group ? asset.asset_group.number : '0') + (asset.asset_sub ? asset.asset_sub.number : '0') + (asset.item_number ? asset.item_number : '0')
+        },
+        exportAssets(){
+            let text='';
+            console.log(this.$route);
+            this.assets.map( a => {
+                if(a.export){
+                    //URL     Table Saw    723521    Garage, Table saw,n723521,Garage
+                    text += 'https://' + location.host + '/asset/' + this.assetNumber(a);
+                    text += ' ';
+                    text += a.name;
+                    text += ' ';
+                    text += this.assetNumber(a);
+                    text += ' ';
+                    text += a.asset_location ? a.asset_location.name : '';
+                    text += ',';
+                    text += a.name;
+                    text += ',';
+                    text += this.assetNumber(a);
+                    text += ',';
+                    text += a.asset_location ? a.asset_location.name : '';
+                    text += "\n";
+                }
+            });
+            var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
+            FileSaver.saveAs(blob, "assets.csv");
         }
     }
 }
