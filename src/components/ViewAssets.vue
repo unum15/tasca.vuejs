@@ -241,9 +241,24 @@ export default {
         },
         exportAssets(){
             let text='';
+            console.log(this.$route);
             this.assets.map( a => {
                 if(a.export){
-                    text += a.name + "," + this.assetNumber(a) + "," + (a.asset_location ? a.asset_location.name : '') + "\n";
+                    //URL     Table Saw    723521    Garage, Table saw,n723521,Garage
+                    text += 'https://' + location.host + '/asset/' + this.assetNumber(a);
+                    text += ' ';
+                    text += a.name;
+                    text += ' ';
+                    text += this.assetNumber(a);
+                    text += ' ';
+                    text += a.asset_location ? a.asset_location.name : '';
+                    text += ',';
+                    text += a.name;
+                    text += ',';
+                    text += this.assetNumber(a);
+                    text += ',';
+                    text += a.asset_location ? a.asset_location.name : '';
+                    text += "\n";
                 }
             });
             var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
