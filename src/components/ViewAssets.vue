@@ -245,7 +245,7 @@ export default {
             this.assets.map( a => {
                 if(a.export){
                     //URL     Table Saw    723521    Garage, Table saw,n723521,Garage
-                    text += 'https://' + location.host + '/asset/' + this.assetNumber(a);
+                    text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a);
                     text += ' ';
                     text += a.name;
                     text += ' ';
