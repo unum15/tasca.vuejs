@@ -195,6 +195,12 @@ export default {
                         label: '',
                         sortable: false
                     },
+            ],
+            columns: [
+                ['url','name','number','asset_location.name'],
+                ['name'],
+                ['number'],
+                ['asset_location.name']
             ]
         }
     },
@@ -241,23 +247,42 @@ export default {
         },
         exportAssets(){
             let text='';
-            console.log(this.$route);
             this.assets.map( a => {
                 if(a.export){
                     //URL     Table Saw    723521    Garage, Table saw,n723521,Garage
-                    text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a);
-                    text += ' ';
-                    text += a.name;
-                    text += ' ';
-                    text += this.assetNumber(a);
-                    text += ' ';
-                    text += a.asset_location ? a.asset_location.name : '';
-                    text += ',';
-                    text += a.name;
-                    text += ',';
-                    text += this.assetNumber(a);
-                    text += ',';
-                    text += a.asset_location ? a.asset_location.name : '';
+                    let column_count=0;
+                    this.columns.map( c => {
+                        let field_count = 0;
+                        if(column_count>0){
+                                text += ',';
+                        }
+                        c.map( f => {
+                            if(field_count>0){
+                                text += ' ';
+                            }
+                            let subs;
+                            switch(f){
+                                case 'url':
+                                    text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a);
+                                    break;
+                                case 'number':
+                                    text += this.assetNumber(a);
+                                    break;
+                                default:
+                                    if(f.indexOf('.')>0){
+                                        subs = f.split('.');
+                                        if(a[subs[0]]){
+                                            text += a[subs[0]][subs[1]];
+                                        }
+                                    }
+                                    else{
+                                        text += a[f]
+                                    }
+                            }
+                            field_count++;
+                        });
+                        column_count++;
+                    });
                     text += "\n";
                 }
             });
