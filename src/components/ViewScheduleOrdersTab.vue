@@ -55,11 +55,11 @@
                 <template v-slot:cell(actions)="row">
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Tasks" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
                     <img src="@/assets/checkmark.png" v-b-tooltip.hover title="Mark All Dates" @click="markDates(row.item)" fluid alt="Dates" style="width:20px;" />
-                  </template>
-                  <template slot="row-details" slot-scope="row">
+                </template>
+                <template slot="row-details" slot-scope="row">
                     <ViewScheduleOrdersTabTasks :order="row.item" :tasks="row.item.tasks">
                     </ViewScheduleOrdersTabTasks>
-                  </template>
+                 </template>
             </b-table>
             <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
                 <ViewScheduleOrderPopup

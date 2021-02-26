@@ -57,7 +57,31 @@
                     <img src="@/assets/details.png" v-b-tooltip.hover :title="data.item.notes" fluid alt="DTS" style="width:20px;" />
                 </template>
             </b-table>
-            <b-button @click="exportAssets">Export</b-button>
+            <b-container fluid style='text-align:left'>
+                <b-row v-for="(column,cindex) in columns" :key="cindex">
+                  <wrapper v-for="(field,findex) in column" :key="findex">
+                    <b-col>
+                        <b-form-select v-model="columns[cindex][findex]" :options="export_fields" />
+                    </b-col>
+                    <b-col>
+                        <img src="@/assets/delete.png" v-b-tooltip.hover title="delete field" fluid alt="delete field" style="width:20px;" @click="columns[cindex].splice(findex)"/>
+                    </b-col>
+                  </wrapper>
+                  <b-col>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push('')" />
+                    <img src="@/assets/delete.png" v-b-tooltip.hover title="delete column" fluid alt="delete column" style="width:20px;" @click="columns.splice(cindex)"/>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push([''])"/>
+                  </b-col>
+                  <b-col>
+                    <b-button @click="exportAssets">Export</b-button>        
+                  </b-col>
+                </b-row>
+            </b-container>
+            
         </main>
     </div>
 </template>
@@ -201,6 +225,12 @@ export default {
                 ['name'],
                 ['number'],
                 ['asset_location.name']
+            ],
+            export_fields: [
+                {value: 'url', text: 'url'},
+                {value: 'name', text: 'name'},
+                {value: 'number', text: 'number'},
+                {value: 'asset_location.name', text: 'location'},
             ]
         }
     },
@@ -267,6 +297,8 @@ export default {
                                     break;
                                 case 'number':
                                     text += this.assetNumber(a);
+                                    break;
+                                case '':
                                     break;
                                 default:
                                     if(f.indexOf('.')>0){
