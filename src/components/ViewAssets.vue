@@ -59,17 +59,17 @@
             </b-table>
             <b-container fluid style='text-align:left'>
                 <b-row v-for="(column,cindex) in columns" :key="cindex">
-                  <wrapper v-for="(field,findex) in column" :key="findex">
-                    <b-col>
+                  <template v-for="(field,findex) in column">
+                    <b-col :key="findex">
                         <b-form-select v-model="columns[cindex][findex]" :options="export_fields" />
                     </b-col>
-                    <b-col>
-                        <img src="@/assets/delete.png" v-b-tooltip.hover title="delete field" fluid alt="delete field" style="width:20px;" @click="columns[cindex].splice(findex)"/>
+                    <b-col :key="findex">
+                        <img src="@/assets/delete.png" v-b-tooltip.hover title="delete field" fluid alt="delete field" style="width:20px;" @click="columns[cindex].splice(findex,1)"/>
                     </b-col>
-                  </wrapper>
+                  </template>
                   <b-col>
                     <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push('')" />
-                    <img src="@/assets/delete.png" v-b-tooltip.hover title="delete column" fluid alt="delete column" style="width:20px;" @click="columns.splice(cindex)"/>
+                    <img src="@/assets/delete.png" v-b-tooltip.hover title="delete column" fluid alt="delete column" style="width:20px;" @click="columns.splice(cindex,1)"/>
                   </b-col>
                 </b-row>
                 <b-row>
@@ -227,10 +227,24 @@ export default {
                 ['asset_location.name']
             ],
             export_fields: [
-                {value: 'url', text: 'url'},
-                {value: 'name', text: 'name'},
-                {value: 'number', text: 'number'},
-                {value: 'asset_location.name', text: 'location'},
+                {value: 'url', text: 'URL'},
+                {value: 'name', text: 'Name'},
+                {value: 'number', text: 'Number'},
+                {value: 'asset_location.name', text: 'Location'},
+                {value: 'asset_category.name', text: 'Category'},
+                {value: 'asset_brand.name', text: 'Brand'},
+                {value: 'asset_type.name', text: 'Type'},
+                {value: 'asset_group.name', text: 'Group'},
+                {value: 'asset_sub.name', text: 'Sub'},
+                {value: 'year', text: 'Year'},
+                {value: 'make', text: 'Make'},
+                {value: 'model', text: 'Model'},
+                {value: 'trim', text: 'Trim'},
+                {value: 'vin', text: 'VIN'},
+                {value: 'purchase_cost', text: 'Cost'},
+                {value: 'parent_asset.name', text: 'Parent'},
+                {value: 'created_at', text: 'Created At'},
+                {value: 'updated_at', text: 'Updated At'}
             ]
         }
     },
