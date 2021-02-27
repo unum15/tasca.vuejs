@@ -71,7 +71,7 @@
                     </b-col>
                   </template>
                   <b-col>
-                    <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push('')" />
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push({field:'',new_line:false})" />
                     <img src="@/assets/delete.png" v-b-tooltip.hover title="delete column" fluid alt="delete column" style="width:20px;" @click="columns.splice(cindex,1)"/>
                   </b-col>
                 </b-row>
