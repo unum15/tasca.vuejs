@@ -224,7 +224,7 @@ export default {
                     },
             ],
             columns: [
-                [{field:'url','new_line':true},{field:'name','new_line':true},{field:'number','new_line':true},{field:'asset_location.name','new_line':true}],
+                [{field:'url','new_line':true},{field:'name','new_line':true},{field:'number','new_line':true},{field:'asset_location.name','new_line':false}],
                 [{field:'name','new_line':false}],
                 [{field:'number','new_line':false}],
                 [{field:'asset_location.name','new_line':false}]
@@ -303,6 +303,9 @@ export default {
                         if(column_count>0){
                                 text += ',';
                         }
+                        if(c.length>1){
+                            text+='"';
+                        }
                         c.map( f => {
                             let subs;
                             switch(f.field){
@@ -333,6 +336,9 @@ export default {
                                 text += ' ';
                             }
                         });
+                        if(c.length>1){
+                            text+='"';
+                        }
                         column_count++;
                     });
                     text += "\n";
