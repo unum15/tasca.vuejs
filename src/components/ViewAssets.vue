@@ -60,10 +60,13 @@
             <b-container fluid style='text-align:left'>
                 <b-row v-for="(column,cindex) in columns" :key="cindex">
                   <template v-for="(field,findex) in column">
-                    <b-col :key="findex">
-                        <b-form-select v-model="columns[cindex][findex]" :options="export_fields" />
+                    <b-col :key="'select_'+findex">
+                        <b-form-select v-model="columns[cindex][findex].field" :options="export_fields" />
                     </b-col>
-                    <b-col :key="findex">
+                    <b-col :key="'check_'+findex">
+                        <b-form-checkbox v-model="columns[cindex][findex].new_line" />
+                    </b-col>
+                    <b-col :key="'delete_'+findex">
                         <img src="@/assets/delete.png" v-b-tooltip.hover title="delete field" fluid alt="delete field" style="width:20px;" @click="columns[cindex].splice(findex,1)"/>
                     </b-col>
                   </template>
@@ -221,10 +224,10 @@ export default {
                     },
             ],
             columns: [
-                ['url','name','number','asset_location.name'],
-                ['name'],
-                ['number'],
-                ['asset_location.name']
+                [{field:'url','new_line':true},{field:'name','new_line':true},{field:'number','new_line':true},{field:'asset_location.name','new_line':true}],
+                [{field:'name','new_line':false}],
+                [{field:'number','new_line':false}],
+                [{field:'asset_location.name','new_line':false}]
             ],
             export_fields: [
                 {value: 'url', text: 'URL'},
@@ -301,11 +304,8 @@ export default {
                                 text += ',';
                         }
                         c.map( f => {
-                            if(field_count>0){
-                                text += ' ';
-                            }
                             let subs;
-                            switch(f){
+                            switch(f.field){
                                 case 'url':
                                     text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a);
                                     break;
@@ -315,17 +315,23 @@ export default {
                                 case '':
                                     break;
                                 default:
-                                    if(f.indexOf('.')>0){
-                                        subs = f.split('.');
+                                    if(f.field.indexOf('.')>0){
+                                        subs = f.field.split('.');
                                         if(a[subs[0]]){
                                             text += a[subs[0]][subs[1]];
                                         }
                                     }
                                     else{
-                                        text += a[f]
+                                        text += a[f.field]
                                     }
                             }
                             field_count++;
+                            if(f.new_line){
+                                text += '\n';
+                            }
+                            else if(field_count < c.length){
+                                text += ' ';
+                            }
                         });
                         column_count++;
                     });
