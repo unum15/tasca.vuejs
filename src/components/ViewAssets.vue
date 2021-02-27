@@ -60,6 +60,9 @@
             <b-container fluid style='text-align:left'>
                 <b-row v-for="(column,cindex) in columns" :key="cindex">
                   <template v-for="(field,findex) in column">
+                    <b-col :key="'label_'+findex">
+                        <b-form-checkbox v-model="columns[cindex][findex].label" />
+                    </b-col>
                     <b-col :key="'select_'+findex">
                         <b-form-select v-model="columns[cindex][findex].field" :options="export_fields" />
                     </b-col>
@@ -71,13 +74,13 @@
                     </b-col>
                   </template>
                   <b-col>
-                    <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push({field:'',new_line:false})" />
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push({field:'',new_line:false,label:false})" />
                     <img src="@/assets/delete.png" v-b-tooltip.hover title="delete column" fluid alt="delete column" style="width:20px;" @click="columns.splice(cindex,1)"/>
                   </b-col>
                 </b-row>
                 <b-row>
                   <b-col>
-                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push([{field:'',new_line:false}])"/>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push([{field:'',new_line:false,label:false}])"/>
                   </b-col>
                   <b-col>
                     <b-button @click="exportAssets">Export</b-button>        
@@ -224,10 +227,10 @@ export default {
                     },
             ],
             columns: [
-                [{field:'url','new_line':true},{field:'name','new_line':true},{field:'number','new_line':true},{field:'asset_location.name','new_line':false}],
-                [{field:'name','new_line':false}],
-                [{field:'number','new_line':false}],
-                [{field:'asset_location.name','new_line':false}]
+                [{field:'url',new_line:true,label:true},{field:'name',new_line:true,label:true},{field:'number',new_line:true,label:true},{field:'asset_location.name',new_line:false,label:true}],
+                [{field:'name',new_line:false,label:false}],
+                [{field:'number',new_line:false,label:false}],
+                [{field:'asset_location.name',new_line:false,label:false}]
             ],
             export_fields: [
                 {value: 'url', text: 'URL'},
@@ -307,6 +310,10 @@ export default {
                             text+='"';
                         }
                         c.map( f => {
+                            if(f.label){
+                                let label = this.export_fields.filter(ef => (ef.value == f.field));
+                                text += label[0].text + ': ';
+                            }
                             let subs;
                             switch(f.field){
                                 case 'url':
