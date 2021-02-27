@@ -77,7 +77,7 @@
                 </b-row>
                 <b-row>
                   <b-col>
-                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push([''])"/>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push([{field:'',new_line:false}])"/>
                   </b-col>
                   <b-col>
                     <b-button @click="exportAssets">Export</b-button>        
