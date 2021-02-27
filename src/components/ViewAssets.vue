@@ -57,7 +57,31 @@
                     <img src="@/assets/details.png" v-b-tooltip.hover :title="data.item.notes" fluid alt="DTS" style="width:20px;" />
                 </template>
             </b-table>
-            <b-button @click="exportAssets">Export</b-button>
+            <b-container fluid style='text-align:left'>
+                <b-row v-for="(column,cindex) in columns" :key="cindex">
+                  <template v-for="(field,findex) in column">
+                    <b-col :key="findex">
+                        <b-form-select v-model="columns[cindex][findex]" :options="export_fields" />
+                    </b-col>
+                    <b-col :key="findex">
+                        <img src="@/assets/delete.png" v-b-tooltip.hover title="delete field" fluid alt="delete field" style="width:20px;" @click="columns[cindex].splice(findex,1)"/>
+                    </b-col>
+                  </template>
+                  <b-col>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push('')" />
+                    <img src="@/assets/delete.png" v-b-tooltip.hover title="delete column" fluid alt="delete column" style="width:20px;" @click="columns.splice(cindex,1)"/>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push([''])"/>
+                  </b-col>
+                  <b-col>
+                    <b-button @click="exportAssets">Export</b-button>        
+                  </b-col>
+                </b-row>
+            </b-container>
+            
         </main>
     </div>
 </template>
@@ -195,6 +219,32 @@ export default {
                         label: '',
                         sortable: false
                     },
+            ],
+            columns: [
+                ['url','name','number','asset_location.name'],
+                ['name'],
+                ['number'],
+                ['asset_location.name']
+            ],
+            export_fields: [
+                {value: 'url', text: 'URL'},
+                {value: 'name', text: 'Name'},
+                {value: 'number', text: 'Number'},
+                {value: 'asset_location.name', text: 'Location'},
+                {value: 'asset_category.name', text: 'Category'},
+                {value: 'asset_brand.name', text: 'Brand'},
+                {value: 'asset_type.name', text: 'Type'},
+                {value: 'asset_group.name', text: 'Group'},
+                {value: 'asset_sub.name', text: 'Sub'},
+                {value: 'year', text: 'Year'},
+                {value: 'make', text: 'Make'},
+                {value: 'model', text: 'Model'},
+                {value: 'trim', text: 'Trim'},
+                {value: 'vin', text: 'VIN'},
+                {value: 'purchase_cost', text: 'Cost'},
+                {value: 'parent_asset.name', text: 'Parent'},
+                {value: 'created_at', text: 'Created At'},
+                {value: 'updated_at', text: 'Updated At'}
             ]
         }
     },
@@ -241,23 +291,44 @@ export default {
         },
         exportAssets(){
             let text='';
-            console.log(this.$route);
             this.assets.map( a => {
                 if(a.export){
                     //URL     Table Saw    723521    Garage, Table saw,n723521,Garage
-                    text += 'https://' + location.host + '/asset/' + this.assetNumber(a);
-                    text += ' ';
-                    text += a.name;
-                    text += ' ';
-                    text += this.assetNumber(a);
-                    text += ' ';
-                    text += a.asset_location ? a.asset_location.name : '';
-                    text += ',';
-                    text += a.name;
-                    text += ',';
-                    text += this.assetNumber(a);
-                    text += ',';
-                    text += a.asset_location ? a.asset_location.name : '';
+                    let column_count=0;
+                    this.columns.map( c => {
+                        let field_count = 0;
+                        if(column_count>0){
+                                text += ',';
+                        }
+                        c.map( f => {
+                            if(field_count>0){
+                                text += ' ';
+                            }
+                            let subs;
+                            switch(f){
+                                case 'url':
+                                    text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a);
+                                    break;
+                                case 'number':
+                                    text += this.assetNumber(a);
+                                    break;
+                                case '':
+                                    break;
+                                default:
+                                    if(f.indexOf('.')>0){
+                                        subs = f.split('.');
+                                        if(a[subs[0]]){
+                                            text += a[subs[0]][subs[1]];
+                                        }
+                                    }
+                                    else{
+                                        text += a[f]
+                                    }
+                            }
+                            field_count++;
+                        });
+                        column_count++;
+                    });
                     text += "\n";
                 }
             });
