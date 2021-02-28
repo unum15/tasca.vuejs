@@ -55,6 +55,7 @@
                 </template>
                 <template v-slot:cell(actions)="data">
                     <img src="@/assets/details.png" v-b-tooltip.hover :title="data.item.notes" fluid alt="DTS" style="width:20px;" />
+                    <img src="@/assets/delete.png" v-b-tooltip.hover title="Delete" fluid alt="Delete" style="width:20px;" @click="deleteAsset(data.item)"/>
                 </template>
             </b-table>
             <b-container fluid style='text-align:left'>
@@ -353,6 +354,14 @@ export default {
             });
             var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
             FileSaver.saveAs(blob, "assets.csv");
+        },
+        deleteAsset(asset){
+            if(confirm("Delete " + asset.name + "?")){
+                this.$http.delete('/asset/' + asset.id).then(() => {
+                    let index = this.assets.findIndex(a => (a.id = asset.id));
+                    this.assets.splice(index,1);
+                });
+            }
         }
     }
 }
