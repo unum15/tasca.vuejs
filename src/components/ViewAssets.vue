@@ -57,7 +57,37 @@
                     <img src="@/assets/details.png" v-b-tooltip.hover :title="data.item.notes" fluid alt="DTS" style="width:20px;" />
                 </template>
             </b-table>
-            <b-button @click="exportAssets">Export</b-button>
+            <b-container fluid style='text-align:left'>
+                <b-row v-for="(column,cindex) in columns" :key="cindex">
+                  <template v-for="(field,findex) in column">
+                    <b-col :key="'label_'+findex">
+                        <b-form-checkbox v-model="columns[cindex][findex].label" />
+                    </b-col>
+                    <b-col :key="'select_'+findex">
+                        <b-form-select v-model="columns[cindex][findex].field" :options="export_fields" />
+                    </b-col>
+                    <b-col :key="'check_'+findex">
+                        <b-form-checkbox v-model="columns[cindex][findex].new_line" />
+                    </b-col>
+                    <b-col :key="'delete_'+findex">
+                        <img src="@/assets/delete.png" v-b-tooltip.hover title="delete field" fluid alt="delete field" style="width:20px;" @click="columns[cindex].splice(findex,1)"/>
+                    </b-col>
+                  </template>
+                  <b-col>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push({field:'',new_line:false,label:false})" />
+                    <img src="@/assets/delete.png" v-b-tooltip.hover title="delete column" fluid alt="delete column" style="width:20px;" @click="columns.splice(cindex,1)"/>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push([{field:'',new_line:false,label:false}])"/>
+                  </b-col>
+                  <b-col>
+                    <b-button @click="exportAssets">Export</b-button>        
+                  </b-col>
+                </b-row>
+            </b-container>
+            
         </main>
     </div>
 </template>
@@ -197,10 +227,30 @@ export default {
                     },
             ],
             columns: [
-                ['url','name','number','asset_location.name'],
-                ['name'],
-                ['number'],
-                ['asset_location.name']
+                [{field:'url',new_line:true,label:true},{field:'name',new_line:true,label:true},{field:'number',new_line:true,label:true},{field:'asset_location.name',new_line:false,label:true}],
+                [{field:'name',new_line:false,label:false}],
+                [{field:'number',new_line:false,label:false}],
+                [{field:'asset_location.name',new_line:false,label:false}]
+            ],
+            export_fields: [
+                {value: 'url', text: 'URL'},
+                {value: 'name', text: 'Name'},
+                {value: 'number', text: 'Number'},
+                {value: 'asset_location.name', text: 'Location'},
+                {value: 'asset_category.name', text: 'Category'},
+                {value: 'asset_brand.name', text: 'Brand'},
+                {value: 'asset_type.name', text: 'Type'},
+                {value: 'asset_group.name', text: 'Group'},
+                {value: 'asset_sub.name', text: 'Sub'},
+                {value: 'year', text: 'Year'},
+                {value: 'make', text: 'Make'},
+                {value: 'model', text: 'Model'},
+                {value: 'trim', text: 'Trim'},
+                {value: 'vin', text: 'VIN'},
+                {value: 'purchase_cost', text: 'Cost'},
+                {value: 'parent_asset.name', text: 'Parent'},
+                {value: 'created_at', text: 'Created At'},
+                {value: 'updated_at', text: 'Updated At'}
             ]
         }
     },
@@ -256,31 +306,46 @@ export default {
                         if(column_count>0){
                                 text += ',';
                         }
+                        if(c.length>1){
+                            text+='"';
+                        }
                         c.map( f => {
-                            if(field_count>0){
-                                text += ' ';
+                            if(f.label){
+                                let label = this.export_fields.filter(ef => (ef.value == f.field));
+                                text += label[0].text + ': ';
                             }
                             let subs;
-                            switch(f){
+                            switch(f.field){
                                 case 'url':
                                     text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a);
                                     break;
                                 case 'number':
                                     text += this.assetNumber(a);
                                     break;
+                                case '':
+                                    break;
                                 default:
-                                    if(f.indexOf('.')>0){
-                                        subs = f.split('.');
+                                    if(f.field.indexOf('.')>0){
+                                        subs = f.field.split('.');
                                         if(a[subs[0]]){
                                             text += a[subs[0]][subs[1]];
                                         }
                                     }
                                     else{
-                                        text += a[f]
+                                        text += a[f.field]
                                     }
                             }
                             field_count++;
+                            if(f.new_line){
+                                text += '\n';
+                            }
+                            else if(field_count < c.length){
+                                text += ' ';
+                            }
                         });
+                        if(c.length>1){
+                            text+='"';
+                        }
                         column_count++;
                     });
                     text += "\n";
