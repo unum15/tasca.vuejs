@@ -29,7 +29,7 @@
                                 <b-form-group label="Category" label-cols="4" label-align="right">
                                     <el-select
                                         v-model="asset.asset_category_id"
-                                        @change="save"
+                                        @change="numberChanged"
                                         filterable
                                         clearable
                                         default-first-option
@@ -54,7 +54,7 @@
                                 <b-form-group label="Brand" label-cols="4" label-align="right">
                                     <el-select
                                         v-model="asset.asset_brand_id"
-                                        @change="brandChanged"
+                                        @change="numberChanged"
                                         filterable
                                         clearable
                                         default-first-option
@@ -85,7 +85,7 @@
                                 <b-form-group label="Type" label-cols="4" label-align="right">
                                     <el-select
                                         v-model="asset.asset_type_id"
-                                        @change="typeChanged"
+                                        @change="numberChanged"
                                         filterable
                                         clearable
                                         default-first-option
@@ -116,7 +116,7 @@
                                 <b-form-group label="Group" label-cols="4" label-align="right">
                                     <el-select
                                         v-model="asset.asset_group_id"
-                                        @change="groupChanged"
+                                        @change="numberChanged"
                                         filterable
                                         clearable
                                         default-first-option
@@ -146,7 +146,7 @@
                                 <b-form-group label="Sub" label-cols="4" label-align="right">
                                     <el-select
                                         v-model="asset.asset_sub_id"
-                                        @change="subChanged"
+                                        @change="numberChanged"
                                         filterable
                                         clearable
                                         default-first-option
@@ -696,45 +696,54 @@ export default {
             }
             return numbers[0].number;
         },
-        updateParent(list,my_key,parent_key){
-            let selected = list.filter(i => (i.id == this.asset[my_key]));
-            if(!selected.length){
-                return;
+        async numberChanged(){
+            let number_fields = [{key:'asset_category_id',list:'asset_categories'},{key:'asset_brand_id',list:'asset_brands'},{key:'asset_type_id',list:'asset_types'},{key:'asset_group_id',list:'asset_groups'},{key:'asset_sub_id',list:'asset_subs'}];
+            let asked=false;
+            let clear=true;
+            for(let x = number_fields.length-1;x>0;x--){
+                if((this.asset[number_fields[x].key])&&(!this.asset[number_fields[x-1].key])){
+                    let selected = this[number_fields[x].list].filter(i => (i.id == this.asset[number_fields[x].key]));
+                    if(!selected.length){
+                        return;
+                    }
+                    this.asset[number_fields[x-1].key] = selected[0][number_fields[x-1].key];
+                }
             }
-            this.asset[parent_key] = selected[0][parent_key];
-        },
-        brandChanged(){
-            if(!this.asset.asset_category_id){
-                this.updateParent(this.asset_brands,'asset_brand_id','asset_category_id');
+            for(let x = 1;x<number_fields.length;x++){
+                let selected = this[number_fields[x].list].filter(i => (i.id == this.asset[number_fields[x].key]));
+                if(!selected.length){
+                    return;
+                }
+                if(this.asset[number_fields[x-1].key] != selected[0][number_fields[x-1].key]){
+                    if(!asked){
+                        await this.$bvModal.msgBoxConfirm('Attempt to match or clear?', {
+                            title: 'Please Confirm',
+                            size: 'sm',
+                            buttonSize: 'sm',
+                            okVariant: 'danger',
+                            okTitle: 'Clear',
+                            cancelTitle: 'Match',
+                            footerClass: 'p-2',
+                            hideHeaderClose: false,
+                            centered: true
+                        })
+                            .then(value => {
+                              clear = value;
+                            });
+                        asked = true;
+                    }
+                    if(clear){
+                        this.asset[number_fields[x].key] = null;
+                    }
+                    else{
+                        let current = this[number_fields[x].list].filter(i => (i[number_fields[x-1].key]==this.asset[number_fields[x-1].key] && i.number == selected[0].number))
+                        if(current.length){
+                            this.asset[number_fields[x].key] = current[0].id;
+                        }
+                    }
+                }
             }
             this.save();
-        },
-        typeChanged(){
-            if(!this.asset.asset_brand_id){
-                this.updateParent(this.asset_types,'asset_type_id','asset_brand_id');
-                this.brandChanged();
-            }
-            else{
-                this.save();
-            }
-        },
-        groupChanged(){
-            if(!this.asset.asset_type_id){
-                this.updateParent(this.asset_groups,'asset_group_id','asset_type_id');
-                this.typeChanged();
-            }
-            else{
-                this.save();
-            }
-        },
-        subChanged(){
-            if(!this.asset.asset_group_id){
-                this.updateParent(this.asset_subs,'asset_sub_id','asset_group_id');
-                this.groupChanged();
-            }
-            else{
-                this.save();
-            }
         },
         showAddLocation() {
             this.$refs['add-location-modal'].show();
