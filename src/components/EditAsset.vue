@@ -598,6 +598,7 @@ export default {
             this.$http.get('/' + item.list).then(response => {
                 this[item.list] = response.data.data;
                 this.asset[item.key] = item.value;
+                this.numberChanged();
             });
         },
         save() {
