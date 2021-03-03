@@ -697,7 +697,33 @@ export default {
             return numbers[0].number;
         },
         async numberChanged(){
-            let number_fields = [{key:'asset_category_id',list:'asset_categories'},{key:'asset_brand_id',list:'asset_brands'},{key:'asset_type_id',list:'asset_types'},{key:'asset_group_id',list:'asset_groups'},{key:'asset_sub_id',list:'asset_subs'}];
+            let number_fields = [
+                {
+                    key:'asset_category_id',
+                    list:'asset_categories',
+                    single:'asset_category'
+                },
+                {
+                    key:'asset_brand_id',
+                    list:'asset_brands',
+                    single:'asset_brand'
+                },
+                {
+                    key:'asset_type_id',
+                    list:'asset_types',
+                    single:'asset_type'
+                },
+                {
+                    key:'asset_group_id',
+                    list:'asset_groups',
+                    single:'asset_group'
+                },
+                {
+                    key:'asset_sub_id',
+                    list:'asset_subs',
+                    single:'asset_sub'
+                }
+            ];
             let asked=false;
             let clear=true;
             for(let x = number_fields.length-1;x>0;x--){
@@ -712,7 +738,11 @@ export default {
             for(let x = 1;x<number_fields.length;x++){
                 let selected = this[number_fields[x].list].filter(i => (i.id == this.asset[number_fields[x].key]));
                 if(!selected.length){
-                    return;
+                    continue;
+                }
+                if(!this.asset[number_fields[x-1].key]){
+                    this.asset[number_fields[x].key] = null;
+                    continue;
                 }
                 if(this.asset[number_fields[x-1].key] != selected[0][number_fields[x-1].key]){
                     if(!asked){
@@ -739,6 +769,15 @@ export default {
                         let current = this[number_fields[x].list].filter(i => (i[number_fields[x-1].key]==this.asset[number_fields[x-1].key] && i.number == selected[0].number))
                         if(current.length){
                             this.asset[number_fields[x].key] = current[0].id;
+                        }
+                        else{
+                            let new_number = selected[0];
+                            delete new_number.id;
+                            new_number[number_fields[x-1].key] = this.asset[number_fields[x-1].key];
+                            await this.$http.post('/' + number_fields[x].single,new_number).then((response) => {
+                                this[number_fields[x].list].push(response.data.data);
+                                this.asset[number_fields[x].key] = response.data.data.id;
+                            });
                         }
                     }
                 }
