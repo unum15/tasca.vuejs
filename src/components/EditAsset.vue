@@ -779,6 +779,9 @@ export default {
                                 this[number_fields[x].list].push(response.data.data);
                                 this.asset[number_fields[x].key] = response.data.data.id;
                             });
+                            await this.$http.get('/' + number_fields[x].list).then(response => {
+                                this[number_fields[x].list] = response.data.data;
+                            });
                         }
                     }
                 }
