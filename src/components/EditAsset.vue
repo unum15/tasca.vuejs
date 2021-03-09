@@ -786,6 +786,12 @@ export default {
                     }
                 }
             }
+            if(clear){
+                this.asset.item_number = null;
+            }
+            let temp = this.asset.asset_sub_id;
+            this.asset.asset_sub_id = null;
+            this.asset.asset_sub_id = temp
             this.save();
         },
         showAddLocation() {
