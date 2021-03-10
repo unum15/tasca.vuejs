@@ -792,7 +792,14 @@ export default {
             let temp = this.asset.asset_sub_id;
             this.asset.asset_sub_id = null;
             this.asset.asset_sub_id = temp
-            this.save();
+            await this.$http.get('/asset/number/' + this.number_string).then(response => {
+                console.log(response.data.data);
+                if(response.data.data){
+                    this.asset.item_number = null;
+                }
+                this.save();
+            });
+            
         },
         showAddLocation() {
             this.$refs['add-location-modal'].show();
