@@ -47,6 +47,9 @@
                 <template v-slot:cell(purchase_date)="data">
                     {{formatTime(data.value)}}
                 </template>
+                <template v-slot:cell(exported_at)="data">
+                    {{data.item.asset_exports.length ? formatTime(data.item.asset_exports[0]) : 'N/A'}}
+                </template>
                 <template v-slot:cell(created_at)="data">
                     {{formatTime(data.value)}}
                 </template>
@@ -210,6 +213,12 @@ export default {
                         filter: null
                     },
                     {
+                        key: 'exported_at',
+                        label: 'Exported At',
+                        sortable: true,
+                        filter: null
+                    },
+                    {
                         key: 'created_at',
                         label: 'Created At',
                         sortable: true,
@@ -256,16 +265,19 @@ export default {
         }
     },
     created() {
-        this.$http.get('/assets?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_location').then(response => {
-            let assets = response.data.data;
-            assets.map( a => {
-                a.export = false;
-            });
-            this.assets = assets;
-            this.filterColumns();
-        });
+        this.getAssets();
     },
     methods: {
+        getAssets(){
+            this.$http.get('/assets?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_location,asset_exports').then(response => {
+                let assets = response.data.data;
+                assets.map( a => {
+                    a.export = false;
+                });
+                this.assets = assets;
+                this.filterColumns();
+            });
+        },
         formatTime(time){
             if(!time){
                 return '';
@@ -300,7 +312,7 @@ export default {
             let text='';
             this.assets.map( a => {
                 if(a.export){
-                    //URL     Table Saw    723521    Garage, Table saw,n723521,Garage
+                    this.$http.post('/asset/' + a.id + '/export');
                     let column_count=0;
                     this.columns.map( c => {
                         let field_count = 0;
@@ -354,6 +366,7 @@ export default {
             });
             var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
             FileSaver.saveAs(blob, "assets.csv");
+            this.getAssets();
         },
         deleteAsset(asset){
             if(confirm("Delete " + asset.name + "?")){
