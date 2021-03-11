@@ -514,8 +514,8 @@
                     </b-modal>
                 </b-tab>
             </b-tabs>
-            <b-button @click="resetForm">New</b-button>
-            <b-button @click="$router.push('/assets')">Done</b-button>
+            <b-button @click="save();resetForm();">New</b-button>
+            <b-button @click="save();$router.push('/assets');">Done</b-button>
         </main>
     </div>
 </template>

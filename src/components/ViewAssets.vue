@@ -390,7 +390,6 @@ export default {
     },
     watch: {
         stored_filters(){
-            console.log(this.stored_filters);
             for(var x = 0;x < this.fields.length; x++){
                 this.fields[x].filter = this.stored_filters[this.fields[x].key];
             }

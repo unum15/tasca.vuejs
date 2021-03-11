@@ -15,7 +15,6 @@ const store = new Vuex.Store({
   },
   actions: {
     async saveSettings(context, settings) {
-      console.log(settings.backflows);
       context.state.settings = settings;
       await idb.saveSettings(settings);
     },
@@ -24,9 +23,6 @@ const store = new Vuex.Store({
       await idb.saveUser(user);
     },
     async saveFilters(context, {filters, name}) {
-      console.log(context);
-      console.log(filters);
-      console.log(name);
       context.state.filters[name] = filters;
       await idb.saveFilters(filters, name);
     },
@@ -36,7 +32,6 @@ const store = new Vuex.Store({
       let user = await idb.getUser();
       context.state.user = user;
       let filters = await idb.getFilters();
-      console.log(filters);
       context.state.filters = filters;
       
     },

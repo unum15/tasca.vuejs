@@ -168,11 +168,16 @@ export default {
 			};
 			let filters = {};
 			let store = trans.objectStore('filters');
-			let request = store.getAll();
-            request.onsuccess = e => {
-                filters = e.target.result;
-            }
-
+			store.openKeyCursor().onsuccess = (event) => {
+				let cursor = event.target.result;
+				if (cursor) {
+					let request = store.get(cursor.key);
+					request.onsuccess = e => {
+						filters[cursor.key] = e.target.result;
+					}
+					cursor.continue();
+				}
+			};
 		});
 	
 	},
@@ -188,7 +193,12 @@ export default {
 			};
 
 			let store = trans.objectStore('filters');
-			store.delete('assets');
+			store.openKeyCursor().onsuccess = (event) => {
+				let cursor = event.target.result;
+				if (cursor) {
+					store.delete(cursor.key);
+				}
+			};
 		});	
 	},
 
