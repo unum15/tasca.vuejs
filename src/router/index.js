@@ -19,6 +19,7 @@ import EditHours from '@/components/EditHours';
 import EditList from '@/components/EditList';
 import EditProfile from '@/components/EditProfile';
 import ViewAssets from '@/components/ViewAssets';
+import ViewAsset from '@/components/ViewAsset';
 import EditAsset from '@/components/EditAsset';
 import EditAssetFueling from '@/components/EditAssetFueling';
 import ViewAssetFuelings from '@/components/ViewAssetFuelings';
@@ -342,6 +343,15 @@ var router = new Router({
       component: ViewAssets,
       meta: {
         title: 'View Assets'
+      }
+    },
+    {
+      path: '/asset/number/:asset_number',
+      name: 'ViewAsset',
+      component: ViewAsset,
+      props: true,
+      meta: {
+        title: 'View Asset'
       }
     },
     {

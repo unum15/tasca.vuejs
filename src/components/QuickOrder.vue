@@ -379,7 +379,7 @@ export default {
       if(this.task.id === null){
         this.$http.post('/task',this.task)
           .then((results) => {
-            this.task.id = results.data.id;
+            this.task.id = results.data.data.id;
             this.saveAppointment();
           })
       }

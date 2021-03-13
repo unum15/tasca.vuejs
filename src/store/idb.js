@@ -1,5 +1,5 @@
 const DB_NAME = 'tascadb';
-const DB_VERSION = 5;
+const DB_VERSION = 6;
 let DB;
 
 export default {
@@ -24,7 +24,11 @@ export default {
                 if (e.oldVersion > 1) {
                     db.deleteObjectStore("user");
                 }
+				if (e.oldVersion > 5) {
+					db.deleteObjectStore("filters");
+				}
 				db.createObjectStore("user");
+				db.createObjectStore("filters");
 			};
 		});
 	},
@@ -124,13 +128,78 @@ export default {
 			};
             let user = {}
 			let store = trans.objectStore('user');
-            let request = store.get('user')
+            let request = store.get('user');
             request.onsuccess = e => {
                 user = e.target.result;
             }
             
         });    
             
+	},
+	
+	
+	async saveFilters(filters,name) {
+
+		let db = await this.getDb();
+
+		return new Promise(resolve => {
+
+			let trans = db.transaction(['filters'],'readwrite');
+			trans.oncomplete = () => {
+				resolve();
+			};
+
+			let store = trans.objectStore('filters');
+			store.put(filters,name);
+
+		});
+	
+	},
+	
+	async getFilters() {
+
+		let db = await this.getDb();
+
+		return new Promise(resolve => {
+
+			let trans = db.transaction(['filters'],'readonly');
+			trans.oncomplete = () => {
+				resolve(filters);
+			};
+			let filters = {};
+			let store = trans.objectStore('filters');
+			store.openKeyCursor().onsuccess = (event) => {
+				let cursor = event.target.result;
+				if (cursor) {
+					let request = store.get(cursor.key);
+					request.onsuccess = e => {
+						filters[cursor.key] = e.target.result;
+					}
+					cursor.continue();
+				}
+			};
+		});
+	
+	},
+	async deleteFilters() {
+
+		let db = await this.getDb();
+
+		return new Promise(resolve => {
+
+			let trans = db.transaction(['filters'],'readwrite');
+			trans.oncomplete = () => {
+				resolve();
+			};
+
+			let store = trans.objectStore('filters');
+			store.openKeyCursor().onsuccess = (event) => {
+				let cursor = event.target.result;
+				if (cursor) {
+					store.delete(cursor.key);
+				}
+			};
+		});	
 	},
 
 }
