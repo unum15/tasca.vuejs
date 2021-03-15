@@ -99,7 +99,7 @@ export default {
 				task_status_id: this.settings['default_task_status_id-labor_type_id-' + this.settings.default_labor_type_id],
 				task_action_id: this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id],
 				notes: null,
-				job_hours: null,
+				task_hours: null,
 				crew_hours: null
 			};
 			this.tasks.push(task);

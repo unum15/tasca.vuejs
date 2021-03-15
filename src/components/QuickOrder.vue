@@ -281,19 +281,18 @@
                            >
                            </b-form-input>
                         </b-form-group>
-                  </b-col>
-                   <b-col>
-                   <b-form-group label="Appointment Date">
-                           <b-form-input
-                               type="date"
-                               v-model="appointment.date"
-                           >
-                           </b-form-input>
-                       </b-form-group>
-                   </b-col>
-                   
+                  </b-col>                   
                </b-row>
                <b-row>
+               <b-col>
+                  <b-form-group label="Appointment Date">
+                    <b-form-input
+                        type="date"
+                        v-model="appointment.date"
+                    >
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
                 <b-col>
                   <b-form-group label="Sort Order">
                       <b-form-input
@@ -312,8 +311,30 @@
                       </b-form-input>
                       </b-form-group>
                   </b-col>
+                </b-row>
+                <b-row>
                   <b-col>
-                    <b-form-group label="Hours">
+                    <b-form-group label="Crew">
+                        <b-form-select
+                            :options="crews"
+                            value-field="id"
+                            text-field="name"
+                            v-model="task.crew_id"
+                            >
+                        </b-form-select>
+                    </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Crew Hours">
+                      <b-form-input
+                          type="text"
+                          v-model="task.crew_hours"
+                      >
+                      </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Man Hours">
                       <b-form-input
                           type="text"
                           v-model="task.task_hours"
@@ -416,6 +437,7 @@ export default {
       showSaveSuccess: false,
       reroute: false,
       client_id: null,
+      crews: [],
       order: {
         id: null,
         name: null,
@@ -460,6 +482,9 @@ export default {
     });
     this.$http.get('/task_actions').then(response => {
       this.task_actions = response.data
+    });
+    this.$http.get('/crews').then(response => {
+      this.crews = response.data
     });
     this.$http.get('/activity_levels').then(response => {
       this.activity_levels = response.data

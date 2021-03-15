@@ -94,11 +94,11 @@
                 </b-form-group>
             </b-col>
 			<b-col>
-                <b-form-group label="Job Hours">
+                <b-form-group label="Man Hours">
                     <b-form-input
                         type="text"
 						@change="save"
-                        v-model="my_task.job_hours"
+                        v-model="my_task.task_hours"
                     >
                     </b-form-input>
                 </b-form-group>
