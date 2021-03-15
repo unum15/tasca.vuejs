@@ -842,7 +842,7 @@ export default {
         id: null,
         name: null,
         description: null,
-        date: this.order.date? this.order.date :this.today,
+        date: this.order.date? this.order.date : this.today,
         order_category_id: parseInt(this.settings.default_order_category_id),
         order_priority_id: parseInt(this.settings.default_order_priority_id),
         order_type_id: parseInt(this.settings.default_order_type_id),
@@ -912,14 +912,7 @@ export default {
       settings: state => state.settings
     }),
     current_assignments() {
-			return this.labor_assignments.filter(a => {
-                for (var i=0; i < a.labor_types.length; i++) {
-                  if (a.labor_types[i].id == this.task.labor_type_id) {
-                        return true;
-                    }
-                }
-				return false;
-			})
+			return this.labor_assignments.filter(a =>(a.labor_type_id == this.task.labor_type_id));
 		},
 		current_statuses() {
 			return this.task_statuses.filter(status => {

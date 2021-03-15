@@ -99,6 +99,7 @@
 import TopMenu from './TopMenu';
 import moment from 'moment';
 import FileSaver from 'file-saver';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewAssets',
     components: {
@@ -284,9 +285,11 @@ export default {
             }
             return moment(time).format('MM-YY');
         },
-        filterColumns(){
+        filterColumns(store=true){
             this.filtered_assets = this.assets;
+            let filters = {};
             for(var x = 0;x < this.fields.length; x++){
+                filters[this.fields[x].key] = this.fields[x].filter;
                 if(this.fields[x].filter){
                     var regex = new RegExp(this.fields[x].filter, "i");
                     this.filtered_assets = this.filtered_assets.filter(t => {
@@ -303,6 +306,9 @@ export default {
                         return value.match(regex) !== null
                     })
                 }
+            }
+            if(store){
+                this.$store.dispatch('saveFilters',{filters,name:'assets'});
             }
         },
         assetNumber(asset){
@@ -374,6 +380,18 @@ export default {
                     let index = this.assets.findIndex(a => (a.id = asset.id));
                     this.assets.splice(index,1);
                 });
+            }
+        }
+    },
+    computed: {
+        ...mapState({
+            stored_filters: state => state.filters.assets
+        }),
+    },
+    watch: {
+        stored_filters(){
+            for(var x = 0;x < this.fields.length; x++){
+                this.fields[x].filter = this.stored_filters[this.fields[x].key];
             }
         }
     }
