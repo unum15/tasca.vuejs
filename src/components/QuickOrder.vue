@@ -85,68 +85,188 @@
                     </b-form-input>
                   </b-form-group>
                 </b-col>
+                <b-col>
+                  <b-form-group label="Task Name">
+                    <b-form-input
+                        type="text"
+                        v-model="task.name"
+                        required
+                        :state="order.name != null"
+                        placeholder="New Task Name"
+                        >
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
               </b-row>
                 <b-row>
                    <b-col>
-                       <b-form-group label="Description">
-                           <b-form-input
+                       <b-form-group label="Order Description">
+                           <b-form-textarea
                                v-model="order.description"
                                placeholder="What needs to be done?"
                                required
                                ref='description'
                                :state="order.description != null"
                                >
-                           </b-form-input>
+                           </b-form-textarea>
+                       </b-form-group>
+                   </b-col>
+                   <b-col>
+                       <b-form-group label="Task Description">
+                           <b-form-textarea
+                               v-model="task.description"
+                               placeholder="What needs to be done?"
+                               required
+                               :state="task.description != null"
+                               >
+                           </b-form-textarea>
                        </b-form-group>
                    </b-col>
                </b-row>
                <b-row>
+                <b-col>
+                  <b-container>
+               <b-row>
                    <b-col>
-                       <b-form-group label="Category">
-                           <b-form-select
-                               :options="order_categories"
-                               value-field="id"
-                               text-field="name"
-                               v-model="order.order_category_id"
-                               required
-                               :state="order.order_category_id != null"
-                               >
-                           </b-form-select>
-                       </b-form-group>
+                      <b-form-group label="Category">
+                        <el-select
+                          v-model="order.order_category_id"
+                          filterable
+                          placeholder="Select Category"
+                          default-first-option>
+                          <el-option
+                            v-for="order_category in order_categories"
+                            :key="order_category.id"
+                            :label="order_category.name"
+                            :value="order_category.id">
+                          </el-option>
+                        </el-select>
+                      </b-form-group>
                    </b-col>
+                   </b-row>
+               <b-row>
                    <b-col>
                        <b-form-group label="Priority">
-                           <b-form-select
-                               :options="order_priorities"
-                               value-field="id"
-                               text-field="name"
-                               v-model="order.order_priority_id"
-                               :state="order.order_priority_id != null"
-                               required
-                               >
-                           </b-form-select>
+                        <el-select
+                          v-model="order.order_priority_id"
+                          filterable
+                          placeholder="Select Priority"
+                          default-first-option>
+                          <el-option
+                            v-for="order_priority in order_priorities"
+                            :key="order_priority.id"
+                            :label="order_priority.name"
+                            :value="order_priority.id">
+                          </el-option>
+                        </el-select>
                        </b-form-group>
                    </b-col>
+                   </b-row>
+               <b-row>
                    <b-col>
                        <b-form-group label="Type">
-                           <b-form-select
-                               :options="order_types"
-                               value-field="id"
-                               text-field="name"
-                               v-model="order.order_type_id"
-                               :state="order.order_type_id != null"
-                               required
-                               >
-                           </b-form-select>
+                        <el-select
+                          v-model="order.order_type_id"
+                          filterable
+                          placeholder="Select Type"
+                          default-first-option>
+                          <el-option
+                            v-for="order_type in order_types"
+                            :key="order_type.id"
+                            :label="order_type.name"
+                            :value="order_type.id">
+                          </el-option>
+                        </el-select>
                        </b-form-group>
                    </b-col>
                </b-row>
+               </b-container>
+               </b-col>
+               <b-col style="text-align:left;" md="auto">
+                 <b-form-group label="Labor Types" v-slot="{ ariaDescribedby }">
+                  <b-form-radio-group
+                    v-model="task.labor_type_id"
+                    :options="labor_types"
+                    :aria-describedby="ariaDescribedby"
+                    value-field="id"
+                    text-field="name"
+                    stacked
+                    @change="laborTypeChanged"
+                  ></b-form-radio-group>
+                </b-form-group>
+               </b-col>
+               <b-col>
+               <b-container>
                <b-row>
+                  <b-col>
+                      <b-form-group label="Assignment">
+                        <el-select
+                          v-model="task.labor_assignment_id"
+                          filterable
+                          placeholder="Select Assignment"
+                          default-first-option>
+                          <el-option
+                            v-for="labor_assignment in current_assignments"
+                            :key="labor_assignment.id"
+                            :label="labor_assignment.name"
+                            :value="labor_assignment.id">
+                          </el-option>
+                        </el-select>
+                      </b-form-group>
+                  </b-col>
+                  </b-row>
+               <b-row>
+                  <b-col>
+                      <b-form-group label="Status">
+                        <el-select
+                          v-model="task.task_status_id"
+                          filterable
+                          placeholder="Select Status"
+                          default-first-option>
+                          <el-option
+                            v-for="task_status in current_statuses"
+                            :key="task_status.id"
+                            :label="task_status.name"
+                            :value="task_status.id">
+                          </el-option>
+                        </el-select>
+                      </b-form-group>
+                  </b-col>
+                  </b-row>
+               <b-row>
+                  <b-col>
+                      <b-form-group label="Action">
+                        <el-select
+                          v-model="task.task_action_id"
+                          filterable
+                          placeholder="Select Action"
+                          default-first-option>
+                          <el-option
+                            v-for="task_action in current_actions"
+                            :key="task_action.id"
+                            :label="task_action.name"
+                            :value="task_action.id">
+                          </el-option>
+                        </el-select>
+                      </b-form-group>
+                  </b-col>
+              </b-row>
+              </b-container>
+              </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                   <b-form-group label="Order Date">
+                     <b-form-input
+                       type="date"
+                       v-model="order.date">
+                     </b-form-input>
+                   </b-form-group>
+                 </b-col>
                    <b-col>
                        <b-form-group label="Approval Date">
                            <b-form-input
                                type="date"
-                               @change="updateStartDate();"
                                v-model="order.approval_date"
                            >
                            </b-form-input>
@@ -160,10 +280,10 @@
                                :disabled="order.approval_date == null"
                            >
                            </b-form-input>
-                       </b-form-group>
-                   </b-col>
+                        </b-form-group>
+                  </b-col>
                    <b-col>
-                       <b-form-group label="Task Date">
+                   <b-form-group label="Appointment Date">
                            <b-form-input
                                type="date"
                                v-model="appointment.date"
@@ -171,51 +291,92 @@
                            </b-form-input>
                        </b-form-group>
                    </b-col>
-                   <b-col>
-                       <b-form-group label="Sort order">
-                           <b-form-input
-                               type="text"
-                               v-model="appointment.sort_order"
-                           >
-                           </b-form-input>
-                       </b-form-group>
-                   </b-col>
+                   
                </b-row>
                <b-row>
-                  <b-col>
-                      <b-form-group label="Assignment">
-                          <b-form-select
-                              :options="labor_assignments"
-                              value-field="id"
-                              text-field="name"
-                              v-model="task.labor_assignment_id"
-                              >
-                          </b-form-select>
+                <b-col>
+                  <b-form-group label="Sort Order">
+                      <b-form-input
+                          type="text"
+                          v-model="appointment.sort_order"
+                      >
+                      </b-form-input>
                       </b-form-group>
                   </b-col>
                   <b-col>
-                      <b-form-group label="Status">
-                          <b-form-select
-                              :options="task_statuses"
-                              value-field="id"
-                              text-field="name"
-                              v-model="task.task_status_id"
-                              >
-                          </b-form-select>
+                    <b-form-group label="Time">
+                      <b-form-input
+                          type="time"
+                          v-model="appointment.time"
+                      >
+                      </b-form-input>
                       </b-form-group>
                   </b-col>
                   <b-col>
-                      <b-form-group label="Action">
-                          <b-form-select
-                              :options="task_actions"
-                              value-field="id"
-                              text-field="name"
-                              v-model="task.task_action_id"
-                              >
-                          </b-form-select>
+                    <b-form-group label="Hours">
+                      <b-form-input
+                          type="text"
+                          v-model="task.task_hours"
+                      >
+                      </b-form-input>
                       </b-form-group>
                   </b-col>
-              </b-row>
+                  <b-col>
+                    <b-form-group label="Budget">
+                      <b-form-input
+                          type="text"
+                          v-model="order.budget"
+                      >
+                      </b-form-input>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Budget +/-">
+                      <b-form-input
+                          type="number"
+                          v-model="order.budget_plus_minus"
+                      >
+                      </b-form-input>
+                    </b-form-group>
+                  </b-col>
+                </b-row>
+                <b-row>
+                <b-col>
+                  <b-form-group label="Order Location">
+                      <b-form-textarea
+                          type="text"
+                          v-model="order.location"
+                      >
+                      </b-form-textarea>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Order Instructions">
+                      <b-form-textarea
+                          v-model="order.instructions"
+                      >
+                      </b-form-textarea>
+                      </b-form-group>
+                  </b-col>
+                  </b-row>
+                  <b-row>
+                  <b-col>
+                    <b-form-group label="Order Notes">
+                      <b-form-textarea
+                          v-model="order.notes"
+                      >
+                      </b-form-textarea>
+                      </b-form-group>
+                  </b-col>
+                  <b-col>
+                    <b-form-group label="Appointment Notes">
+                      <b-form-textarea
+                          v-model="appointment.notes"
+                      >
+                      </b-form-textarea>
+                      </b-form-group>
+                  </b-col>
+                </b-row>
               <b-button @click="saveProject();">New</b-button>
               <b-button @click="reroute=true;saveProject();">Edit</b-button>
             </b-container>
@@ -250,6 +411,7 @@ export default {
       labor_assignments: [],
       task_statuses: [],
       task_actions: [],
+      labor_types: [],
       showSaveFailed: false,
       showSaveSuccess: false,
       reroute: false,
@@ -277,29 +439,32 @@ export default {
   created () {
     this.$http.get('/clients').then(response => {
       this.clients = response.data
-    })
+    });
     this.$http.get('/order_categories').then(response => {
       this.order_categories = response.data
-    })
+    });
     this.$http.get('/order_priorities').then(response => {
       this.order_priorities = response.data
-    })
+    });
     this.$http.get('/order_types').then(response => {
       this.order_types = response.data
-    })
+    });
     this.$http.get('/labor_assignments').then(response => {
       this.labor_assignments = response.data.data
-    })
+    });
+    this.$http.get('/labor_types').then(response => {
+      this.labor_types = response.data.data
+    });
     this.$http.get('/task_statuses').then(response => {
       this.task_statuses = response.data
-    })
+    });
     this.$http.get('/task_actions').then(response => {
       this.task_actions = response.data
-    })
+    });
     this.$http.get('/activity_levels').then(response => {
       this.activity_levels = response.data
       this.activity_levels_loading = false
-    })
+    });
   },
   methods: {
     getProperties() {
@@ -415,14 +580,14 @@ export default {
         id: null,
         name: null,
         description: null,
-        order_category_id: this.settings.default_order_category_id,
-        order_priority_id: this.settings.default_order_priority_id,
-        order_type_id: this.settings.default_order_type_id,      
-        order_status_id: this.settings.default_order_status_id,
-        order_action_id: this.settings.default_order_action_id,
+        order_category_id: parseInt(this.settings.default_order_category_id),
+        order_priority_id: parseInt(this.settings.default_order_priority_id),
+        order_type_id: parseInt(this.settings.default_order_type_id),
+        order_status_id: parseInt(this.settings.default_order_status_id),
+        order_action_id: parseInt(this.settings.default_order_action_id),
+        date: this.today,
         approval_date: this.today,
         start_date: this.today,
-        order_date: this.today,
         service_window: this.$store.state.user.default_service_window
       };
       this.task = {
@@ -442,18 +607,17 @@ export default {
         contact_id: null
       };
       this.client_id = null;
-      
-      
-      
-      
-      
- 
     },
     orderNameChanged(){
       if(this.order.description === null){
         this.order.description = this.order.name;
       }
-    }
+    },
+    laborTypeChanged(){
+			this.task.labor_assignment_id = this.settings['default_labor_assignment_id-labor_type_id-' + this.task.labor_type_id];
+			this.task.task_status_id = this.settings['default_task_status_id-labor_type_id-' + this.task.labor_type_id];
+			this.task.task_action_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id];
+		},
   },
   computed: {
     today() {
@@ -463,14 +627,7 @@ export default {
       settings: state => state.settings
     }),
     current_assignments() {
-			return this.labor_assignments.filter(a => {
-                for (var i=0; i < a.labor_types.length; i++) {
-                  if (a.labor_types[i].id == this.task.labor_type_id) {
-                        return true;
-                    }
-                }
-				return false;
-			})
+			return this.labor_assignments.filter(a =>(a.labor_type_id == this.task.labor_type_id));
 		},
 		current_statuses() {
 			return this.task_statuses.filter(status => {

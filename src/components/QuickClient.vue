@@ -842,7 +842,7 @@ export default {
         id: null,
         name: null,
         description: null,
-        date: this.order.date? this.order.date :this.today,
+        date: this.order.date? this.order.date : this.today,
         order_category_id: parseInt(this.settings.default_order_category_id),
         order_priority_id: parseInt(this.settings.default_order_priority_id),
         order_type_id: parseInt(this.settings.default_order_type_id),
