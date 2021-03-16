@@ -192,7 +192,7 @@ export default {
                 return;
             }
             order.tasks.map(t => {
-                t.dates.map(d =>{
+                t.appointments.map(d =>{
                     d.clock_ins.map(si =>{
                         var clock_in = moment(si.clock_in);
                         var clock_out = moment(si.clock_out);
