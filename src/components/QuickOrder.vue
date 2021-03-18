@@ -24,7 +24,12 @@
               <b-row>
                 <b-col>
                     <b-form-group label="Client">
-                     <el-select v-model="client_id" filterable default-first-option placeholder="Select Client" @change="getProperties();getProjects();">
+                     <el-select
+                      v-model="client_id"
+                      filterable
+                      default-first-option
+                      placeholder="Select Client"
+                      @change="getProperties();getContacts();getProjects();">
                         <el-option
                           v-for="client in clients"
                           :key="client.id"
@@ -45,6 +50,22 @@
                         v-model="order.property">
                       </b-form-select>
                     </b-form-group>
+                    {{ property_address }}
+                </b-col>
+                <b-col>
+                  <b-form-group label="Contact">
+                      <b-form-select
+                        :options="contacts"
+                        value-field="id"
+                        text-field="name"
+                        required
+                        :state="project.contact_id != null"
+                        v-model="project.contact_id">
+                      </b-form-select>
+                    </b-form-group>
+                    <div v-for="number in contact_numbers" :key="number.id">
+                      {{ number.phone_number }}
+                    </div>
                 </b-col>
               </b-row>
               <b-row>
@@ -90,8 +111,9 @@
                     <b-form-input
                         type="text"
                         v-model="task.name"
+                        @change="taskNameChanged"
                         required
-                        :state="order.name != null"
+                        :state="task.name != null"
                         placeholder="New Task Name"
                         >
                     </b-form-input>
@@ -105,8 +127,9 @@
                                v-model="order.description"
                                placeholder="What needs to be done?"
                                required
-                               ref='description'
+                               ref='order-description'
                                :state="order.description != null"
+                               @focus.native="selectText('order-description')"
                                >
                            </b-form-textarea>
                        </b-form-group>
@@ -117,7 +140,9 @@
                                v-model="task.description"
                                placeholder="What needs to be done?"
                                required
+                               ref='task-description'
                                :state="task.description != null"
+                               @focus.native="selectText('task-description')"
                                >
                            </b-form-textarea>
                        </b-form-group>
@@ -425,6 +450,7 @@ export default {
       contact_methods: [],
       activity_levels: [],
       properties: [],
+      contacts: [],
       projects: [ {id: null, name: 'New Project'}],
       order_categories: [],
       order_priorities: [],
@@ -446,7 +472,14 @@ export default {
       },
       task: {
         id: null,
-        task_billing_type_id: 1
+        task_billing_type_id: 1,
+        name: null,
+        description: null,
+        labor_type_id: null,
+        labor_assignment_id: null,
+        task_status_id: null,
+        task_action_id: null,
+        crew_id: null
       },
       appointment: {
         id: null,
@@ -454,7 +487,8 @@ export default {
         sort_order: null
       },
       project: {
-        id: null
+        id: null,
+        contact_id: null
       }
     }
   },
@@ -505,6 +539,23 @@ export default {
         this.properties = []
       }
     },
+    getContacts() {
+      if(this.client_id){
+        this.$http.get('/contacts?client_id=' + this.client_id).then(response => {
+          this.contacts = response.data
+          if(this.contacts.length == 1){
+             this.project.contact_id = this.contacts[0].id;
+          }
+          else{
+            var client = this.clients.filter(c => c.id == this.client_id);
+            this.project.contact_id = client[0].billing_contact_id;
+          }
+        })
+      }
+      else{
+        this.contacts = []
+      }
+    },
     getProjects() {
       if(this.client_id){
         this.$http.get('/projects?client_id=' + this.client_id + '&completed=false').then(response => {
@@ -525,8 +576,6 @@ export default {
         return;
       }
       this.project.client_id = this.client_id;
-      var client = this.clients.filter(c => c.id == this.client_id);
-      this.project.contact_id = client[0].billing_contact_id;
       this.project.open_date = this.today;
       if(this.project.id === null){
         this.$http.post('/project',this.project)
@@ -617,10 +666,13 @@ export default {
       };
       this.task = {
         id: null,
-        labor_type_id: this.settings.default_labor_type_id,
+        labor_type_id: parseInt(this.settings.default_labor_type_id),
         labor_assignment_id: parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]),
         task_status_id: parseInt(this.settings['default_task_status_id-labor_type_id-' + this.settings.default_labor_type_id]),
         task_action_id: parseInt(this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id]),
+        name: null,
+        description: null,
+        crew_id: parseInt(this.settings.default_crew_id)
       };
       this.appointment = {
         id: null,
@@ -638,11 +690,19 @@ export default {
         this.order.description = this.order.name;
       }
     },
+    taskNameChanged(){
+      if(this.task.description === null){
+        this.task.description = this.task.name;
+      }
+    },
     laborTypeChanged(){
-			this.task.labor_assignment_id = this.settings['default_labor_assignment_id-labor_type_id-' + this.task.labor_type_id];
-			this.task.task_status_id = this.settings['default_task_status_id-labor_type_id-' + this.task.labor_type_id];
-			this.task.task_action_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id];
+			this.task.labor_assignment_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id] ? parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.task.labor_type_id]) : null;
+			this.task.task_status_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id] ? parseInt(this.settings['default_task_status_id-labor_type_id-' + this.task.labor_type_id]) : null;
+			this.task.task_action_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id] ? parseInt(this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id]) : null;
 		},
+    selectText(ref){
+      this.$refs[ref].select()
+    }
   },
   computed: {
     today() {
@@ -673,7 +733,28 @@ export default {
                 }
 				return false;
 			})
-		}
+		},
+    property_address() {
+      if(!this.order.property){
+        return '';
+      }
+      let properties = this.properties.filter(p => (p.id == this.order.property));
+      if(!properties.length){
+        return '';
+      }
+      return properties[0].address1;
+    },
+    contact_numbers() {
+      if(!this.project.contact_id){
+        return '';
+      }
+      let contacts = this.contacts.filter(c => (c.id == this.project.contact_id));
+      console.log(contacts);
+      if(!contacts.length){
+        return '';
+      }
+      return contacts[0].phone_numbers;
+    }
   },
   watch:{
     settings(){
