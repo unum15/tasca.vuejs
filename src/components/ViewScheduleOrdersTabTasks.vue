@@ -46,7 +46,7 @@
             </b-form-input>
         </template>
         <template v-slot:cell(total_hours)="data">
-            {{ getTotalHours(data.item.dates) }}
+            {{ getTotalHours(data.item.appointments) }}
         </template>
     </b-table>
 </template>
