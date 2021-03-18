@@ -4,14 +4,14 @@
             <b-col class="header">Clock In</b-col>
             <b-col class="header">Clock Out</b-col>
             <b-col class="header">Hours</b-col>
-            <b-col class="header">Labor Category</b-col>
+            <b-col class="header">Labor Activity</b-col>
         </b-row>
         <div v-for="clock_in in clock_ins" :key="clock_in.id">
             <b-row>
                 <b-col @click="editClockIn(clock_in, 'clock_in')" style="cursor:pointer;">{{ formatTime(clock_in.clock_in) }}</b-col>
                 <b-col @click="editClockIn(clock_in, 'clock_out')" style="cursor:pointer;">{{ clock_in.clock_out ? formatTime(clock_in.clock_out) : 'Click to add.' }}</b-col>
                 <b-col>{{ timeDiff(clock_in.clock_in, clock_in.clock_out) }}</b-col>
-                <b-col></b-col>
+                <b-col>{{ clock_in.labor_activity.name }}</b-col>
             </b-row>
             <b-row>
                 <b-col class="label">Notes For The Day</b-col>
