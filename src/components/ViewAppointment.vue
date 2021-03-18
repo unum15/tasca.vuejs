@@ -109,7 +109,7 @@ export default {
     },
     props: {
         appointment_id : { required:true },
-        labor_activities: { default: [] }
+        labor_activities: { default: () => {return []} }
     },
     data() {
         return {

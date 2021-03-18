@@ -40,7 +40,7 @@
                         <b-col class="header">{{ employee.name }}</b-col>
                         <b-col class="header">{{ employee.hours }}</b-col>
                     </b-row>
-                    <ViewClockIns :type="type" :id="id" :contact_id="employee.id"></ViewClockIns>
+                    <ViewClockInsPopup :type="type" :id="id" :contact_id="employee.id"></ViewClockInsPopup>
                 </div>
                 <b-row>
                     <b-col class="header">Total</b-col>
@@ -72,11 +72,11 @@
 </template>
 <script>
 import moment from 'moment'
-import ViewClockIns from './ViewClockIns'
+import ViewClockInsPopup from './ViewClockInsPopup'
 export default {
     name: 'ViewHours',
     components: {
-        'ViewClockIns': ViewClockIns,
+        'ViewClockInsPopup': ViewClockInsPopup,
     },
     props: {
         id : { required: true },
