@@ -267,7 +267,7 @@
                     </b-row>
                     <b-row>
                         <b-col v-for="valve in valves" :key="valve.id">
-                            <b-container>
+                            <b-container v-if="valve.id != 5">
                                 <b-row>
                                     <b-col style="font-weight:bold;">
                                         {{ valve.name }} Valve
