@@ -408,6 +408,7 @@ export default {
             this.modal_overhead.new.time = moment().format('HH:mm');
             this.modal_overhead.new.labor_assignment_id = this.$store.state.settings['default_labor_assignment_id-labor_type_id-'+this.overhead_labor_type_id];
             this.modal_overhead.new.labor_activity_id = this.default_activity_id;
+            this.modal_overhead.current.notes = null;
             if(this.clock_in){
                 this.modal_overhead.title = "Clock In";
             }
@@ -424,6 +425,7 @@ export default {
             this.modal_overhead.new.labor_assignment_id = null;
             this.modal_overhead.new.labor_activity_id = null;
             this.modal_overhead.current.notes = null;
+            console.log(this.modal_overhead.current.notes);
             this.$refs['modal-clock-in-overhead'].show();
         },
         clockInOverhead(event){
