@@ -10,7 +10,7 @@
             responsive
         >
             <template v-slot:cell(notes)="data">
-                <img src="@/assets/details.png" v-b-tooltip.hover.bottomleft :title="data.value" fluid alt="details" style="margin-left:5px;width:25px;" />
+                <img :src="require('@/assets/' + ( data.value ? 'details.png' : 'details-gray.png'))" v-b-tooltip.hover.bottomleft :title="data.value" fluid alt="details" style="margin-left:5px;width:25px;" @click="editNotes(data.item)" />
             </template>
             <template v-slot:cell(serial_number)="data">
                 <a :href="'/backflow_assembly/'+data.item.id">
@@ -196,6 +196,13 @@ export default {
             this.backflow_assemblies[index].reading_1 = null;
             this.backflow_assemblies[index].reading_2 = null;
             this.backflow_assemblies[index].reading_notes = null;
+        },
+        editNotes (item){
+            let notes = prompt('Edit Notes',item.notes);
+            console.log(notes);
+            if(notes!=null){
+                this.$http.patch('/backflow_assembly/' + item.id, {notes});
+            }
         }
     },
     computed:{
