@@ -144,6 +144,17 @@
                         </b-row>
                         <b-row>
                             <b-col>
+                                <b-form-group label="Coordinates">
+                                  <b-form-input
+                                    type="text"
+                                    @change="save"
+                                    v-model="my_property.coordinates">
+                                  </b-form-input>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
                                 <b-form-group label="Contacts">
                                     <b-form-checkbox-group
                                         @input="save"
@@ -200,6 +211,17 @@
                                         @change="saveUnit(unit)"
                                         v-model="unit.phone"
                                         placeholder="(801) 555-5555">
+                                      </b-form-input>
+                                    </b-form-group>
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col>
+                                    <b-form-group label="Coordinates">
+                                      <b-form-input
+                                        type="text"
+                                        @change="saveUnit(unit)"
+                                        v-model="unit.coordinates">
                                       </b-form-input>
                                     </b-form-group>
                                 </b-col>
