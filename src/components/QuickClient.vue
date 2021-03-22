@@ -701,12 +701,20 @@ export default {
       if(this.client.name === null){
         return;
       }
+      this.$http.get('/clients?name=' + this.client.name)
+      .then((response) => {
+        if(response.data.length){
+          if(!confirm('Client named ' + this.client.name + ' already exists. Continue?')){
+            return;
+          }
+        }
+      });
       if(this.client.id === null){
         this.$http.post('/client',this.client)
           .then((results) => {
             this.client.id = results.data.id;
             this.saveContact();
-          })
+          });
       }
       else{
         this.$http.patch('/client/' + this.client.id,this.client)
