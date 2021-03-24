@@ -225,18 +225,11 @@
                <b-row>
                   <b-col>
                       <b-form-group label="Assignment">
-                        <el-select
+                        <Treeselect
+                          :options="current_assignments"
+                          :normalizer="treeNormalizer"
                           v-model="task.labor_assignment_id"
-                          filterable
-                          placeholder="Select Assignment"
-                          default-first-option>
-                          <el-option
-                            v-for="labor_assignment in current_assignments"
-                            :key="labor_assignment.id"
-                            :label="labor_assignment.name"
-                            :value="labor_assignment.id">
-                          </el-option>
-                        </el-select>
+                        />
                       </b-form-group>
                   </b-col>
                   </b-row>
@@ -439,10 +432,14 @@
 import moment from 'moment';
 import TopMenu from './TopMenu';
 import { mapState } from 'vuex';
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
   name: 'QuickOrder',
   components: {
-    'TopMenu': TopMenu,
+    TopMenu,
+    Treeselect
   },
   data () {
     return {
@@ -526,6 +523,7 @@ export default {
     });
   },
   methods: {
+    treeNormalizer,
     getProperties() {
       if(this.client_id){
         this.$http.get('/properties?client_id=' + this.client_id).then(response => {

@@ -188,10 +188,14 @@
 </template>
 <script>
 import EditAppointments from './EditAppointments';
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
     name: 'EditTask',
 	components: {
-		'EditAppointments': EditAppointments
+		EditAppointments,
+		Treeselect
 	},	
 	props: {
 		task: {required: true},
@@ -213,6 +217,7 @@ export default {
 		this.save();
     },
 	methods: {
+		treeNormalizer,
 		deleteTask() {
 			this.$http.delete('/task/' + this.my_task.id);
 			this.$emit('remove-task', this.my_task);

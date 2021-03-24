@@ -171,6 +171,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TopMenu from './TopMenu';
 import ViewAppointment from './ViewAppointment';
+import treeNormalizer from '../common/TreeNormalizer.js';
 import moment from 'moment';
 import { mapState } from 'vuex';
 export default {
@@ -290,6 +291,7 @@ export default {
         this.getAssignments();
     },
     methods: {
+        treeNormalizer,
         getTasks(){
             this.$http.get('/schedule?status=today&date='+this.date).then((results) => {
                 this.tasks = results.data;
@@ -500,13 +502,6 @@ export default {
             this.modal_overhead.current.time = moment(this.clock_in.clock_in).format('HH:mm');
             this.modal_overhead.current.labor_assignment_id = this.clock_in.appointment.task.labor_assignment_id;
             this.modal_overhead.current.labor_activity_id = this.clock_in.labor_activity_id;
-        },
-        treeNormalizer(node){
-            return {
-                id: node.id,
-                label: node.name,
-                children: node.children && node.children.length ? node.children : undefined,
-            }
         },
         findSelectedActivities(id,activities){
             let filtered_activities = [];
