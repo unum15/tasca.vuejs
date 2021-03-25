@@ -46,16 +46,14 @@
         </b-row>
         <b-row>
 			<b-col>
-                <b-form-group label="Assignment">
-                    <b-form-select
-                        :options="current_assignments"
-						@change="save"
-                        value-field="id"
-                        text-field="name"
-                        v-model="my_task.labor_assignment_id"
-                        >
-                    </b-form-select>
-                </b-form-group>
+				<b-form-group label="Assignment">
+					<Treeselect
+						:options="current_assignments"
+						:normalizer="treeNormalizer"
+						v-model="my_task.labor_assignment_id"
+						@input="save"
+					/>
+				</b-form-group>
             </b-col>
             <b-col>
                 <b-form-group label="Status">
