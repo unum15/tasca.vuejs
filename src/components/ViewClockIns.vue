@@ -90,7 +90,7 @@
                 striped
                 hover
                 :filter="filter"
-                :items="clock_ins"
+                :items="variant_clock_ins"
                 :fields="fields"
             >
                 <template v-slot:cell(id)="data">
@@ -104,6 +104,9 @@
                 </template>
                 <template v-slot:cell(task)="data">
                     {{ data.item.appointment ? data.item.appointment.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
+                </template>
+                <template v-slot:cell(notes)="data">
+                     <img v-if="data.value" src="@/assets/details.png" v-b-tooltip.hover :title="data.value" fluid alt="DTS" style="width:20px;" />
                 </template>
             </b-table>
         </main>
@@ -123,50 +126,73 @@ export default {
             clock_ins: [],
             filter: null,
             contact_id: null,
-            contacts: [],
+            contacts: [{id: null, name: 'All'}],
             start_date: null,
             stop_date: null,
             fields: [
                     {
-                        key: 'id',
-                        label: 'Id',
+                        key: 'appointment.task.order.project.client.name',
+                        label: 'Client',
+                        sortable: true
+                    },
+                    {
+                        key: 'appointment.task.order.project.name',
+                        label: 'Project',
+                        sortable: true
+                    },
+                    {
+                        key: 'appointment.task.order.name',
+                        label: 'Order',
+                        sortable: true
+                    },
+                    {
+                        key: 'appointment.task.name',
+                        label: 'Task',
+                        sortable: true
+                    },
+                    {
+                        key: 'appointment.task.labor_assignment.name',
+                        label: 'Assignment',
+                        sortable: true
+                    },
+                    {
+                        key: 'labor_activity.name',
+                        label: 'Activity',
                         sortable: true
                     },
                     {
                         key: 'clock_in',
                         label: 'Clock In',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'formatTime',
+                        sortByFormatted : true
                     },
                     {
                         key: 'clock_out',
                         label: 'Clock Out',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'formatTime',
+                        sortByFormatted : true
                     },
                     {
                         key: 'time',
                         label: 'Time',
-                        sortable: true
+                        sortable: true,
+                        formatter: 'timeColumn',
+                        sortByFormatted : true
                     },
                     {
-                        key: 'order',
-                        label: 'Order',
-                        sortable: true
+                        key: 'notes',
+                        label: 'Notes'
                     },
-                    {
-                        key: 'task',
-                        label: 'Task',
-                        sortable: true
-                    }
             ],
             settings: {},
             clock_in_type: 'all'
         }
     },
     created() {
-        this.contact_id = this.user_id;
-        let last_sunday = moment().startOf('week');
-        this.start_date = last_sunday.format('YYYY-MM-DD');
-        this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');
+        this.start_date = moment().format('YYYY-MM-DD');
+        this.stop_date = moment().format('YYYY-MM-DD');
         this.getContacts();
         this.getClockIns();
     },
@@ -174,15 +200,16 @@ export default {
         getContacts(){
             if(this.operator_id){
                 this.$http.get('/contacts?client_id=' + this.operator_id).then(response => {
-                    this.contacts = response.data;
+                    this.contacts = this.contacts.concat(response.data);
                 });
             }
         },
         getClockIns(){
-            if(!this.contact_id){
-                return;
+            let params = '?start_date=' + this.start_date + '&stop_date=' + this.stop_date + '&type=' + this.clock_in_type;
+            if(this.contact_id){
+                params += 'contact_id=' + this.contact_id;
             }
-            this.$http.get('/clock_ins?contact_id=' + this.contact_id + '&start_date=' + this.start_date + '&stop_date=' + this.stop_date + '&type=' + this.clock_in_type).then(response => {
+            this.$http.get('/clock_ins' + params).then(response => {
                 this.clock_ins = response.data;
             });
         },
@@ -225,13 +252,19 @@ export default {
         ...mapState({
           user_id: state => state.user.id,
           operator_id: state => state.settings.operating_company_client_id
-        })
+        }),
+        variant_clock_ins(){
+            let clock_ins = [];
+            this.clock_ins.map(c => {
+                if(!c.clock_out){
+                    c._rowVariant = 'warning';
+                }
+                clock_ins.push(c);
+            });
+            return clock_ins;
+        }
     },
     watch:{
-        user_id(){
-            this.contact_id = this.user_id;
-            this.getClockIns();
-        },
         operator_id(){
             this.getContacts();
         }
