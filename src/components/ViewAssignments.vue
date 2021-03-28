@@ -172,6 +172,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TopMenu from './TopMenu';
 import ViewAppointment from './ViewAppointment';
 import treeNormalizer from '../common/TreeNormalizer.js';
+import treeFilter from '../common/TreeFilter.js';
 import moment from 'moment';
 import { mapState } from 'vuex';
 export default {
@@ -291,6 +292,7 @@ export default {
         this.getAssignments();
     },
     methods: {
+        treeFilter,
         treeNormalizer,
         getTasks(){
             this.$http.get('/schedule?status=today&date='+this.date).then((results) => {
@@ -503,26 +505,6 @@ export default {
             this.modal_overhead.current.labor_assignment_id = this.clock_in.appointment.task.labor_assignment_id;
             this.modal_overhead.current.labor_activity_id = this.clock_in.labor_activity_id;
         },
-        findSelectedActivities(id,activities){
-            let filtered_activities = [];
-            activities.map(c => {
-                if(c.labor_assignments.filter(a => (a.id == id)).length){
-                    let cat = JSON.parse(JSON.stringify(c));
-                    if(c.children && c.children.length){
-                        let children = this.findSelectedActivities(id,c.children);
-                        cat.children = children;
-                    }
-                    filtered_activities.push(cat);
-                }
-                else{
-                    if(c.children){
-                        let children = this.findSelectedActivities(id,c.children);
-                        filtered_activities = filtered_activities.concat(children);
-                    }
-                }
-            });
-            return filtered_activities;
-        },
         getAssignmentName(id){
             let assignments = this.assignments.filter(a => a.id == id);
             if(!assignments.length){
@@ -552,13 +534,13 @@ export default {
         },
         filtered_current_activities(){
             if(this.modal_overhead.current.labor_assignment_id){
-                return this.findSelectedActivities(this.modal_overhead.current.labor_assignment_id,this.activities);
+                return this.treeFilter(this.modal_overhead.current.labor_assignment_id,this.activities);
             }
             return [];
         },
         filtered_new_activities(){
             if(this.modal_overhead.new.labor_assignment_id){
-                return this.findSelectedActivities(this.modal_overhead.new.labor_assignment_id,this.activities);
+                return this.treeFilter(this.modal_overhead.new.labor_assignment_id,this.activities);
             }
             return [];
         },
