@@ -687,6 +687,12 @@ export default {
       if(this.order.description === null){
         this.order.description = this.order.name;
       }
+      if(this.task.name === null){
+        this.task.name = this.order.name;
+      }
+      if(this.task.description === null){
+        this.task.description = this.order.description;
+      }
     },
     taskNameChanged(){
       if(this.task.description === null){
