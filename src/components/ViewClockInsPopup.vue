@@ -14,8 +14,7 @@
                 <b-col>{{ clock_in.labor_activity.name }}</b-col>
             </b-row>
             <b-row>
-                <b-col class="label">Notes For The Day</b-col>
-                <b-col  @click="editClockIn(clock_in, 'notes')" style="cursor:pointer;" class="data" cols="9">{{ clock_in.notes ? clock_in.notes : 'Click to add.' }}</b-col>
+                <b-col  @click="editClockIn(clock_in, 'notes')" style="cursor:pointer;" class="data" cols="9">{{ clock_in.notes ? clock_in.notes : 'Click to add notes.' }}</b-col>
             </b-row>
         </div>
     </div>
