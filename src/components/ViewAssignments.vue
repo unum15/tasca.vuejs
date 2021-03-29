@@ -216,7 +216,7 @@ export default {
             fields: [
                 {
                     key: 'order_name',
-                    label: 'S/WO',
+                    label: 'Order',
                     sortable: true
                 },
                 {
@@ -236,7 +236,7 @@ export default {
                 },
                 {
                     key: 'name',
-                    label: 'Name',
+                    label: 'Task',
                     sortable: true
                 },
                 {
@@ -245,13 +245,23 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'sort_order',
-                    label: 'Order',
+                    key: 'time',
+                    label: 'Appointment',
                     sortable: true
                 },
                 {
-                    key: 'time',
-                    label: 'Time',
+                    key: 'total_hours',
+                    label: 'Total Hours',
+                    sortable: true
+                },
+                {
+                    key: 'task_hours',
+                    label: 'Task Hours',
+                    sortable: true
+                },
+                {
+                    key: 'crew_hours',
+                    label: 'Crew Hours',
                     sortable: true
                 },
                 {
