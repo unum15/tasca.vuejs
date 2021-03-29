@@ -105,11 +105,40 @@
                 <template v-slot:cell(task)="data">
                     {{ data.item.appointment ? data.item.appointment.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
                 </template>
+                <template v-slot:cell(labor_activity.name)="data">
+                    <a href="/clock_ins" @click.stop.prevent="editClockIn(data.item, data.index, $event.target)"> {{ data.value }} </a>
+                </template>
                 <template v-slot:cell(notes)="data">
                      <img v-if="data.value" src="@/assets/details.png" v-b-tooltip.hover :title="data.value" fluid alt="DTS" style="width:20px;" />
                 </template>
             </b-table>
         </main>
+        <b-modal ref="modalEditClockIn" @ok="updateClockIn" title="Edit Clock In">
+            <b-container fluid="md">
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Clock In" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="clock_in.clock_in"
+                                type="datetime"
+                            >
+                            </b-form-input>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Clock Out" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="clock_in.clock_out"
+                                type="datetime"
+                            >
+                            </b-form-input>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+            </b-container>
+        </b-modal>
     </div>
 </template>
 <script>
@@ -129,6 +158,11 @@ export default {
             contacts: [{id: null, name: 'All'}],
             start_date: null,
             stop_date: null,
+            clock_in:{
+                index: null,
+                clock_in: null,
+                clock_out: null
+            },
             fields: [
                     {
                         key: 'appointment.task.order.project.client.name',
@@ -207,7 +241,7 @@ export default {
         getClockIns(){
             let params = '?start_date=' + this.start_date + '&stop_date=' + this.stop_date + '&type=' + this.clock_in_type;
             if(this.contact_id){
-                params += 'contact_id=' + this.contact_id;
+                params += '&contact_id=' + this.contact_id;
             }
             this.$http.get('/clock_ins' + params).then(response => {
                 this.clock_ins = response.data;
@@ -221,7 +255,17 @@ export default {
             }
             var diff = Math.round(stop.diff(start)/36000)/100;
             return diff;
-        }
+        },
+        editClockIn(clock_in,index){
+            this.clock_in = clock_in;
+            this.clock_in.index = index;
+            this.$refs['modalEditClockIn'].show();
+        },
+        updateClockIn(){
+            this.$http.patch('/clock_in/' + this.clock_in.id, this.clock_in).then(response => {
+                this.clock_ins[this.clock_in.index] = response.data;
+            });
+        },
     },
     computed: {
         total_time(){
