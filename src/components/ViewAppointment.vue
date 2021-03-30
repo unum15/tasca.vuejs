@@ -31,10 +31,14 @@
                                     {{ appointment.task.order.property.name }}<br />
                                     {{ appointment.task.order.property.address1 }}<br />
                                     {{ appointment.task.order.property.address2 }}<br v-if="appointment.task.order.property.address2" />
-                                    {{ appointment.task.order.property.unit }}<br v-if="appointment.task.order.property.unit" />
                                     {{ appointment.task.order.property.city }},{{ appointment.task.order.property.state }} {{ appointment.task.order.property.zip }}
                                     <b-col class="data"><a :href="'tel:' + appointment.task.order.property.phone_number">{{ appointment.task.order.property.phone_number }}</a></b-col>
                                 </a>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col v-if="appointment.task.order.property.coordinates">
+                                <a :href="'http://maps.google.com/maps/@' + appointment.task.order.property.coordinates" target="tasca_address">Map</a>
                             </b-col>
                         </b-row>
                         <div v-for="contact in appointment.task.order.property.contacts" :key="contact.id">

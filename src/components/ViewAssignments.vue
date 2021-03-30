@@ -326,7 +326,7 @@ export default {
         
         },
         info(item) {
-            this.modalInfo.title = `${item.order_name} -- ${item.name}`
+            this.modalInfo.title = `View Appointment: ${item.order_name} -- ${item.name}`
             this.modalInfo.id = item.id
             this.$refs['modalInfo'].show()
         },
