@@ -136,7 +136,7 @@
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(client)="data">
-                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.value }} </a>
+                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id" :target="'tasca_client-' + data.item.client_id"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(date)="data">
                     {{ formatDate(data.value) }}
