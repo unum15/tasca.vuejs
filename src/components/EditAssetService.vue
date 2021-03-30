@@ -115,20 +115,6 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Time Interval" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="asset_service.time_usage_interval"
-                                @change="save"
-                                type="number"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
                         <b-form-group label="Asset Units" label-cols="4" label-align="right">
                             <b-form-radio-group
                                 v-model="asset_service.asset_usage_type_id"
@@ -138,6 +124,20 @@
                                 text-field="name"
                             >
                             </b-form-radio-group>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Time Interval" label-cols="4" label-align="right">
+                            <b-form-input
+                                v-model="asset_service.time_usage_interval"
+                                @change="save"
+                                type="number"
+                            >
+                            </b-form-input>
+                        
                         </b-form-group>
                     </b-col>
                 </b-form-row>
