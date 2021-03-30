@@ -360,7 +360,7 @@
             </b-form-group>
         </b-modal>
         <b-modal id="clearable" title="Clearable Fields" ok-only>
-            Checkmark the fields to clear, Uncheck to keep.
+            Check the fields to clear. Uncheck to keep.
             <br />
             <br />
           <b-container>
