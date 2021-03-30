@@ -725,9 +725,10 @@ export default {
           }
           if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
-              this.properties = response.data
+              this.properties = response.data;
               if(this.properties.length == 1){
                  this.backflow_assembly.property_id = this.properties[0].id;
+                 this.getUnits();
               }
             })
           }
