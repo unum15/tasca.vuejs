@@ -55,7 +55,7 @@ export default {
       return false
     },
     pdfTag(){
-      let url = '/api/backflow_assemblies/tags/pdf?';
+      let url = '/api/backflow_assemblies/tags/pdf?use_client=' + this.use.client + '&use_property=' + this.use.property + '&';
       this.included_backflow_assemblies.map(a => {
           url += 'backflow_assembly_id[]='+a.id+'&';
        });
