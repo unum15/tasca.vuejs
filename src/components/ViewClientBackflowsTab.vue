@@ -15,6 +15,8 @@
         </ViewPropertyBackflowsTab>
       </b-tab>
     </b-tabs>
+    <b-form-checkbox v-model="use.client">Client name in filename</b-form-checkbox>
+    <b-form-checkbox v-model="use.property">Property name in filename</b-form-checkbox>
     <b-button @click="pdfTag" v-if="included_backflow_assemblies.length">PDF Tag</b-button>
     <b-button @click="pdfReport" v-if="included_backflow_assemblies.length">PDF Report</b-button>
   </div>
@@ -35,7 +37,11 @@ export default {
         my_properties: [],
         current_tab: 0,
         change_tab: false,
-        included_backflow_assemblies: []
+        included_backflow_assemblies: [],
+        use: {
+          client: true,
+          property: true
+        }
     }
   },
   created() {
@@ -49,14 +55,14 @@ export default {
       return false
     },
     pdfTag(){
-      let url = '/api/backflow_assemblies/tags/pdf?';
+      let url = '/api/backflow_assemblies/tags/pdf?use_client=' + this.use.client + '&use_property=' + this.use.property + '&';
       this.included_backflow_assemblies.map(a => {
           url += 'backflow_assembly_id[]='+a.id+'&';
        });
       window.open(url, 'backflow_tag_pdf');
     },
     pdfReport(){
-        let url = '/api/backflow_test_reports/pdf?';
+        let url = '/api/backflow_test_reports/pdf?use_client=' + this.use.client + '&use_property=' + this.use.property + '&';
         this.included_backflow_assemblies.map(a => {
           url += 'backflow_test_report_id[]='+a.backflow_test_reports[0].id+'&';
         });

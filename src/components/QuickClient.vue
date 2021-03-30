@@ -583,12 +583,16 @@ import TopMenu from './TopMenu'
 import EditEmails from './EditEmails'
 import EditPhoneNumbers from './EditPhoneNumbers'
 import { mapState } from 'vuex';
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
   name: 'QuickClient',
   components: {
-    'TopMenu': TopMenu,
-    'EditEmails': EditEmails,
-    'EditPhoneNumbers': EditPhoneNumbers
+    TopMenu,
+    EditEmails,
+    EditPhoneNumbers,
+    Treeselect
   },
   data () {
     return {
@@ -697,6 +701,7 @@ export default {
     });
   },
   methods: {
+    treeNormalizer,
     saveClient() {
       if(this.client.name === null){
         return;
