@@ -137,6 +137,24 @@
                         </b-form-group>
                     </b-col>
                 </b-form-row>
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Activity" label-cols="4" label-align="right">
+                            <Treeselect :options="filtered_labor_activities" :normalizer="treeNormalizer" v-model="clock_in.labor_activity_id"/>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
+                <b-form-row>
+                    <b-col md="6">
+                        <b-form-group label="Notes" label-cols="4" label-align="right">
+                            <b-form-textarea
+                                v-model="clock_in.notes"
+                                type="text"
+                            >
+                            </b-form-textarea>
+                        </b-form-group>
+                    </b-col>
+                </b-form-row>
             </b-container>
         </b-modal>
     </div>
@@ -145,10 +163,15 @@
 import moment from 'moment';
 import TopMenu from './TopMenu';
 import { mapState } from 'vuex';
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import treeNormalizer from '../common/TreeNormalizer.js';
+import treeFilter from '../common/TreeFilter.js';
 export default {
     name: 'ViewClockIns',
     components: {
-        'TopMenu': TopMenu,
+        TopMenu,
+        Treeselect
     },
     data() {
         return {
@@ -161,7 +184,10 @@ export default {
             clock_in:{
                 index: null,
                 clock_in: null,
-                clock_out: null
+                clock_out: null,
+                notes: null,
+                labor_activity_id: null,
+                appointment: null
             },
             fields: [
                     {
@@ -221,16 +247,22 @@ export default {
                     },
             ],
             settings: {},
-            clock_in_type: 'all'
+            clock_in_type: 'all',
+            labor_activities: []
         }
     },
     created() {
+        this.$http.get('/labor_activities').then(response => {
+            this.labor_activities = response.data.data;
+        });
         this.start_date = moment().format('YYYY-MM-DD');
         this.stop_date = moment().format('YYYY-MM-DD');
         this.getContacts();
         this.getClockIns();
     },
     methods: {
+        treeNormalizer,
+        treeFilter,
         getContacts(){
             if(this.operator_id){
                 this.$http.get('/contacts?client_id=' + this.operator_id).then(response => {
@@ -306,7 +338,13 @@ export default {
                 clock_ins.push(c);
             });
             return clock_ins;
-        }
+        },
+        filtered_labor_activities(){
+            if(this.clock_in.appointment && this.clock_in.appointment.task.labor_assignment_id){
+                return this.treeFilter(this.clock_in.appointment.task.labor_assignment_id,this.labor_activities);
+            }
+            return [];
+        },
     },
     watch:{
         operator_id(){
