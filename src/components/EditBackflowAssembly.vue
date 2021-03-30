@@ -328,8 +328,8 @@
                 </b-row>
                 <b-row>
                     <b-col>
-                        <b-button v-b-modal.view-pictures style="margin:5px;">View Pictures ({{ this.pictures.length }})</b-button>
-                        <b-button v-b-modal.upload-pictures style="margin:5px;">Add Pictures</b-button>
+                        <b-button v-b-modal.view-pictures style="margin:5px;" :disabled='backflow_assembly==null'>View Pictures ({{ this.pictures.length }})</b-button>
+                        <b-button v-b-modal.upload-pictures style="margin:5px;" :disabled='backflow_assembly==null'>Add Pictures</b-button>
                     </b-col>
                 </b-row>
                <b-row>
@@ -360,6 +360,9 @@
             </b-form-group>
         </b-modal>
         <b-modal id="clearable" title="Clearable Fields" ok-only>
+            Checkmark the fields to clear, Uncheck to keep.
+            <br />
+            <br />
           <b-container>
             <b-row v-for="(field,key) in fields" :key="key">
                 <b-col>
