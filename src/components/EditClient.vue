@@ -51,6 +51,16 @@
                     </b-form-input>
                   </b-form-group>
                 </b-col>
+                <b-col sm="1">
+                    <b-form-group label="Abbreviation">
+                      <b-form-input
+                        type="text"
+                        @change="save"
+                        v-model="client.abbreviation"
+                        >
+                      </b-form-input>
+                    </b-form-group>
+                </b-col>
                 <b-col>
                   <b-form-group label="Activity Level">
                     <b-form-select
