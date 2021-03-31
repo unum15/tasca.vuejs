@@ -367,21 +367,14 @@
                <b-row>
                   <b-col>
                       <b-form-group label="Assignment">
-                        <el-select
+                        <Treeselect
+                          :options="current_assignments"
+                          :normalizer="treeNormalizer"
                           v-model="task.labor_assignment_id"
-                          filterable
-                          placeholder="Select Assignment"
-                          default-first-option>
-                          <el-option
-                            v-for="labor_assignment in current_assignments"
-                            :key="labor_assignment.id"
-                            :label="labor_assignment.name"
-                            :value="labor_assignment.id">
-                          </el-option>
-                        </el-select>
+                        />
                       </b-form-group>
                   </b-col>
-                  </b-row>
+                </b-row>
                <b-row>
                   <b-col>
                       <b-form-group label="Status">
@@ -583,12 +576,16 @@ import TopMenu from './TopMenu'
 import EditEmails from './EditEmails'
 import EditPhoneNumbers from './EditPhoneNumbers'
 import { mapState } from 'vuex';
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
   name: 'QuickClient',
   components: {
-    'TopMenu': TopMenu,
-    'EditEmails': EditEmails,
-    'EditPhoneNumbers': EditPhoneNumbers
+    TopMenu,
+    EditEmails,
+    EditPhoneNumbers,
+    Treeselect
   },
   data () {
     return {
@@ -697,6 +694,7 @@ export default {
     });
   },
   methods: {
+    treeNormalizer,
     saveClient() {
       if(this.client.name === null){
         return;
@@ -815,7 +813,9 @@ export default {
       if(this.appointment.id === null){
         this.$http.post('/appointment',this.appointment)
           .then((results) => {
-            this.appointment.id = results.data.data.id;
+            if(results.data){
+              this.appointment.id = results.data.data.id;
+            }
             this.nextTask();
           })
       }
