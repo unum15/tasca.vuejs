@@ -83,7 +83,7 @@ export default {
                     sortable: true
                 },
                 {
-                    key: 'completion_date',
+                    key: 'close_date',
                     label: 'Closed Date',
                     sortable: true
                 },
