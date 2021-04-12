@@ -182,18 +182,27 @@ export default {
             return moment(time).format('MM-DD hh:mm')
         },
         markCompleted(){
+            if(task.completion_date){
+                return;
+            }
             let task = {
                 completion_date: this.completed ? moment().format('YYYY-MM-DD') : null
             }
             this.$http.patch('/task/' + this.task_id, task);
         },
         markInvoiced(){
+            if(task.invoiced_date){
+                return;
+            }
             let task = {
                 invoiced_date: this.invoiced ? moment().format('YYYY-MM-DD') : null
             }
             this.$http.patch('/task/' + this.task_id, task);
         },
         markBilled(){
+            if(task.billed_date){
+                return;
+            }
             let task = {
                 billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
             }
