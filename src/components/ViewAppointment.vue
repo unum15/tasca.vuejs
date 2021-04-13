@@ -38,7 +38,7 @@
                         </b-row>
                         <b-row>
                             <b-col v-if="appointment.task.order.property.coordinates">
-                                <a :href="'http://maps.google.com/maps/@' + appointment.task.order.property.coordinates" target="tasca_address">Map</a>
+                                <a :href="appointment.task.order.property.coordinates" target="tasca_address">Map</a>
                             </b-col>
                         </b-row>
                         <div v-for="contact in appointment.task.order.property.contacts" :key="contact.id">
