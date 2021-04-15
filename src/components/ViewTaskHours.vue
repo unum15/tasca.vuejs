@@ -145,6 +145,7 @@ export default {
                 this.task = results.data;
                 this.completed = this.task.completion_date != null;
                 this.billed = this.task.billed_date != null;
+                this.invoiced = this.task.invoiced_date != null;
             });
         },
         getEmployeesHours() {
@@ -182,7 +183,7 @@ export default {
             return moment(time).format('MM-DD hh:mm')
         },
         markCompleted(){
-            if(this.task.completion_date){
+            if(this.completed && this.task.completion_date){
                 return;
             }
             let task = {
@@ -191,7 +192,7 @@ export default {
             this.$http.patch('/task/' + this.task_id, task);
         },
         markInvoiced(){
-            if(this.task.invoiced_date){
+            if(this.invoiced && this.task.invoiced_date){
                 return;
             }
             let task = {
@@ -200,7 +201,7 @@ export default {
             this.$http.patch('/task/' + this.task_id, task);
         },
         markBilled(){
-            if(this.task.billed_date){
+            if(this.billed && this.task.billed_date){
                 return;
             }
             let task = {
