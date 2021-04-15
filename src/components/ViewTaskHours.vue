@@ -182,7 +182,7 @@ export default {
             return moment(time).format('MM-DD hh:mm')
         },
         markCompleted(){
-            if(task.completion_date){
+            if(this.task.completion_date){
                 return;
             }
             let task = {
@@ -191,7 +191,7 @@ export default {
             this.$http.patch('/task/' + this.task_id, task);
         },
         markInvoiced(){
-            if(task.invoiced_date){
+            if(this.task.invoiced_date){
                 return;
             }
             let task = {
@@ -200,7 +200,7 @@ export default {
             this.$http.patch('/task/' + this.task_id, task);
         },
         markBilled(){
-            if(task.billed_date){
+            if(this.task.billed_date){
                 return;
             }
             let task = {
