@@ -29,24 +29,42 @@
                  style="text-align:left;"
             >
                 <template v-slot:cell(name)="data">
-                    <a :href="'/backflow_water_system/' + data.value"> {{ data.value }} </a>
+                    <a href="/backflow_water_systems/" @click.stop.prevent="editWaterSystem(data.item.id)"> {{ data.value }} </a>
+                </template>
+                <template v-slot:cell(created_at)="data">
+                    {{ formatDate(data.value) }}
+                </template>
+                <template v-slot:cell(updated_at)="data">
+                    {{ formatDate(data.value) }}
                 </template>
             </b-table>
         </main>
+        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="getBackflowWaterSystems" ok-only>
+            <EditBackflowWaterSystemForm :backflow_water_system_id="edit_backflow_water_system_id"></EditBackflowWaterSystemForm>
+        </b-modal>
     </div>
 </template>
 <script>
 import TopMenu from './TopMenu';
+import moment from 'moment';
+import EditBackflowWaterSystemForm from './EditBackflowWaterSystemForm';
 export default {
     name: 'ViewBackflowWaterSystems',
     components: {
-        'TopMenu': TopMenu,
+        TopMenu,
+        EditBackflowWaterSystemForm
     },
     data() {
         return {
             backflow_water_systems: [],
             filter: null,
+            edit_backflow_water_system_id: null,
             fields: [
+                    {
+                        key: 'abbreviation',
+                        label: 'Abbreviation',
+                        sortable: true
+                    },
                     {
                         key: 'name',
                         label: 'Name',
@@ -107,18 +125,25 @@ export default {
                         label: 'Updated At',
                         sortable: true
                     },
-                    {
-                        key: 'abbreviation',
-                        label: 'Abbreviation',
-                        sortable: true
-                    },
             ]
         }
     },
     created() {
-        this.$http.get('/backflow_water_systems').then(response => {
-            this.backflow_water_systems = response.data.data;
-        });
+        this.getBackflowWaterSystems();
+    },
+    methods: {
+        getBackflowWaterSystems(){
+            this.$http.get('/backflow_water_systems').then(response => {
+                this.backflow_water_systems = response.data.data;
+            });
+        },
+        formatDate(date) {
+            return moment(date).format('MM-DD-YYYY');
+        },
+        editWaterSystem(id){
+            this.edit_backflow_water_system_id=id;
+            this.$refs['add-water-system-modal'].show();
+        }
     }
 }
 </script>
