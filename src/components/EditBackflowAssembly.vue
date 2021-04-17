@@ -396,173 +396,19 @@
             </b-form-group>
         </b-modal>
 
-        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="addWaterSystem">
-            <b-container fluid="md">
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Name" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.name"
-                                @change="save"
-                                type="text"
-                                :state="backflow_water_system.name != null"
-                                required
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Address" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.address"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="City" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.city"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="State" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.state"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Zip" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.zip"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Phone" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.phone"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Contact" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.contact"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Email" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.email"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Notes" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.notes"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Sort Order" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.sort_order"
-                                @change="save"
-                                type="number"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Abbreviation" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="backflow_water_system.abbreviation"
-                                @change="save"
-                                type="text"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-            </b-container>
+        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="addWaterSystem" ok-only>
+            <EditBackflowWaterSystemForm :backflow_water_system_id="edit_backflow_water_system_id"></EditBackflowWaterSystemForm>
         </b-modal>
     </div>
 </template>
 <script>
 import TopMenu from './TopMenu'
+import EditBackflowWaterSystemForm from './EditBackflowWaterSystemForm';
 export default {
     name: 'EditBackflowAssembly',
     components: {
-        'TopMenu': TopMenu
+        TopMenu,
+        EditBackflowWaterSystemForm
     },
     props: {
         backflow_assembly_id: {default: null}
@@ -586,7 +432,7 @@ export default {
             pictures: [],
             accounts: [],
             new_size: null,
-            backflow_water_system: {},
+            edit_backflow_water_system_id: null,
             fields: {
                 'property_id': {
                     name: 'Property',
@@ -862,11 +708,13 @@ export default {
          this.$refs['add-water-system-modal'].show();
         },
         addWaterSystem(){
-            this.$http.post('/backflow_water_system',this.backflow_water_system).then(system_response => {
-                this.$http.get('/backflow_water_systems').then(response => {
-                    this.systems = response.data.data;
-                    this.backflow_assembly.backflow_water_system_id = system_response.data.data.id;
-                });
+            this.$http.get('/backflow_water_systems').then(response => {
+                let systems = response.data.data;
+                var new_systems = systems.filter(ns => !this.systems.find(s => ns.id == s.id));
+                this.systems = systems;
+                if(new_systems.length){
+                    this.backflow_assembly.backflow_water_system_id = new_systems[0];
+                }
             });
         },
         saveClearable(field){
