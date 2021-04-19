@@ -633,20 +633,20 @@ var router = new Router({
       }
     },
     {
-        path: '/roles',
-        name: 'EditRoles',
-        component: EditRoles,
-        meta: {
-            title: 'Edit Roles'
-        }
+      path: '/roles',
+      name: 'EditRoles',
+      component: EditRoles,
+      meta: {
+          title: 'Edit Roles'
+      }
     },
     {
-        path: '/backflow_water_system',
-        name: 'NewBackflowWaterSystem',
-        component: EditBackflowWaterSystem,
-        meta: {
-            title: 'New Backflow Water System'
-        }
+      path: '/backflow_water_system',
+      name: 'NewBackflowWaterSystem',
+      component: EditBackflowWaterSystem,
+      meta: {
+          title: 'New Backflow Water System'
+      }
     },
     {
       path: '/backflow_water_system/:backflow_water_system_id',

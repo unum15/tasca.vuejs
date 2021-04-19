@@ -136,7 +136,7 @@
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(client)="data">
-                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id" :target="'tasca_client-' + data.item.client_id"> {{ data.value }} </a>
+                    <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(date)="data">
                     {{ formatDate(data.value) }}
@@ -216,7 +216,7 @@ export default {
             fields: [
                 {
                     key: 'order_name',
-                    label: 'Order',
+                    label: 'S/WO',
                     sortable: true
                 },
                 {
@@ -236,7 +236,7 @@ export default {
                 },
                 {
                     key: 'name',
-                    label: 'Task',
+                    label: 'Name',
                     sortable: true
                 },
                 {
@@ -245,23 +245,13 @@ export default {
                     sortable: true
                 },
                 {
+                    key: 'sort_order',
+                    label: 'Order',
+                    sortable: true
+                },
+                {
                     key: 'time',
-                    label: 'Appointment',
-                    sortable: true
-                },
-                {
-                    key: 'total_hours',
-                    label: 'Total Hours',
-                    sortable: true
-                },
-                {
-                    key: 'task_hours',
-                    label: 'Task Hours',
-                    sortable: true
-                },
-                {
-                    key: 'crew_hours',
-                    label: 'Crew Hours',
+                    label: 'Time',
                     sortable: true
                 },
                 {
@@ -326,7 +316,7 @@ export default {
         
         },
         info(item) {
-            this.modalInfo.title = `View Appointment: ${item.order_name} -- ${item.name}`
+            this.modalInfo.title = `${item.order_name} -- ${item.name}`
             this.modalInfo.id = item.id
             this.$refs['modalInfo'].show()
         },

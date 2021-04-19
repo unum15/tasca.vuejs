@@ -37,11 +37,6 @@
                             </a>
                         </b-col>
                     </b-row>
-                    <b-row>
-                        <b-col v-if="order.property.coordinates">
-                            <a :href="order.property.coordinates" target="tasca_address">Map</a>
-                        </b-col>
-                    </b-row>
                     <div v-for="contact in order.property.contacts" :key="contact.id">
                         <b-row>
                             <b-col class="label">Contact</b-col>
@@ -137,15 +132,9 @@ export default {
     methods: {
         getOrder() {
             this.$http.get('/order/' + this.order_id).then((results) => {
-                let order = results.data;
+                this.order = results.data;
                 //only show first property information
-                if(this.order.length){
-                    order.property = this.order.properties[0];
-                }
-                else{
-                    order.property = {};
-                }
-                this.order = order;
+                this.order.property = this.order.properties[0];
                 this.getTasks();
             });
         },
