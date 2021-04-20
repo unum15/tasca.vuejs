@@ -367,21 +367,14 @@
                <b-row>
                   <b-col>
                       <b-form-group label="Assignment">
-                        <el-select
+                        <Treeselect
+                          :options="current_assignments"
+                          :normalizer="treeNormalizer"
                           v-model="task.labor_assignment_id"
-                          filterable
-                          placeholder="Select Assignment"
-                          default-first-option>
-                          <el-option
-                            v-for="labor_assignment in current_assignments"
-                            :key="labor_assignment.id"
-                            :label="labor_assignment.name"
-                            :value="labor_assignment.id">
-                          </el-option>
-                        </el-select>
+                        />
                       </b-form-group>
                   </b-col>
-                  </b-row>
+                </b-row>
                <b-row>
                   <b-col>
                       <b-form-group label="Status">

@@ -739,7 +739,7 @@ export default {
             window.open(url, 'backflow_pdf');
         },
         pdfTag(){
-            let url = '/api/backflow_assemblies/tags/pdf?';
+            let url = '/api/backflow_assemblies/tags/pdf?use_client=' + this.use.client + '&use_property=' + this.use.property + '&';
             this.includedBackflowAssemblies.map(a => {
                 if(a.backflow_test_reports.length){
                     url += 'backflow_assembly_id[]='+a.backflow_test_reports[0].backflow_assembly_id+'&';

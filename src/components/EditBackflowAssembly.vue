@@ -50,7 +50,7 @@
                                 clearable
                                 default-first-option
                                 placeholder="Select Unit"
-                                @change="save"
+                                @change="save();"
                             >
                             <el-option
                               v-for="unit in units"
@@ -571,7 +571,7 @@ export default {
         return {
             client_id: null,
             clients: [],
-            backflow_assembly: { id: null, backflow_size_id: null, active: true },
+            backflow_assembly: { id: null, backflow_size_id: null, active: true, property_unit_id: null, contact_id: null },
             backflow_types: [],
             properties: [],
             units: [],
@@ -709,7 +709,7 @@ export default {
             });
         },
         getPictures(){
-            this.$http.get('/backflow_pictures?backflow_assembly_id=' + this.backflow_assembly_id).then(response => {
+            this.$http.get('/backflow_pictures?backflow_assembly_id=' + this.backflow_assembly.id).then(response => {
                 this.pictures = response.data.data;
             });
         },
@@ -725,9 +725,10 @@ export default {
           }
           if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
-              this.properties = response.data
+              this.properties = response.data;
               if(this.properties.length == 1){
                  this.backflow_assembly.property_id = this.properties[0].id;
+                 this.getUnits();
               }
             })
           }
@@ -739,7 +740,6 @@ export default {
           if(clear){
             this.backflow_assembly.property_unit_id = null;
           }
-          console.log(this.backflow_assembly.property_unit_id);
           if(this.backflow_assembly.property_id){
             this.$http.get('/property_units?property_id=' + this.backflow_assembly.property_id).then(response => {
               this.units = response.data.data
