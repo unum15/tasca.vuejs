@@ -132,9 +132,15 @@ export default {
     methods: {
         getOrder() {
             this.$http.get('/order/' + this.order_id).then((results) => {
-                this.order = results.data;
+                let order = results.data;
                 //only show first property information
-                this.order.property = this.order.properties[0];
+                if(order.properties.length){
+                    order.property = order.properties[0];
+                }
+                else{
+                    order.property = {};
+                }
+                this.order = order;
                 this.getTasks();
             });
         },
