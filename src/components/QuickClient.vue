@@ -702,7 +702,7 @@ export default {
       if(this.contact.name == null){
           return;
       }
-      this.$http.get('/contacts?name=' + this.client.name)
+      this.$http.get('/contacts?name=' + this.contact.name)
         .then((response) => {
           if(response.data.length){
             alert('Contact named ' + this.contact.name + ' already exists.');
