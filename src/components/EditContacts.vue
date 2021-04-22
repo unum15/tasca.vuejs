@@ -20,6 +20,7 @@
           :contact="contact"
           :contact_types="contact_types"
           :roles="roles"
+          :crews="crews"
           @remove-contact="removeContact"
           ></EditContact>
       </b-tab>
@@ -61,18 +62,22 @@ export default {
       roles: [],
       existing_contact_id: null,
       current_tab: 0,
-      change_tab: false
+      change_tab: false,
+      crews: []
     }
   },
   created () {
     this.$http.get('/contacts').then(response => {
-      this.all_contacts = response.data
+      this.all_contacts = response.data;
     });
     this.$http.get('/contact_types').then(response => {
-      this.contact_types = response.data
+      this.contact_types = response.data;
     });
     this.$http.get('/roles').then(response => {
-      this.roles = response.data.data
+      this.roles = response.data.data;
+    });
+    this.$http.get('/crews').then(response => {
+      this.crews = response.data;
     });
     this.my_contacts = this.contacts;
   },
