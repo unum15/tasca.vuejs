@@ -96,11 +96,21 @@
                 </b-col>
                 <b-col>
                   <b-form-group label="Referred By">
-                    <b-form-input
-                      type="text"
-                      v-model="client.referred_by"
-                      placeholder="John Doe">
-                    </b-form-input>
+                    <el-select
+                        v-model="client.referred_by"
+                        filterable
+                        allow-create
+                        default-first-option
+                        placeholder="John Doe"
+                    >
+                      <el-option
+                        v-for="name in used_referred_bys"
+                        :key="name"
+                        :label="name"
+                        :value="name"
+                        >
+                      </el-option>
+                    </el-select>
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -232,39 +242,66 @@
               <b-row>
                 <b-col>
                   <b-form-group label="Project Name">
-                    <b-form-input
-                        type="text"
+                    <el-select
                         v-model="project.name"
-                        required
-                        :state="project.name != null"
+                        filterable
+                        allow-create
+                        default-first-option
                         placeholder="New Project Name"
+                        :state="project.name != null"
+                        required
+                    >
+                      <el-option
+                        v-for="name in used_projects"
+                        :key="name"
+                        :label="name"
+                        :value="name"
                         >
-                    </b-form-input>
+                      </el-option>
+                    </el-select>
                   </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Order Name">
-                    <b-form-input
-                        type="text"
+                    <el-select
                         v-model="order.name"
-                        @change="orderNameChanged"
-                        required
-                        :state="order.name != null"
+                        filterable
+                        allow-create
+                        default-first-option
                         placeholder="New Order Name"
+                        @change="orderNameChanged"
+                        :state="order.name != null"
+                        required
+                    >
+                      <el-option
+                        v-for="name in used_orders"
+                        :key="name"
+                        :label="name"
+                        :value="name"
                         >
-                    </b-form-input>
+                      </el-option>
+                    </el-select>
                   </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Task Name">
-                    <b-form-input
-                        type="text"
+                    <el-select
                         v-model="task.name"
-                        required
-                        :state="order.name != null"
+                        filterable
+                        allow-create
+                        default-first-option
                         placeholder="New Task Name"
+                        :state="task.name != null"
+                        required
+                    >
+                      <el-option
+                        v-for="name in used_tasks"
+                        :key="name"
+                        :label="name"
+                        :value="name"
                         >
-                    </b-form-input>
+                      </el-option>
+                    </el-select>
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -614,6 +651,10 @@ export default {
       showSaveSuccess: false,
       reroute: false,
       lastContactName: null,
+      used_projects: [],
+      used_tasks: [],
+      used_orders: [],
+      used_referred_bys: [],
       client: {
         id: null,
         client_type_id: null,
@@ -694,6 +735,18 @@ export default {
     this.$http.get('/activity_levels').then(response => {
       this.activity_levels = response.data;
       this.activity_levels_loading = false;
+    });
+    this.$http.get('/projects/unique/name').then(response => {
+      this.used_projects = response.data.data;
+    });
+    this.$http.get('/orders/unique/name').then(response => {
+      this.used_orders = response.data.data;
+    });
+    this.$http.get('/tasks/unique/name').then(response => {
+      this.used_tasks = response.data.data;
+    });
+    this.$http.get('/clients/unique/referred_by').then(response => {
+      this.used_referred_bys = response.data.data;
     });
   },
   methods: {
