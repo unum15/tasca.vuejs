@@ -36,6 +36,7 @@
                 <img src="@/assets/collapse.png" v-if="data.item.backflow_test_reports.length && data.item.show_all_reports" v-b-tooltip.hover title="Show All Reports" @click.stop="hideReports(data.item.id)" fluid alt="x" style="width:20px;" />
               </template>
           </b-table>
+          <img src="@/assets/add.png" v-b-tooltip.hover title="Add Backflow" @click.stop="addBackflow();" fluid alt="x" style="width:20px;" />
       </b-tab>
       <b-tab title="Accounts">
         <b-tabs vertical pills v-model="current_tab" :key="accounts.length">
@@ -273,6 +274,9 @@ export default {
     addAccount(){
       this.accounts.push({id: null, property_id: this.property_id});
       this.account_change_tab = true;
+    },
+    addBackflow(){
+      
     },
     saveAccount(account){
       if(account.number === null){
