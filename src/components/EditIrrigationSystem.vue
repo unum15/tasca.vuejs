@@ -110,8 +110,7 @@
               Notes
             </b-col>
             <b-col>
-              <b-form-input
-                type="text"
+              <b-form-textarea
                 v-model="system.notes"
                 @change="save(system)"
                 />

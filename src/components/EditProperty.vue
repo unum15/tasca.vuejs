@@ -164,7 +164,7 @@
                                     @input="save"
                                     :rows="3"
                                     :max-rows="6"
-                                    placeholder="Notes about this contact.">
+                                    placeholder="Notes about this property.">
                                   </b-form-textarea>
                                 </b-form-group>
                             </b-col>
@@ -207,13 +207,12 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Unit Notes">
-                                      <b-form-textarea
+                                      <b-form-input
                                         v-model="unit.notes"
                                         @input="saveUnit(unit)"
-                                        :rows="3"
-                                        :max-rows="6"
+                                        type="text"
                                         placeholder="Notes about this unit.">
-                                      </b-form-textarea>
+                                      </b-form-input>
                                     </b-form-group>
                                 </b-col>
                             </b-row>
