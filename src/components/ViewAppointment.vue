@@ -2,28 +2,38 @@
     <div>
         <b-container style="padding-left:0px;">
             <b-row>
-                <b-col class="label">Project</b-col>
-                <b-col class="data" cols="3">{{ order.project.name }} </b-col>
-                <b-col class="label">Client</b-col>
-                <b-col class="data" cols="2">{{ order.project.client.name }}</b-col>
-                <b-col class="label">Order#</b-col>
-                <b-col class="data" cols="2">{{ order.id }}</b-col>
+                <b-col class="data">
+                    <span class="label">Project</span>
+                    {{ order.project.name.substring(0,30) }}
+                </b-col>
+                <b-col class="data">
+                    <span class="label">Client</span>
+                    {{ order.project.client.name.substring(0,30) }}
+                </b-col>
+                <b-col class="data">
+                    <span class="label">Order#</span>
+                    {{ order.id }}
+                </b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ order.project.notes }}</b-col>
             </b-row>
             <b-row>
-                <b-col class="label">Order</b-col>
-                <b-col class="data" cols="2">{{ order.name }}</b-col>
-                <b-col class="label" cols="2">Start Date</b-col>
-                <b-col class="data" cols="2">{{ order.start_date }}</b-col>
+                <b-col class="data">
+                    <span class="label">Order</span>
+                    {{ order.name.substring(0,80) }}
+                </b-col>
+                <b-col class="data">
+                    <span class="label">Start Date</span>
+                    {{ order.start_date.substring(0,80) }}
+                </b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ order.description }}</b-col>
             </b-row>
             <b-row>
-                <b-col>
-                    <b-container style="padding-left:0px;">
+                <b-col style="padding:0px;border: 1px solid black;">
+                    <b-container>
                         <b-row>
                             <b-col class="label">Property</b-col>
                             <b-col class="data" cols="10">
@@ -53,7 +63,7 @@
                         </div>
                     </b-container>
                 </b-col>
-                <b-col>
+                <b-col style="padding:0px;border: 1px solid black;">
                     <b-container>
                         <b-row>
                             <b-col class="label">Location</b-col>
@@ -70,6 +80,14 @@
                         <b-row>
                             <b-col class="label">Budget</b-col>
                             <b-col class="data" cols="10">{{ order.budget }}+/-{{ order.budget_plus_minus }}</b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col class="label">Task Hours</b-col>
+                            <b-col class="data" cols="10">{{ task_hours }}</b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col class="label">Crew Hours</b-col>
+                            <b-col class="data" cols="10">{{ task_crew_hours }}</b-col>
                         </b-row>
                         <b-row>
                             <b-col class="label">Bid</b-col>
@@ -167,6 +185,22 @@ export default {
             return type[0];
         }
     },
+    computed: {
+        task_hours(){
+            let hours = 0;
+            this.tasks.map(t =>{
+                hours += t.task_hours;
+            });
+            return hours;
+        },
+        crew_hours(){
+            let hours = 0;
+            this.tasks.map(t =>{
+                hours += t.crew_hours;
+            });
+            return hours;
+        }
+    },
     watch: {
         order_id() {
             this.getOrder();
@@ -176,9 +210,8 @@ export default {
 </script>
 <style scoped>
 .label {
-    text-align: right;
     font-weight: bold;
-    text-align: left;
+    white-space: nowrap;
 }
 
 .header {
@@ -187,5 +220,6 @@ export default {
 
 .data {
     text-align: left;
+    white-space: nowrap;
 }
 </style>
