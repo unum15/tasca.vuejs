@@ -62,24 +62,24 @@
                   </template>
             </b-table>
             <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewScheduleOrderPopup
+                <ViewAppointment
                     v-if="modalInfo.order_id"
                     :order_id="modalInfo.order_id"
                     :task_id="modalInfo.task_id"
                 >
-                </ViewScheduleOrderPopup>
+                </ViewAppointment>
             </b-modal>
     </div>
 </template>
 <script>
 import moment from 'moment';
 import ViewScheduleOrdersTabTasks from './ViewScheduleOrdersTabTasks';
-import ViewScheduleOrderPopup from './ViewScheduleOrderPopup';
+import ViewAppointment from './ViewAppointment';
 export default {
     name: 'ViewScheduleOrdersTab',
     components: {
         'ViewScheduleOrdersTabTasks': ViewScheduleOrdersTabTasks,
-        'ViewScheduleOrderPopup': ViewScheduleOrderPopup
+        'ViewAppointment': ViewAppointment
     },
     props: {
         tab: { required: true}
