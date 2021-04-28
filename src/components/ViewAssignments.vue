@@ -157,9 +157,10 @@
             </b-table>
             <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
                 <ViewAppointment
-                     v-if="modalInfo.id"
-                    :appointment_id="modalInfo.id"
-                    :labor_activities="activities"
+                    v-if="modalInfo.order_id"
+                    :appointment_id="modalInfo.appointment_id"
+                    :task_id="modalInfo.task_id"
+                    :order_id="modalInfo.order_id"
                 >
                 </ViewAppointment>
             </b-modal>
@@ -171,6 +172,8 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import TopMenu from './TopMenu';
 import ViewAppointment from './ViewAppointment';
+import treeNormalizer from '../common/TreeNormalizer.js';
+import treeFilter from '../common/TreeFilter.js';
 import moment from 'moment';
 import { mapState } from 'vuex';
 export default {
@@ -187,7 +190,7 @@ export default {
             crew_id: null,
             tasks: [],
             text_filter: null,
-            modalInfo: { title: '', content: '', id: null },
+            modalInfo: { title: '', appointment_id: null, task_id: null, order_id: null },
             date: null,
             sort_by: 'time',
             clock_in: null,
@@ -290,6 +293,8 @@ export default {
         this.getAssignments();
     },
     methods: {
+        treeFilter,
+        treeNormalizer,
         getTasks(){
             this.$http.get('/schedule?status=today&date='+this.date).then((results) => {
                 this.tasks = results.data;
@@ -312,8 +317,10 @@ export default {
         
         },
         info(item) {
-            this.modalInfo.title = `View Appointment: ${item.order_name} -- ${item.name}`
-            this.modalInfo.id = item.id
+            this.modalInfo.title = `${item.order_name} -- ${item.name}`
+            this.modalInfo.appointment_id = item.appointment_id;
+            this.modalInfo.task_id = item.task_id;
+            this.modalInfo.order_id = item.order_id;
             this.$refs['modalInfo'].show()
         },
         resetModal() {
@@ -501,33 +508,6 @@ export default {
             this.modal_overhead.current.labor_assignment_id = this.clock_in.appointment.task.labor_assignment_id;
             this.modal_overhead.current.labor_activity_id = this.clock_in.labor_activity_id;
         },
-        treeNormalizer(node){
-            return {
-                id: node.id,
-                label: node.name,
-                children: node.children && node.children.length ? node.children : undefined,
-            }
-        },
-        findSelectedActivities(id,activities){
-            let filtered_activities = [];
-            activities.map(c => {
-                if(c.labor_assignments.filter(a => (a.id == id)).length){
-                    let cat = JSON.parse(JSON.stringify(c));
-                    if(c.children && c.children.length){
-                        let children = this.findSelectedActivities(id,c.children);
-                        cat.children = children;
-                    }
-                    filtered_activities.push(cat);
-                }
-                else{
-                    if(c.children){
-                        let children = this.findSelectedActivities(id,c.children);
-                        filtered_activities = filtered_activities.concat(children);
-                    }
-                }
-            });
-            return filtered_activities;
-        },
         getAssignmentName(id){
             let assignments = this.assignments.filter(a => a.id == id);
             if(!assignments.length){
@@ -557,13 +537,13 @@ export default {
         },
         filtered_current_activities(){
             if(this.modal_overhead.current.labor_assignment_id){
-                return this.findSelectedActivities(this.modal_overhead.current.labor_assignment_id,this.activities);
+                return this.treeFilter(this.modal_overhead.current.labor_assignment_id,this.activities);
             }
             return [];
         },
         filtered_new_activities(){
             if(this.modal_overhead.new.labor_assignment_id){
-                return this.findSelectedActivities(this.modal_overhead.new.labor_assignment_id,this.activities);
+                return this.treeFilter(this.modal_overhead.new.labor_assignment_id,this.activities);
             }
             return [];
         },

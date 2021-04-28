@@ -47,11 +47,11 @@
                 <template v-slot:cell(hours)="data">
                     {{ getTotalHours(data.item) }}
                 </template>
-                <template v-slot:cell(completion_date)="data">
+                <template v-slot:cell(close_date)="data">
                     <b-form-input
                         type="date"
                         @change="save(data.item)"
-                        v-model="data.item.completion_date"
+                        v-model="data.item.close_date"
                     >
                     </b-form-input>
                 </template>
@@ -65,24 +65,24 @@
                   </template>
             </b-table>
             <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewScheduleOrderPopup
+                <ViewAppointment
                     v-if="modalInfo.order_id"
                     :order_id="modalInfo.order_id"
                     :task_id="modalInfo.task_id"
                 >
-                </ViewScheduleOrderPopup>
+                </ViewAppointment>
             </b-modal>
     </div>
 </template>
 <script>
 import moment from 'moment';
 import ViewScheduleOrdersTabTasks from './ViewScheduleOrdersTabTasks';
-import ViewScheduleOrderPopup from './ViewScheduleOrderPopup';
+import ViewAppointment from './ViewAppointment';
 export default {
     name: 'ViewScheduleOrdersTab',
     components: {
         'ViewScheduleOrdersTabTasks': ViewScheduleOrdersTabTasks,
-        'ViewScheduleOrderPopup': ViewScheduleOrderPopup
+        'ViewAppointment': ViewAppointment
     },
     props: {
         tab: { required: true}
@@ -143,7 +143,7 @@ export default {
                     filter: null
                 },
                 {
-                    key: 'completion_date',
+                    key: 'close_date',
                     label: 'Closed',
                     sortable: true,
                     filter: null
@@ -165,7 +165,7 @@ export default {
     methods: {
         save(item){
             var order = {
-                completion_date: item.completion_date,
+                close_date: item.close_date,
             }
             this.$http.patch('/order/' + item.id, order);
         },
@@ -185,7 +185,7 @@ export default {
                 }
             });
             if(all){
-                order.completion_date = moment().format("YYYY-MM-DD");
+                order.close_date = moment().format("YYYY-MM-DD");
             }
             this.save(order);
         },

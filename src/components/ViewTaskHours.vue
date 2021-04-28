@@ -104,6 +104,8 @@ import moment from 'moment';
 import ViewHours from './ViewHours';
 import { mapState } from 'vuex';
 import Treeselect from '@riophae/vue-treeselect';
+import treeFilter from '../common/TreeFilter.js';
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
     name: 'ViewTaskHours',
     components: {
@@ -136,11 +138,14 @@ export default {
 
     },
     methods: {
+        treeFilter,
+        treeNormalizer,
         getTask() {
             this.$http.get('/task/' + this.task_id).then((results) => {
                 this.task = results.data;
                 this.completed = this.task.completion_date != null;
                 this.billed = this.task.billed_date != null;
+                this.invoiced = this.task.invoiced_date != null;
             });
         },
         getEmployeesHours() {
@@ -178,18 +183,27 @@ export default {
             return moment(time).format('MM-DD hh:mm')
         },
         markCompleted(){
+            if(this.completed && this.task.completion_date){
+                return;
+            }
             let task = {
                 completion_date: this.completed ? moment().format('YYYY-MM-DD') : null
             }
             this.$http.patch('/task/' + this.task_id, task);
         },
         markInvoiced(){
+            if(this.invoiced && this.task.invoiced_date){
+                return;
+            }
             let task = {
                 invoiced_date: this.invoiced ? moment().format('YYYY-MM-DD') : null
             }
             this.$http.patch('/task/' + this.task_id, task);
         },
         markBilled(){
+            if(this.billed && this.task.billed_date){
+                return;
+            }
             let task = {
                 billed_date: this.billed ? moment().format('YYYY-MM-DD') : null
             }
@@ -257,33 +271,6 @@ export default {
         saveNotes(clock_in){
             this.$http.patch('/clock_in/' + clock_in.id, {notes : clock_in.notes})
         },
-        treeNormalizer(node){
-            return {
-                id: node.id,
-                label: node.name,
-                children: node.children && node.children.length ? node.children : undefined,
-            }
-        },
-        findSelectedActivities(id,activities){
-            let filtered_activities = [];
-            activities.map(c => {
-                if(c.labor_assignments.filter(a => (a.id == id)).length){
-                    let cat = JSON.parse(JSON.stringify(c));
-                    if(c.children && c.children.length){
-                        let children = this.findSelectedActivities(id,c.children);
-                        cat.children = children;
-                    }
-                    filtered_activities.push(cat);
-                }
-                else{
-                    if(c.children){
-                        let children = this.findSelectedActivities(id,c.children);
-                        filtered_activities = filtered_activities.concat(children);
-                    }
-                }
-            });
-            return filtered_activities;
-        },
     },
     computed: {
         clock_in() {
@@ -299,7 +286,7 @@ export default {
         }),
         filtered_labor_activities(){
             if(this.task.labor_assignment_id){
-                return this.findSelectedActivities(this.task.labor_assignment_id,this.labor_activities);
+                return this.treeFilter(this.task.labor_assignment_id,this.labor_activities);
             }
             return [];
         },

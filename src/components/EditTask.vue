@@ -46,16 +46,14 @@
         </b-row>
         <b-row>
 			<b-col>
-                <b-form-group label="Assignment">
-                    <b-form-select
-                        :options="current_assignments"
-						@change="save"
-                        value-field="id"
-                        text-field="name"
-                        v-model="my_task.labor_assignment_id"
-                        >
-                    </b-form-select>
-                </b-form-group>
+				<b-form-group label="Assignment">
+					<Treeselect
+						:options="current_assignments"
+						:normalizer="treeNormalizer"
+						v-model="my_task.labor_assignment_id"
+						@input="save"
+					/>
+				</b-form-group>
             </b-col>
             <b-col>
                 <b-form-group label="Status">
@@ -188,10 +186,14 @@
 </template>
 <script>
 import EditAppointments from './EditAppointments';
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
     name: 'EditTask',
 	components: {
-		'EditAppointments': EditAppointments
+		EditAppointments,
+		Treeselect
 	},	
 	props: {
 		task: {required: true},
@@ -213,6 +215,7 @@ export default {
 		this.save();
     },
 	methods: {
+		treeNormalizer,
 		deleteTask() {
 			this.$http.delete('/task/' + this.my_task.id);
 			this.$emit('remove-task', this.my_task);

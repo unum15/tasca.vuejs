@@ -374,10 +374,10 @@
                 </b-container>
             </b-tab>
             <b-tab title="Overview"  v-if="my_order.id !== null">
-                <ViewScheduleOrderPopup
+                <ViewAppointment
                     :order_id="my_order.id"
                 >
-                </ViewScheduleOrderPopup>
+                </ViewAppointment>
             </b-tab>
             <b-tab title="Renewing" v-if="isServiceOrder && (my_order.id !== null)">
                 <b-container fluid>
@@ -470,12 +470,12 @@
 <script>
 import moment from 'moment';
 import EditTasks from './EditTasks';
-import ViewScheduleOrderPopup from './ViewScheduleOrderPopup';
+import ViewAppointment from './ViewAppointment';
 export default {
     name: 'EditServiceOrder',
 	components: {
 		'EditTasks': EditTasks,
-        'ViewScheduleOrderPopup': ViewScheduleOrderPopup
+        'ViewAppointment': ViewAppointment
 	},
 	props: {
         crews: {required: true},

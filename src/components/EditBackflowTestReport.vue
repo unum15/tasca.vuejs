@@ -336,6 +336,8 @@
                 <b-button @click="nextPreview">Next</b-button>
             </b-modal>
             <div>
+                <b-form-checkbox v-model="use.client">Client name in filename</b-form-checkbox>
+                <b-form-checkbox v-model="use.property">Property name in filename</b-form-checkbox>
                 <b-button v-if="backflow_assembly.id && !backflow_assembly.backflow_test_reports.length" @click="newReport">New Report</b-button>
                 <b-button @click="$router.push('/backflow_test_reports')">Done</b-button>
                 <b-button v-b-modal.modal-preview v-if="includedBackflowAssemblies.length">Preview</b-button>
@@ -485,7 +487,11 @@ export default {
                         label: '',
                         sortable: false
                     }
-            ]
+            ],
+            use: {
+              client: true,
+              property: true
+            }
         };
     },
     created () {
@@ -595,6 +601,7 @@ export default {
                     assemblies.map( a => {
                         a.include=true;
                     });
+                    console.log(assemblies);
                     this.backflow_assemblies = assemblies;
                     if(this.backflow_assemblies.length == 1){
                        this.backflow_assembly_id=this.backflow_assemblies[0].id;
@@ -723,7 +730,7 @@ export default {
             });
         },
         pdf(){
-            let url = '/api/backflow_test_reports/pdf?';
+            let url = '/api/backflow_test_reports/pdf?use_client=' + this.use.client + '&use_property=' + this.use.property + '&';
             this.includedBackflowAssemblies.map(a => {
                 if(a.backflow_test_reports.length){
                     url += 'backflow_test_report_id[]='+a.backflow_test_reports[0].id+'&';
@@ -732,7 +739,7 @@ export default {
             window.open(url, 'backflow_pdf');
         },
         pdfTag(){
-            let url = '/api/backflow_assemblies/tags/pdf?';
+            let url = '/api/backflow_assemblies/tags/pdf?use_client=' + this.use.client + '&use_property=' + this.use.property + '&';
             this.includedBackflowAssemblies.map(a => {
                 if(a.backflow_test_reports.length){
                     url += 'backflow_assembly_id[]='+a.backflow_test_reports[0].backflow_assembly_id+'&';

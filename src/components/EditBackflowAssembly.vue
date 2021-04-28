@@ -50,7 +50,7 @@
                                 clearable
                                 default-first-option
                                 placeholder="Select Unit"
-                                @change="save"
+                                @change="save();"
                             >
                             <el-option
                               v-for="unit in units"
@@ -328,8 +328,8 @@
                 </b-row>
                 <b-row>
                     <b-col>
-                        <b-button v-b-modal.view-pictures style="margin:5px;">View Pictures ({{ this.pictures.length }})</b-button>
-                        <b-button v-b-modal.upload-pictures style="margin:5px;">Add Pictures</b-button>
+                        <b-button v-b-modal.view-pictures style="margin:5px;" :disabled='backflow_assembly==null'>View Pictures ({{ this.pictures.length }})</b-button>
+                        <b-button v-b-modal.upload-pictures style="margin:5px;" :disabled='backflow_assembly==null'>Add Pictures</b-button>
                     </b-col>
                 </b-row>
                <b-row>
@@ -360,6 +360,9 @@
             </b-form-group>
         </b-modal>
         <b-modal id="clearable" title="Clearable Fields" ok-only>
+            Check the fields to clear. Uncheck to keep.
+            <br />
+            <br />
           <b-container>
             <b-row v-for="(field,key) in fields" :key="key">
                 <b-col>
@@ -568,7 +571,7 @@ export default {
         return {
             client_id: null,
             clients: [],
-            backflow_assembly: { id: null, backflow_size_id: null, active: true },
+            backflow_assembly: { id: null, backflow_size_id: null, active: true, property_unit_id: null, contact_id: null },
             backflow_types: [],
             properties: [],
             units: [],
@@ -706,7 +709,7 @@ export default {
             });
         },
         getPictures(){
-            this.$http.get('/backflow_pictures?backflow_assembly_id=' + this.backflow_assembly_id).then(response => {
+            this.$http.get('/backflow_pictures?backflow_assembly_id=' + this.backflow_assembly.id).then(response => {
                 this.pictures = response.data.data;
             });
         },
@@ -718,15 +721,15 @@ export default {
         getProperties(clear=true) {
           if(clear){
             this.backflow_assembly.property_id = null;
+            this.backflow_assembly.property_unit_id = null;
           }
           if(this.client_id){
             this.$http.get('/properties?client_id=' + this.client_id).then(response => {
-              this.properties = response.data
+              this.properties = response.data;
               if(this.properties.length == 1){
                  this.backflow_assembly.property_id = this.properties[0].id;
+                 this.getUnits();
               }
-              this.getUnits();
-              this.getAccounts();
             })
           }
           else{
@@ -735,7 +738,7 @@ export default {
         },
         getUnits(clear=true) {
           if(clear){
-            this.backflow_assembly.unit_id = null;
+            this.backflow_assembly.property_unit_id = null;
           }
           if(this.backflow_assembly.property_id){
             this.$http.get('/property_units?property_id=' + this.backflow_assembly.property_id).then(response => {

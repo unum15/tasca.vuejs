@@ -7,16 +7,22 @@
         <main>
             <b-container fluid>
                 <b-row>
-                  <b-col md="6" class="my-1">
-                    <b-form-group label="Filter" class="mb-0">
-                      <b-input-group>
-                        <b-form-input v-model="filter" placeholder="Type to Search" />
-                        <b-input-group-append>
-                          <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
-                        </b-input-group-append>
-                      </b-input-group>
-                    </b-form-group>
-                  </b-col>
+                    <b-col md="6" class="my-1">
+                      <b-form-group label="Filter" class="mb-0">
+                        <b-input-group>
+                          <b-form-input v-model="filter" placeholder="Type to Search" />
+                          <b-input-group-append>
+                            <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
+                          </b-input-group-append>
+                        </b-input-group>
+                      </b-form-group>
+                    </b-col>
+                    <b-col style="text-align:bottom;">
+                        <b-form-checkbox v-model="use.client">Client name in filename</b-form-checkbox>
+                    </b-col>
+                    <b-col>                
+                        <b-form-checkbox v-model="use.property">Property name in filename</b-form-checkbox>
+                    </b-col>
                 </b-row>
             </b-container>
             <b-table
@@ -29,7 +35,7 @@
             >
                 <template v-slot:cell(id)="data">
                     <a :href="'/backflow_test_report/' + data.value"> {{ data.value }} </a>
-                    <a href="" v-on:click.stop.prevent="openWindow('/api/backflow_test_report/' + data.value + '/pdf', 'pdf')"> PDF </a>
+                    <a href="" v-on:click.stop.prevent="openWindow('/api/backflow_test_report/' + data.value + '/pdf?use_client=' + use.client + '&use_property=' + use.property + '&', 'pdf')"> PDF </a>
                 </template>
                 
                 
@@ -113,7 +119,11 @@ export default {
                     label: 'Result',
                     sortable: false
                 }
-            ]
+            ],
+            use: {
+              client: true,
+              property: true
+            }
         }
     },
     created() {

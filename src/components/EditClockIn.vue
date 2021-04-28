@@ -69,76 +69,8 @@
 
                 <b-form-row>
                     <b-col md="6">
-                        <b-form-group label="Creator Id" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="clock_in.creator_id"
-                                @change="save"
-                                type="number"
-                                :state="clock_in.creator_id != null"
-                                required
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Updater Id" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="clock_in.updater_id"
-                                @change="save"
-                                type="number"
-                                :state="clock_in.updater_id != null"
-                                required
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Task Date Id" label-cols="4" label-align="right">
-                            <b-form-input
-                                v-model="clock_in.appointment_id"
-                                @change="save"
-                                type="number"
-                            >
-                            </b-form-input>
-                        
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Overhead Assignment" label-cols="4" label-align="right">
-                            <b-form-select
-                                v-model="clock_in.overhead_assignment_id"
-                                @change="save"
-                                :options="overhead_assignments"
-                                value-field="id"
-                                text-field="name"
-                            >
-                            </b-form-select>
-                        </b-form-group>
-                    </b-col>
-                </b-form-row>
-
-                <b-form-row>
-                    <b-col md="6">
-                        <b-form-group label="Overhead Category" label-cols="4" label-align="right">
-                            <b-form-select
-                                v-model="clock_in.overhead_category_id"
-                                @change="save"
-                                :options="overhead_categories"
-                                value-field="id"
-                                text-field="name"
-                            >
-                            </b-form-select>
+                        <b-form-group label="Activity">
+                            <Treeselect :options="filtered_labor_activities" :normalizer="treeNormalizer" v-model="clock_in.labor_activity_id"/>
                         </b-form-group>
                     </b-col>
                 </b-form-row>
@@ -153,40 +85,50 @@
     </div>
 </template>
 <script>
-import TopMenu from './TopMenu'
+import TopMenu from './TopMenu';
+import { mapState } from 'vuex';
+import Treeselect from '@riophae/vue-treeselect';
+import '@riophae/vue-treeselect/dist/vue-treeselect.css';
+import treeNormalizer from '../common/TreeNormalizer.js';
+import treeFilter from '../common/TreeFilter.js';
 export default {
     name: 'EditClockIn',
     components: {
-        'TopMenu': TopMenu
+        TopMenu,
+        Treeselect
     },
     props: {
         clock_in_id: {default: null}
     },
     data () {
         return {
-            clock_in: { id: null },
+            clock_in: { id: null, appointment: { task: { labor_activity_id: null } } },
             contacts: [],
-            overhead_assignments: [],
-            overhead_categories: [],
+            labor_activities: [],
+            appointments: [],
         };
     },
     created () {
-        this.$http.get('/contacts').then(response => {
-            this.contacts = response.data.data;
-        });
-        this.$http.get('/overhead_assignments').then(response => {
-            this.overhead_assignments = response.data.data;
-        });
-        this.$http.get('/overhead_categories').then(response => {
-            this.overhead_categories = response.data.data;
+        this.getContacts();
+        this.$http.get('/labor_activities').then(response => {
+            this.labor_activities = response.data.data;
         });
         if(this.clock_in_id !== null) {
             this.$http.get('/clock_in/' + this.clock_in_id).then(response => {
-                this.clock_in = response.data.data;
+                this.clock_in = response.data;
             });
         }
     },
     methods: {
+        treeNormalizer,
+        treeFilter,
+        getContacts(){
+            if(this.operator_id){
+                this.$http.get('/contacts?client_id=' + this.operator_id).then(response => {
+                    this.contacts = response.data;
+                });
+            }
+        },
         save () {
             if((!this.clock_in.contact_id)||(!this.clock_in.clock_in)||(!this.clock_in.creator_id)||(!this.clock_in.updater_id)){
                 return;
@@ -200,6 +142,22 @@ export default {
             else{
                 this.$http.patch('/clock_in/' + this.clock_in.id, this.clock_in);
             }
+        }
+    },
+    computed:{
+        ...mapState({
+            operator_id: state => state.settings.operating_company_client_id
+        }),
+        filtered_labor_activities(){
+            if(this.clock_in.appointment.task.labor_assignment_id){
+                return this.treeFilter(this.clock_in.appointment.task.labor_assignment_id,this.labor_activities);
+            }
+            return [];
+        },
+    },
+    watch:{
+        operator_id(){
+            this.getContacts();
         }
     }
 };
