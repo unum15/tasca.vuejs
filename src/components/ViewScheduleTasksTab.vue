@@ -181,8 +181,10 @@
             </b-table>
            <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
                 <ViewAppointment
-                    v-if="modalInfo.id"
-                    :appointment_id="modalInfo.id"
+                    v-if="modalInfo.order_id"
+                    :appointment_id="modalInfo.appointment_id"
+                    :task_id="modalInfo.task_id"
+                    :order_id="modalInfo.order_id"
                 >
                 </ViewAppointment>
             </b-modal>
@@ -210,7 +212,7 @@ export default {
             tasks: [],
             filtered_tasks: [],
             filter: null,
-            modalInfo: { title: '', content: '', order_id: null },
+            modalInfo: { title: '', appointment_id: null, task_id: null, order_id: null },
             date: moment().format('YYYY-MM-DD'),
             view_days: 14,
             crews: [],
@@ -340,9 +342,11 @@ export default {
             this.getTasks();
         },
         info (item) {
-            this.modalInfo.title = `${item.order_name} -- ${item.name}`
-            this.modalInfo.id = item.id
-            this.$refs['modalInfo'].show()
+            this.modalInfo.title = `${item.order_name} -- ${item.name}`;
+            this.modalInfo.appointment_id = item.appointment_id;
+            this.modalInfo.task_id = item.task_id;
+            this.modalInfo.order_id = item.order_id;
+            this.$refs['modalInfo'].show();
         },
         resetModal () {
             this.modalInfo.title = ''
