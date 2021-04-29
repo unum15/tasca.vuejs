@@ -38,8 +38,8 @@
                             </b-col>
                         </b-row>
                         <b-row>
-                            <b-col v-if="appointment.task.order.property.coordinates">
-                                <a :href="appointment.task.order.property.coordinates" target="tasca_address">Map</a>
+                            <b-col v-if="order.property.coordinates">
+                                <a :href="order.property.coordinates" target="tasca_address">Map</a>
                             </b-col>
                         </b-row>
 
