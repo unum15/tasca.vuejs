@@ -1,5 +1,8 @@
 <template>
     <div>
+        <h1>
+            View Order
+        </h1>
             <b-container fluid>
                 <b-row>
                   <b-col md="6" class="my-1">
@@ -224,7 +227,7 @@ export default {
             }
         },
         info (item) {
-            this.modalInfo.title = `Order #${item.id} - ${item.name}`
+            this.modalInfo.title = `View Order: #${item.id} - ${item.name}`
             this.modalInfo.order_id = item.id
             this.$refs['modalInfo'].show()
         },
