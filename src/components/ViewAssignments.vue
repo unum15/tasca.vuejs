@@ -318,7 +318,7 @@ export default {
         },
         info(item) {
             this.modalInfo.title = `${item.order_name} -- ${item.name}`
-            this.modalInfo.appointment_id = item.appointment_id;
+            this.modalInfo.appointment_id = item.id;
             this.modalInfo.task_id = item.task_id;
             this.modalInfo.order_id = item.order_id;
             this.$refs['modalInfo'].show()
@@ -328,9 +328,10 @@ export default {
                 this.clock_in = response.data;
                 this.clockInToCurrent();
             });
-            this.modalInfo.title = ''
-            this.modalInfo.content = ''
-            this.modalInfo.id = null
+            this.modalInfo.title = '';
+            this.modalInfo.appointment_id = null;
+            this.modalInfo.task_id = null;
+            this.modalInfo.order_id = null;
         },
         filterTasks(record, filter){
             if((filter.crew_id != null) && (record.crew_id != filter.crew_id)) {

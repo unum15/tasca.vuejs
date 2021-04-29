@@ -147,6 +147,7 @@ export default {
     methods: {
         getOrder() {
             this.$http.get('/order/' + this.order_id).then((results) => {
+                console.log(this.appointment_id);
                 let order = results.data;
                 //only show first property information
                 if(order.properties.length){
