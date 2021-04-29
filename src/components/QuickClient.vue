@@ -27,7 +27,7 @@
                       <b-form-input
                         type="text"
                         v-model="contact.name"
-                        @change="contactNameChanged"
+                        @change="checkExistingContactName();contactNameChanged();"
                         required
                         :state="contact.name != null"
                         placeholder="John Smith">
@@ -145,6 +145,7 @@
                       type="text"
                       v-model="client.name"
                       :state="client.name != null"
+                      @change="checkExistingClientName();"
                       required
                       placeholder="Smith Household"
                       >
@@ -180,7 +181,9 @@
                       <b-form-group label="Address Line 1">
                         <b-form-input
                           type="text"
-                          v-model="property.address1">
+                          v-model="property.address1"
+                          @change="checkExistingAddress();"
+                          >
                         </b-form-input>
                       </b-form-group>
                   </b-col>
@@ -695,6 +698,39 @@ export default {
   },
   methods: {
     treeNormalizer,
+    checkExistingContactName() {
+      if(this.contact.name == null){
+          return;
+      }
+      this.$http.get('/contacts?name=' + this.contact.name)
+        .then((response) => {
+          if(response.data.length){
+            alert('Contact named ' + this.contact.name + ' already exists.');
+          }
+      });
+    },
+    checkExistingClientName() {
+      if(this.client.name == null){
+          return;
+      }
+      this.$http.get('/clients?name=' + this.client.name)
+        .then((response) => {
+          if(response.data.length){
+            alert('Client named ' + this.client.name + ' already exists.');
+          }
+      });
+    },
+    checkExistingAddress() {
+      if(this.property.address1 == null){
+          return;
+      }
+      this.$http.get('/properties?includes=client&address1=' + this.property.address1)
+        .then((response) => {
+          if(response.data.length){
+            alert('Property with address ' + this.property.address1 + ' already exists for client ' + response.data[0].client.name + '.');
+          }
+      });
+    },
     saveClient() {
       if(this.client.name === null){
         return;
@@ -704,7 +740,7 @@ export default {
           .then((results) => {
             this.client.id = results.data.id;
             this.saveContact();
-          })
+          });
       }
       else{
         this.$http.patch('/client/' + this.client.id,this.client)

@@ -61,10 +61,15 @@ export default {
   },
   methods: {
     save () {
-      if(!this.my_phone_number.contact_id){
+      if(!this.verifyPhoneNumber){
         return;
       }
-      if(!this.verifyPhoneNumber){
+      this.$http.get('/phone_numbers?includes=contact&phone_number='+this.my_phone_number.phone_number).then((response) => {
+          if(response.data.length){
+            alert('Phone number ' + this.my_phone_number.phone_number + ' already exists for contact ' + response.data[0].contact.name + '.');
+          }
+      });
+      if(!this.my_phone_number.contact_id){
         return;
       }
       if(this.my_phone_number.id === null){
