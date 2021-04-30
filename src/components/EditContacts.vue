@@ -63,7 +63,7 @@ export default {
       existing_contact_id: null,
       current_tab: 0,
       change_tab: false,
-      crews: []
+      crews: [{id: null, name: 'None'}]
     }
   },
   created () {
@@ -77,7 +77,7 @@ export default {
       this.roles = response.data.data;
     });
     this.$http.get('/crews').then(response => {
-      this.crews = response.data;
+      this.crews = this.crews.concat(response.data);
     });
     this.my_contacts = this.contacts;
   },
