@@ -728,7 +728,7 @@ export default {
               this.properties = response.data;
               if(this.properties.length == 1){
                  this.backflow_assembly.property_id = this.properties[0].id;
-                 this.getUnits();
+                 this.getUnits(clear);
               }
             })
           }
@@ -738,6 +738,7 @@ export default {
         },
         getUnits(clear=true) {
           if(clear){
+            console.log('clear');
             this.backflow_assembly.property_unit_id = null;
           }
           if(this.backflow_assembly.property_id){
