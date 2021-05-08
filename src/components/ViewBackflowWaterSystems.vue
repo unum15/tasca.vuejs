@@ -29,7 +29,13 @@
                  style="text-align:left;"
             >
                 <template v-slot:cell(name)="data">
-                    <a :href="'/backflow_water_system/' + data.value"> {{ data.value }} </a>
+                    <a href="/backflow_water_systems/" @click.stop.prevent="editWaterSystem(data.item.id)"> {{ data.value }} </a>
+                </template>
+                <template v-slot:cell(created_at)="data">
+                    {{ formatDate(data.value) }}
+                </template>
+                <template v-slot:cell(updated_at)="data">
+                    {{ formatDate(data.value) }}
                 </template>
             </b-table>
         </main>
