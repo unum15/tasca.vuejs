@@ -394,9 +394,8 @@
               </el-select>
             </b-form-group>
         </b-modal>
-
-        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="addWaterSystem">
-            <EditBackflowWaterSystemForm></EditBackflowWaterSystemForm>
+        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="addWaterSystem" ok-only>
+            <EditBackflowWaterSystemForm :backflow_water_system_id="edit_backflow_water_system_id"></EditBackflowWaterSystemForm>
         </b-modal>
     </div>
 </template>
