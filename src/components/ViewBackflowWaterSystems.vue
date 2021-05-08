@@ -39,7 +39,7 @@
                 </template>
             </b-table>
         </main>
-        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="addWaterSystem" ok-only>
+        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="getBackflowWaterSystems" ok-only>
             <EditBackflowWaterSystemForm :backflow_water_system_id="edit_backflow_water_system_id"></EditBackflowWaterSystemForm>
         </b-modal>
     </div>
