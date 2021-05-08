@@ -4,6 +4,7 @@
     </div>
 </template>
 <script>
+import EditBackflowAssemblyForm from './EditBackflowAssemblyForm';
 export default {
     name: 'EditBackflowAssembly',
     components: {
