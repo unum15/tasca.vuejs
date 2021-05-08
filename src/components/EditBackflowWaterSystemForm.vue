@@ -180,6 +180,7 @@ export default {
     },
     methods: {
         getBackflowWaterSystem() {
+            console.log(this.backflow_water_system_id);
             if(this.backflow_water_system_id !== null) {
                 this.$http.get('/backflow_water_system/' + this.backflow_water_system_id).then(response => {
                     this.backflow_water_system = response.data.data;

@@ -39,19 +39,25 @@
                 </template>
             </b-table>
         </main>
+        <b-modal ref="add-water-system-modal" title="Add Water System" @ok="addWaterSystem" ok-only>
+            <EditBackflowWaterSystemForm :backflow_water_system_id="edit_backflow_water_system_id"></EditBackflowWaterSystemForm>
+        </b-modal>
     </div>
 </template>
 <script>
 import TopMenu from './TopMenu';
+import EditBackflowWaterSystemForm from './EditBackflowWaterSystemForm';
 import moment from 'moment';
 export default {
     name: 'ViewBackflowWaterSystems',
     components: {
-        'TopMenu': TopMenu,
+        TopMenu,
+        EditBackflowWaterSystemForm
     },
     data() {
         return {
             backflow_water_systems: [],
+            edit_backflow_water_system_id: null,
             filter: null,
             fields: [
                     {
