@@ -43,6 +43,7 @@
 </template>
 <script>
 import TopMenu from './TopMenu';
+import moment from 'moment';
 export default {
     name: 'ViewBackflowWaterSystems',
     components: {
@@ -122,9 +123,21 @@ export default {
         }
     },
     created() {
-        this.$http.get('/backflow_water_systems').then(response => {
-            this.backflow_water_systems = response.data.data;
-        });
+        this.getBackflowWaterSystems();
+    },
+    methods: {
+        getBackflowWaterSystems(){
+            this.$http.get('/backflow_water_systems').then(response => {
+                this.backflow_water_systems = response.data.data;
+            });
+        },
+        formatDate(date) {
+            return moment(date).format('MM-DD-YYYY');
+        },
+        editWaterSystem(id){
+            this.edit_backflow_water_system_id=id;
+            this.$refs['add-water-system-modal'].show();
+        }
     }
 }
 </script>
