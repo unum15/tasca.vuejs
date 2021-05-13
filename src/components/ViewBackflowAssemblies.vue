@@ -49,22 +49,22 @@
                 :fields="fields"
                 style="text-align:left;"
             >
-                <template v-slot:cell(id)="data">
+                <template v-slot:[cell(id)]="data">
                     <a :href="'/backflow_assembly/' + data.value"> {{ data.value }} </a>
                 </template>
-                <template v-slot:cell(property.name)="data">
+                <template v-slot:[cell(property.name)]="data">
                     <span v-b-popover.hover="data.item.property_unit ? data.item.property_unit.name : ''" :id="'property_' + data.item.id">{{ data.value }}</span>
                 </template>
-                <template v-slot:cell(contact.name)="data">
+                <template v-slot:[cell(contact.name)]="data">
                     <span v-b-popover.hover="data.item.contact ? (data.item.contact.phone_numbers.length > 0 ? data.item.contact.phone_numbers[0].phone_number + ' ' : '') + (data.item.contact.emails.length > 0 ? data.item.contact.emails[0].email : '') : ''" :id="'property_' + data.item.id">{{ data.value }}</span>
                 </template>
-                <template v-slot:cell(backflow_test_reports)="data">
+                <template v-slot:[cell(backflow_test_reports)]="data">
                     {{ data.value.length > 0 ? data.value[0].report_date : null }}
                 </template>
-                <template v-slot:cell(updated_at)="data">
+                <template v-slot:[cell(updated_at)]="data">
                     {{ data.value.substr(0,10) }}
                 </template>
-                <template v-slot:cell(active)="data">
+                <template v-slot:[cell(active)]="data">
                     <b-form-checkbox v-model="data.item.active" @change="saveActive(data.item)">
                     </b-form-checkbox>
                 </template>

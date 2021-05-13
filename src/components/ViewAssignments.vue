@@ -161,6 +161,7 @@
                     :appointment_id="modalInfo.appointment_id"
                     :task_id="modalInfo.task_id"
                     :order_id="modalInfo.order_id"
+                    :labor_activities="labor_activities"
                 >
                 </ViewAppointment>
             </b-modal>
@@ -212,7 +213,7 @@ export default {
                     notes: null
                 },
             },
-            activities: [],
+            labor_activities: [],
             assignments: [],
             fields: [
                 {
@@ -287,7 +288,7 @@ export default {
             this.clockInToCurrent();
 		});
         this.$http.get('/labor_activities').then(response => {
-			this.activities = response.data.data;
+			this.labor_activities = response.data.data;
 		});
         this.getTasks();
         this.getAssignments();
@@ -318,7 +319,7 @@ export default {
         },
         info(item) {
             this.modalInfo.title = `${item.order_name} -- ${item.name}`
-            this.modalInfo.appointment_id = item.appointment_id;
+            this.modalInfo.appointment_id = item.id;
             this.modalInfo.task_id = item.task_id;
             this.modalInfo.order_id = item.order_id;
             this.$refs['modalInfo'].show()
@@ -328,9 +329,10 @@ export default {
                 this.clock_in = response.data;
                 this.clockInToCurrent();
             });
-            this.modalInfo.title = ''
-            this.modalInfo.content = ''
-            this.modalInfo.id = null
+            this.modalInfo.title = '';
+            this.modalInfo.appointment_id = null;
+            this.modalInfo.task_id = null;
+            this.modalInfo.order_id = null;
         },
         filterTasks(record, filter){
             if((filter.crew_id != null) && (record.crew_id != filter.crew_id)) {
@@ -340,7 +342,7 @@ export default {
                 var regex = new RegExp(filter.text_filter, 'i');
                 var has_match = false;
                 for(var field in record) {
-                    if((record.hasOwnProperty(field)) && (typeof(record[field]) == "string") && (record[field].match(regex))) {
+                    if((field in record) && (typeof(record[field]) == "string") && (record[field].match(regex))) {
                         has_match = true;
                         break;
                     }
@@ -537,13 +539,13 @@ export default {
         },
         filtered_current_activities(){
             if(this.modal_overhead.current.labor_assignment_id){
-                return this.treeFilter(this.modal_overhead.current.labor_assignment_id,this.activities);
+                return this.treeFilter(this.modal_overhead.current.labor_assignment_id,this.labor_activities);
             }
             return [];
         },
         filtered_new_activities(){
             if(this.modal_overhead.new.labor_assignment_id){
-                return this.treeFilter(this.modal_overhead.new.labor_assignment_id,this.activities);
+                return this.treeFilter(this.modal_overhead.new.labor_assignment_id,this.labor_activities);
             }
             return [];
         },

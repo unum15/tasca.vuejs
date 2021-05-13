@@ -1,5 +1,8 @@
 <template>
     <div>
+        <h1>
+            View Order
+        </h1>
             <b-container fluid>
                 <b-row>
                   <b-col md="6" class="my-1">
@@ -25,26 +28,26 @@
                 primary-key="id"
                 style="text-align:left;"
                 >
-                <template #thead-top="data">
+                <template>
                     <tr>
                         <th v-for="field in fields" :key="field.key">
                             <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
                         </th>  
                     </tr>
                 </template>
-                <template v-slot:cell(project.client.name)="data">
+                <template v-slot:[cell(project.client.name)]="data">
                     <a :href="'/client/' + data.item.project.client_id + '/project/' + data.item.project_id + '/order/' + data.item.id"> {{ data.value }} </a>
                 </template>
-                <template v-slot:cell(property)="data">
+                <template v-slot:[cell(property)]="data">
                     {{ data.item.properties.length ? data.item.properties[0].name : '' }}
                 </template>
-                <template v-slot:cell(name)="data">
+                <template v-slot:[cell(name)]="data">
                     <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template v-slot:cell(hours)="data">
+                <template v-slot:[cell(hours)]="data">
                     {{ getTotalHours(data.item) }}
                 </template>
-                <template v-slot:cell(close_date)="data">
+                <template v-slot:[cell(close_date)]="data">
                     <b-form-input
                         type="date"
                         @change="save(data.item)"
@@ -52,7 +55,7 @@
                     >
                     </b-form-input>
                 </template>
-                <template v-slot:cell(actions)="row">
+                <template v-slot:[cell(actions)]="row">
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Tasks" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
                     <img src="@/assets/checkmark.png" v-b-tooltip.hover title="Mark All Dates" @click="markDates(row.item)" fluid alt="Dates" style="width:20px;" />
                   </template>
@@ -224,7 +227,7 @@ export default {
             }
         },
         info (item) {
-            this.modalInfo.title = `Order #${item.id} - ${item.name}`
+            this.modalInfo.title = `View Order: #${item.id} - ${item.name}`
             this.modalInfo.order_id = item.id
             this.$refs['modalInfo'].show()
         },

@@ -47,6 +47,12 @@
                                 </a>
                             </b-col>
                         </b-row>
+                        <b-row>
+                            <b-col v-if="order.property.coordinates">
+                                <a :href="order.property.coordinates" target="tasca_address">Map</a>
+                            </b-col>
+                        </b-row>
+
                         <div v-for="contact in order.property.contacts" :key="contact.id">
                             <b-row v-b-popover.hover.top="contact.notes">
                                 <b-col class="label">Contact</b-col>

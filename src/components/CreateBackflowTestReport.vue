@@ -5,7 +5,7 @@
             small
             striped
             hover
-            :items="backflow_assemblies"
+            :items="my_backflow_assemblies"
             :fields="fields"
             responsive
         >
@@ -68,6 +68,7 @@ export default {
     },
     data () {
         return {
+            my_my_backflow_assemblies: [],
             tests: [],
             fields: [
                     {
@@ -146,6 +147,7 @@ export default {
         };
     },
     created () {
+        this.my_my_backflow_assemblies=this.backflow_assemblies;
         this.passed = backflows.passed // shared code between here and EditBackflowTestReport;
         if(this.property_data){
             this.fields = this.property_fields.concat(this.fields);
@@ -153,11 +155,11 @@ export default {
     },
     methods: {
         save (index) {
-            let item = this.backflow_assemblies[index]
+            let item = this.my_backflow_assemblies[index]
             if(!item.backflow_test_report_id){
                 this.$http.post('/backflow_test_report',{backflow_assembly_id: item.id, backflow_installed_to_code: true, 'report_date': this.today})
                     .then((results) => {
-                        this.backflow_assemblies[index].backflow_test_report_id = results.data.data.id;
+                        this.my_backflow_assemblies[index].backflow_test_report_id = results.data.data.id;
                         this.saveTest(index);
                     });
             }
@@ -166,7 +168,7 @@ export default {
             }
         },
         saveTest (index){
-            let item = this.backflow_assemblies[index];
+            let item = this.my_backflow_assemblies[index];
             let passed = this.passed(item);
             let test = {
                 backflow_test_report_id: item.backflow_test_report_id,
@@ -180,7 +182,7 @@ export default {
             if(!item.test_id){
                 this.$http.post('/backflow_test',test)
                     .then((results) => {
-                        this.backflow_assemblies[index].test_id = results.data.data.id;
+                        this.my_backflow_assemblies[index].test_id = results.data.data.id;
                     });
             }
             else{
@@ -192,10 +194,10 @@ export default {
             window.open(edit_route.href, '_blank');
         },
         newTest (index){
-            this.backflow_assemblies[index].test_id = null;
-            this.backflow_assemblies[index].reading_1 = null;
-            this.backflow_assemblies[index].reading_2 = null;
-            this.backflow_assemblies[index].reading_notes = null;
+            this.my_backflow_assemblies[index].test_id = null;
+            this.my_backflow_assemblies[index].reading_1 = null;
+            this.my_backflow_assemblies[index].reading_2 = null;
+            this.my_backflow_assemblies[index].reading_notes = null;
         },
         editNotes (item){
             let notes = prompt('Edit Notes',item.notes);

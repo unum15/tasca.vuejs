@@ -27,7 +27,7 @@
                       <b-form-input
                         type="text"
                         v-model="contact.name"
-                        @change="contactNameChanged"
+                        @change="checkExistingContactName();contactNameChanged();"
                         required
                         :state="contact.name != null"
                         placeholder="John Smith">
@@ -96,11 +96,21 @@
                 </b-col>
                 <b-col>
                   <b-form-group label="Referred By">
-                    <b-form-input
-                      type="text"
-                      v-model="client.referred_by"
-                      placeholder="John Doe">
-                    </b-form-input>
+                    <el-select
+                        v-model="client.referred_by"
+                        filterable
+                        allow-create
+                        default-first-option
+                        placeholder="John Doe"
+                    >
+                      <el-option
+                        v-for="name in used_referred_bys"
+                        :key="name"
+                        :label="name"
+                        :value="name"
+                        >
+                      </el-option>
+                    </el-select>
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -145,6 +155,7 @@
                       type="text"
                       v-model="client.name"
                       :state="client.name != null"
+                      @change="checkExistingClientName();"
                       required
                       placeholder="Smith Household"
                       >
@@ -180,7 +191,9 @@
                       <b-form-group label="Address Line 1">
                         <b-form-input
                           type="text"
-                          v-model="property.address1">
+                          v-model="property.address1"
+                          @change="checkExistingAddress();"
+                          >
                         </b-form-input>
                       </b-form-group>
                   </b-col>
@@ -229,39 +242,66 @@
               <b-row>
                 <b-col>
                   <b-form-group label="Project Name">
-                    <b-form-input
-                        type="text"
+                    <el-select
                         v-model="project.name"
-                        required
-                        :state="project.name != null"
+                        filterable
+                        allow-create
+                        default-first-option
                         placeholder="New Project Name"
+                        :state="project.name != null"
+                        required
+                    >
+                      <el-option
+                        v-for="name in used_projects"
+                        :key="name"
+                        :label="name"
+                        :value="name"
                         >
-                    </b-form-input>
+                      </el-option>
+                    </el-select>
                   </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Order Name">
-                    <b-form-input
-                        type="text"
+                    <el-select
                         v-model="order.name"
-                        @change="orderNameChanged"
-                        required
-                        :state="order.name != null"
+                        filterable
+                        allow-create
+                        default-first-option
                         placeholder="New Order Name"
+                        @change="orderNameChanged"
+                        :state="order.name != null"
+                        required
+                    >
+                      <el-option
+                        v-for="name in used_orders"
+                        :key="name"
+                        :label="name"
+                        :value="name"
                         >
-                    </b-form-input>
+                      </el-option>
+                    </el-select>
                   </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Task Name">
-                    <b-form-input
-                        type="text"
+                    <el-select
                         v-model="task.name"
-                        required
-                        :state="order.name != null"
+                        filterable
+                        allow-create
+                        default-first-option
                         placeholder="New Task Name"
+                        :state="task.name != null"
+                        required
+                    >
+                      <el-option
+                        v-for="name in used_tasks"
+                        :key="name"
+                        :label="name"
+                        :value="name"
                         >
-                    </b-form-input>
+                      </el-option>
+                    </el-select>
                   </b-form-group>
                 </b-col>
               </b-row>
@@ -611,6 +651,10 @@ export default {
       showSaveSuccess: false,
       reroute: false,
       lastContactName: null,
+      used_projects: [],
+      used_tasks: [],
+      used_orders: [],
+      used_referred_bys: [],
       client: {
         id: null,
         client_type_id: null,
@@ -692,9 +736,54 @@ export default {
       this.activity_levels = response.data;
       this.activity_levels_loading = false;
     });
+    this.$http.get('/projects/unique/name').then(response => {
+      this.used_projects = response.data.data;
+    });
+    this.$http.get('/orders/unique/name').then(response => {
+      this.used_orders = response.data.data;
+    });
+    this.$http.get('/tasks/unique/name').then(response => {
+      this.used_tasks = response.data.data;
+    });
+    this.$http.get('/clients/unique/referred_by').then(response => {
+      this.used_referred_bys = response.data.data;
+    });
   },
   methods: {
     treeNormalizer,
+    checkExistingContactName() {
+      if(this.contact.name == null){
+          return;
+      }
+      this.$http.get('/contacts?name=' + this.contact.name)
+        .then((response) => {
+          if(response.data.length){
+            alert('Contact named ' + this.contact.name + ' already exists.');
+          }
+      });
+    },
+    checkExistingClientName() {
+      if(this.client.name == null){
+          return;
+      }
+      this.$http.get('/clients?name=' + this.client.name)
+        .then((response) => {
+          if(response.data.length){
+            alert('Client named ' + this.client.name + ' already exists.');
+          }
+      });
+    },
+    checkExistingAddress() {
+      if(this.property.address1 == null){
+          return;
+      }
+      this.$http.get('/properties?includes=client&address1=' + this.property.address1)
+        .then((response) => {
+          if(response.data.length){
+            alert('Property with address ' + this.property.address1 + ' already exists for client ' + response.data[0].client.name + '.');
+          }
+      });
+    },
     saveClient() {
       if(this.client.name === null){
         return;
@@ -704,7 +793,7 @@ export default {
           .then((results) => {
             this.client.id = results.data.id;
             this.saveContact();
-          })
+          });
       }
       else{
         this.$http.patch('/client/' + this.client.id,this.client)
