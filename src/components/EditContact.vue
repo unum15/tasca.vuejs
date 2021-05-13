@@ -103,7 +103,7 @@
             </b-row>
             <b-row>
               <b-button variant="danger" size="sm" @click="removeContact">Remove Contact</b-button>
-              <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
+              <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(my_contact.id)">Delete Contact</b-button>
             </b-row>
         </b-container>
         </b-col>
@@ -114,14 +114,14 @@
         </b-container>
       </b-tab>
       <b-tab title="Account">
-        <b-container v-if="contact.login">
+        <b-container v-if="my_contact.login">
           <b-row>
             <b-col>
               <b-form-group label="Login">
                 <b-form-input
                   type="text"
                   @change="save"
-                  v-model="contact.login"
+                  v-model="my_contact.login"
                   >
                 </b-form-input>
               </b-form-group>

@@ -31,7 +31,7 @@
                 <template v-slot:cell(export)="data">
                     <b-form-checkbox v-model="data.item.export" />
                 </template>
-                <template #thead-top="data">
+                <template>
                     <b-tr>
                         <b-th v-for="field in fields" :key="field.key">
                             <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>

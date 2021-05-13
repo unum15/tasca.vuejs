@@ -342,7 +342,7 @@ export default {
                 var regex = new RegExp(filter.text_filter, 'i');
                 var has_match = false;
                 for(var field in record) {
-                    if((record.hasOwnProperty(field)) && (typeof(record[field]) == "string") && (record[field].match(regex))) {
+                    if((field in record) && (typeof(record[field]) == "string") && (record[field].match(regex))) {
                         has_match = true;
                         break;
                     }
