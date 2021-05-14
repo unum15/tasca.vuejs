@@ -2,18 +2,29 @@
     <div>
         <b-container>
             <b-row>
-                <b-col class="label">Task#</b-col>
-                <b-col class="data" cols="2">{{ task.id }}</b-col>
-                <b-col class="label">Hours</b-col>
-                <b-col class="data" cols="3">{{ task.task_hours }}</b-col>
-                <b-col class="label">Crew Time</b-col>
-                <b-col class="data" cols="3">{{ task.crew_hours }}</b-col>
-                <b-col cols="3"><b-button @click="showClockIn" v-if="appointment_id && !clock_in.id">Clock In</b-button></b-col>
-                <b-col cols="2"><b-button @click="showClockOut" v-if="clock_in.id">Clock Out</b-button></b-col>
-            </b-row>
-            <b-row>
                 <b-col class="label">Task Description</b-col>
                 <b-col class="data" cols="9">{{ task.description }}</b-col>
+            </b-row>
+            <b-row>
+                <b-col cols="2" v-for="appointment in filtered_appointments" :key="appointment.id" :class="{highlight: appointment.date == today, blue: appointment.date != today}">
+                    {{ formatTime(appointment.date,appointment.time) }}
+                </b-col>
+            </b-row>
+            <b-row>
+                <b-col class="label">Task#</b-col>
+                <b-col class="data">{{ task.id }}</b-col>
+                <b-col class="label">Hours</b-col>
+                <b-col class="data">{{ task.task_hours }}</b-col>
+                <b-col class="label">Crew Time</b-col>
+                <b-col class="data">{{ task.crew_hours }}</b-col>
+                <b-col class="label">Assignment</b-col>
+                <b-col class="data">{{ task.labor_assignment.name }}</b-col>
+                <b-col class="label">Labor Type</b-col>
+                <b-col class="data">{{ task.labor_type.name }}</b-col>
+            </b-row>
+            <b-row>
+                <b-col cols="3"><b-button @click="showClockIn" v-if="appointment_id && !clock_in.id">Clock In</b-button></b-col>
+                <b-col cols="2"><b-button @click="showClockOut" v-if="clock_in.id">Clock Out</b-button></b-col>
             </b-row>
             <b-row>
                 <b-col class="header">Employee</b-col>
@@ -35,7 +46,7 @@
                     <b-col class="data"><b-form-input v-model="clock_in.notes" @input="saveNotes(clock_in)"></b-form-input></b-col>
                 </b-row>
             </div>
-            <b-row>
+            <b-row style="padding-top:20px;padding-bottom:20px;">
                 <b-col class="label">
                     <b-form-checkbox v-model="completed" @input="markCompleted">
                         Completed
@@ -133,7 +144,7 @@ export default {
     created() {
         this.getTask();
         this.getEmployeesHours();
-        this.getTaskDates();
+        this.getAppointments();
         this.getClockIns();
     },
     methods: {
@@ -160,7 +171,7 @@ export default {
                 this.clock_ins = results.data;
             });
         },
-        getTaskDates() {
+        getAppointments() {
             this.$http.get('/appointments?task_id=' + this.task_id).then((results) => {
                 this.appointments = results.data;
             });
@@ -289,6 +300,12 @@ export default {
             }
             return [];
         },
+        filtered_appointments(){
+            return this.appointments.filter(appointment => (appointment.date>=this.today));
+        },
+        today(){
+            return moment().format('YYYY-MM-DD');
+        }
     },
 }
 </script>
@@ -296,6 +313,7 @@ export default {
 .label {
     text-align: left;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .header {
@@ -304,5 +322,13 @@ export default {
 
 .data {
     text-align: left;
+}
+
+.highlight {
+    background-color: yellow;
+}
+
+.blue {
+    background-color: #AAEEFF;
 }
 </style>
