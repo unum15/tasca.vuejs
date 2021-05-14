@@ -15,8 +15,8 @@
             <b-col>
               <b-form-input
                 type="text"
-                v-model="system.name"
-                @change="save(system)"
+                v-model="my_system.name"
+                @change="save(my_system)"
                 />
             </b-col>
           </b-row>
@@ -29,8 +29,8 @@
                 :options="irrigation_water_types"
                 value-field="id"
                 text-field="name"
-                v-model="system.irrigation_water_type_id"
-                @input="save(system);"
+                v-model="my_system.irrigation_water_type_id"
+                @input="save(my_system);"
               />
             </b-col>
           </b-row>
@@ -41,12 +41,12 @@
             <b-col>
               <b-form-input
                 type="text"
-                v-model="system.point_of_connection_location"
-                @change="save(system)"
+                v-model="my_system.point_of_connection_location"
+                @change="save(my_system)"
                 />
             </b-col>
           </b-row>
-          <b-row v-if="system.irrigation_water_type_id==1 || system.irrigation_water_type_id==3">
+          <b-row v-if="my_system.irrigation_water_type_id==1 || my_system.irrigation_water_type_id==3">
             <b-col>
               Backflow
             </b-col>
@@ -55,39 +55,39 @@
                 :options="backflows"
                 value-field="id"
                 text-field="placement"
-                v-model="system.backflow_assembly_id"
-                @input="save(system)"
+                v-model="my_system.backflow_assembly_id"
+                @input="save(my_system)"
               />
             </b-col>
           </b-row>
-          <b-row v-if="system.backflow_assembly_id">
+          <b-row v-if="my_system.backflow_assembly_id">
             <b-col>
             </b-col>
             <b-col>
-              {{ getBackflowData(system.backflow_assembly_id) }}
+              {{ getBackflowData(my_system.backflow_assembly_id) }}
             </b-col>
           </b-row>
-          <b-row v-if="system.irrigation_water_type_id==2 || system.irrigation_water_type_id==3">
+          <b-row v-if="my_system.irrigation_water_type_id==2 || my_system.irrigation_water_type_id==3">
             <b-col>
               Filter Model
             </b-col>
             <b-col>
               <b-form-input
                 type="text"
-                v-model="system.filter_model"
-                @change="save(system)"
+                v-model="my_system.filter_model"
+                @change="save(my_system)"
                 />
             </b-col>
           </b-row>
-          <b-row v-if="system.irrigation_water_type_id==2 || system.irrigation_water_type_id==3">
+          <b-row v-if="my_system.irrigation_water_type_id==2 || my_system.irrigation_water_type_id==3">
             <b-col>
               Filter Location
             </b-col>
             <b-col>
               <b-form-input
                 type="text"
-                v-model="system.filter_location"
-                @change="save(system)"
+                v-model="my_system.filter_location"
+                @change="save(my_system)"
                 />
             </b-col>
           </b-row>
@@ -100,8 +100,8 @@
                 :options="units"
                 value-field="id"
                 text-field="name"
-                v-model="system.property_unit_id"
-                @input="save(system)"
+                v-model="my_system.property_unit_id"
+                @input="save(my_system)"
               />
             </b-col>
           </b-row>
@@ -111,12 +111,12 @@
             </b-col>
             <b-col>
               <b-form-textarea
-                v-model="system.notes"
-                @change="save(system)"
+                v-model="my_system.notes"
+                @change="save(my_system)"
                 />
             </b-col>
           </b-row>
-          <div v-if="system.irrigation_system_others.length">
+          <div v-if="my_system.irrigation_system_others.length">
             <b-row>
               <b-col>
                 Name
@@ -126,7 +126,7 @@
               </b-col>
             </b-row>
             <b-row
-              v-for="(other) in system.irrigation_system_others"
+              v-for="(other) in my_system.irrigation_system_others"
               :key="other.id"
             >
               <b-col>
@@ -146,7 +146,7 @@
             </b-row>
           </div>
         </b-container>
-        <b-button variant="secondary" @click="newOther(system)">Add New System Field</b-button>
+        <b-button variant="secondary" @click="newOther(my_system)">Add New System Field</b-button>
       </b-tab>
       <b-tab>
         <template slot="title">

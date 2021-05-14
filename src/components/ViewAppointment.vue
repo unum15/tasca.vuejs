@@ -1,31 +1,41 @@
 <template>
-    <div>
+    <div v-if="order">
         <b-container style="padding-left:0px;">
             <b-row>
-                <b-col class="label">Project</b-col>
-                <b-col class="data" cols="3">{{ order.project.name }} </b-col>
-                <b-col class="label">Client</b-col>
-                <b-col class="data" cols="2">{{ order.project.client.name }}</b-col>
-                <b-col class="label">Order#</b-col>
-                <b-col class="data" cols="2">{{ order.id }}</b-col>
+                <b-col class="data">
+                    <span class="label">Project</span>
+                    {{ truncate(order.project.name,30) }}
+                </b-col>
+                <b-col class="data">
+                    <span class="label">Client</span>
+                    {{ truncate(order.project.client.name,30) }}
+                </b-col>
+                <b-col class="data">
+                    <span class="label">Order#</span>
+                    {{ order.id }}
+                </b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ order.project.notes }}</b-col>
             </b-row>
             <b-row>
-                <b-col class="label">Order</b-col>
-                <b-col class="data" cols="2">{{ order.name }}</b-col>
-                <b-col class="label" cols="2">Start Date</b-col>
-                <b-col class="data" cols="2">{{ order.start_date }}</b-col>
+                <b-col class="data">
+                    <span class="label">Order</span>
+                    {{ truncate(order.name,80) }}
+                </b-col>
+                <b-col class="data">
+                    <span class="label">Start Date</span>
+                    {{ truncate(order.start_date,80) }}
+                </b-col>
             </b-row>
             <b-row>
                 <b-col class="data">{{ order.description }}</b-col>
             </b-row>
             <b-row>
-                <b-col>
-                    <b-container style="padding-left:0px;">
+                <b-col style="padding:0px;border: 1px solid black;">
+                    <b-container>
                         <b-row>
-                            <b-col class="label">Property</b-col>
+                            <b-col class="label" cols="2">Property</b-col>
                             <b-col class="data" cols="10">
                                 <a :href="'http://maps.google.com/maps?q=' + order.property.address1 + '+' + (order.property.address2 ? order.property.address2 + '+' : '') + order.property.city + '+' + order.property.state + '+' + order.property.zip" target="tasca_address">
                                     {{ order.property.name }}<br />
@@ -45,40 +55,48 @@
 
                         <div v-for="contact in order.property.contacts" :key="contact.id">
                             <b-row v-b-popover.hover.top="contact.notes">
-                                <b-col class="label">Contact</b-col>
+                                <b-col class="label" cols="2">Contact</b-col>
                                 <b-col class="data" cols="10">{{ contact.name }} - {{ getContactType(order.project.client.id, contact) }}</b-col>
                             </b-row>
                             <b-row v-for="phone_number in contact.phone_numbers" :key="phone_number.id">
-                                <b-col class="label">{{ phone_number.phone_number_type.name }}</b-col>
+                                <b-col class="label" cols="2">{{ phone_number.phone_number_type.name }}</b-col>
                                 <b-col class="data" cols="10"><a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a></b-col>
                             </b-row>
                             <b-row v-for="email in contact.emails" :key="email.id">
-                                <b-col class="label">{{ email.email_type.name }}</b-col>
+                                <b-col class="label" cols="2">{{ email.email_type.name }}</b-col>
                                 <b-col class="data" cols="10"><a :href="'mailto:' + email.email">{{ email.email }}</a></b-col>
                             </b-row>
                         </div>
                     </b-container>
                 </b-col>
-                <b-col>
+                <b-col style="padding:0px;border: 1px solid black;">
                     <b-container>
-                        <b-row>
-                            <b-col class="label">Location</b-col>
-                            <b-col class="data" cols="10">{{ order.location }}</b-col>
+                        <b-row v-b-popover.hover.top="order.location">
+                            <b-col class="label" cols="2">Location</b-col>
+                            <b-col class="long_data" cols="10" >{{ truncate(order.location,50) }}</b-col>
                         </b-row>
                         <b-row>
-                            <b-col class="label">Instructions</b-col>
-                            <b-col class="data" cols="10">{{ order.instructions }}</b-col>
+                            <b-col class="label" cols="2">Instrs.</b-col>
+                            <b-col class="long_data" cols="10">{{ order.instructions }}</b-col>
+                        </b-row>
+                        <b-row v-b-popover.hover.top="order.notes">
+                            <b-col class="label" cols="2">Notes</b-col>
+                            <b-col class="long_data" cols="10">{{ truncate(order.notes,150) }}</b-col>
                         </b-row>
                         <b-row>
-                            <b-col class="label">Notes</b-col>
-                            <b-col class="data" cols="10">{{ order.notes }}</b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col class="label">Budget</b-col>
+                            <b-col class="label" cols="2">Budget</b-col>
                             <b-col class="data" cols="10">{{ order.budget }}+/-{{ order.budget_plus_minus }}</b-col>
                         </b-row>
                         <b-row>
-                            <b-col class="label">Bid</b-col>
+                            <b-col class="label" cols="2">Task Hours</b-col>
+                            <b-col class="data" cols="10">{{ task_hours }}</b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col class="label" cols="2">Crew Hours</b-col>
+                            <b-col class="data" cols="10">{{ task_crew_hours }}</b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col class="label" cols="2">Bid</b-col>
                             <b-col class="data" cols="10">{{ order.bid }}+/-{{ order.bid_plus_minus }}</b-col>
                         </b-row>
                     </b-container>
@@ -120,20 +138,7 @@ export default {
     },
     data() {
         return {
-            order: {
-                id: null,
-                project: {
-                    client: {
-                        name : null
-                    },
-                    contact: {
-                        name: null
-                    }
-                },
-                property: {
-                    
-                }
-            },
+            order: null,
             clock_ins: [],
             billed: false,
             invoiced: false,
@@ -171,6 +176,28 @@ export default {
                 }
             });
             return type[0];
+        },
+        truncate(value,length){
+            if(value){
+                return value.substring(0,length);
+            }
+            return '';
+        }
+    },
+    computed: {
+        task_hours(){
+            let hours = 0;
+            this.tasks.map(t =>{
+                hours += t.task_hours;
+            });
+            return hours;
+        },
+        task_crew_hours(){
+            let hours = 0;
+            this.tasks.map(t =>{
+                hours += t.crew_hours;
+            });
+            return hours;
         }
     },
     watch: {
@@ -182,9 +209,8 @@ export default {
 </script>
 <style scoped>
 .label {
-    text-align: right;
     font-weight: bold;
-    text-align: left;
+    white-space: nowrap;
 }
 
 .header {
@@ -193,5 +219,15 @@ export default {
 
 .data {
     text-align: left;
+    white-space: nowrap;
+    padding-right: 0 px;
+}
+
+.long_data {
+    text-align: left;
+    padding-right: 0 px;
+}
+.col-10 {
+    padding-right: 0 px;
 }
 </style>

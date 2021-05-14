@@ -29,9 +29,6 @@
                 <b-col></b-col>
                 <b-col></b-col>
             </b-row>
-            <b-row v-if="type=='task'" v-for="appointment in appointments" :key="appointment.id">
-                 <b-col class="data" v-if="appointment.date>=today" :class="{highlight: appointment.id == appointment_id}">{{ formatTime(appointment.date,appointment.time) }}</b-col>
-             </b-row>
         </b-container>
         <b-modal :id="'clock_ins-' + this.type + '-' + this.id" title="Clock Ins" size="lg" ok-only>
             <b-container>
@@ -158,7 +155,7 @@ export default {
             return time.toFixed(2);
         },
         today(){
-            return moment().format('YYYY-MM-DD')
+            return moment().format('YYYY-MM-DD');
         }
     }
 }
@@ -175,8 +172,5 @@ export default {
 
 .data {
     text-align: left;
-}
-.highlight {
-    background-color: yellow;
 }
 </style>

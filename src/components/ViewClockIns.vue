@@ -93,22 +93,22 @@
                 :items="variant_clock_ins"
                 :fields="fields"
             >
-                <template v-slot:cell(id)="data">
+                <template v-slot:[cell(id)]="data">
                     <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
                 </template>
-                <template v-slot:cell(time)="data">
+                <template v-slot:[cell(time)]="data">
                     {{ getDiff(data.item.clock_in,data.item.clock_out) }}
                 </template>
-                <template v-slot:cell(order)="data">
+                <template v-slot:[cell(order)]="data">
                     {{ data.item.appointment ? data.item.appointment.task.order.name : data.item.overhead_assignment ?  data.item.overhead_assignment.name : ''}}
                 </template>
-                <template v-slot:cell(task)="data">
+                <template v-slot:[cell(task)]="data">
                     {{ data.item.appointment ? data.item.appointment.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
                 </template>
-                <template v-slot:cell(labor_activity.name)="data">
+                <template v-slot:[cell(labor_activity.name)]="data">
                     <a href="/clock_ins" @click.stop.prevent="editClockIn(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
-                <template v-slot:cell(notes)="data">
+                <template v-slot:[cell(notes)]="data">
                      <img v-if="data.value" src="@/assets/details.png" v-b-tooltip.hover :title="data.value" fluid alt="DTS" style="width:20px;" />
                 </template>
             </b-table>
