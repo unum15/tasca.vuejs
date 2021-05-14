@@ -155,7 +155,7 @@
                   type="number"
                   step="0.01"
                   @change="save"
-                  v-model="contact.labor_rate"
+                  v-model="my_contact.labor_rate"
                   >
                 </b-form-input>
               </b-form-group>
