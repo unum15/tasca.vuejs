@@ -64,15 +64,15 @@ export default {
       if(!this.verifyPhoneNumber){
         return;
       }
-      this.$http.get('/phone_numbers?includes=contact&phone_number='+this.my_phone_number.phone_number).then((response) => {
-          if(response.data.length){
-            alert('Phone number ' + this.my_phone_number.phone_number + ' already exists for contact ' + response.data[0].contact.name + '.');
-          }
-      });
       if(!this.my_phone_number.contact_id){
         return;
       }
       if(this.my_phone_number.id === null){
+        this.$http.get('/phone_numbers?includes=contact&phone_number='+this.my_phone_number.phone_number).then((response) => {
+          if(response.data.length){
+            alert('Phone number ' + this.my_phone_number.phone_number + ' already exists for contact ' + response.data[0].contact.name + '.');
+          }
+        });
         this.$http.post('/phone_number',this.my_phone_number)
           .then((results) => {
             this.my_phone_number.id = results.data.id;
