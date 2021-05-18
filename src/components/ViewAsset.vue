@@ -5,7 +5,7 @@
             {{ asset.name }}
         </h1>
         <b-container>
-            <b-row v-for="(value,field) in asset" :key="field" v-if="field.substr(-2) !== 'id'">
+            <b-row v-for="(value,field) in filtered_asset" :key="field">
                 <b-col style="text-align:right;">
                     {{ field }}
                 </b-col>
@@ -35,6 +35,11 @@ export default {
         this.$http.get('/asset/number/' + this.asset_number +'?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_location,asset_exports').then(response => {
             this.asset = response.data.data;
         });
+    },
+    computed: {
+        filtered_asset(){
+            return this.asset.filter(field => (field.substr(-2) !== 'id'));
+        }
     }
 };
 </script>

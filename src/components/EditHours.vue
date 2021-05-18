@@ -104,7 +104,7 @@ export default {
       this.groups[group].total = subTotal;
       var total=0;
       for (var g in this.groups) {
-         if (this.groups.hasOwnProperty(g)) {
+         if (g in this.groups) {
           total+=this.groups[g].total;
          }
       }

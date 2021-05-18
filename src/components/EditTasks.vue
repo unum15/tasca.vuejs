@@ -14,9 +14,8 @@
     </b-container>
 			<b-tabs vertical pills v-model="current_tab" :key="tasks.length">
 				<b-tab
-					v-for="(task, index) in tasks"
+					v-for="(task, index) in filtered_tasks"
 					:key="index"
-					v-if="showTab(task)"
 					:active="isActive(index)"
 				>
 					<template slot="title" style="text-align:left">
@@ -108,13 +107,6 @@ export default {
 		removeTask: function(task){
 			this.tasks = this.tasks.filter(t => t.id !== task.id);
 		},
-		showTab(task){
-			var show = true;
-			if((!this.filter.completed)&&((task.closed_date != null)&&((task.closed_date != '')))&&(task.closed_date < moment().subtract(400, 'days').format('YYYY-MM-DD'))){
-				show = false;
-			}
-			return show;
-		},
 		isActive(index){
       if((this.change_tab)&&(index == this.tasks.length -1)){
         return true
@@ -158,6 +150,17 @@ export default {
 			});
 		}
   },
+	computed: {
+		filtered_tasks(){
+			return this.tasks.filter(task => {
+				var show = true;
+				if((!this.filter.completed)&&((task.closed_date != null)&&((task.closed_date != '')))&&(task.closed_date < moment().subtract(400, 'days').format('YYYY-MM-DD'))){
+					show = false;
+				}
+				return show;
+			});
+		}
+	}
 }
 </script>
 <style>

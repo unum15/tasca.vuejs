@@ -24,9 +24,8 @@
     </b-container>
         <b-tabs vertical pills v-model="current_tab" :key="orders.length">
             <b-tab
-							v-for="(order, index) in orders"
+							v-for="(order, index) in filtered_orders"
 							:key="index"
-							v-if="showTab(order)"
 							:active="isActive(index)"
 							>
 								<template slot="title" style="text-align:left">
@@ -184,6 +183,18 @@ export default {
 			}
 			return null;
 		},
+		filtered_orders(){
+			return this.orders.filter(order => {
+				let show = true;
+				if((!this.filter.completed)&&(order.completion_date != null)){
+					show = false;
+				}
+				if((!this.filter.expired)&&(order.expiration_date != null)&&(order.expiration_date < this.today)){
+					show = false;
+				}
+				return show
+			});
+		}
 	},
   watch:{
 		reload_count() {
