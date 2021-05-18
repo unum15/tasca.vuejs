@@ -11,23 +11,23 @@
               selectable
               @row-clicked="rowClicked"
           >
-              <template v-slot:[cell(placement)]="data">
+              <template v-slot:cell(placement)="data">
                 <span v-b-popover.hover.top="(data.item.backflow_water_system ? data.item.backflow_water_system.name : '') + (data.item.contact ? '-' + data.item.contact.name : '')">
                   {{ data.value }}
                 </span>
               </template>
-              <template v-slot:[cell(backflow_manufacturer.name)]="data">
+              <template v-slot:cell(backflow_manufacturer_id)="data">
                 <span v-b-popover.hover.top="data.item.created_at + '-' + data.item.updated_at">
                   {{ data.value }}
                 </span>
               </template>
-              <template v-slot:[cell(serial_number)]="data">
+              <template v-slot:cell(serial_number)="data">
                   <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value ?  data.value : data.item.id }} </a>
               </template>
-              <template v-slot:[cell(include)]="data">
+              <template v-slot:cell(include)="data">
                 <b-form-checkbox @change="include(data.item)" v-if="data.item.backflow_test_reports.length" />
               </template>
-              <template v-slot:[row-details]="data">
+              <template v-slot:row-details="data">
                 <ViewBackflowsReportsTab v-if="data.item.backflow_test_reports.length && !data.item.show_all_reports" :backflow_test_reports="[data.item.backflow_test_reports[0]]">
                 </ViewBackflowsReportsTab>
                 <ViewBackflowsReportsTab v-if="data.item.backflow_test_reports.length && data.item.show_all_reports" :backflow_test_reports="data.item.backflow_test_reports">

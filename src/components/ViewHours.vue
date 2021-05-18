@@ -163,7 +163,7 @@ export default {
             return moment().format('YYYY-MM-DD')
         },
         filtered_appointments(){
-            return this.appointments.filtered(appointment => (appointment.date>=this.today));
+            return this.appointments.filter(appointment => (appointment.date>=this.today));
         }
     }
 }
