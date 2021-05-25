@@ -68,7 +68,7 @@ export default {
     },
     data () {
         return {
-            my_my_backflow_assemblies: [],
+            my_backflow_assemblies: [],
             tests: [],
             fields: [
                     {
