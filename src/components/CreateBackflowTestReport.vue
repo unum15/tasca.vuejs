@@ -147,7 +147,7 @@ export default {
         };
     },
     created () {
-        this.my_my_backflow_assemblies=this.backflow_assemblies;
+        this.my_backflow_assemblies=this.backflow_assemblies;
         this.passed = backflows.passed // shared code between here and EditBackflowTestReport;
         if(this.property_data){
             this.fields = this.property_fields.concat(this.fields);
@@ -215,6 +215,11 @@ export default {
           contact_id: state => state.user.id
         })
     },
+    watch: {
+        backflow_assemblies(){
+            this.my_backflow_assemblies=this.backflow_assemblies;
+        }
+    }
 };
 </script>
 
