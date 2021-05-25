@@ -28,7 +28,7 @@
                 primary-key="id"
                 style="text-align:left;"
                 >
-                 <template #thead-top="data">
+                 <template #thead-top>
                     <tr>
                         <th v-for="field in fields" :key="field.key">
                             <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
