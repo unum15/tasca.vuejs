@@ -890,11 +890,11 @@ export default {
           .then((results) => {
             this.task.id = results.data.data.id;
             this.saveAppointment();
-          })
+          });
       }
       else{
         this.$http.patch('/task/' + this.task.id,this.task)
-        .then(() => {this.saveAppointment();})
+        .then(() => {this.saveAppointment();});
       }
     },
     saveAppointment() {
@@ -906,7 +906,7 @@ export default {
               this.appointment.id = results.data.data.id;
             }
             this.nextTask();
-          })
+          });
       }
       else{
         this.$http.patch('/appointment/' + this.appointment.id,this.appointment)

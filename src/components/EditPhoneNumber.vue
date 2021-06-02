@@ -113,8 +113,8 @@ export default {
         this.save();
       }
       else{
-        my_phone_number.phone_number_type_id = null;
-        my_phone_number.phone_number = null;
+        this.my_phone_number.phone_number_type_id = null;
+        this.my_phone_number.phone_number = null;
       }
     }
   }
