@@ -108,8 +108,14 @@ export default {
   },
   watch: {
     contact_id(){
-      this.my_phone_number.contact_id = this.contact_id;
-      this.save();
+      if(this.contact_id){
+        this.my_phone_number.contact_id = this.contact_id;
+        this.save();
+      }
+      else{
+        my_phone_number.phone_number_type_id = null;
+        my_phone_number.phone_number = null;
+      }
     }
   }
 }
