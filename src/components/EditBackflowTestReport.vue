@@ -42,9 +42,9 @@
                         striped
                         responsive="sm"
                         @row-selected="backflowSelected"
-                        context-changed="tableUpdated"
                         select-mode="single"
                         style="text-align:left"
+                        selected-variant="success"
                     >
                         <template v-slot:cell(include)="data">
                                 <b-form-checkbox v-if="data.item.backflow_test_reports.length" v-model="data.item.include" />
@@ -609,13 +609,20 @@ export default {
                     });
                     this.backflow_assemblies = assemblies;
                     if(this.backflow_assemblies.length == 1){
-                       this.backflow_assembly_id=this.backflow_assemblies[0].id;
-                       this.backflow_assembly=this.backflow_assemblies[0];
-                       this.getValves();
+                        this.backflow_assembly_id=this.backflow_assemblies[0].id;
+                        this.backflow_assembly=this.backflow_assemblies[0];
+                        this.getValves();
+                        this.$nextTick(() => {
+                           this.$refs.backflowsTable.selectRow(0);
+                        });
                     }
                     else{
-                       let row = this.backflow_assemblies.findIndex(b => b.id === this.backflow_assembly_id);
-                       this.$refs.backflowsTable.selectRow(row);
+                        if(this.backflow_assembly_id){
+                            let row = this.backflow_assemblies.findIndex(b => b.id === this.backflow_assembly_id);
+                            this.$nextTick(() => {
+                                 this.$refs.backflowsTable.selectRow(row);
+                            });
+                        }
                     }
                  });
             }
