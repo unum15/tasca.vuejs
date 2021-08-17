@@ -130,7 +130,7 @@ export default {
     },
     data() {
         return {
-            task: { },
+            task: { labor_assignment: {}, labor_type: {}},
             billed: false,
             completed: false,
             invoiced: false,
