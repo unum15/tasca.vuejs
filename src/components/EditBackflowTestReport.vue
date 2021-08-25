@@ -778,9 +778,11 @@ export default {
             this.getPreview();
         },
         getPreview(){
-            this.$http.get('/backflow_test_reports/html?backflow_test_report_id[]='+this.includedBackflowAssemblies[this.preview_backflow_test_report_index].backflow_test_reports[0].id).then(response => {
-                this.preview = response.data;
-            });
+            if(this.includedBackflowAssemblies[this.preview_backflow_test_report_index].backflow_test_reports.length){
+                this.$http.get('/backflow_test_reports/html?backflow_test_report_id[]='+this.includedBackflowAssemblies[this.preview_backflow_test_report_index].backflow_test_reports[0].id).then(response => {
+                    this.preview = response.data;
+                });
+            }
         },
         previewTab(){
             let url = '/api/backflow_test_reports/html?';
