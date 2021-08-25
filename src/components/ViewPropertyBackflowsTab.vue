@@ -16,7 +16,7 @@
                   {{ data.value }}
                 </span>
               </template>
-              <template v-slot:cell(backflow_manufacturer.name)="data">
+              <template v-slot:cell(backflow_manufacturer_id)="data">
                 <span v-b-popover.hover.top="data.item.created_at + '-' + data.item.updated_at">
                   {{ data.value }}
                 </span>

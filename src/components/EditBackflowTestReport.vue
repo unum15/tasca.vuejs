@@ -42,15 +42,15 @@
                         striped
                         responsive="sm"
                         @row-selected="backflowSelected"
-                        context-changed="tableUpdated"
                         select-mode="single"
                         style="text-align:left"
+                        selected-variant="success"
                     >
                         <template v-slot:cell(include)="data">
                                 <b-form-checkbox v-if="data.item.backflow_test_reports.length" v-model="data.item.include" />
                         </template>
                         <template v-slot:cell(serial_number)="data">
-                            <a :href="'/backflow_assembly/'+data.item.id">
+                            <a href="" @click.stop.prevent="edit_backflow_assembly_id=data.item.id;$refs['edit-backflow-assembly-modal'].show();" >
                                 {{ data.value }}
                             </a>
                         </template>
@@ -346,17 +346,22 @@
                 <b-button @click="submit" v-if="includedBackflowAssemblies.length">Submit</b-button>
             </div>
         </main>
+        <b-modal ref="edit-backflow-assembly-modal" title="Edit Backflow Assembly" @ok="updateBackflowAssembly" ok-only>
+            <EditBackflowAssemblyForm :backflow_assembly_id="edit_backflow_assembly_id" :show_next_options="false"></EditBackflowAssemblyForm>
+        </b-modal>
     </div>
 </template>
 <script>
-import TopMenu from './TopMenu'
+import TopMenu from './TopMenu';
 import moment from 'moment';
 import backflows from '../common/Backflows.js';
+import EditBackflowAssemblyForm from './EditBackflowAssemblyForm';
 import { mapState } from 'vuex';
 export default {
     name: 'EditBackflowTestReport',
     components: {
-        'TopMenu': TopMenu
+        TopMenu,
+        EditBackflowAssemblyForm
     },
     props: {
         backflow_test_report_id: {default: null}
@@ -385,6 +390,7 @@ export default {
             reports: [],
             report_id: null,
             backflow_assembly: { backflow_type: null},
+            edit_backflow_assembly_id: null,
             active_reports_fields: [
                 {
                     key: 'id',
@@ -601,16 +607,22 @@ export default {
                     assemblies.map( a => {
                         a.include=true;
                     });
-                    console.log(assemblies);
                     this.backflow_assemblies = assemblies;
                     if(this.backflow_assemblies.length == 1){
-                       this.backflow_assembly_id=this.backflow_assemblies[0].id;
-                       this.backflow_assembly=this.backflow_assemblies[0];
-                       this.getValves();
+                        this.backflow_assembly_id=this.backflow_assemblies[0].id;
+                        this.backflow_assembly=this.backflow_assemblies[0];
+                        this.getValves();
+                        this.$nextTick(() => {
+                           this.$refs.backflowsTable.selectRow(0);
+                        });
                     }
                     else{
-                       let row = this.backflow_assemblies.findIndex(b => b.id === this.backflow_assembly_id);
-                       this.$refs.backflowsTable.selectRow(row);
+                        if(this.backflow_assembly_id){
+                            let row = this.backflow_assemblies.findIndex(b => b.id === this.backflow_assembly_id);
+                            this.$nextTick(() => {
+                                 this.$refs.backflowsTable.selectRow(row);
+                            });
+                        }
                     }
                  });
             }
@@ -825,6 +837,18 @@ export default {
                 }
             }
         },
+        updateBackflowAssembly(){
+            let assembly_index = this.backflow_assemblies.findIndex(a => (a.id == this.edit_backflow_assembly_id));
+            if(assembly_index < 0){
+                return;
+            }
+            this.$http.get('/backflow_assembly/'+this.edit_backflow_assembly_id+'?includes=backflow_size,backflow_type,backflow_type.backflow_super_type,backflow_manufacturer,backflow_model,backflow_test_reports.backflow_tests&recent_reports=30&active=1&property_id=' + this.property_id).then(response => {
+                let assembly = response.data.data;
+                assembly.include = this.backflow_assemblies[assembly_index].include;
+                this.backflow_assemblies[assembly_index] = assembly;
+                this.$refs.backflowsTable.refresh()
+            });
+        }
     },
     computed:{
         today() {

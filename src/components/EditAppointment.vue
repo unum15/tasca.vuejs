@@ -106,7 +106,7 @@ export default {
       if((this.my_date.id === null)||(this.my_date.id === undefined)){
           this.$http.post('/appointment',this.my_date)
             .then((results) => {
-              this.my_date.id = results.data.id;
+              this.my_date.id = results.data.data.id;
             })
       }
       else{

@@ -4,12 +4,8 @@
   </div>
 </template>
 <script>
-import TopMenu from '@/components/TopMenu'
 export default {
   name: 'app',
-  components: {
-    'TopMenu': TopMenu
-  }
 }
 </script>
 

@@ -1,5 +1,8 @@
 <template>
     <div>
+        <h1>
+            View Order
+        </h1>
             <b-container fluid>
                 <b-row>
                   <b-col md="6" class="my-1">
@@ -25,14 +28,14 @@
                 primary-key="id"
                 style="text-align:left;"
                 >
-                <template #thead-top="data">
+                 <template #thead-top>
                     <tr>
                         <th v-for="field in fields" :key="field.key">
                             <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
                         </th>  
                     </tr>
                 </template>
-                <template v-slot:cell(project.client.name)="data">
+                <template v-slot:cell(project)="data">
                     <a :href="'/client/' + data.item.project.client_id + '/project/' + data.item.project_id + '/order/' + data.item.id"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(property)="data">
@@ -62,24 +65,24 @@
                   </template>
             </b-table>
             <b-modal size="xl" scrollable ref="modalInfo" id="modalInfo" @hide="resetModal" :title="modalInfo.title" ok-only>
-                <ViewScheduleOrderPopup
+                <ViewAppointment
                     v-if="modalInfo.order_id"
                     :order_id="modalInfo.order_id"
                     :task_id="modalInfo.task_id"
                 >
-                </ViewScheduleOrderPopup>
+                </ViewAppointment>
             </b-modal>
     </div>
 </template>
 <script>
 import moment from 'moment';
 import ViewScheduleOrdersTabTasks from './ViewScheduleOrdersTabTasks';
-import ViewScheduleOrderPopup from './ViewScheduleOrderPopup';
+import ViewAppointment from './ViewAppointment';
 export default {
     name: 'ViewScheduleOrdersTab',
     components: {
         'ViewScheduleOrdersTabTasks': ViewScheduleOrdersTabTasks,
-        'ViewScheduleOrderPopup': ViewScheduleOrderPopup
+        'ViewAppointment': ViewAppointment
     },
     props: {
         tab: { required: true}
@@ -224,7 +227,7 @@ export default {
             }
         },
         info (item) {
-            this.modalInfo.title = `Order #${item.id} - ${item.name}`
+            this.modalInfo.title = `View Order: #${item.id} - ${item.name}`
             this.modalInfo.order_id = item.id
             this.$refs['modalInfo'].show()
         },

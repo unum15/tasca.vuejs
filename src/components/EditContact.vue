@@ -103,7 +103,7 @@
             </b-row>
             <b-row>
               <b-button variant="danger" size="sm" @click="removeContact">Remove Contact</b-button>
-              <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(contact.id)">Delete Contact</b-button>
+              <b-button variant="danger" size="sm" @click="deleteContact" v-if="Number.isInteger(my_contact.id)">Delete Contact</b-button>
             </b-row>
         </b-container>
         </b-col>
@@ -114,14 +114,14 @@
         </b-container>
       </b-tab>
       <b-tab title="Account">
-        <b-container v-if="contact.login">
+        <b-container v-if="my_contact.login">
           <b-row>
             <b-col>
               <b-form-group label="Login">
                 <b-form-input
                   type="text"
                   @change="save"
-                  v-model="contact.login"
+                  v-model="my_contact.login"
                   >
                 </b-form-input>
               </b-form-group>
@@ -136,6 +136,30 @@
               @change="saveRoles"
               >
             </b-form-checkbox-group>
+          </b-row>
+          <b-row>
+            <b-col>
+                <b-form-group label="Crew">
+                  <b-form-select
+                    @change="save"
+                    :options="crews"
+                    value-field="id"
+                    text-field="name"
+                    v-model="my_contact.crew_id">
+                  </b-form-select>
+                </b-form-group>
+             </b-col>
+            <b-col>
+              <b-form-group label="Labor Rate">
+                <b-form-input
+                  type="number"
+                  step="0.01"
+                  @change="save"
+                  v-model="my_contact.labor_rate"
+                  >
+                </b-form-input>
+              </b-form-group>
+            </b-col>
           </b-row>
           <b-row>
               <b-button variant="danger" size="sm" @click="resetPassword">Reset Password</b-button>
@@ -191,7 +215,8 @@ export default {
     properties: {required: true},
     settings: {required: true},
     contact_types: {default: []},
-    roles: {required: true}
+    roles: {required: true},
+    crews: {required: true}
   },
   data: function () {
     return {

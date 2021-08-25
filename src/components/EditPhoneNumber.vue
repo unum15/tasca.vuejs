@@ -60,11 +60,15 @@ export default {
     this.my_phone_number = this.phone_number;
   },
   methods: {
-    save () {
+    async save () {
+      if(!this.verifyPhoneNumber){
+        return;
+      }
       if(!this.my_phone_number.contact_id){
         return;
       }
-      if(!this.verifyPhoneNumber){
+      let exists = await this.checkPhoneNumber();
+      if(exists){
         return;
       }
       if(this.my_phone_number.id === null){
@@ -77,7 +81,17 @@ export default {
         this.$http.patch('/phone_number/' + this.my_phone_number.id,this.my_phone_number);
       }
     },
-    deletePhoneNumber () {
+    async checkPhoneNumber(){
+      let response = await this.$http.get('/phone_numbers?includes=contact&phone_number='+this.my_phone_number.phone_number);
+      if((response.data.length)&&(response.data[0].id != this.my_phone_number.id)){
+        alert('Phone number ' + this.my_phone_number.phone_number + ' already exists for contact ' + response.data[0].contact.name + '.');
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    },
+    deletePhoneNumber() {
       this.$http.delete('/phone_number/' + this.my_phone_number.id);
       this.$emit('remove-phone_number', this.my_phone_number);
     },
@@ -94,8 +108,14 @@ export default {
   },
   watch: {
     contact_id(){
-      this.my_phone_number.contact_id = this.contact_id;
-      this.save();
+      if(this.contact_id){
+        this.my_phone_number.contact_id = this.contact_id;
+        this.save();
+      }
+      else{
+        this.my_phone_number.phone_number_type_id = null;
+        this.my_phone_number.phone_number = null;
+      }
     }
   }
 }

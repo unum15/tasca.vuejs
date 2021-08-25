@@ -52,11 +52,11 @@
                 <template v-slot:cell(id)="data">
                     <a :href="'/backflow_assembly/' + data.value"> {{ data.value }} </a>
                 </template>
-                <template v-slot:cell(property.name)="data">
-                    <span v-b-popover.hover="data.item.property_unit ? data.item.property_unit.name : ''" :id="'property_' + data.item.id">{{ data.value }}</span>
+                <template v-slot:cell(property)="data">
+                    <span v-b-popover.hover="data.item.property_unit ? data.item.property_unit.name : ''" :id="'property_' + data.item.id">{{ data.item.property ? data.item.property.name : '' }}</span>
                 </template>
-                <template v-slot:cell(contact.name)="data">
-                    <span v-b-popover.hover="data.item.contact ? (data.item.contact.phone_numbers.length > 0 ? data.item.contact.phone_numbers[0].phone_number + ' ' : '') + (data.item.contact.emails.length > 0 ? data.item.contact.emails[0].email : '') : ''" :id="'property_' + data.item.id">{{ data.value }}</span>
+                <template v-slot:cell(contact)="data">
+                    <span v-b-popover.hover="data.item.contact ? (data.item.contact.phone_numbers.length > 0 ? data.item.contact.phone_numbers[0].phone_number + ' ' : '') + (data.item.contact.emails.length > 0 ? data.item.contact.emails[0].email : '') : ''" :id="'property_' + data.item.id">{{ data.item.contact ? data.item.contact.name : '' }}</span>
                 </template>
                 <template v-slot:cell(backflow_test_reports)="data">
                     {{ data.value.length > 0 ? data.value[0].report_date : null }}
@@ -100,12 +100,12 @@ export default {
                         sortable: true
                     },
                     {
-                        key: 'property.name',
+                        key: 'property',
                         label: 'Property',
                         sortable: true
                     },
                     {
-                        key: 'contact.name',
+                        key: 'contact',
                         label: 'Contact',
                         sortable: true
                     },

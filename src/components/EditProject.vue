@@ -66,32 +66,34 @@
                </b-form-input>
             </b-form-group>
          </b-tab>
-         <b-tab v-if="my_project.id" v-for="status_type in order_status_types" :key="status_type.id" :title="status_type.name">
-            <EditOrders
-               :crews="crews"
-               :project="my_project"
-               :properties="my_properties"
-               :settings="settings"
-               :order_status_type="status_type"
-               :actions="order_actions"
-               :categories="order_categories"
-               :priorities="order_priorities"
-               :statuses="order_statuses"
-               :types="order_types"   
-               :task_actions="task_actions"
-               :labor_assignments="labor_assignments"
-               :task_statuses="task_statuses"
-               :labor_types="labor_types"
-               :default_property_id="default_property_id"
-               :reload_count="reload_count"
-               :order_id="selected_order_id"
-               :task_id="task_id"
-               @reload-orders="reloadOrders"
-               @changed-order-tab="changedOrderTab"
-               @set-order-tab="setOrderTab"
-            >
-            </EditOrders>
-         </b-tab>
+         <div v-if="my_project.id">
+            <b-tab v-for="status_type in order_status_types" :key="status_type.id" :title="status_type.name">
+               <EditOrders
+                  :crews="crews"
+                  :project="my_project"
+                  :properties="my_properties"
+                  :settings="settings"
+                  :order_status_type="status_type"
+                  :actions="order_actions"
+                  :categories="order_categories"
+                  :priorities="order_priorities"
+                  :statuses="order_statuses"
+                  :types="order_types"   
+                  :task_actions="task_actions"
+                  :labor_assignments="labor_assignments"
+                  :task_statuses="task_statuses"
+                  :labor_types="labor_types"
+                  :default_property_id="default_property_id"
+                  :reload_count="reload_count"
+                  :order_id="selected_order_id"
+                  :task_id="task_id"
+                  @reload-orders="reloadOrders"
+                  @changed-order-tab="changedOrderTab"
+                  @set-order-tab="setOrderTab"
+               >
+               </EditOrders>
+            </b-tab>
+         </div>
       </b-tabs>
       <b-row>
          <b-button variant="danger" size="sm" @click="deleteProject" v-if="my_project.id">Delete Project</b-button>
