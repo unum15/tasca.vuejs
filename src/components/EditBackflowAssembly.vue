@@ -4,15 +4,21 @@
     </div>
 </template>
 <script>
-import EditBackflowAssemblyForm from './EditBackflowAssemblyForm';
+import TopMenu from './TopMenu'
+import EditBackflowAssemblyForm from './EditBackflowAssemblyForm'
 export default {
     name: 'EditBackflowAssembly',
     components: {
-        EditBackflowAssemblyForm
+        EditBackflowAssemblyForm,
+        TopMenu
     },
     props: {
         backflow_assembly_id: {default: null}
     },
+    data () {
+        return {
+        };
+    }
 };
 </script>
 
