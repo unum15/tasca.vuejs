@@ -300,7 +300,7 @@
                         </b-form-group>
                     </b-col>
                     <b-col>
-                        <img src="@/assets/add.png" v-b-tooltip.hover title="Add Size" @click.stop="$bvModal.show('add-size-modal')" alt="x" style="width:20px;float:left;" />
+                        <img src="@/assets/add.png" v-b-tooltip.hover title="Add Size" @click.stop="showSizeModal" alt="x" style="width:20px;float:left;" />
                     </b-col>
                     <b-col>
                         <b-form-group label="Serial Number">
