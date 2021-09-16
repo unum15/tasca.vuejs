@@ -112,6 +112,11 @@ export default {
                         sortable: true
                     },
                     {
+                        key: 'sort_order',
+                        label: 'Sort',
+                        sortable: true
+                    },
+                    {
                         key: 'test_1',
                         label: 'Test 1, RV, or Air',
                         sortable: false
