@@ -21,7 +21,7 @@
         ></EditProperty>
       </b-tab>
     </b-tabs>
-    <b-button variant="secondary" @click="newProperty">Add New Property</b-button>
+    <b-button variant="secondary" @click="newProperty">Add New Property</b-button> <br />
   </div>
 </template>
 <script>
@@ -36,20 +36,24 @@ export default {
     activity_levels: {required: true},
     contacts: {required: true},
     settings: {required: true},
-    properties: {required: true}
+    properties: {required: true},
   },
   data() {
     return {
         property_types: [],
         my_properties: [],
         current_tab: 0,
-        change_tab: false
+        change_tab: false,
+        all_properties: []
     }
   },
   created() {
     this.$http.get('/property_types').then(response => {
       this.property_types = response.data
     })
+    this.$http.get('/properties').then(response => {
+      this.all_properties = response.data;
+    });
     this.my_properties = this.properties;
   },
   methods: {
@@ -84,7 +88,7 @@ export default {
         return true
       }
       return false
-    },
+    }
   }
 }
 
