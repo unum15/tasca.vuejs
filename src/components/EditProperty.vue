@@ -264,8 +264,8 @@ export default {
         property: {required: true},
         activity_levels: {required: true},
         property_types: {required: true},
-        contacts: {required: true}
-        
+        contacts: {required: true},
+        remove_type: {default: "delete"}        
     },
     data() {
         return {
@@ -284,7 +284,9 @@ export default {
     },
     methods: {
         deleteProperty() {
-            this.$http.delete('/property/' + this.my_property.id);
+            if(this.remove_type=="delete"){
+                this.$http.delete('/property/' + this.my_property.id);
+            }
             this.$emit('remove-property', this.my_property);
         },
         save() {
