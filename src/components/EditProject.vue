@@ -72,6 +72,8 @@
                   :crews="crews"
                   :project="my_project"
                   :properties="my_properties"
+                  :linked_properties="linked_properties"
+                  :client_id="client_id"
                   :settings="settings"
                   :order_status_type="status_type"
                   :actions="order_actions"
@@ -123,6 +125,8 @@ export default {
       contacts: {required: true},
       crews: {required: true},
       properties: {required: true},
+      linked_properties: {required: true},
+      client_id: {required: true},
       settings: {required: true},
       project: {required: true},
       order_status_types: {required: true},

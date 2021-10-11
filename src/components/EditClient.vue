@@ -167,6 +167,7 @@
               :client_id="client.id"
               :contacts="client.contacts"
               :properties="client.properties"
+              :linked_properties="client.linked_properties"
               :settings="settings"
               :contact_id="client.billing_contact_id"
               :default_property_id="client.main_mailing_property_id"

@@ -96,6 +96,7 @@ export default {
           let properties = this.all_properties.filter(p => p.id == id);
           let property = properties[0];
           this.my_properties.push(property);
+          this.linked_property_id = null;
       });
     }
   }

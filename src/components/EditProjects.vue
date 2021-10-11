@@ -43,6 +43,8 @@
             :contacts="contacts"
             :crews="crews"
             :properties="properties"
+            :linked_properties="linked_properties"
+            :client_id="client_id"
             :settings="my_settings"
             :order_priorities="order_priorities"
 						:order_types="order_types"
@@ -79,6 +81,7 @@ export default {
     settings: {default: () => {}},
     contacts: {default: () => []},
     properties: {default: () => []},
+    linked_properties: {default: () => []},
     contact_id: {default: null},
     default_property_id: {default: null},
     project_id: {default: null},
