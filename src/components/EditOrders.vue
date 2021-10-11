@@ -37,7 +37,6 @@
 									:crews="crews"
 									:properties="properties"
 									:linked_properties="linked_properties"
-									:client_id="client_id"
 									:order="order"
 									:priorities="priorities"
 									:types="types"
@@ -81,7 +80,6 @@ export default {
 		priorities: {required: true},
 		properties: {required: true},
 		linked_properties: {required: true},
-		client_id: {required: true},
 		labor_assignments: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},

@@ -481,7 +481,6 @@ export default {
         crews: {required: true},
         properties: {required: true},
         linked_properties: {required: true},
-        client_id: {required: true},
 		order: {required: true},
 		types: {required: true},
 		statuses: {required: true},
