@@ -757,8 +757,9 @@ export default {
       }
       this.$http.get('/contacts?name=' + this.contact.name)
         .then((response) => {
+          console.log(response.data);
           if(response.data.length){
-            alert('Contact named ' + this.contact.name + ' already exists.');
+            alert('Contact named ' + this.contact.name + ' already exists for client ' + response.data[0].clients[0].name + '.');
           }
       });
     },
