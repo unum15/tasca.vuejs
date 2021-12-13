@@ -1,6 +1,5 @@
 <template>
     <div>
-        <TopMenu></TopMenu>
         <EditBackflowAssemblyForm :backflow_assembly_id="backflow_assembly_id"></EditBackflowAssemblyForm>
     </div>
 </template>

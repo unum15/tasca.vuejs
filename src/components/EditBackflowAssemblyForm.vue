@@ -708,11 +708,13 @@ export default {
          this.$refs['add-water-system-modal'].show();
         },
         addWaterSystem(){
-            this.$http.post('/backflow_water_system',this.backflow_water_system).then(system_response => {
-                this.$http.get('/backflow_water_systems').then(response => {
-                    this.systems = response.data.data;
-                    this.backflow_assembly.backflow_water_system_id = system_response.data.data.id;
-                });
+            this.$http.get('/backflow_water_systems').then(response => {
+                let systems = response.data.data;
+                var new_systems = systems.filter(ns => !this.systems.find(s => ns.id == s.id));
+                this.systems = systems;
+                if(new_systems.length){
+                    this.backflow_assembly.backflow_water_system_id = new_systems[0];
+                }
             });
         },
         saveClearable(field){

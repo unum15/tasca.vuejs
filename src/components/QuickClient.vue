@@ -767,7 +767,7 @@ export default {
       if(this.client.name == null){
           return;
       }
-      this.$http.get('/clients?name=' + this.client.name)
+      this.$http.get('/clients?name=' + escape(this.client.name))
         .then((response) => {
           if(response.data.length){
             alert('Client named ' + this.client.name + ' already exists.');

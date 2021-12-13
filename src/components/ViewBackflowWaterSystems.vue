@@ -46,8 +46,8 @@
 </template>
 <script>
 import TopMenu from './TopMenu';
-import moment from 'moment';
 import EditBackflowWaterSystemForm from './EditBackflowWaterSystemForm';
+import moment from 'moment';
 export default {
     name: 'ViewBackflowWaterSystems',
     components: {
@@ -57,14 +57,9 @@ export default {
     data() {
         return {
             backflow_water_systems: [],
-            filter: null,
             edit_backflow_water_system_id: null,
+            filter: null,
             fields: [
-                    {
-                        key: 'abbreviation',
-                        label: 'Abbreviation',
-                        sortable: true
-                    },
                     {
                         key: 'name',
                         label: 'Name',
@@ -123,6 +118,11 @@ export default {
                     {
                         key: 'updated_at',
                         label: 'Updated At',
+                        sortable: true
+                    },
+                    {
+                        key: 'abbreviation',
+                        label: 'Abbreviation',
                         sortable: true
                     },
             ]
