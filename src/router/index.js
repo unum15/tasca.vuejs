@@ -609,6 +609,14 @@ var router = new Router({
       }
     },
     {
+      path: '/clock_ins/complex',
+      name: 'ClockInsComplex',
+      component: ClockInsComplex,
+      meta: {
+        title: 'Timecard'
+      }
+    },
+    {
       path: '/clock_ins/tasks',
       name: 'ViewTaskClockIns',
       component: ViewTaskClockIns,

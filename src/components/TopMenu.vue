@@ -36,7 +36,7 @@
                     <b-dropdown-item href="/timecard">Individual Timecards</b-dropdown-item>
                     <b-dropdown-item href="/hours">All</b-dropdown-item>
                     <b-dropdown-item href="/clock_in">New Clock In</b-dropdown-item>
-                    <b-dropdown-item href="/timecard">Timecard</b-dropdown-item>
+                    <b-dropdown-item href="/clock_ins/complex">Timecard</b-dropdown-item>
                     <b-dropdown-item href="/clock_ins/tasks">Tasks</b-dropdown-item>
                 </b-nav-item-dropdown>
                 <b-nav-item-dropdown v-if="phreebooks == 'true'">
