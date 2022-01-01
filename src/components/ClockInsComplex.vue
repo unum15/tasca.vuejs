@@ -5,8 +5,21 @@
             Time Cards
         </head>
         <main>
-            <b-container fluid>
+            <b-container fluid="xl" style="max-width:1600px">
                 <b-row>
+                    <b-col>
+                    <b-form-group label="Group By">
+                        <b-form-select
+                          v-model="group_by"
+                          >
+                           <b-form-select-option value="date">Date</b-form-select-option>
+                           <b-form-select-option value="employee">Employee</b-form-select-option>
+                           <b-form-select-option value="client">Client</b-form-select-option>
+                           <b-form-select-option value="project">Project</b-form-select-option>
+                           <b-form-select-option value="assignment">Assignment</b-form-select-option>
+                        </b-form-select>
+                    </b-form-group>
+                  </b-col>
                   <b-col>
                     <b-form-group label="Employee">
                         <b-form-select
@@ -40,37 +53,65 @@
                     </b-form-group>
                   </b-col>
                 </b-row>
+                <b-row>
+                    <b-col>
+                        <b-form-group label="Client">
+                            <b-form-input type="text" v-model="filters.client"></b-form-input>
+                        </b-form-group>                            
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Project">
+                            <b-form-input type="text" v-model="filters.project"></b-form-input>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Order">
+                            <b-form-input type="text" v-model="filters.order"></b-form-input>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Task">
+                            <b-form-input type="text" v-model="filters.task"></b-form-input>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-button @click="reverseSort">{{sort_ascending ? 'Ascending' : 'Descending'}}</b-button>
+                    </b-col>  
+                </b-row>
                     <b-row>
+                        <b-col>
+                            Employee
+                        </b-col>
                         <b-col>
                             Total Time
                         </b-col>
                         <b-col>
-                            {{ total_time(dates) }}
+                            {{ total_time(groups) }}
                         </b-col>
                         <b-col>
-                            Total Dates
+                            Total {{ group_by }}s
                         </b-col>
                         <b-col>
-                            {{ Object.keys(dates).length }}
+                            {{ Object.keys(groups).length }}
                         </b-col>
                         <b-col>
                             Overhead Time
                         </b-col>
                         <b-col>
-                            {{ overhead_time(dates) }}
+                            {{ overhead_time(groups) }}
                         </b-col>
                         <b-col>
                             Task Time
                         </b-col>
                         <b-col>
-                            {{ task_time(dates) }}
+                            {{ task_time(groups) }}
                         </b-col>
                     </b-row>
             </b-container>
-            <b-container v-for="(clock_ins,date) in dates" :key="date">
+            <b-container v-for="(key) in Object.keys(groups).sort((a,b) => (sort_ascending ? a >= b : a <= b))" :key="key"  style="max-width:1600px">
                 <b-row>
                     <b-col style="font-weight:bold;font-size:150%;">
-                        {{ date }}
+                        {{ key }}
                     </b-col>
                 </b-row>
                 <b-row>
@@ -79,7 +120,7 @@
                         striped
                         outlined
                         hover
-                        :items="clock_ins"
+                        :items="groups[key]"
                         :fields="fields"
                         style="text-align:right"
                     >
@@ -93,19 +134,19 @@
                         Overhead
                     </b-col>
                     <b-col>
-                        {{ overhead_date(clock_ins) }}
+                        {{ overhead_date(groups[key]) }}
                     </b-col>
                     <b-col>
                         Task
                     </b-col>
                     <b-col>
-                        {{ appointment(clock_ins) }}
+                        {{ appointment(groups[key]) }}
                     </b-col>
                     <b-col style="font-weight:bold;">
                         Total
                     </b-col>
                     <b-col>
-                        {{ total_date(clock_ins) }}
+                        {{ total_date(groups[key]) }}
                     </b-col>
                 </b-row>
             </b-container>
@@ -123,11 +164,19 @@ export default {
     },
     data() {
         return {
+            clock_ins: [],
             contact_id: null,
             contacts: [],
             start_date: null,
             stop_date: null,
-            dates: {},
+            group_by: 'date',
+            filters: {
+                client: null,
+                project: null,
+                order: null,
+                task: null
+            },
+            sort_ascending: true,
             fields: [
                     {
                         key: 'contact.name',
@@ -192,8 +241,8 @@ export default {
     },
     created() {
         let last_sunday = moment().startOf('week');
-        /*this.start_date = last_sunday.format('YYYY-MM-DD');
-        this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');*/
+        this.start_date = last_sunday.format('YYYY-MM-DD');
+        this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');
         this.start_date = '2021-09-01';
         this.stop_date = '2021-09-12'
         this.getContacts();
@@ -205,17 +254,8 @@ export default {
             if(this.contact_id){
                 contact = 'contact_id=' + this.contact_id + '&';
             }
-            this.dates={};
-            for(let date=moment(this.stop_date);date.format('YYYY-MM-DD')>=this.start_date;date.subtract(1, 'day') ){
-                this.dates[date.format('YYYY-MM-DD')] = [];
-            }
-            Object.keys(this.dates).map(d => {
-                this.$http.get('/clock_ins?' + contact + 'start_date=' + d + '&stop_date=' + d ).then(response => {
-                    if(response.data){
-                        this.dates[d] = response.data;
-                    }
-                    this.$forceUpdate();
-                });
+           this.$http.get('/clock_ins?' + contact + 'start_date=' + this.start_date + '&stop_date=' + this.stop_date ).then(response => {
+                    this.clock_ins = response.data;
             });
         },
         getContacts(){
@@ -261,7 +301,7 @@ export default {
             return Math.round(time*100)/100;
         },
         formatTime(time){
-            return moment(time).format('hh:mm A');
+            return moment(time).format('MM/DD hh:mm A');
         },
         total_time(dates){
             let time = 0;
@@ -296,19 +336,57 @@ export default {
         },
         timeColumn(value, key, item){
             return this.getDiff(item.clock_in,item.clock_out);
+        },
+        reverseSort(){
+            this.sort_ascending = ! this.sort_ascending;
         }
     },
     computed:{
+        groups(){
+            let groups = {};
+            this.clock_ins.map(clock_in => {
+                if(this.filters.client && (!clock_in.appointment.task.order.project.client.name.toLowerCase().includes(this.filters.client.toLowerCase()))){
+                    return;
+                }
+                if(this.filters.project && (!clock_in.appointment.task.order.project.name.toLowerCase().includes(this.filters.project.toLowerCase()))){
+                    return;
+                }
+                if(this.filters.order && (!clock_in.appointment.task.order.name.toLowerCase().includes(this.filters.order.toLowerCase()))){
+                    return;
+                }
+                if(this.filters.task && (!clock_in.appointment.task.name.toLowerCase().includes(this.filters.task.toLowerCase()))){
+                    return;
+                }
+                let key = clock_in.contact.name;
+                let clock_in_time = null;
+                switch(this.group_by){
+                    case 'date' :
+                        clock_in_time = new moment(clock_in.clock_in);
+                        key = clock_in_time.format('YYYY-MM-DD');
+                        break;
+                    case 'client' :
+                        key = clock_in.appointment.task.order.project.client.name;
+                        break;
+                    case 'project' :
+                        key = clock_in.appointment.task.order.project.name;
+                        break;
+                    case 'assignment' :
+                        key = clock_in.appointment.task.labor_assignment.name;
+                        break;
+                }
+                if(!groups[key]){
+                    groups[key] = [];
+                }
+                groups[key].push(clock_in);
+            });
+            return groups;
+        },
         ...mapState({
           user_id: state => state.user.id,
           operator_id: state => state.settings.operating_company_client_id
-        })
+        }),
     },
     watch:{
-        user_id(){
-            this.contact_id = this.user_id;
-            this.getClockIns();
-        },
         operator_id(){
             this.getContacts();
         }

@@ -105,7 +105,7 @@
                 <template v-slot:cell(task)="data">
                     {{ data.item.appointment ? data.item.appointment.task.name : data.item.overhead_category ? data.item.overhead_category.name : ''}}
                 </template>
-                <template v-slot:cell(labor_activity.name)="data">
+                <template v-slot:cell(labor_activity)="data">
                     <a href="/clock_ins" @click.stop.prevent="editClockIn(data.item, data.index, $event.target)"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(notes)="data">

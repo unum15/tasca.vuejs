@@ -51,6 +51,7 @@ import EditSettings from '@/components/EditSettings';
 import EditRoles from '@/components/EditRoles';
 import EditBackflowWaterSystem from '@/components/EditBackflowWaterSystem';
 import ViewBackflowWaterSystems from '@/components/ViewBackflowWaterSystems';
+import ClockInsComplex from '@/components/ClockInsComplex';
 
 Vue.use(Router);
 
