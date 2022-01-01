@@ -298,11 +298,6 @@ export default {
         },
 
         clockIn(e){
-            if((this.modal_clock_in.clock_in) && (!this.modal_clock_in.new.labor_activity_id)){
-                e.preventDefault();
-                alert('Must select clock in activity.');
-                return;
-            }
             if((this.modal_clock_in.current.time)&&(!this.modal_clock_in.current.labor_activity_id)){
                 e.preventDefault();
                 alert('Must select activity.');
