@@ -37,7 +37,6 @@
                         <b-form-input
                           type="date"
                           v-model="start_date"
-                          @change="getClockIns"
                           >
                         </b-form-input>
                     </b-form-group>
@@ -47,10 +46,12 @@
                         <b-form-input
                           type="date"
                           v-model="stop_date"
-                          @change="getClockIns"
                           >
                         </b-form-input>
                     </b-form-group>
+                  </b-col>
+                  <b-col>
+                        <b-button @click="getClockIns">Submit Dates</b-button>
                   </b-col>
                 </b-row>
                 <b-row>
@@ -108,7 +109,7 @@
                         </b-col>
                     </b-row>
             </b-container>
-            <b-container v-for="(key) in Object.keys(groups).sort((a,b) => (sort_ascending ? a >= b : a <= b))" :key="key"  style="max-width:1600px">
+            <b-container v-for="(key) in sort_ascending ? Object.keys(groups).sort() : Object.keys(groups).sort().reverse()" :key="key"  style="max-width:1600px">
                 <b-row>
                     <b-col style="font-weight:bold;font-size:150%;">
                         {{ key }}
@@ -243,8 +244,6 @@ export default {
         let last_sunday = moment().startOf('week');
         this.start_date = last_sunday.format('YYYY-MM-DD');
         this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');
-        this.start_date = '2021-09-01';
-        this.stop_date = '2021-09-12'
         this.getContacts();
         this.getClockIns();
     },
