@@ -243,8 +243,6 @@ export default {
         let last_sunday = moment().startOf('week');
         this.start_date = last_sunday.format('YYYY-MM-DD');
         this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');
-        this.start_date = '2021-09-01';
-        this.stop_date = '2021-09-12'
         this.getContacts();
         this.getClockIns();
     },
