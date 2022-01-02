@@ -452,7 +452,11 @@ export default {
                 if(!assignment.order_id){
                    alert('This labor assignment has no associated order_id please update in labor mappings');
                    return;
-                }                    
+                }
+                if(this.modal_overhead.current.labor_assignment_id == this.$store.state.settings['default_labor_assignment_id-labor_type_id-'+this.overhead_labor_type_id]){
+                   alert('Please select current assignment.');
+                   return;
+                }                
                 let clock_in = {
                     clock_in : this.modal_overhead.current.date + ' ' + this.modal_overhead.current.time,
                     labor_assignment_id: this.modal_overhead.current.labor_assignment_id,
