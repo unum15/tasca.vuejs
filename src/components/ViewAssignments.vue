@@ -17,7 +17,7 @@
                     <b-container fluid>
                         <b-row v-if="clock_in">
                             <b-col style="text-align:center;font-weight:bold;">
-                                Current Clock In
+                                Clock Out
                             </b-col>
                         </b-row>
                         <b-row v-if="clock_in">
@@ -51,7 +51,7 @@
                         </b-row>
                         <b-row v-if="modal_overhead.clock_in">
                             <b-col style="text-align:center;font-weight:bold;">
-                                New Clock In
+                                Clock In
                             </b-col>
                         </b-row>
                         <b-row v-if="!modal_overhead.clock_in">
@@ -441,11 +441,11 @@ export default {
             event.preventDefault();
             if(this.clock_in){
                 if(!this.modal_overhead.current.labor_assignment_id){
-                   alert('Please select current assignment.');
+                   alert('Please select assignment for clock out.');
                    return;
                 }
                 if(!this.modal_overhead.current.labor_activity_id){
-                   alert('Please select current activity.');
+                   alert('Please select activity for clock out.');
                    return;
                 }
                 let assignment = this.getAssignmentName(this.modal_overhead.current.labor_assignment_id);
@@ -454,7 +454,7 @@ export default {
                    return;
                 }
                 if(this.modal_overhead.current.labor_assignment_id == this.$store.state.settings['default_labor_assignment_id-labor_type_id-'+this.overhead_labor_type_id]){
-                   alert('Please select current assignment.');
+                   alert('Please select assignment for clock out.');
                    return;
                 }                
                 let clock_in = {
