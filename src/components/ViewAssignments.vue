@@ -17,7 +17,7 @@
                     <b-container fluid>
                         <b-row v-if="clock_in">
                             <b-col style="text-align:center;font-weight:bold;">
-                                Clock Out
+                                Current Clock In
                             </b-col>
                         </b-row>
                         <b-row v-if="clock_in">
@@ -51,7 +51,7 @@
                         </b-row>
                         <b-row v-if="modal_overhead.clock_in">
                             <b-col style="text-align:center;font-weight:bold;">
-                                Clock In
+                                New Clock In
                             </b-col>
                         </b-row>
                         <b-row v-if="!modal_overhead.clock_in">
