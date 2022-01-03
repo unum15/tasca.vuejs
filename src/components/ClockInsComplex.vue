@@ -96,10 +96,10 @@
                             {{ Object.keys(groups).length }}
                         </b-col>
                         <template v-for="labor_type in labor_types">
-                            <b-col :key="labor_type.id">
+                            <b-col  :key="labor_type.id + '-name'">
                                 {{ labor_type.name }}
                             </b-col>
-                            <b-col>
+                            <b-col :key="labor_type.id + '-total'">
                                 {{ labor_type_time(groups,labor_type.id) }}
                             </b-col>
                         </template>
@@ -128,10 +128,10 @@
                 </b-row>
                 <b-row>
                     <template v-for="labor_type in labor_types">
-                        <b-col :key="labor_type.id">
+                        <b-col :key="labor_type.id + '-name'">
                             {{ labor_type.name }}
                         </b-col>
-                        <b-col>
+                        <b-col :key="labor_type.id + '-total'">
                             {{ group_labor_type_time(groups[key],labor_type.id) }}
                         </b-col>
                     </template>
