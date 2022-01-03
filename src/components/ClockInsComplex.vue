@@ -95,23 +95,19 @@
                         <b-col>
                             {{ Object.keys(groups).length }}
                         </b-col>
-                        <b-col>
-                            Overhead Time
-                        </b-col>
-                        <b-col>
-                            {{ overhead_time(groups) }}
-                        </b-col>
-                        <b-col>
-                            Task Time
-                        </b-col>
-                        <b-col>
-                            {{ task_time(groups) }}
-                        </b-col>
+                        <template v-for="labor_type in labor_types">
+                            <b-col :key="labor_type.id">
+                                {{ labor_type.name }}
+                            </b-col>
+                            <b-col>
+                                {{ labor_type_time(groups,labor_type.id) }}
+                            </b-col>
+                        </template>
                     </b-row>
             </b-container>
             <b-container v-for="(key) in sort_ascending ? Object.keys(groups).sort() : Object.keys(groups).sort().reverse()" :key="key"  style="max-width:1600px">
                 <b-row>
-                    <b-col style="font-weight:bold;font-size:150%;">
+                    <b-col style="font-weight:bold;font-size:150%;text-align:left;">
                         {{ key }}
                     </b-col>
                 </b-row>
@@ -131,18 +127,14 @@
                     </b-table>
                 </b-row>
                 <b-row>
-                    <b-col>
-                        Overhead
-                    </b-col>
-                    <b-col>
-                        {{ overhead_date(groups[key]) }}
-                    </b-col>
-                    <b-col>
-                        Task
-                    </b-col>
-                    <b-col>
-                        {{ appointment(groups[key]) }}
-                    </b-col>
+                    <template v-for="labor_type in labor_types">
+                        <b-col :key="labor_type.id">
+                            {{ labor_type.name }}
+                        </b-col>
+                        <b-col>
+                            {{ group_labor_type_time(groups[key],labor_type.id) }}
+                        </b-col>
+                    </template>
                     <b-col style="font-weight:bold;">
                         Total
                     </b-col>
@@ -171,6 +163,7 @@ export default {
             start_date: null,
             stop_date: null,
             group_by: 'date',
+            labor_types: [],
             filters: {
                 client: null,
                 project: null,
@@ -197,6 +190,11 @@ export default {
                     {
                         key: 'appointment.task.order.name',
                         label: 'Order',
+                        sortable: true
+                    },
+                    {
+                        key: 'appointment.task.labor_type.name',
+                        label: 'Labor Type',
                         sortable: true
                     },
                     {
@@ -244,6 +242,8 @@ export default {
         let last_sunday = moment().startOf('week');
         this.start_date = last_sunday.format('YYYY-MM-DD');
         this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');
+        this.start_date = '2021-12-01';
+        this.getLaborTypes();
         this.getContacts();
         this.getClockIns();
     },
@@ -265,6 +265,11 @@ export default {
                 });
             }
         },
+        getLaborTypes(){
+            this.$http.get('/labor_types').then(response => {
+                this.labor_types = response.data.data;
+            });
+        },
         getDiff(clock_in,clock_out){
             var start = moment(clock_in);
             var stop = moment();
@@ -281,19 +286,10 @@ export default {
             });
             return Math.round(time*100)/100;
         },
-        overhead_date(clock_ins){
+        group_labor_type_time(clock_ins, labor_type_id){
             let time = 0;
             clock_ins.map( c =>{
-                if(c.overhead_assignment_id){
-                    time += this.getDiff(c.clock_in, c.clock_out);
-                }
-            });
-            return Math.round(time*100)/100;
-        },
-        appointment(clock_ins){
-            let time = 0;
-            clock_ins.map( c =>{
-                if(c.appointment_id){
+                if(c.appointment.task.labor_type_id == labor_type_id){
                     time += this.getDiff(c.clock_in, c.clock_out);
                 }
             });
@@ -302,31 +298,20 @@ export default {
         formatTime(time){
             return moment(time).format('MM/DD hh:mm A');
         },
-        total_time(dates){
+        total_time(groups){
             let time = 0;
-            Object.keys(dates).map(d => {
-                dates[d].map( c =>{
+            Object.keys(groups).map(g => {
+                groups[g].map( c =>{
                     time += this.getDiff(c.clock_in, c.clock_out);
                 });
             });
             return Math.round(time*100)/100;
         },
-        overhead_time(dates){
+        labor_type_time(groups,labor_type_id){
             let time = 0;
-            Object.keys(dates).map( d => {
-                dates[d].map( c =>{
-                    if(c.overhead_assignment_id){
-                        time += this.getDiff(c.clock_in, c.clock_out);
-                    }
-                });
-            });
-            return Math.round(time*100)/100;
-        },
-        task_time(dates){
-            let time = 0;
-            Object.keys(dates).map( d => {
-                dates[d].map( c =>{
-                    if(c.appointment_id){
+            Object.keys(groups).map( g => {
+                groups[g].map( c =>{
+                    if(c.appointment.task.labor_type_id == labor_type_id){
                         time += this.getDiff(c.clock_in, c.clock_out);
                     }
                 });
