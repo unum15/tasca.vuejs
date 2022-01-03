@@ -242,7 +242,6 @@ export default {
         let last_sunday = moment().startOf('week');
         this.start_date = last_sunday.format('YYYY-MM-DD');
         this.stop_date = last_sunday.add(6, 'day').format('YYYY-MM-DD');
-        this.start_date = '2021-12-01';
         this.getLaborTypes();
         this.getContacts();
         this.getClockIns();
