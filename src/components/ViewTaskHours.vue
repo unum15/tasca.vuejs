@@ -40,11 +40,11 @@
                     <b-col>{{ formatTime(clock_in.clock_in) }}</b-col>
                     <b-col>{{ formatTime(clock_in.clock_out) }}</b-col>
                     <b-col>{{ timeDiff(clock_in.clock_in, clock_in.clock_out) }}</b-col>
-                    <b-col>{{ clock_in.labor_activity.name }} </b-col>
+                    <b-col>{{ clock_in.labor_activity ? clock_in.labor_activity.name : '' }} </b-col>
                 </b-row>
                 <b-row>
                     <b-col class="label" cols="2">Notes For The Day</b-col>
-                    <b-col class="data" cols="10"><b-form-input v-model="clock_in.notes" @input="saveNotes(clock_in)" style="font-size:75%"></b-form-input></b-col>
+                    <b-col class="data" cols="10"><b-form-input v-model="clock_in.notes" @input="saveNotes(clock_in)" style="height:75%;"></b-form-input></b-col>
                 </b-row>
             </div>
             <b-row style="padding-top:20px;padding-bottom:20px;">
