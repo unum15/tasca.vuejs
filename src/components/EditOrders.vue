@@ -2,29 +2,25 @@
 	<div>
 		<b-container fluid>
 			<b-form-row>
-				<b-col>
-          <b-form-group  :label-cols="10" label="Show Closed">
-            <b-form-checkbox
-              v-model="filter.completed"
-							@change="loadOrders"
-            >
-            </b-form-checkbox>
-          </b-form-group>
+				<b-col sm="2" style="text-align:right;">
+          Show Closed In Last
 				</b-col>
-				<b-col>
-					<b-form-group  :label-cols="10" label="Show Expired">
-            <b-form-checkbox
-              v-model="filter.expired"
+				<b-col sm="1">
+            <b-form-input
+              v-model="days_since_closed"
 							@change="loadOrders"
+							size="sm" 
             >
-            </b-form-checkbox>
-          </b-form-group>
+            </b-form-input>
+					</b-col>
+					<b-col style="text-align:left;">
+						Days
 				</b-col>
 			</b-form-row>
     </b-container>
         <b-tabs vertical pills v-model="current_tab" :key="orders.length">
             <b-tab
-							v-for="(order, index) in filtered_orders"
+							v-for="(order, index) in orders"
 							:key="index"
 							:active="isActive(index)"
 							>
@@ -64,6 +60,7 @@
 <script>
 import moment from 'moment'
 import EditOrder from './EditOrder'
+import { mapState } from 'vuex';
 export default {
   name: 'EditOrders',
 	components: {
@@ -95,13 +92,11 @@ export default {
 			orders: [],
 			current_tab: 0,
 			change_tab: false,
-			filter: {
-				completed: false,
-				expired: false
-			},
+			days_since_closed: 400
 		};
 	},
 	created() {
+		this.days_since_closed = this.default_closed_orders_days;
 		this.loadOrders();
   },
 	methods: {
@@ -157,7 +152,11 @@ export default {
 		},
 		loadOrders(){
 			this.orders = [];
-			this.$http.get('/orders?project_id=' + this.project.id + '&order_status_type_id=' + this.order_status_type.id).then(response => {
+			let closed_in = '';
+			if(this.days_since_closed){
+				closed_in = '&closed_in_days=' + this.days_since_closed;
+			}
+			this.$http.get('/orders?project_id=' + this.project.id + '&order_status_type_id=' + this.order_status_type.id + closed_in).then(response => {
 				this.orders = response.data
 			})
 		},
@@ -185,18 +184,9 @@ export default {
 			}
 			return null;
 		},
-		filtered_orders(){
-			return this.orders.filter(order => {
-				let show = true;
-				if((!this.filter.completed)&&(order.completion_date != null)){
-					show = false;
-				}
-				if((!this.filter.expired)&&(order.expiration_date != null)&&(order.expiration_date < this.today)){
-					show = false;
-				}
-				return show
-			});
-		}
+		...mapState({
+        default_closed_orders_days: state => state.settings.default_closed_orders_days
+    }),
 	},
   watch:{
 		reload_count() {
