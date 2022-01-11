@@ -3,7 +3,7 @@
         <b-form-group label="Property"  v-if="!isServiceOrder">
             <b-form-select
                 @input="save"
-                :options="all_properties"
+                :options="properties"
                 value-field="id"
                 text-field="name"
                 required
@@ -16,7 +16,7 @@
         <b-form-group label="Properties"  v-if="isServiceOrder">
             <b-form-select
                 @input="save"
-                :options="all_properties"
+                :options="properties"
                 value-field="id"
                 text-field="name"
                 required
@@ -480,7 +480,6 @@ export default {
 	props: {
         crews: {required: true},
         properties: {required: true},
-        linked_properties: {required: true},
 		order: {required: true},
 		types: {required: true},
 		statuses: {required: true},
@@ -529,7 +528,6 @@ export default {
                     text: 'Years'
                 },
             ],
-            all_properties: []
 		};
 	},
 	created(){
@@ -555,7 +553,6 @@ export default {
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
             this.renewal_interval.unit = this.formatUnit(this.renewal_interval.unit);
         }
-        this.all_properties=this.properties.concat(this.linked_properties);
 	},
 	methods: {
         save(){
@@ -574,7 +571,9 @@ export default {
             if((this.renewal_interval.count != null) && (this.renewal_interval.unit != null)){
                 this.my_order.renewal_interval = this.renewal_interval.count + ' ' + this.renewal_interval.unit;
             }
-
+            
+            
+            
             if(this.my_order.id === null){
                 this.$http.post('/order',this.my_order).then(response => {
                     this.task_name = this.my_order.name;
@@ -727,12 +726,6 @@ export default {
             if(!this.my_order.close_date){
                 this.my_order.close_date = date;
             }
-        },
-        linked_properties(){
-            this.all_properties=this.properties.concat(this.linked_properties);
-        },
-        properties(){
-            this.all_properties=this.properties.concat(this.linked_properties);
         }
     }
 }

@@ -32,7 +32,6 @@
                 <EditOrder
 									:crews="crews"
 									:properties="properties"
-									:linked_properties="linked_properties"
 									:order="order"
 									:priorities="priorities"
 									:types="types"
@@ -76,7 +75,6 @@ export default {
 		categories: {required: true},
 		priorities: {required: true},
 		properties: {required: true},
-		linked_properties: {required: true},
 		labor_assignments: {required: true},
 		task_statuses: {required: true},
 		task_actions: {required: true},
