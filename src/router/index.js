@@ -52,6 +52,7 @@ import EditRoles from '@/components/EditRoles';
 import EditBackflowWaterSystem from '@/components/EditBackflowWaterSystem';
 import ViewBackflowWaterSystems from '@/components/ViewBackflowWaterSystems';
 import ClockInsComplex from '@/components/ClockInsComplex';
+import EditClockInsSettings from '@/components/EditClockInsSettings';
 
 Vue.use(Router);
 
@@ -615,6 +616,14 @@ var router = new Router({
       component: ClockInsComplex,
       meta: {
         title: 'Timecard'
+      }
+    },
+    {
+      path: '/settings/clock_ins',
+      name: 'EditClockInsSettings',
+      component: EditClockInsSettings,
+      meta: {
+        title: 'Clock In Settings'
       }
     },
     {

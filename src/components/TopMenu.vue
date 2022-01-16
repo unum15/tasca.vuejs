@@ -124,6 +124,7 @@
                     <b-dropdown-item href="/labor">Labor Mappings</b-dropdown-item>
                     <b-dropdown-item href="/labor_assignments">Labor Assignments</b-dropdown-item>
                     <b-dropdown-item href="/labor_types">Labor Types</b-dropdown-item>
+                    <b-dropdown-item href="/settings/clock_ins">Clock In Settings</b-dropdown-item>
                     </b-dropdown-group>
                     <b-dropdown-divider></b-dropdown-divider>
                 </b-nav-item-dropdown>
