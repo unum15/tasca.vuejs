@@ -4,7 +4,7 @@
         <head>
             Time Cards
         </head>
-        <main>
+        <main style="text-align:left;">
             <b-container fluid>
                 <b-row>
                   <b-col>
@@ -20,20 +20,23 @@
                     </b-form-group>
                   </b-col>
                   <b-col>
-                    <b-form-group label="Start Date">
+                    <b-form-group label="Date"  class="mb-0" style="white-space:nowrap;">
+                        <img src="@/assets/previous.png" v-b-tooltip.hover title="Previous Date" @click="previousDate" fluid alt="PD" style="width:25px;height:25px;" />
                         <b-form-input
                           type="date"
-                          v-model="start_date"
+                          v-model="date"
                           @change="getClockIns"
+                          size="sm"
                           >
                         </b-form-input>
+                        <img src="@/assets/next.png" v-b-tooltip.hover title="Next Date" @click="nextDate" fluid alt="ND" style="width:25px;height:25px;" />
                     </b-form-group>
                   </b-col>
                   <b-col>
-                    <b-form-group label="Stop Date">
+                    <b-form-group label="Days Back">
                         <b-form-input
-                          type="date"
-                          v-model="stop_date"
+                          type="number"
+                          v-model="days_back"
                           @change="getClockIns"
                           >
                         </b-form-input>
@@ -179,8 +182,8 @@ export default {
             filter: null,
             contact_id: null,
             contacts: [{id: null, name: 'All'}],
-            start_date: null,
-            stop_date: null,
+            date: null,
+            days_back: 0,
             clock_in:{
                 index: null,
                 clock_in: null,
@@ -255,8 +258,7 @@ export default {
         this.$http.get('/labor_activities').then(response => {
             this.labor_activities = response.data.data;
         });
-        this.start_date = moment().format('YYYY-MM-DD');
-        this.stop_date = moment().format('YYYY-MM-DD');
+        this.date = moment().format('YYYY-MM-DD');
         this.getContacts();
         this.getClockIns();
     },
@@ -271,13 +273,22 @@ export default {
             }
         },
         getClockIns(){
-            let params = '?start_date=' + this.start_date + '&stop_date=' + this.stop_date + '&type=' + this.clock_in_type;
+            let start_date = moment(this.date).subtract(this.days_back,'days').format('YYYY-MM-DD');
+            let params = '?start_date=' + start_date + '&stop_date=' + this.date + '&type=' + this.clock_in_type;
             if(this.contact_id){
                 params += '&contact_id=' + this.contact_id;
             }
             this.$http.get('/clock_ins' + params).then(response => {
                 this.clock_ins = response.data;
             });
+        },
+        nextDate(){
+            this.date = moment(this.date).add(1, 'day').format('YYYY-MM-DD');
+            this.getClockIns();
+        },
+        previousDate(){
+            this.date = moment(this.date).subtract(1, 'day').format('YYYY-MM-DD');
+            this.getClockIns();
         },
         getDiff(clock_in,clock_out){
             var start = moment(clock_in);
@@ -353,4 +364,9 @@ export default {
     }
 }
 </script>
-
+<style>
+.form-control-sm {
+    width: auto;
+    display: inline;
+}
+</style>

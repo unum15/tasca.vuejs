@@ -162,66 +162,6 @@
         >
         </EditIrrigationControllers>
       </b-tab>
-      <b-tab>
-        <template slot="title">
-          <div style="text-align:left">
-            Costs
-          </div>
-        </template>
-        <b-container>
-          <b-row>
-            <b-col>
-              Start Up
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="number"
-                step=".01"
-                v-model="my_system.start_up_cost"
-                @change="save(my_system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              Management
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="number"
-                step=".01"
-                v-model="my_system.management_cost"
-                @change="save(my_system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              Winterizing
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="number"
-                step=".01"
-                v-model="my_system.winterizing_cost"
-                @change="save(my_system)"
-                />
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              Number of Visits
-            </b-col>
-            <b-col>
-              <b-form-input
-                type="number"
-                v-model="my_system.visits_count"
-                @change="save(my_system)"
-                />
-            </b-col>
-          </b-row>
-        </b-container>
-      </b-tab>
     </b-tabs>
   </div>
 </template>

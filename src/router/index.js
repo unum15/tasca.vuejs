@@ -599,7 +599,7 @@ var router = new Router({
       name: 'ViewClockIns',
       component: ViewClockIns,
       meta: {
-        title: 'View Employee Clock Ins'
+        title: 'Clock-Ins'
       }
     },
     {
