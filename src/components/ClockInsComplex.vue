@@ -76,6 +76,21 @@
                         </b-form-group>
                     </b-col>
                     <b-col>
+                        <b-form-group label="Labor Type">
+                            <b-form-input type="text" v-model="filters.labor_type"></b-form-input>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Assignment">
+                            <b-form-input type="text" v-model="filters.labor_assignment"></b-form-input>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
+                        <b-form-group label="Activity">
+                            <b-form-input type="text" v-model="filters.labor_activity"></b-form-input>
+                        </b-form-group>
+                    </b-col>
+                    <b-col>
                         <b-button @click="reverseSort">{{sort_ascending ? 'Ascending' : 'Descending'}}</b-button>
                     </b-col>  
                 </b-row>
@@ -123,6 +138,9 @@
                     >
                         <template v-slot:cell(id)="data">
                             <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
+                        </template>
+                        <template v-slot:cell(clock_out)="data">
+                            <div :style="clockOutColor(data.item)"> {{ data.value }} </div>
                         </template>
                     </b-table>
                 </b-row>
@@ -322,6 +340,18 @@ export default {
         },
         reverseSort(){
             this.sort_ascending = ! this.sort_ascending;
+        },
+        clockOutColor(clock_in){
+            if(clock_in.clock_out){
+                return;
+            }            
+            var start = moment(clock_in.clock_in);
+            var stop = moment();
+            var minutes = Math.round(stop.diff(start)/60000);
+            if(minutes > this.clock_in_reminder_minutes){
+                return 'background:' + this.clock_in_reminder_color;
+            }
+            return 'background:' + this.clock_in_current_color;
         }
     },
     computed:{
@@ -338,6 +368,15 @@ export default {
                     return;
                 }
                 if(this.filters.task && (!clock_in.appointment.task.name.toLowerCase().includes(this.filters.task.toLowerCase()))){
+                    return;
+                }
+                if(this.filters.labor_type && (!clock_in.appointment.task.labor_type.name.toLowerCase().includes(this.filters.labor_type.toLowerCase()))){
+                    return;
+                }
+                if(this.filters.labor_assignment && (!clock_in.appointment.task.labor_assignment.name.toLowerCase().includes(this.filters.labor_assignment.toLowerCase()))){
+                    return;
+                }
+                if(this.filters.labor_activity && (!clock_in.labor_activity.name.toLowerCase().includes(this.filters.labor_activity.toLowerCase()))){
                     return;
                 }
                 let key = clock_in.contact.name;
@@ -366,7 +405,10 @@ export default {
         },
         ...mapState({
           user_id: state => state.user.id,
-          operator_id: state => state.settings.operating_company_client_id
+          operator_id: state => state.settings.operating_company_client_id,
+          clock_in_reminder_minutes: state => state.settings.clock_in_reminder_minutes,
+          clock_in_reminder_color: state => state.settings.clock_in_reminder_color,
+          clock_in_current_color: state => state.settings.clock_in_current_color
         }),
     },
     watch:{
