@@ -371,7 +371,7 @@ export default {
                             }
                             field_count++;
                             if(field_count < c.length){
-                                if((f.new_line){
+                                if(f.new_line){
                                     text += '\n';
                                 }
                                 else {
