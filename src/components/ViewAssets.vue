@@ -370,11 +370,13 @@ export default {
                                     }
                             }
                             field_count++;
-                            if(f.new_line){
-                                text += '\n';
-                            }
-                            else if(field_count < c.length){
-                                text += ' ';
+                            if(field_count < c.length){
+                                if((f.new_line){
+                                    text += '\n';
+                                }
+                                else {
+                                    text += ' ';
+                                }
                             }
                         });
                         text+='"';
