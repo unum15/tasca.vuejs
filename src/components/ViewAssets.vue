@@ -77,10 +77,10 @@
                       <b-col cols="auto" :key="'select_'+findex">
                           <b-form-select v-model="columns[cindex].fields[findex].field" :options="export_fields"  v-b-tooltip.hover title="Field" />
                       </b-col>
-                      <b-col v-if="column.length > 1" cols="auto" :key="'check_'+findex">
+                      <b-col v-if="column.fields.length > 1" cols="auto" :key="'check_'+findex">
                           <b-form-checkbox v-model="columns[cindex].fields[findex].new_line"  v-b-tooltip.hover title="Include Return" />
                       </b-col>
-                      <b-col v-if="column.length > 1" cols="auto" :key="'delete_'+findex">
+                      <b-col v-if="column.fields.length > 1" cols="auto" :key="'delete_'+findex">
                           <img src="@/assets/delete.png" v-b-tooltip.hover title="Delete Field" fluid alt="Delete Field" style="width:20px;" @click="columns[cindex].fields.splice(findex,1)"/>
                       </b-col>
                     </template>
