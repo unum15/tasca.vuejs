@@ -17,6 +17,10 @@
                       </b-input-group>
                     </b-form-group>
                   </b-col>
+                  <b-col md="6" class="my-1">
+                       <br />
+                       <b-button @click="selectAllVisible()">Select All Visible</b-button>
+                  </b-col>
                 </b-row>
             </b-container>
             <b-table
@@ -48,7 +52,7 @@
                     {{formatTime(data.value)}}
                 </template>
                 <template v-slot:cell(exported_at)="data">
-                    {{data.item.asset_exports.length ? formatTime(data.item.asset_exports[0]) : 'N/A'}}
+                    {{data.item.asset_exports.length ? formatTime(data.item.asset_exports[0].exported_at) : 'N/A'}}
                 </template>
                 <template v-slot:cell(created_at)="data">
                     {{formatTime(data.value)}}
@@ -57,34 +61,37 @@
                     {{formatTime(data.value)}}
                 </template>
                 <template v-slot:cell(actions)="data">
-                    <img src="@/assets/details.png" v-b-tooltip.hover :title="data.item.notes" fluid alt="DTS" style="width:20px;" />
+                    <img v-if="data.item.notes" src="@/assets/details.png" v-b-tooltip.hover :title="data.item.notes" fluid alt="DTS" style="width:20px;" />
                     <img src="@/assets/delete.png" v-b-tooltip.hover title="Delete" fluid alt="Delete" style="width:20px;" @click="deleteAsset(data.item)"/>
                 </template>
             </b-table>
             <b-container fluid style='text-align:left'>
                 <b-row v-for="(column,cindex) in columns" :key="cindex">
-                  <template v-for="(field,findex) in column">
-                    <b-col :key="'label_'+findex">
-                        <b-form-checkbox v-model="columns[cindex][findex].label" />
+                    <b-col cols="auto" :key="'name_'+cindex">
+                      <b-form-input type="text" v-model="columns[cindex].name" v-b-tooltip.hover title="Row Name" />
                     </b-col>
-                    <b-col :key="'select_'+findex">
-                        <b-form-select v-model="columns[cindex][findex].field" :options="export_fields" />
+                    <template v-for="(field,findex) in column.fields">
+                      <b-col cols="auto" :key="'label_'+findex">
+                          <b-form-checkbox v-model="columns[cindex].fields[findex].label" v-b-tooltip.hover title="Include Title" />
+                      </b-col>                      
+                      <b-col cols="auto" :key="'select_'+findex">
+                          <b-form-select v-model="columns[cindex].fields[findex].field" :options="export_fields"  v-b-tooltip.hover title="Field" />
+                      </b-col>
+                      <b-col v-if="column.length > 1" cols="auto" :key="'check_'+findex">
+                          <b-form-checkbox v-model="columns[cindex].fields[findex].new_line"  v-b-tooltip.hover title="Include Return" />
+                      </b-col>
+                      <b-col v-if="column.length > 1" cols="auto" :key="'delete_'+findex">
+                          <img src="@/assets/delete.png" v-b-tooltip.hover title="Delete Field" fluid alt="Delete Field" style="width:20px;" @click="columns[cindex].fields.splice(findex,1)"/>
+                      </b-col>
+                    </template>
+                    <b-col>
+                      <img src="@/assets/add.png" v-b-tooltip.hover title="Add Field to Column" fluid alt="Add Field" style="width:20px;" @click="columns[cindex].fields.push({field:'',new_line:false,label:false})" />
+                      <img src="@/assets/delete.png" v-b-tooltip.hover title="Delete Column" fluid alt="Delete Column" style="width:20px;" @click="columns.splice(cindex,1)"/>
                     </b-col>
-                    <b-col :key="'check_'+findex">
-                        <b-form-checkbox v-model="columns[cindex][findex].new_line" />
-                    </b-col>
-                    <b-col :key="'delete_'+findex">
-                        <img src="@/assets/delete.png" v-b-tooltip.hover title="delete field" fluid alt="delete field" style="width:20px;" @click="columns[cindex].splice(findex,1)"/>
-                    </b-col>
-                  </template>
-                  <b-col>
-                    <img src="@/assets/add.png" v-b-tooltip.hover title="add field to column" fluid alt="add field" style="width:20px;" @click="columns[cindex].push({field:'',new_line:false,label:false})" />
-                    <img src="@/assets/delete.png" v-b-tooltip.hover title="delete column" fluid alt="delete column" style="width:20px;" @click="columns.splice(cindex,1)"/>
-                  </b-col>
                 </b-row>
                 <b-row>
                   <b-col>
-                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push([{field:'',new_line:false,label:false}])"/>
+                    <img src="@/assets/add.png" v-b-tooltip.hover title="add column" fluid alt="add column" style="width:20px;" @click="columns.push({name: columns.length, fields: [{field:'',new_line:false,label:false}]})"/>
                   </b-col>
                   <b-col>
                     <b-button @click="exportAssets">Export</b-button>        
@@ -111,18 +118,6 @@ export default {
             filtered_assets: [],
             filter: null,
             fields: [
-                    {
-                        key: 'export',
-                        label: 'Export',
-                        sortable: true,
-                        filter: null
-                    },
-                    {
-                        key: 'name',
-                        label: 'Name',
-                        sortable: true,
-                        filter: null
-                    },
                     {
                         key: 'asset_category.name',
                         label: 'Category',
@@ -156,6 +151,18 @@ export default {
                     {
                         key: 'number',
                         label: 'Number',
+                        sortable: true,
+                        filter: null
+                    },
+                    {
+                        key: 'export',
+                        label: 'Export',
+                        sortable: true,
+                        filter: null
+                    },
+                    {
+                        key: 'name',
+                        label: 'Name',
                         sortable: true,
                         filter: null
                     },
@@ -238,10 +245,10 @@ export default {
                     },
             ],
             columns: [
-                [{field:'url',new_line:true,label:true},{field:'name',new_line:true,label:true},{field:'number',new_line:true,label:true},{field:'asset_location.name',new_line:false,label:true}],
-                [{field:'name',new_line:false,label:false}],
-                [{field:'number',new_line:false,label:false}],
-                [{field:'asset_location.name',new_line:false,label:false}]
+                {name: 'QR Code', fields: [{field:'url',new_line:true,label:true},{field:'name',new_line:true,label:true},{field:'number',new_line:true,label:true},{field:'asset_location.name',new_line:false,label:true}]},
+                {name: '2', fields: [{field:'name',new_line:false,label:false}]},
+                {name: '3', fields: [{field:'number',new_line:false,label:false}]},
+                {name: '4', fields: [{field:'asset_location.name',new_line:false,label:false}]}
             ],
             export_fields: [
                 {value: 'url', text: 'URL'},
@@ -260,6 +267,7 @@ export default {
                 {value: 'vin', text: 'VIN'},
                 {value: 'purchase_cost', text: 'Cost'},
                 {value: 'parent_asset.name', text: 'Parent'},
+                {value: 'notes', text: 'Notes'},
                 {value: 'created_at', text: 'Created At'},
                 {value: 'updated_at', text: 'Updated At'}
             ]
@@ -316,6 +324,15 @@ export default {
         },
         exportAssets(){
             let text='';
+            let column_count=0;
+            this.columns.map( c => {
+                if(column_count>0){
+                        text += ',';
+                }
+                text += '"' + c.name + '"';
+                column_count++;
+            });
+            text += "\n";
             this.assets.map( a => {
                 if(a.export){
                     this.$http.post('/asset/' + a.id + '/export');
@@ -325,10 +342,8 @@ export default {
                         if(column_count>0){
                                 text += ',';
                         }
-                        if(c.length>1){
-                            text+='"';
-                        }
-                        c.map( f => {
+                        text+='"';
+                        c.fields.map( f => {
                             if(f.label){
                                 let label = this.export_fields.filter(ef => (ef.value == f.field));
                                 text += label[0].text + ': ';
@@ -362,9 +377,7 @@ export default {
                                 text += ' ';
                             }
                         });
-                        if(c.length>1){
-                            text+='"';
-                        }
+                        text+='"';
                         column_count++;
                     });
                     text += "\n";
@@ -381,6 +394,11 @@ export default {
                     this.assets.splice(index,1);
                 });
             }
+        },
+        selectAllVisible(){
+            this.filtered_assets.map(a => {
+                a.export = true;
+            });
         }
     },
     computed: {
