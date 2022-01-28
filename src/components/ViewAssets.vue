@@ -351,7 +351,7 @@ export default {
                             let subs;
                             switch(f.field){
                                 case 'url':
-                                    text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a);
+                                    text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a) + '#';
                                     break;
                                 case 'number':
                                     text += this.assetNumber(a);
@@ -370,7 +370,7 @@ export default {
                                     }
                             }
                             field_count++;
-                            if(field_count < c.length){
+                            if(field_count < c.fields.length){
                                 if(f.new_line){
                                     text += '\n';
                                 }
