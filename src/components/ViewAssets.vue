@@ -8,16 +8,6 @@
             <b-container fluid>
                 <b-row>
                   <b-col md="6" class="my-1">
-                    <b-form-group label="Filter" class="mb-0">
-                      <b-input-group>
-                        <b-form-input v-model="filter" placeholder="Type to Search" />
-                        <b-input-group-append>
-                          <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
-                        </b-input-group-append>
-                      </b-input-group>
-                    </b-form-group>
-                  </b-col>
-                  <b-col md="6" class="my-1">
                        <br />
                        <b-button @click="selectAllVisible()">Select All Visible</b-button>
                   </b-col>
@@ -32,6 +22,13 @@
                 :fields="fields"
                 style="text-align:left"
             >
+                <template slot="thead-top">
+                    <tr>
+                        <th v-for="field in fields" :key="field.key">
+                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                        </th>  
+                    </tr>
+                </template>
                 <template v-slot:cell(export)="data">
                     <b-form-checkbox v-model="data.item.export" />
                 </template>
@@ -351,7 +348,7 @@ export default {
                             let subs;
                             switch(f.field){
                                 case 'url':
-                                    text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a) + '#';
+                                    text += 'https://' + location.host + '/asset/number/' + this.assetNumber(a) + '?';
                                     break;
                                 case 'number':
                                     text += this.assetNumber(a);
