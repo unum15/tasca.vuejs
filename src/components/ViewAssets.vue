@@ -305,6 +305,12 @@ export default {
                                 value = value[keys[key_num]];
                             }
                         }
+                        if(typeof(value) == 'boolean'){
+                            if(((this.fields[x].filter == "yes")&&(value == false))||((this.fields[x].filter == "no")&&(value == true))){
+                                return false;
+                            }
+                            return true;
+                        }
                         if(!value){
                             value = "";
                         }
