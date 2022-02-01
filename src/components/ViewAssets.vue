@@ -206,6 +206,12 @@ export default {
                         filter: null
                     },
                     {
+                        key: 'home',
+                        label: 'Home',
+                        sortable: true,
+                        filter: null
+                    },
+                    {
                         key: 'asset_location.name',
                         label: 'Location',
                         sortable: true,
@@ -251,6 +257,7 @@ export default {
                 {value: 'url', text: 'URL'},
                 {value: 'name', text: 'Name'},
                 {value: 'number', text: 'Number'},
+                {value: 'home', text: 'Home'},
                 {value: 'asset_location.name', text: 'Location'},
                 {value: 'asset_category.name', text: 'Category'},
                 {value: 'asset_brand.name', text: 'Brand'},

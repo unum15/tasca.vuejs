@@ -315,6 +315,29 @@
                         
                         <b-form-row>
                             <b-col md="6">
+                                <b-form-group label="Home" label-cols="4" label-align="right">
+                                    <el-select
+                                        v-model="asset.home"
+                                        filterable
+                                        allow-create
+                                        default-first-option
+                                        placeholder="Select Home"
+                                        @change="save"
+                                        clearable
+                                    >
+                                        <el-option
+                                          v-for="home in homes"
+                                          :key="home"
+                                          :label="home"
+                                          :value="home"
+                                          >
+                                        </el-option>
+                                    </el-select>
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                            <b-col md="6">
                                 <b-form-group label="Location" label-cols="4" label-align="right">
                                     <el-select
                                         v-model="asset.asset_location_id"
@@ -549,7 +572,8 @@ export default {
             improvement_fields: ['description','details','date','cost','delete'],
             new_pictures: [],
             pictures: [],
-            new_location: {}
+            new_location: {},
+            homes: [],
         };
     },
     created () {
@@ -576,6 +600,9 @@ export default {
         });
         this.$http.get('/assets').then(response => {
             this.assets = response.data.data;
+        });
+        this.$http.get('/assets/unique/home').then(response => {
+            this.homes = response.data.data;
         });
         if(this.asset_id !== null) {
             this.$http.get('/asset/' + this.asset_id).then(response => {
