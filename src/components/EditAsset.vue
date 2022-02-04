@@ -315,21 +315,21 @@
                         
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Home" label-cols="4" label-align="right">
+                                <b-form-group label="Location" label-cols="4" label-align="right">
                                     <el-select
-                                        v-model="asset.home"
+                                        v-model="asset.location"
                                         filterable
                                         allow-create
                                         default-first-option
-                                        placeholder="Select Home"
+                                        placeholder="Select Location"
                                         @change="save"
                                         clearable
                                     >
                                         <el-option
-                                          v-for="home in homes"
-                                          :key="home"
-                                          :label="home"
-                                          :value="home"
+                                          v-for="location in locations"
+                                          :key="location"
+                                          :label="location"
+                                          :value="location"
                                           >
                                         </el-option>
                                     </el-select>
@@ -338,11 +338,11 @@
                         </b-form-row>
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Location" label-cols="4" label-align="right">
+                                <b-form-group label="Home" label-cols="4" label-align="right">
                                     <el-select
-                                        v-model="asset.asset_location_id"
+                                        v-model="asset.asset_home_id"
                                         @change="save"
-                                        :options="locations"
+                                        :options="homes"
                                         value-field="id"
                                         text-field="name"
                                         filterable
@@ -350,7 +350,7 @@
                                         default-first-option
                                     >
                                         <el-option
-                                            v-for="option in locations"
+                                            v-for="option in homes"
                                             :value="option.id"
                                             :key="option.id"
                                             :label="option.name"
@@ -361,15 +361,15 @@
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                <img src="@/assets/add.png" v-b-tooltip.hover title="Add Location" @click.stop="showAddLocation" alt="x" style="width:20px;float:left;" />
-                                <b-modal ref="add-location-modal" title="Add Location" @ok="addLocation">
+                                <img src="@/assets/add.png" v-b-tooltip.hover title="Add Home" @click.stop="showAddHome" alt="x" style="width:20px;float:left;" />
+                                <b-modal ref="add-home-modal" title="Add Home" @ok="addHome">
                                     <b-container>
                                         <b-row>
                                             <b-col>
                                                 <b-form-group label="Name">
                                                     <b-form-input
                                                         type="text"
-                                                        v-model="new_location.name"
+                                                        v-model="new_home.name"
                                                     >
                                                     </b-form-input>
                                                 </b-form-group>
@@ -378,7 +378,7 @@
                                                 <b-form-group label="Notes">
                                                     <b-form-input
                                                         type="text"
-                                                        v-model="new_location.notes"
+                                                        v-model="new_home.notes"
                                                     >
                                                     </b-form-input>
                                                 </b-form-group>
@@ -387,7 +387,7 @@
                                                 <b-form-group label="Sort">
                                                     <b-form-input
                                                         type="text"
-                                                        v-model="new_location.sort_order"
+                                                        v-model="new_home.sort_order"
                                                     >
                                                     </b-form-input>
                                                 </b-form-group>
@@ -565,15 +565,15 @@ export default {
             asset_subs: [],
             asset_usage_types: [],
             assets: [],
-            locations: [],
+            homes: [],
             appraisals: [],
             appraisal_fields: ['date','appraisal','delete'],
             improvements: [],
             improvement_fields: ['description','details','date','cost','delete'],
             new_pictures: [],
             pictures: [],
-            new_location: {},
-            homes: [],
+            new_home: {},
+            locations: [],
         };
     },
     created () {
@@ -595,14 +595,14 @@ export default {
         this.$http.get('/asset_usage_types').then(response => {
             this.asset_usage_types = response.data.data;
         });
-        this.$http.get('/asset_locations').then(response => {
-            this.locations = response.data.data;
+        this.$http.get('/asset_homes').then(response => {
+            this.homes = response.data.data;
         });
         this.$http.get('/assets').then(response => {
             this.assets = response.data.data;
         });
-        this.$http.get('/assets/unique/home').then(response => {
-            this.homes = response.data.data;
+        this.$http.get('/assets/unique/location').then(response => {
+            this.locations = response.data.data;
         });
         if(this.asset_id !== null) {
             this.$http.get('/asset/' + this.asset_id).then(response => {
@@ -828,20 +828,20 @@ export default {
             });
             
         },
-        showAddLocation() {
-            this.$refs['add-location-modal'].show();
+        showAddHome() {
+            this.$refs['add-home-modal'].show();
         },
-        addLocation(event) {
+        addHome(event) {
             event.preventDefault();
-            if(!this.new_location.name){
+            if(!this.new_home.name){
                 alert('Name required');
                 return;
             }
-            this.$http.post('/asset_location',this.new_location).then(() => {
-                this.new_location = {};
-                this.$refs['add-location-modal'].hide();
-                this.$http.get('/asset_locations').then(response => {
-                    this.locations = response.data.data;
+            this.$http.post('/asset_home',this.new_home).then(() => {
+                this.new_home = {};
+                this.$refs['add-home-modal'].hide();
+                this.$http.get('/asset_homes').then(response => {
+                    this.homes = response.data.data;
                 });     
             });
         },

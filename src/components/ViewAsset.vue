@@ -34,7 +34,7 @@ export default {
         };
     },
     created () {
-        this.$http.get('/asset/number/' + this.asset_number +'?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_location,asset_exports').then(response => {
+        this.$http.get('/asset/number/' + this.asset_number +'?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_home,asset_exports').then(response => {
             this.asset = response.data.data ?? {};
         });
     },
