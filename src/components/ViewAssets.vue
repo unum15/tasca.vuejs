@@ -32,13 +32,6 @@
                 <template v-slot:cell(export)="data">
                     <b-form-checkbox v-model="data.item.export" />
                 </template>
-                <template>
-                    <b-tr>
-                        <b-th v-for="field in fields" :key="field.key">
-                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
-                        </b-th>  
-                    </b-tr>
-                </template>
                 <template v-slot:cell(name)="data">
                     <a :href="'/asset/' + data.item.id"> {{ data.value }} </a>
                 </template>
@@ -288,7 +281,10 @@ export default {
                     a.export = false;
                 });
                 this.assets = assets;
-                this.filterColumns();
+                for(var x = 0;x < this.fields.length; x++){
+                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
+                }
+                this.filterColumns(false);
             });
         },
         formatTime(time){
@@ -397,7 +393,6 @@ export default {
             });
             var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
             FileSaver.saveAs(blob, "assets.csv");
-            this.getAssets();
         },
         deleteAsset(asset){
             if(confirm("Delete " + asset.name + "?")){
@@ -419,9 +414,12 @@ export default {
         }),
     },
     watch: {
-        stored_filters(){
-            for(var x = 0;x < this.fields.length; x++){
-                this.fields[x].filter = this.stored_filters[this.fields[x].key];
+        stored_filters:{
+            deep: true,
+            handler(){
+                for(var x = 0;x < this.fields.length; x++){
+                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
+                }
             }
         }
     }
