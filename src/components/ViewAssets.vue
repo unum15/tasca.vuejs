@@ -199,14 +199,14 @@ export default {
                         filter: null
                     },
                     {
-                        key: 'home',
-                        label: 'Home',
+                        key: 'location',
+                        label: 'Location',
                         sortable: true,
                         filter: null
                     },
                     {
-                        key: 'asset_location.name',
-                        label: 'Location',
+                        key: 'asset_home.name',
+                        label: 'Home',
                         sortable: true,
                         filter: null
                     },
@@ -241,17 +241,17 @@ export default {
                     },
             ],
             columns: [
-                {name: 'QR Code', fields: [{field:'url',new_line:true,label:true},{field:'name',new_line:true,label:true},{field:'number',new_line:true,label:true},{field:'asset_location.name',new_line:false,label:true}]},
+                {name: 'QR Code', fields: [{field:'url',new_line:true,label:true},{field:'name',new_line:true,label:true},{field:'number',new_line:true,label:true},{field:'asset_home.name',new_line:false,label:true}]},
                 {name: '2', fields: [{field:'name',new_line:false,label:false}]},
                 {name: '3', fields: [{field:'number',new_line:false,label:false}]},
-                {name: '4', fields: [{field:'asset_location.name',new_line:false,label:false}]}
+                {name: '4', fields: [{field:'asset_home.name',new_line:false,label:false}]}
             ],
             export_fields: [
                 {value: 'url', text: 'URL'},
                 {value: 'name', text: 'Name'},
                 {value: 'number', text: 'Number'},
-                {value: 'home', text: 'Home'},
-                {value: 'asset_location.name', text: 'Location'},
+                {value: 'location', text: 'Location'},
+                {value: 'asset_home.name', text: 'Home'},
                 {value: 'asset_category.name', text: 'Category'},
                 {value: 'asset_brand.name', text: 'Brand'},
                 {value: 'asset_type.name', text: 'Type'},
@@ -275,7 +275,7 @@ export default {
     },
     methods: {
         getAssets(){
-            this.$http.get('/assets?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_location,asset_exports').then(response => {
+            this.$http.get('/assets?includes=asset_usage_type,asset_category,asset_brand,asset_type,asset_group,asset_sub,parent_asset,asset_home,asset_exports').then(response => {
                 let assets = response.data.data;
                 assets.map( a => {
                     a.export = false;
