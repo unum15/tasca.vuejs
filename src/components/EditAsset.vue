@@ -435,7 +435,11 @@
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
-        
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-button v-b-tooltip.hover title="To add the items that come with an asset" @click="showAccessories();">Accessories</b-button>
+                            </b-col>
+                        </b-form-row>
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Notes" label-cols="4" label-align="right">
@@ -537,6 +541,46 @@
                     </b-modal>
                 </b-tab>
             </b-tabs>
+            
+            <b-modal ref="accessories" title="Accessories" @ok="addAccessories">
+                <b-container fluid="md">
+                    <b-form-row v-for="accessory in accessories">
+                        <b-col>
+                            <b-form-group label="Qty">
+                                <b-form-input
+                                    type="number"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Name">
+                                <b-form-input
+                                    type="text"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Notes">
+                                <b-form-input
+                                    type="text"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Value">
+                                <b-form-input
+                                    type="text"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                    </b-form-row>
+                    <img src="@/assets/add.png" @click.stop="addAccessory" fluid alt="+" style="width:20px;cursor:pointer;" />
+                </b-container>
+            </b-modal>
             <b-button @click="save();resetForm();">New</b-button>
             <b-button @click="save();$router.push('/assets');">Done</b-button>
         </main>
@@ -574,6 +618,7 @@ export default {
             pictures: [],
             new_home: {},
             locations: [],
+            accessories: []
         };
     },
     created () {
@@ -851,6 +896,17 @@ export default {
             //const dollar_sign = /^\$?/;
             //value = value.replace(dollar_sign, '$');
             return value;
+        },
+        showAccessories(){
+            this.$refs['accessories'].show();
+            if(this.accessories.length==0){
+                this.accessories.push({});
+            }
+        },
+        addAccessory(){
+            this.accessories.push({});
+        },
+        addAccessories(){
         }
     },
     computed: {
