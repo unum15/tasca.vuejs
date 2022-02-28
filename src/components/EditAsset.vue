@@ -548,31 +548,36 @@
                         <b-col>
                             <b-form-group label="Qty">
                                 <b-form-input
+                                    size="4"
                                     type="number"
+                                    v-model="accessory.quantity"
                                 >
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
-                        <b-col>
+                        <b-col cols="3">
                             <b-form-group label="Name">
-                                <b-form-input
-                                    type="text"
+                                <b-form-textarea
+                                    v-model="accessory.name"
                                 >
-                                </b-form-input>
+                                </b-form-textarea>
                             </b-form-group>
                         </b-col>
-                        <b-col>
+                        <b-col cols="3">
                             <b-form-group label="Notes">
-                                <b-form-input
-                                    type="text"
+                                <b-form-textarea
+                                    v-model="accessory.quantity"
                                 >
-                                </b-form-input>
+                                </b-form-textarea>
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label="Value">
+                                $
                                 <b-form-input
                                     type="text"
+                                    v-model="accessory.value"
+                                    style="width:90%;"
                                 >
                                 </b-form-input>
                             </b-form-group>
