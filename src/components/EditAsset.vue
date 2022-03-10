@@ -555,7 +555,7 @@
                                 </b-form-input>
                             </b-form-group>
                         </b-col>
-                        <b-col cols="3">
+                        <b-col cols="4">
                             <b-form-group label="Name">
                                 <b-form-textarea
                                     v-model="accessory.name"
@@ -563,7 +563,7 @@
                                 </b-form-textarea>
                             </b-form-group>
                         </b-col>
-                        <b-col cols="3">
+                        <b-col cols="4">
                             <b-form-group label="Notes">
                                 <b-form-textarea
                                     v-model="accessory.quantity"
