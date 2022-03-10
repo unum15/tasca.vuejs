@@ -11,6 +11,10 @@
                        <br />
                        <b-button @click="selectAllVisible()">Select All Visible</b-button>
                   </b-col>
+                  <b-col md="6" class="my-1">
+                       <br />
+                       <b-button @click="clearFilters()">Clear Filters</b-button>
+                  </b-col>
                 </b-row>
             </b-container>
             <b-table
@@ -317,13 +321,24 @@ export default {
                         if(!value){
                             value = "";
                         }
+                        if(this.fields[x].key == 'number'){
+                            value=this.assetNumber(t);
+                        }
                         return value.match(regex) !== null
                     })
                 }
             }
-            if(store){
+            if(store!==false){
                 this.$store.dispatch('saveFilters',{filters,name:'assets'});
             }
+        },
+        clearFilters(){
+            let filters = {};
+            for(var x = 0;x < this.fields.length; x++){
+                this.fields[x].filter = '';
+                filters[this.fields[x].key] = this.fields[x].filter;
+            }
+            this.filterColumns(true);
         },
         assetNumber(asset){
             return (asset.asset_category ? asset.asset_category.number : '0') + (asset.asset_brand ? asset.asset_brand.number : '0') + (asset.asset_type ? asset.asset_type.number : '0') + (asset.asset_group ? asset.asset_group.number : '0') + (asset.asset_sub ? asset.asset_sub.number : '0') + (asset.item_number ? asset.item_number : '0')
