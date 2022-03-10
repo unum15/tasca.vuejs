@@ -146,7 +146,9 @@ export default {
                         key: 'number',
                         label: 'Number',
                         sortable: true,
-                        filter: null
+                        filter: null,
+                        sortByFormatted: true,
+                        formatter: 'numberFormatter'
                     },
                     {
                         key: 'export',
@@ -339,6 +341,9 @@ export default {
                 filters[this.fields[x].key] = this.fields[x].filter;
             }
             this.filterColumns(true);
+        },
+        numberFormatter(value,key,item){
+            return this.assetNumber(item);
         },
         assetNumber(asset){
             return (asset.asset_category ? asset.asset_category.number : '0') + (asset.asset_brand ? asset.asset_brand.number : '0') + (asset.asset_type ? asset.asset_type.number : '0') + (asset.asset_group ? asset.asset_group.number : '0') + (asset.asset_sub ? asset.asset_sub.number : '0') + (asset.item_number ? asset.item_number : '0')
