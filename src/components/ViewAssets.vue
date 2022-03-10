@@ -327,6 +327,9 @@ export default {
                         if(this.fields[x].key == 'number'){
                             value=this.assetNumber(t);
                         }
+                        if(this.fields[x].key == 'exported_at'){
+                            value=this.formatExport(null,'exported_at',t);
+                        }
                         return value.match(regex) !== null
                     })
                 }
