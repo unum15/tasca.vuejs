@@ -816,11 +816,8 @@ export default {
             if(clear){
                 this.asset.item_number = null;
             }
-            let temp = this.asset.asset_sub_id;
-            this.asset.asset_sub_id = null;
-            this.asset.asset_sub_id = temp
+            this.$set(this.asset, 'asset_sub_id', this.asset.asset_sub_id);
             await this.$http.get('/asset/number/' + this.number_string).then(response => {
-                console.log(response.data.data);
                 if(response.data.data){
                     this.asset.item_number = null;
                 }
@@ -882,9 +879,12 @@ export default {
             }
             all_numbers.map(x => {
                 if(!this.asset.asset_sub_id || !this.assets.filter(a => (a.item_number == x && a.asset_sub_id == this.asset.asset_sub_id && a.id != this.asset.id )).length){
+                    console.log('sub_id:' + this.asset.asset_sub_id);
+                    console.log('x' + x);
                     free_numbers.push(x+'');
                 }
             });
+            console.log(free_numbers);
             return free_numbers;
         }
     }
