@@ -881,7 +881,7 @@ export default {
                 all_numbers.push(String.fromCharCode(x));
             }
             all_numbers.map(x => {
-                if(!this.assets.filter(a => (a.item_number == x && a.asset_sub_id == this.asset.asset_sub_id && a.id != this.asset.id )).length){
+                if(!this.asset.asset_sub_id || !this.assets.filter(a => (a.item_number == x && a.asset_sub_id == this.asset.asset_sub_id && a.id != this.asset.id )).length){
                     free_numbers.push(x+'');
                 }
             });
