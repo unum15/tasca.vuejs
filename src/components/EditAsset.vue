@@ -542,7 +542,7 @@
                 </b-tab>
             </b-tabs>
             
-            <b-modal ref="accessories" title="Accessories" @ok="addAccessories">
+            <b-modal ref="accessories" title="Accessories" @ok="closeAccessories">
                 <b-container fluid="md">
                     <b-form-row v-for="accessory in accessories">
                         <b-col>
@@ -551,6 +551,7 @@
                                     size="4"
                                     type="number"
                                     v-model="accessory.quantity"
+                                    @change="saveAccessory(accessory)"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -559,6 +560,7 @@
                             <b-form-group label="Name">
                                 <b-form-textarea
                                     v-model="accessory.name"
+                                    @change="saveAccessory(accessory)"
                                 >
                                 </b-form-textarea>
                             </b-form-group>
@@ -567,6 +569,7 @@
                             <b-form-group label="Notes">
                                 <b-form-textarea
                                     v-model="accessory.quantity"
+                                    @change="saveAccessory(accessory)"
                                 >
                                 </b-form-textarea>
                             </b-form-group>
@@ -577,7 +580,8 @@
                                 <b-form-input
                                     type="text"
                                     v-model="accessory.value"
-                                    style="width:90%;"
+                                    style="width:90%;float:right;"
+                                    @change="saveAccessory(accessory)"
                                 >
                                 </b-form-input>
                             </b-form-group>
@@ -657,6 +661,9 @@ export default {
         if(this.asset_id !== null) {
             this.$http.get('/asset/' + this.asset_id).then(response => {
                 this.asset = response.data.data;
+            });
+            this.$http.get('/asset_accessories?asset_id=' + this.asset_id).then(response => {
+                this.accessories = response.data.data;
             });
             this.$http.get('/asset_appraisals?asset_id=' + this.asset_id).then(response => {
                 this.appraisals = response.data.data;
@@ -905,13 +912,25 @@ export default {
         showAccessories(){
             this.$refs['accessories'].show();
             if(this.accessories.length==0){
-                this.accessories.push({});
+                this.addAccessory();
             }
         },
-        addAccessory(){
-            this.accessories.push({});
+        closeAccessories(){
+            this.$refs['accessories'].hide();
         },
-        addAccessories(){
+        addAccessory(){
+            this.accessories.push({asset_id:this.asset.id,id:null,name:null,notes:null,value:null});
+        },
+        saveAccessory(accessory){
+            if(accessory.id === null){
+                this.$http.post('/asset_accessory',accessory)
+                    .then((results) => {
+                        accessory.id = results.data.data.id;
+                    });
+            }
+            else{
+                this.$http.patch('/asset_accessory/' + accessory.id, accessory);
+            }
         }
     },
     computed: {
