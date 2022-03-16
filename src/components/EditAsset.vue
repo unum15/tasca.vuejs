@@ -544,7 +544,7 @@
             
             <b-modal ref="accessories" title="Accessories" @ok="closeAccessories">
                 <b-container fluid="md">
-                    <b-form-row v-for="accessory in accessories">
+                    <b-form-row v-for="accessory in accessories" :key="accessory.id">
                         <b-col>
                             <b-form-group label="Qty">
                                 <b-form-input
