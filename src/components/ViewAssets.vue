@@ -11,6 +11,10 @@
                        <br />
                        <b-button @click="selectAllVisible()">Select All Visible</b-button>
                   </b-col>
+                  <b-col md="6" class="my-1">
+                       <br />
+                       <b-button @click="clearFilters()">Clear Filters</b-button>
+                  </b-col>
                 </b-row>
             </b-container>
             <b-table
@@ -21,6 +25,7 @@
                 :items="filtered_assets"
                 :fields="fields"
                 style="text-align:left"
+                :sort-compare-options="{}"
             >
                 <template slot="thead-top">
                     <tr>
@@ -36,18 +41,9 @@
                     <a :href="'/asset/' + data.item.id"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(number)="data">
-                    <a :href="'/asset/number/' + assetNumber(data.item)">{{ assetNumber(data.item) }}</a>
+                    <a :href="'/asset/number/' + data.value">{{ data.value }}</a>
                 </template>
                 <template v-slot:cell(purchase_date)="data">
-                    {{formatTime(data.value)}}
-                </template>
-                <template v-slot:cell(exported_at)="data">
-                    {{data.item.asset_exports.length ? formatTime(data.item.asset_exports[0].exported_at) : 'N/A'}}
-                </template>
-                <template v-slot:cell(created_at)="data">
-                    {{formatTime(data.value)}}
-                </template>
-                <template v-slot:cell(updated_at)="data">
                     {{formatTime(data.value)}}
                 </template>
                 <template v-slot:cell(actions)="data">
@@ -142,7 +138,9 @@ export default {
                         key: 'number',
                         label: 'Number',
                         sortable: true,
-                        filter: null
+                        filter: null,
+                        formatter: 'numberFormatter',
+                        sortByFormatted: true,
                     },
                     {
                         key: 'export',
@@ -196,7 +194,7 @@ export default {
                         key: 'purchase_date',
                         label: 'Purchase Date',
                         sortable: true,
-                        filter: null
+                        filter: null,
                     },
                     {
                         key: 'location',
@@ -220,19 +218,25 @@ export default {
                         key: 'exported_at',
                         label: 'Exported At',
                         sortable: true,
-                        filter: null
+                        filter: null,
+                        sortByFormatted: true,
+                        formatter: 'formatExport'
                     },
                     {
                         key: 'created_at',
                         label: 'Created At',
                         sortable: true,
-                        filter: null
+                        filter: null,
+                        sortByFormatted: true,
+                        formatter: 'formatTime'
                     },
                     {
                         key: 'updated_at',
                         label: 'Updated At',
                         sortable: true,
-                        filter: null
+                        filter: null,
+                        sortByFormatted: true,
+                        formatter: 'formatTime'
                     },
                     {
                         key: 'actions',
@@ -287,6 +291,9 @@ export default {
                 this.filterColumns(false);
             });
         },
+        formatExport(value,field,asset){
+             return asset.asset_exports.length ? this.formatTime(asset.asset_exports[0].exported_at) : 'N/A';
+        },
         formatTime(time){
             if(!time){
                 return '';
@@ -317,16 +324,33 @@ export default {
                         if(!value){
                             value = "";
                         }
+                        if(this.fields[x].key == 'number'){
+                            value=this.assetNumber(t);
+                        }
+                        if(this.fields[x].key == 'exported_at'){
+                            value=t.asset_exports.length ? t.asset_exports[0].exported_at : 'N/A';
+                        }
                         return value.match(regex) !== null
                     })
                 }
             }
-            if(store){
+            if(store!==false){
                 this.$store.dispatch('saveFilters',{filters,name:'assets'});
             }
         },
+        clearFilters(){
+            let filters = {};
+            for(var x = 0;x < this.fields.length; x++){
+                this.fields[x].filter = '';
+                filters[this.fields[x].key] = this.fields[x].filter;
+            }
+            this.filterColumns(true);
+        },
+        numberFormatter(value,key,item){
+            return this.assetNumber(item);
+        },
         assetNumber(asset){
-            return (asset.asset_category ? asset.asset_category.number : '0') + (asset.asset_brand ? asset.asset_brand.number : '0') + (asset.asset_type ? asset.asset_type.number : '0') + (asset.asset_group ? asset.asset_group.number : '0') + (asset.asset_sub ? asset.asset_sub.number : '0') + (asset.item_number ? asset.item_number : '0')
+            return (asset.asset_category ? asset.asset_category.number : '0').concat(asset.asset_brand ? asset.asset_brand.number : '0').concat(asset.asset_type ? asset.asset_type.number : '0').concat(asset.asset_group ? asset.asset_group.number : '0').concat(asset.asset_sub ? asset.asset_sub.number : '0').concat(asset.item_number ? asset.item_number : '0');
         },
         exportAssets(){
             let text='';
