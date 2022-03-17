@@ -568,8 +568,9 @@
                         <b-col cols="4">
                             <b-form-group label="Notes">
                                 <b-form-textarea
-                                    v-model="accessory.quantity"
+                                    v-model="accessory.notes"
                                     @change="saveAccessory(accessory)"
+                                    @focus="focusedAccessory"
                                 >
                                 </b-form-textarea>
                             </b-form-group>
@@ -627,7 +628,8 @@ export default {
             pictures: [],
             new_home: {},
             locations: [],
-            accessories: []
+            accessories: [],
+            focused_accessory: null
         };
     },
     created () {
@@ -919,15 +921,23 @@ export default {
             this.accessories.push({asset_id:this.asset.id,id:null,name:null,notes:null,value:null});
         },
         saveAccessory(accessory){
+            if(!accessory.name){
+                return;
+            }
             if(accessory.id === null){
                 this.$http.post('/asset_accessory',accessory)
                     .then((results) => {
                         accessory.id = results.data.data.id;
+                        //setTimeout(() =>{this.focused_accessory.focus();},0);
                     });
             }
             else{
                 this.$http.patch('/asset_accessory/' + accessory.id, accessory);
             }
+        },
+        focusedAccessory(event){
+            console.log(event);
+            this.focused_accessory = event.target;
         }
     },
     computed: {
