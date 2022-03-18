@@ -435,7 +435,11 @@
                                 </b-form-group>
                             </b-col>
                         </b-form-row>
-        
+                        <b-form-row>
+                            <b-col md="6">
+                                <b-button v-b-tooltip.hover title="To add the items that come with an asset" @click="showAccessories();">Accessories</b-button>
+                            </b-col>
+                        </b-form-row>
                         <b-form-row>
                             <b-col md="6">
                                 <b-form-group label="Notes" label-cols="4" label-align="right">
@@ -537,6 +541,56 @@
                     </b-modal>
                 </b-tab>
             </b-tabs>
+            
+            <b-modal ref="accessories" title="Accessories" @ok="closeAccessories">
+                <b-container fluid="md">
+                    <b-form-row v-for="accessory in accessories" :key="accessory.id">
+                        <b-col>
+                            <b-form-group label="Qty">
+                                <b-form-input
+                                    size="4"
+                                    type="number"
+                                    v-model="accessory.quantity"
+                                    @change="saveAccessory(accessory)"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="4">
+                            <b-form-group label="Name">
+                                <b-form-textarea
+                                    v-model="accessory.name"
+                                    @change="saveAccessory(accessory)"
+                                >
+                                </b-form-textarea>
+                            </b-form-group>
+                        </b-col>
+                        <b-col cols="4">
+                            <b-form-group label="Notes">
+                                <b-form-textarea
+                                    v-model="accessory.notes"
+                                    @change="saveAccessory(accessory)"
+                                    @focus="focusedAccessory"
+                                >
+                                </b-form-textarea>
+                            </b-form-group>
+                        </b-col>
+                        <b-col>
+                            <b-form-group label="Value">
+                                $
+                                <b-form-input
+                                    type="text"
+                                    v-model="accessory.value"
+                                    style="width:90%;float:right;"
+                                    @change="saveAccessory(accessory)"
+                                >
+                                </b-form-input>
+                            </b-form-group>
+                        </b-col>
+                    </b-form-row>
+                    <img src="@/assets/add.png" @click.stop="addAccessory" fluid alt="+" style="width:20px;cursor:pointer;" />
+                </b-container>
+            </b-modal>
             <b-button @click="save();resetForm();">New</b-button>
             <b-button @click="save();$router.push('/assets');">Done</b-button>
         </main>
@@ -574,6 +628,8 @@ export default {
             pictures: [],
             new_home: {},
             locations: [],
+            accessories: [],
+            focused_accessory: null
         };
     },
     created () {
@@ -607,6 +663,9 @@ export default {
         if(this.asset_id !== null) {
             this.$http.get('/asset/' + this.asset_id).then(response => {
                 this.asset = response.data.data;
+            });
+            this.$http.get('/asset_accessories?asset_id=' + this.asset_id).then(response => {
+                this.accessories = response.data.data;
             });
             this.$http.get('/asset_appraisals?asset_id=' + this.asset_id).then(response => {
                 this.appraisals = response.data.data;
@@ -848,6 +907,37 @@ export default {
             //const dollar_sign = /^\$?/;
             //value = value.replace(dollar_sign, '$');
             return value;
+        },
+        showAccessories(){
+            this.$refs['accessories'].show();
+            if(this.accessories.length==0){
+                this.addAccessory();
+            }
+        },
+        closeAccessories(){
+            this.$refs['accessories'].hide();
+        },
+        addAccessory(){
+            this.accessories.push({asset_id:this.asset.id,id:null,name:null,notes:null,value:null});
+        },
+        saveAccessory(accessory){
+            if(!accessory.name){
+                return;
+            }
+            if(accessory.id === null){
+                this.$http.post('/asset_accessory',accessory)
+                    .then((results) => {
+                        accessory.id = results.data.data.id;
+                        //setTimeout(() =>{this.focused_accessory.focus();},0);
+                    });
+            }
+            else{
+                this.$http.patch('/asset_accessory/' + accessory.id, accessory);
+            }
+        },
+        focusedAccessory(event){
+            console.log(event);
+            this.focused_accessory = event.target;
         }
     },
     computed: {
