@@ -19,20 +19,6 @@
                     </b-form-group>
                   </b-col>
                   <b-col>
-                    <b-form-group label="Active Filter" class="mb-0">
-                        <b-form-select
-                            @change="getBackflowAssemblies()"
-                            :options="active_values"
-                            v-model="active_filter">
-                        </b-form-select>
-                    </b-form-group>
-                  </b-col>
-                  <b-col>
-                    <b-form-group label="Month" class="mb-0">
-                        <b-form-input v-model="month_match" placeholder="Month" :state="month_match_state"/>
-                    </b-form-group>
-                  </b-col>
-                  <b-col>
                     <b-form-group label="Show Submitted" class="mb-0">
                       <b-form-checkbox v-model="submitted">
                       </b-form-checkbox>
@@ -49,6 +35,13 @@
                 :fields="fields"
                 style="text-align:left;"
             >
+                <template slot="thead-top">
+                    <tr>
+                        <th v-for="field in fields" :key="field.key">
+                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                        </th>  
+                    </tr>
+                </template>
                 <template v-slot:cell(id)="data">
                     <a :href="'/backflow_assembly/' + data.value"> {{ data.value }} </a>
                 </template>
@@ -76,6 +69,7 @@
 import TopMenu from './TopMenu';
 import moment from 'moment'
 import LogicNode from '../common/LogicNode.js';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewBackflowAssemblies',
     components: {
@@ -84,6 +78,7 @@ export default {
     data() {
         return {
             backflow_assemblies: [],
+            filtered_backflow_assemblies: [],
             filter: null,
             month_match: null,
             month_logic: null,
@@ -97,82 +92,98 @@ export default {
                     {
                         key: 'property.client.name',
                         label: 'Client',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'property',
                         label: 'Property',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'contact',
                         label: 'Contact',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'backflow_water_system.name',
                         label: 'System',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'use',
                         label: 'Use',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'placement',
                         label: 'Placement',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'backflow_type.name',
                         label: 'Type',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'backflow_manufacturer.name',
                         label: 'Manufacturer',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'backflow_size.name',
                         label: 'Size',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'backflow_model.name',
                         label: 'Model',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'serial_number',
                         label: 'Serial',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'active',
                         label: 'Active',
-                        sortable: true
+                        sortable: true,
+                        filter: 'yes'
                     },
                     {
                         key: 'month',
                         label: 'Month',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'notes',
                         label: 'Notes',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'backflow_test_reports',
                         label: 'Last Test',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
                     {
                         key: 'updated_at',
                         label: 'Updated At',
-                        sortable: true
+                        sortable: true,
+                        filter: null
                     },
             ],
             active_filter: 1,
@@ -197,46 +208,77 @@ export default {
     },
     methods: {
         getBackflowAssemblies(){
-            let active = '';
-            if(this.active_filter != ''){
-                active = '&active=' + this.active_filter;
-            }
-            this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_test_reports,property_unit,property.client,contact.emails,contact.phoneNumbers' + active).then(response => {
+            this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_test_reports,property_unit,property.client,contact.emails,contact.phoneNumbers').then(response => {
                 this.backflow_assemblies = response.data.data;
+                this.filterColumns(false);
             });
         },
         saveActive(item){
             let ba = {
-                active: !item.active
+                active: item.active
             }
             this.$http.patch('/backflow_assembly/' + item.id, ba);
-        }
+        },
+        filterColumns(store=true){
+            this.filtered_backflow_assemblies = this.backflow_assemblies;
+            let filters = {};
+            for(var x = 0;x < this.fields.length; x++){
+                filters[this.fields[x].key] = this.fields[x].filter;
+                if(this.fields[x].filter){
+                    var regex = new RegExp(this.fields[x].filter, "i");
+                    this.filtered_backflow_assemblies = this.filtered_backflow_assemblies.filter(t => {
+                        var keys = this.fields[x].key.split('.');
+                        var value = t;
+                        for(var key_num = 0; key_num < keys.length; key_num++){
+                            if(value){
+                                value = value[keys[key_num]];
+                            }
+                        }
+                        if(typeof(value) == 'boolean'){
+                            if(((this.fields[x].filter == "yes")&&(value == false))||((this.fields[x].filter == "no")&&(value == true))){
+                                return false;
+                            }
+                            return true;
+                        }
+                        if(!value){
+                            value = "";
+                        }
+                        return value.match(regex) !== null
+                    })
+                }
+            }
+            if(store!==false){
+                this.$store.dispatch('saveFilters',{filters,name:'backflows'});
+            }
+        },
+        clearFilters(){
+            let filters = {};
+            for(var x = 0;x < this.fields.length; x++){
+                this.fields[x].filter = '';
+                filters[this.fields[x].key] = this.fields[x].filter;
+            }
+            this.filterColumns(true);
+        },
     },
     computed: {
-        filtered_backflow_assemblies (){
-            let assemblies = this.backflow_assemblies;
-            if(this.month_match){
-                assemblies = assemblies.filter(a => (this.month_logic.matches(a.month)));
-            }
-            if(!this.submitted){
-                assemblies = assemblies.filter(a =>{
-                    if((a.backflow_test_reports.length) && (a.backflow_test_reports[0].submitted_date)){
-                        if(moment().diff(moment(a.backflow_test_reports[0].submitted_date), 'months', true) < 10){
-                            return false;
-                        }
-                    }
-                    return true;
-                });
-            }
-            return assemblies;
-        },
+        ...mapState({
+            stored_filters: state => state.filters.backflows
+        }),
         month_match_state () {
             return this.month_match ? this.month_logic.valid : null;
-        }
+        },
     },
     watch: {
         month_match(value){
             this.month_logic = new LogicNode(value,true);
+        },
+        stored_filters:{
+            deep: true,
+            handler(){
+                for(var x = 0;x < this.fields.length; x++){
+                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
+                }
+            }
         }
     }
 }
