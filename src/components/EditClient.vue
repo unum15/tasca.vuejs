@@ -21,8 +21,8 @@
           <b-tab title="General">
             <b-container :fluid="true">
             <b-row>
-            <b-col cols="8">
-            <b-container>
+            <b-col :cols="show_help=='true' ? 8 : 12">
+            <b-container style="width:100%">
               <b-row>
                 <b-col>
                   <b-form-group label="Client Type">
@@ -135,7 +135,7 @@
               </b-row>
             </b-container>
             </b-col>
-            <b-col style="text-align:left;" v-if="settings.help_show == 'true'">
+            <b-col style="text-align:left;" v-if="show_help == 'true'">
               {{ settings.help_client }}
             </b-col>
             </b-row>
@@ -295,7 +295,8 @@ export default {
     ...mapState({
       backflows: state => state.settings.backflows,
       phreebooks: state => state.settings.phreebooks,
-      irrigation_systems: state => state.settings.irrigation_systems
+      irrigation_systems: state => state.settings.irrigation_systems,
+      show_help: state => state.user.show_help
     }),
   }
 }
