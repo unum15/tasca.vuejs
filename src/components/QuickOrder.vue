@@ -653,7 +653,7 @@ export default {
     },
     saveTask() {
       this.task.order_id = this.order.id;
-			this.task.name = this.order.name;
+//			this.task.name = this.order.name;
 			this.task.description = this.order.description;
       if(this.task.id === null){
         this.$http.post('/task',this.task)
@@ -730,7 +730,7 @@ export default {
         this.order.description = this.order.name;
       }
       if(this.task.name === null){
-        this.task.name = this.order.name;
+        //this.task.name = this.order.name;
       }
       if(this.task.description === null){
         this.task.description = this.order.description;
