@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Privacy from '@/components/Privacy';
+import Google from '@/components/Google';
 import EditClient from '@/components/EditClient';
 import QuickClient from '@/components/QuickClient';
 import QuickOrder from '@/components/QuickOrder';
@@ -650,6 +651,15 @@ var router = new Router({
           title: 'Privacy Policy'
       }
     },
+    {
+      path: '/google',
+      name: 'Google',
+      component: Google,
+      meta: {
+          title: 'Google Policy'
+      }
+    },
+    
     {
       path: '/roles',
       name: 'EditRoles',
