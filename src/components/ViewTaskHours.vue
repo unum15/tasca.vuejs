@@ -7,7 +7,7 @@
             </b-row>
             <b-row>
                 <b-col cols="2" v-for="appointment in filtered_appointments" :key="appointment.id" :class="{highlight: appointment.date == today, blue: appointment.date != today}">
-                    {{ formatTime(appointment.date,appointment.time) }}
+                    {{ formatTime(appointment.date ? appointment.time ? appointment.date+' '+appointment.time : appointment.date : null) }}
                 </b-col>
             </b-row>
             <b-row>
@@ -348,7 +348,7 @@ export default {
             return [];
         },
         filtered_appointments(){
-            return this.appointments.filter(appointment => (appointment.date>=this.today));
+            return this.appointments;//.filter(appointment => (appointment.date>=this.today));
         },
         today(){
             return moment().format('YYYY-MM-DD');

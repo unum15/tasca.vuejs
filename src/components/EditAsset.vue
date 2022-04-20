@@ -423,16 +423,49 @@
 
                         <b-form-row>
                             <b-col md="6">
-                                <b-form-group label="Asset Usage Type" label-cols="4" label-align="right">
-                                    <b-form-radio-group
-                                        v-model="asset.asset_usage_type_id"
+                                <b-form-group label="Select to show this asset in the following records:" label-cols="4" label-align="right" v-slot="{ ariaDescribedby }">
+                                    <b-form-checkbox
+                                        v-model="asset.needs_maintenances"
                                         @change="save"
-                                        :options="asset_usage_types"
-                                        value-field="id"
-                                        text-field="name"
+                                        :aria-describedby="ariaDescribedby"
+                                        inline
                                     >
-                                    </b-form-radio-group>
-                                </b-form-group>
+                                            
+                                        Maintenance
+                                    </b-form-checkbox>
+                                    <b-form-checkbox
+                                        v-model="asset.needs_parts"
+                                        @change="save"
+                                        :aria-describedby="ariaDescribedby"
+                                        inline
+                                    >
+                                        Parts
+                                    </b-form-checkbox>
+                                    <b-form-checkbox
+                                        v-model="asset.needs_repairs"
+                                        @change="save"
+                                        :aria-describedby="ariaDescribedby"
+                                        inline
+                                    >
+                                        Repairs
+                                    </b-form-checkbox>
+                                    <b-form-checkbox
+                                        v-model="asset.needs_fuelings"
+                                        @change="save"
+                                        :aria-describedby="ariaDescribedby"
+                                        inline
+                                    >
+                                        Fueling
+                                    </b-form-checkbox>
+                                    <b-form-checkbox
+                                        v-model="asset.needs_services"
+                                        @change="save"
+                                        :aria-describedby="ariaDescribedby"
+                                        inline
+                                    >
+                                            Service
+                                    </b-form-checkbox>
+                                  </b-form-group>
                             </b-col>
                         </b-form-row>
                         <b-form-row>
