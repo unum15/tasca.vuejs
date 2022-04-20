@@ -19,8 +19,13 @@
 					:active="isActive(index)"
 				>
 					<template slot="title" style="text-align:left">
-						<div class="text-left" v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
-							{{ task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New') }}
+						<div class="text-left" @contextmenu="showTabContextMenu">
+							<span v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
+								{{ task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New') }}
+							</span>
+							<b-list-group class="popup">
+								<b-list-group-item>Copy</b-list-group-item>
+							</b-list-group>
 						</div>
 					</template>
 					<EditTask
@@ -148,7 +153,8 @@ export default {
 				}
 				return 0;
 			});
-		}
+		},
+		showTabContextMenu(){}
   },
 	computed: {
 		filtered_tasks(){
@@ -166,5 +172,17 @@ export default {
 <style>
 	.billed {
 		color: #9b59b6;
+	}
+	.popup {
+		width: 160px;
+		background-color: #fff;
+		color: #000;
+		text-align: left;
+		border-radius: 6px;
+		padding: 8px 0;
+		position: absolute;
+		z-index: 1;
+		left: 50%;
+		margin-left: -80px;
 	}
 </style>
