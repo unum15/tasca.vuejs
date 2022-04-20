@@ -330,7 +330,7 @@ export default {
                     t.sort_order_tmp = t.sort_order;
                     t.date_tmp = t.date;
                 });
-                this.filtered_tasks = this.tasks;
+                this.filterColumns();
             });
         },
          previousDate(){
