@@ -6,8 +6,8 @@
                 <b-col class="data" cols="9">{{ task.description }}</b-col>
             </b-row>
             <b-row>
-                <b-col cols="2" v-for="appointment in filtered_appointments" :key="appointment.id" :class="{highlight: appointment.date == today, blue: appointment.date != today}">
-                    {{ formatTime(appointment.date ? appointment.time ? appointment.date+' '+appointment.time : appointment.date : null) }}
+                <b-col cols="3" v-for="appointment in filtered_appointments" :key="appointment.id" :class="{highlight: appointment.date == today, blue: appointment.date != today}">
+                    {{ formatAppointmentTime(appointment) }}
                 </b-col>
             </b-row>
             <b-row>
@@ -215,6 +215,13 @@ export default {
             var diff = Math.round(stop.diff(start)/36000)/100
             
             return diff
+        },
+        formatAppointmentTime(appointment){
+            let time = appointment.date ? appointment.time ? appointment.date+' '+appointment.time : appointment.date : null;
+            if(time == null){
+                return "";
+            }
+            return moment(time).format('ddd MM-DD hh:mm a')
         },
         formatTime(time){
             if(time == null){
