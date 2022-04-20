@@ -132,6 +132,7 @@
                         allow-create
                         default-first-option
                         placeholder="New Task Name"
+                        @change="taskNameChanged"
                         :state="task.name != null"
                         required
                     >
@@ -563,6 +564,7 @@ export default {
     this.$http.get('/clients/unique/referred_by').then(response => {
       this.used_referred_bys = response.data.data;
     });
+    console.log(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]);
   },
   methods: {
     treeNormalizer,
@@ -690,6 +692,7 @@ export default {
       }
     },
     resetForm(){
+    console.log(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]);
       this.order = {
         id: null,
         name: null,
@@ -728,12 +731,6 @@ export default {
     orderNameChanged(){
       if(this.order.description === null){
         this.order.description = this.order.name;
-      }
-      if(this.task.name === null){
-        //this.task.name = this.order.name;
-      }
-      if(this.task.description === null){
-        this.task.description = this.task.name;
       }
     },
     taskNameChanged(){
