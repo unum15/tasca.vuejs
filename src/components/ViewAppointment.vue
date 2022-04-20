@@ -43,9 +43,12 @@
                                     {{ order.property.address2 }}<br v-if="order.property.address2" />
                                     {{ order.property.unit }}<br v-if="order.property.unit" />
                                     {{ order.property.city }},{{ order.property.state }} {{ order.property.zip }}
-                                    <b-col class="data"><a :href="'tel:' + order.property.phone_number">{{ order.property.phone_number }}</a></b-col>
                                 </a>
                             </b-col>
+                        </b-row>
+                        <b-row v-if="order.property.phone_number">
+                            <b-col class="label" cols="2"></b-col>
+                            <b-col class="data"><a :href="'tel:' + order.property.phone_number">{{ order.property.phone_number }}</a></b-col>
                         </b-row>
                         <b-row>
                             <b-col v-if="order.property.coordinates">
@@ -60,7 +63,12 @@
                             </b-row>
                             <b-row v-for="phone_number in contact.phone_numbers" :key="phone_number.id">
                                 <b-col class="label" cols="2">{{ phone_number.phone_number_type.name }}</b-col>
-                                <b-col class="data" cols="10"><a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a></b-col>
+                                <b-col class="data" cols="3">
+                                    <a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a>
+                                </b-col>
+                                <b-col class="data" cols="5">
+                                    <a :href="'sms:' + phone_number.phone_number" target="gvoice">Text</a>
+                                </b-col>
                             </b-row>
                             <b-row v-for="email in contact.emails" :key="email.id">
                                 <b-col class="label" cols="2">{{ email.email_type.name }}</b-col>
