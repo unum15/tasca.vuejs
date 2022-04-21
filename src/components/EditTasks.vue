@@ -19,11 +19,11 @@
 					:active="isActive(index)"
 				>
 					<template slot="title" style="text-align:left">
-						<div class="text-left" @contextmenu="showTabContextMenu">
+						<div class="text-left" @contextmenu="showTabContextMenu($event,task.id)">
 							<span v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
 								{{ task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New') }}
 							</span>
-							<b-list-group class="popup">
+							<b-list-group :ref="'context-' + task.id" class="popup">
 								<b-list-group-item>Copy</b-list-group-item>
 							</b-list-group>
 						</div>
@@ -154,7 +154,14 @@ export default {
 				return 0;
 			});
 		},
-		showTabContextMenu(){}
+		showTabContextMenu(event,id){
+			event.preventDefault();
+			console.log(this.$refs);
+			console.log(this.$refs['context-'+id]);
+			if(this.$refs['context-'+id].length){
+				this.$refs['context-'+id][0].style.visibility = 'visible';
+			}
+		}
   },
 	computed: {
 		filtered_tasks(){
@@ -174,6 +181,7 @@ export default {
 		color: #9b59b6;
 	}
 	.popup {
+		visibility: hidden;
 		width: 160px;
 		background-color: #fff;
 		color: #000;
