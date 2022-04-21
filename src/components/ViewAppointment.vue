@@ -67,7 +67,7 @@
                                     <a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a>
                                 </b-col>
                                 <b-col class="data" cols="5">
-                                    <a :href="'sms:' + phone_number.phone_number" target="gvoice">Text</a>
+                                    <a :href="'https://voice.google.com/u/0/messages?itemId=t.%2B' + phone_number.phone_number" target="gvoice">Text</a>
                                 </b-col>
                             </b-row>
                             <b-row v-for="email in contact.emails" :key="email.id">
