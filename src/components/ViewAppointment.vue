@@ -67,7 +67,7 @@
                                     <a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a>
                                 </b-col>
                                 <b-col class="data" cols="5">
-                                    <a :href="'https://voice.google.com/u/0/messages?itemId=t.%2B' + phone_number.phone_number" target="gvoice">Text</a>
+                                    <a href="/scheduler" @click.stop.prevent="text(phone_number.phone_number)">Text</a>
                                 </b-col>
                             </b-row>
                             <b-row v-for="email in contact.emails" :key="email.id">
@@ -190,6 +190,10 @@ export default {
                 return value.substring(0,length);
             }
             return '';
+        },
+        text(number){
+            number = number.replace(/\D/g,'');
+            window.open('https://voice.google.com/u/0/messages?itemId=t.%2B' + number,'gvoice',"height=300,width=600");
         }
     },
     computed: {
