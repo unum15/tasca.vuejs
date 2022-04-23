@@ -24,7 +24,7 @@
 								{{ task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New') }}
 							</span>
 							<b-list-group :ref="'context-' + task.id" class="popup">
-								<b-list-group-item>Copy</b-list-group-item>
+								<b-list-group-item @click="copy(task.id)">Copy</b-list-group-item>
 							</b-list-group>
 						</div>
 					</template>
@@ -43,6 +43,20 @@
 				</b-tab>
 			</b-tabs>
 			<b-button variant="secondary" @click="newTask(null)">Add New Task</b-button>
+			<b-modal size="xl" scrollable ref="modalCopyTask" title="Copy Task" @ok="modalCopyTask" @cancel="modalCancelCopy">
+				<EditTask
+						:order="order"
+						:task="copy_task"
+						:labor_types="labor_types"
+						:task_statuses="task_statuses"
+						:task_actions="task_actions"
+						:labor_assignments="labor_assignments"
+						:crews="crews"
+						:project_close_date="project_close_date"
+						:settings="settings"
+						:allow_delete="false"
+					></EditTask>
+      </b-modal>
 		</div>
 </template>
 <script>
@@ -71,21 +85,25 @@ export default {
 			change_tab: false,
 			filter: {
 				completed: false
-			}
+			},
+			copy_task: {}
 		}
 	},
 	created() {
-     this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
-      this.tasks = response.data
-			if(this.tasks.length == 0){
-				this.newTask(this.order.name);
-			}
-			else{
-				this.sortTasks();
-			}
-    })
+     this.getTasks();
   },
 	methods: {
+		getTasks(){
+			this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
+				this.tasks = response.data
+				if(this.tasks.length == 0){
+					this.newTask(this.order.name);
+				}
+				else{
+					this.sortTasks();
+				}
+			});
+		},
 		newTask(name=null){
 			var task = {
 				id: null,
@@ -156,11 +174,25 @@ export default {
 		},
 		showTabContextMenu(event,id){
 			event.preventDefault();
-			console.log(this.$refs);
-			console.log(this.$refs['context-'+id]);
 			if(this.$refs['context-'+id].length){
 				this.$refs['context-'+id][0].style.visibility = 'visible';
 			}
+		},
+		copy(id){
+			this.$refs['context-'+id][0].style.visibility = 'hidden';
+			let tasks = this.tasks.filter(t => (id == t.id));
+			tasks[0].id = null;
+			this.copy_task = tasks[0];
+			this.$refs['modalCopyTask'].show();
+		},
+		modalCopyTask(){
+			this.$http.post('/task',this.copy_task).then(response => {
+					this.getTasks();
+			});
+			this.copy_task = {};
+		},
+		modalCancelCopy(){
+			this.copy_task = {};
 		}
   },
 	computed: {
