@@ -182,6 +182,11 @@ export default {
 			this.$refs['context-'+id][0].style.visibility = 'hidden';
 			let tasks = this.tasks.filter(t => (id == t.id));
 			tasks[0].id = null;
+			tasks[0].group = null;
+			tasks[0].completion_date = null;
+			tasks[0].invoiced_date = null;
+			tasks[0].billed_date = null;
+			tasks[0].closed_date = null;
 			this.copy_task = tasks[0];
 			this.$refs['modalCopyTask'].show();
 		},
