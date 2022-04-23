@@ -41,6 +41,10 @@
                           </b-input-group>
                         </b-form-group>
                     </b-col>
+                    <b-col>
+                       <br />
+                       <b-button @click="clearFilters()">Clear Filters</b-button>
+                    </b-col>
                 </b-row>
             </b-container>
             <b-table
@@ -194,13 +198,14 @@
 <script>
 import moment from 'moment';
 import ViewAppointment from './ViewAppointment';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewScheduleTab',
     components: {
         'ViewAppointment': ViewAppointment
     },
     props: {
-        tab: {default: null},
+        tab: {required: true},
         task_actions: {required: true},
         labor_assignments: {required: true},
         task_statuses: {required: true},
@@ -330,7 +335,7 @@ export default {
                     t.sort_order_tmp = t.sort_order;
                     t.date_tmp = t.date;
                 });
-                this.filterColumns();
+                this.filterColumns(false);
             });
         },
          previousDate(){
@@ -481,9 +486,11 @@ export default {
             }
             return String(value)
         },
-        filterColumns(){
+        filterColumns(store=true){
             this.filtered_tasks = this.tasks;
+            let filters = {};
             for(var x = 0;x < this.fields.length; x++){
+                filters[this.fields[x].key] = this.fields[x].filter;
                 if(this.fields[x].filter){
                     var regex = new RegExp(this.fields[x].filter, "i");
                     this.filtered_tasks = this.filtered_tasks.filter(t => {
@@ -494,6 +501,34 @@ export default {
                         return value.match(regex) !== null
                     })
                 }
+            }
+            if(store!==false){
+                this.$store.dispatch('saveFilters',{filters,name:'current'});
+            }
+        },
+        clearFilters(){
+            let filters = {};
+            for(var x = 0;x < this.fields.length; x++){
+                this.fields[x].filter = '';
+                filters[this.fields[x].key] = this.fields[x].filter;
+            }
+            this.filterColumns(true);
+        },
+
+    },
+    computed: {
+        ...mapState({
+            stored_filters: state => state.filters.current
+        }),
+    },
+    watch: {
+        stored_filters:{
+            deep: true,
+            handler(){
+                for(var x = 0;x < this.fields.length; x++){
+                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
+                }
+                this.filterColumns(false);
             }
         }
     }

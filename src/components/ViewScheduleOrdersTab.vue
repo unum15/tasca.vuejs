@@ -75,6 +75,7 @@
 import moment from 'moment';
 import ViewScheduleOrdersTabTasks from './ViewScheduleOrdersTabTasks';
 import ViewAppointment from './ViewAppointment';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewScheduleOrdersTab',
     components: {
@@ -202,19 +203,15 @@ export default {
             });
             return Math.round(time/36000)/100;
         },
-        filterColumns(){
+        filterColumns(store=true){
             this.filtered_orders = this.orders;
+            let filters = {};
             for(var x = 0;x < this.fields.length; x++){
+                filters[this.fields[x].key] = this.fields[x].filter;
                 if(this.fields[x].filter){
                     var regex = new RegExp(this.fields[x].filter, "i");
                     this.filtered_orders = this.filtered_orders.filter(t => {
-                        var keys = this.fields[x].key.split('.');
-                        var value = t;
-                        for(var key_num = 0; key_num < keys.length; key_num++){
-                            if(value){
-                                value = value[keys[key_num]];
-                            }
-                        }
+                        var value = t[this.fields[x].key]
                         if(!value){
                             value = "";
                         }
@@ -222,6 +219,18 @@ export default {
                     })
                 }
             }
+            if(store!==false){
+                this.$store.dispatch('saveFilters',{filters,name:'current'});
+                console.log(filters);
+            }
+        },
+        clearFilters(){
+            let filters = {};
+            for(var x = 0;x < this.fields.length; x++){
+                this.fields[x].filter = '';
+                filters[this.fields[x].key] = this.fields[x].filter;
+            }
+            this.filterColumns(true);
         },
         info (item) {
             this.modalInfo.title = `Order #${item.id} - ${item.name}`
@@ -232,6 +241,22 @@ export default {
             this.modalInfo.title = ''
             this.modalInfo.content = ''
             this.modalInfo.order_id = null
+        }
+    },
+    computed: {
+        ...mapState({
+            stored_filters: state => state.filters.current
+        }),
+    },
+    watch: {
+        stored_filters:{
+            deep: true,
+            handler(){
+                for(var x = 0;x < this.fields.length; x++){
+                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
+                }
+                this.filterColumns(false);
+            }
         }
     }
 }
