@@ -67,7 +67,6 @@
 </template>
 <script>
 import TopMenu from './TopMenu';
-import moment from 'moment'
 import LogicNode from '../common/LogicNode.js';
 import { mapState } from 'vuex';
 export default {

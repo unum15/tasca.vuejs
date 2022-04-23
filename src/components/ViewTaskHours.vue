@@ -287,7 +287,7 @@ export default {
             this.modal_clock_in.current.date = moment().format('YYYY-MM-DD');
             this.modal_clock_in.current.time = moment().format('HH:mm');
             this.modal_clock_in.current.labor_activity_id = this.clock_in.labor_activity_id;
-            this.modal_clock_in.current.notes = null;
+            this.modal_clock_in.current.notes = this.clock_in.notes;
             this.modal_clock_in.title = 'Clock Out';
             this.modal_clock_in.clock_in = false;
             this.$refs['modal-clock-in'].show();
