@@ -6,8 +6,9 @@
         </head>
         <main>
             <b-tabs :key="order_status_types.length" v-model="tab_index">
-                <b-tab v-for="tab in tabs" :key="tab" :title="tab + ' Tasks'">
+                <b-tab v-for="(index,tab) in tabs" :key="tab" :title="tab + ' Tasks'">
                     <ViewScheduleTasksTab
+                        v-if="tab_index == index"
                         :tab="tab"
                         :task_actions="task_actions"
                         :labor_assignments="labor_assignments"
@@ -17,8 +18,11 @@
                     >
                     </ViewScheduleTasksTab>
                 </b-tab>
-                <b-tab v-for="(title,tab) in order_tabs" :key="tab" :title="title">
-                    <ViewScheduleOrdersTab :tab="tab">
+                <b-tab v-for="(tab_data,tab) in order_tabs" :key="tab" :title="tab_data.title">
+                    <ViewScheduleOrdersTab
+                        v-if="tab_index == tab_data.index"
+                        :tab="tab"
+                    >
                     </ViewScheduleOrdersTab>
                 </b-tab>
             </b-tabs>
@@ -38,8 +42,8 @@ export default {
     },
     data() {
         return {
-            tabs: ['Service', 'On Hold', 'All',  'Pending', 'Current'],
-            order_tabs: {'Non-Completed' : 'Partly Completed Orders', 'Completed' : 'Completed Orders'},
+            tabs: {'Service': 0, 'On Hold' : 1, 'All' : 2,  'Pending' : 3, 'Current' : 4},
+            order_tabs: {'Non-Completed' : {title: 'Partly Completed Orders', index: 5}, 'Completed' : {title: 'Completed Orders', index: 6}},
             order_status_types: [],
             appointment_statuses: [],
             labor_assignments: [],

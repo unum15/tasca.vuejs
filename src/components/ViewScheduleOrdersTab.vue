@@ -54,7 +54,7 @@
                 </template>
                 <template v-slot:cell(actions)="row">
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Tasks" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
-                    <img src="@/assets/checkmark.png" v-b-tooltip.hover title="Mark All Dates" @click="markDates(row.item)" fluid alt="Dates" style="width:20px;" />
+                    <img src="@/assets/checkmark.png" v-b-tooltip.hover title="Mark All Dates" @click="showMarkDates(row.item)" fluid alt="Dates" style="width:20px;" />
                   </template>
                   <template slot="row-details" slot-scope="row">
                     <ViewScheduleOrdersTabTasks :order="row.item" :tasks="row.item.tasks">
@@ -68,6 +68,9 @@
                     :task_id="modalInfo.task_id"
                 >
                 </ViewAppointment>
+            </b-modal>
+            <b-modal content-class="modal-date" ref="modalDate" title="Mark All Dates" @ok="markDates()">
+                <b-calendar v-model='date_mark'></b-calendar>
             </b-modal>
     </div>
 </template>
@@ -91,6 +94,8 @@ export default {
             filtered_orders: [],
             filter: null,
             modalInfo: { title: '', content: '', order_id: null, task_id: null },
+            date_order: {},
+            date_mark: null,
             fields: [
                 {
                     key: 'date',
@@ -167,12 +172,12 @@ export default {
             }
             this.$http.patch('/order/' + item.id, order);
         },
-        markDates(order){
-            if(!order.tasks){
+        markDates(){
+            if(!this.date_order.tasks){
                 return;
             }
             let all = true;
-            order.tasks.map(t => {
+            this.date_order.tasks.map(t => {
                 if(t.completion_date){
                     t.invoiced_date = t.invoiced_date ? t.invoiced_date : moment().format("YYYY-MM-DD");
                     t.billed_date = t.billed_date ? t.billed_date : moment().format("YYYY-MM-DD");
@@ -183,9 +188,9 @@ export default {
                 }
             });
             if(all){
-                order.close_date = moment().format("YYYY-MM-DD");
+                this.date_order.close_date = moment().format("YYYY-MM-DD");
             }
-            this.save(order);
+            this.save(this.date_order);
         },
         getTotalHours(order){
             var time = 0;
@@ -241,6 +246,10 @@ export default {
             this.modalInfo.title = ''
             this.modalInfo.content = ''
             this.modalInfo.order_id = null
+        },
+        showMarkDates(order){
+            this.$refs['modalDate'].show();
+            this.date_order = order;
         }
     },
     computed: {
@@ -261,3 +270,9 @@ export default {
     }
 }
 </script>
+<style>
+.modal-date{
+    width: min-content !important;
+    float: right;
+}
+</style>
