@@ -2,7 +2,7 @@
     <div>
         <b-form-group label="Property"  v-if="!isServiceOrder">
             <b-form-select
-                @input="save"
+                @input="setProperties();save();"
                 :options="properties"
                 value-field="id"
                 text-field="name"
@@ -571,9 +571,6 @@ export default {
             if((this.renewal_interval.count != null) && (this.renewal_interval.unit != null)){
                 this.my_order.renewal_interval = this.renewal_interval.count + ' ' + this.renewal_interval.unit;
             }
-            
-            
-            
             if(this.my_order.id === null){
                 this.$http.post('/order',this.my_order).then(response => {
                     this.task_name = this.my_order.name;
@@ -647,7 +644,11 @@ export default {
                 this.my_order.approval_date = null;
                 this.my_order.start_date = null;
             }
+        },
+        setProperties(){
+            this.my_order.properties = [this.my_order.property];
         }
+
 	},
 	computed:{
         showConvertButton(){
