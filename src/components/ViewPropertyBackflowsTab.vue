@@ -9,6 +9,7 @@
               :items="backflow_assemblies"
               :fields="fields"
               selectable
+              style="text-align:left;"
               @row-clicked="rowClicked"
           >
               <template v-slot:cell(placement)="data">
@@ -22,7 +23,10 @@
                 </span>
               </template>
               <template v-slot:cell(serial_number)="data">
-                  <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value ?  data.value : data.item.id }} </a>
+                  <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value ?  data.value : 'None' }} </a>
+              </template>
+              <template v-slot:cell(active)="data">
+                <b-form-checkbox v-model="data.value" @change="saveBackflow(data.item)" />
               </template>
               <template v-slot:cell(include)="data">
                 <b-form-checkbox @change="include(data.item)" v-if="data.item.backflow_test_reports.length" />
@@ -155,6 +159,11 @@ export default {
               sortable: true
           },
           {
+              key: 'property_unit.name',
+              label: 'Unit',
+              sortable: true
+          },
+          {
               key: 'placement',
               label: 'Placement',
               sortable: true
@@ -182,6 +191,16 @@ export default {
           {
               key: 'serial_number',
               label: 'Serial',
+              sortable: true
+          },
+          {
+              key: 'active',
+              label: 'Active',
+              sortable: true
+          },
+          {
+              key: 'month',
+              label: 'Month',
               sortable: true
           },
           {
@@ -230,7 +249,7 @@ export default {
     }
   },
   created() {
-    this.$http.get('/backflow_assemblies?includes=backflow_manufacturer,backflow_type,backflow_size,backflow_model,backflow_water_system,contact,backflow_tests,backflow_test_reports,backflow_test_reports.backflow_tests,backflow_test_reports.backflow_tests.contact,backflow_test_reports.backflow_repairs,backflow_test_reports.backflow_repairs.backflow_valve_part&property_id=' + this.property_id).then(response => {
+    this.$http.get('/backflow_assemblies?includes=backflow_manufacturer,backflow_type,backflow_size,backflow_model,backflow_water_system,contact,backflow_tests,backflow_test_reports,backflow_test_reports.backflow_tests,backflow_test_reports.backflow_tests.contact,backflow_test_reports.backflow_repairs,backflow_test_reports.backflow_repairs.backflow_valve_part,property_unit&property_id=' + this.property_id).then(response => {
       this.backflow_assemblies = response.data.data
     });
     
@@ -270,6 +289,9 @@ export default {
     },
     include(backflow){
       this.$emit('include-backflow',backflow);
+    },
+    saveBackflow(backflow){
+      this.$http.patch('/backflow_assembly/' + backflow.id,{active:!backflow.active});
     },
     addAccount(){
       this.accounts.push({id: null, property_id: this.property_id});
