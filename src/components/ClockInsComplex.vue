@@ -51,7 +51,8 @@
                     </b-form-group>
                   </b-col>
                   <b-col>
-                        <b-button @click="getClockIns">Submit Dates</b-button>
+                        <b-button @click="getClockIns">Submit Dates</b-button><br />
+                        <b-button @click="exportClockIns">Export</b-button>
                   </b-col>
                 </b-row>
                 <b-row>
@@ -167,6 +168,7 @@
 <script>
 import moment from 'moment';
 import TopMenu from './TopMenu';
+import FileSaver from 'file-saver';
 import { mapState } from 'vuex';
 export default {
     name: 'ViewClockIns',
@@ -352,7 +354,36 @@ export default {
                 return 'background:' + this.clock_in_reminder_color;
             }
             return 'background:' + this.clock_in_current_color;
-        }
+        },
+        exportClockIns(){
+            let text = "";
+            for (let group in this.groups) {
+                this.groups[group].map( c => {
+                    this.fields.map ( f => {
+                        if(f.key.indexOf('.')>0){
+                            let subs = f.key.split('.');
+                            let val = c;
+                            subs.map(s => {
+                                val = val[s];
+                            });
+                            text += '"' + val + '",';
+                        }
+                        else{
+                            if(f.key == 'time'){
+                                text += '"' + this.timeColumn(null,'time',c) + '",';
+                            }                        
+                            else{
+                                text += '"' + c[f.key] + '",';
+                            }
+                        }
+                        
+                    });
+                    text += '\n';
+                });
+            };
+            var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
+            FileSaver.saveAs(blob, "clock_ins.csv");
+        },
     },
     computed:{
         groups(){
