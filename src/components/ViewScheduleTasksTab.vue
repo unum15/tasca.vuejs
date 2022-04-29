@@ -348,7 +348,7 @@ export default {
         },
         info (item) {
             this.modalInfo.title = `${item.order_name} -- ${item.name}`;
-            this.modalInfo.appointment_id = item.appointment_id;
+            this.modalInfo.appointment_id = item.id;
             this.modalInfo.task_id = item.task_id;
             this.modalInfo.order_id = item.order_id;
             this.$refs['modalInfo'].show();
