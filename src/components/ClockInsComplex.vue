@@ -100,18 +100,12 @@
                             Employee
                         </b-col>
                         <b-col>
-                            Total Time
-                        </b-col>
-                        <b-col>
-                            {{ total_time(groups) }}
-                        </b-col>
-                        <b-col>
                             Total {{ group_by }}s
                         </b-col>
                         <b-col>
                             {{ Object.keys(groups).length }}
                         </b-col>
-                        <template v-for="labor_type in labor_types">
+                        <template v-for="labor_type in labor_types.slice().sort((a,b) => (a.name > b.name))">
                             <b-col  :key="labor_type.id + '-name'">
                                 {{ labor_type.name }}
                             </b-col>
@@ -119,6 +113,12 @@
                                 {{ labor_type_time(groups,labor_type.id) }}
                             </b-col>
                         </template>
+                        <b-col>
+                            Total Time
+                        </b-col>
+                        <b-col>
+                            {{ total_time(groups) }}
+                        </b-col>
                     </b-row>
             </b-container>
             <b-container v-for="(key) in sort_ascending ? Object.keys(groups).sort() : Object.keys(groups).sort().reverse()" :key="key"  style="max-width:1600px">
@@ -382,7 +382,13 @@ export default {
                 });
             };
             var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
-            FileSaver.saveAs(blob, "clock_ins.csv");
+            let group_by = this.group_by.charAt(0).toUpperCase() + this.group_by.slice(1);
+            let contacts = this.contacts.filter(c => (c.id == this.contact_id));
+            let contact = "All";
+            if(contacts.length){
+                contact = contacts[0].name;
+            }
+            FileSaver.saveAs(blob, `Time Card ${group_by} ${contact} ${this.start_date} ${this.stop_date}.csv`);
         },
     },
     computed:{
