@@ -177,18 +177,19 @@ export default {
                 return;
             }
             let all = true;
+            let new_date = moment(this.date_mark);
             this.date_order.tasks.map(t => {
                 if(t.completion_date){
-                    t.invoiced_date = t.invoiced_date ? t.invoiced_date : moment().format("YYYY-MM-DD");
-                    t.billed_date = t.billed_date ? t.billed_date : moment().format("YYYY-MM-DD");
-                    t.closed_date = t.closed_date ? t.closed_date: moment().format("YYYY-MM-DD");
+                    t.invoiced_date = t.invoiced_date ? t.invoiced_date : new_date.format("YYYY-MM-DD");
+                    t.billed_date = t.billed_date ? t.billed_date : new_date.format("YYYY-MM-DD");
+                    t.closed_date = t.closed_date ? t.closed_date: new_date.format("YYYY-MM-DD");
                 }
                 else{
                     all = false;
                 }
             });
             if(all){
-                this.date_order.close_date = moment().format("YYYY-MM-DD");
+                this.date_order.close_date = new_date.format("YYYY-MM-DD");
             }
             this.save(this.date_order);
         },
