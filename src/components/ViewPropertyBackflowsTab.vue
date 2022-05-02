@@ -133,16 +133,22 @@
         </b-tabs>
       </b-tab>
     </b-tabs>
+    <b-modal ref="backflow-add-modal" title="Add Backflow" @ok="backflowAdded">
+      <EditBackflowAssemblyForm  :default_client_id="client_id" :default_property_id="property_id"></EditBackflowAssemblyForm>
+    </b-modal>
   </div>
 </template>
 <script>
 import ViewBackflowsReportsTab from './ViewBackflowsReportsTab';
+import EditBackflowAssemblyForm from './EditBackflowAssemblyForm'
 export default {
   name: 'ViewPropertyBackflowsTab',
   components: {
-    'ViewBackflowsReportsTab': ViewBackflowsReportsTab
+    ViewBackflowsReportsTab,
+    EditBackflowAssemblyForm
   },
   props: {
+    client_id: {required: true},
     property_id: {required: true}
   },
   data() {
@@ -249,15 +255,17 @@ export default {
     }
   },
   created() {
-    this.$http.get('/backflow_assemblies?includes=backflow_manufacturer,backflow_type,backflow_size,backflow_model,backflow_water_system,contact,backflow_tests,backflow_test_reports,backflow_test_reports.backflow_tests,backflow_test_reports.backflow_tests.contact,backflow_test_reports.backflow_repairs,backflow_test_reports.backflow_repairs.backflow_valve_part,property_unit&property_id=' + this.property_id).then(response => {
-      this.backflow_assemblies = response.data.data
-    });
-    
+    this.getBackflows();    
     this.$http.get('/property_accounts?property_id='+this.property_id).then(response => {
       this.accounts = response.data.data;
     });
   },
   methods: {
+    getBackflows(){
+      this.$http.get('/backflow_assemblies?includes=backflow_manufacturer,backflow_type,backflow_size,backflow_model,backflow_water_system,contact,backflow_tests,backflow_test_reports,backflow_test_reports.backflow_tests,backflow_test_reports.backflow_tests.contact,backflow_test_reports.backflow_repairs,backflow_test_reports.backflow_repairs.backflow_valve_part,property_unit&property_id=' + this.property_id).then(response => {
+        this.backflow_assemblies = response.data.data
+      });
+    },
     isActive(index) {
       if((this.change_tab)&&(index == this.properties.length -1)){
         return true;
@@ -298,7 +306,10 @@ export default {
       this.account_change_tab = true;
     },
     addBackflow(){
-      
+      this.$refs['backflow-add-modal'].show();
+    },
+    backflowAdded(){
+      this.getBackflows();
     },
     saveAccount(account){
       if(account.number === null){

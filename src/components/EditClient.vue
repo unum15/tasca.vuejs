@@ -170,6 +170,7 @@
           </b-tab>
           <b-tab v-if="(backflows == 'true') && client.id && (client.properties.length > 0)" title="Backflows" :active="backflow_id != null">
             <ViewClientBackflowsTab
+              :client_id="client_id"
               :properties="client.properties"
               ></ViewClientBackflowsTab>
           </b-tab>
