@@ -51,7 +51,8 @@
                     </b-form-group>
                   </b-col>
                   <b-col>
-                        <b-button @click="getClockIns">Submit Dates</b-button>
+                        <b-button @click="getClockIns">Submit Dates</b-button><br />
+                        <b-button @click="exportClockIns">Export</b-button>
                   </b-col>
                 </b-row>
                 <b-row>
@@ -99,18 +100,12 @@
                             Employee
                         </b-col>
                         <b-col>
-                            Total Time
-                        </b-col>
-                        <b-col>
-                            {{ total_time(groups) }}
-                        </b-col>
-                        <b-col>
                             Total {{ group_by }}s
                         </b-col>
                         <b-col>
                             {{ Object.keys(groups).length }}
                         </b-col>
-                        <template v-for="labor_type in labor_types">
+                        <template v-for="labor_type in labor_types.slice().sort((a,b) => (a.name > b.name))">
                             <b-col  :key="labor_type.id + '-name'">
                                 {{ labor_type.name }}
                             </b-col>
@@ -118,6 +113,12 @@
                                 {{ labor_type_time(groups,labor_type.id) }}
                             </b-col>
                         </template>
+                        <b-col>
+                            Total Time
+                        </b-col>
+                        <b-col>
+                            {{ total_time(groups) }}
+                        </b-col>
                     </b-row>
             </b-container>
             <b-container v-for="(key) in sort_ascending ? Object.keys(groups).sort() : Object.keys(groups).sort().reverse()" :key="key"  style="max-width:1600px">
@@ -167,6 +168,7 @@
 <script>
 import moment from 'moment';
 import TopMenu from './TopMenu';
+import FileSaver from 'file-saver';
 import { mapState } from 'vuex';
 export default {
     name: 'ViewClockIns',
@@ -352,7 +354,42 @@ export default {
                 return 'background:' + this.clock_in_reminder_color;
             }
             return 'background:' + this.clock_in_current_color;
-        }
+        },
+        exportClockIns(){
+            let text = "";
+            for (let group in this.groups) {
+                this.groups[group].map( c => {
+                    this.fields.map ( f => {
+                        if(f.key.indexOf('.')>0){
+                            let subs = f.key.split('.');
+                            let val = c;
+                            subs.map(s => {
+                                val = val[s];
+                            });
+                            text += '"' + val + '",';
+                        }
+                        else{
+                            if(f.key == 'time'){
+                                text += '"' + this.timeColumn(null,'time',c) + '",';
+                            }                        
+                            else{
+                                text += '"' + c[f.key] + '",';
+                            }
+                        }
+                        
+                    });
+                    text += '\n';
+                });
+            };
+            var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
+            let group_by = this.group_by.charAt(0).toUpperCase() + this.group_by.slice(1);
+            let contacts = this.contacts.filter(c => (c.id == this.contact_id));
+            let contact = "All";
+            if(contacts.length){
+                contact = contacts[0].name;
+            }
+            FileSaver.saveAs(blob, `Time Card ${group_by} ${contact} ${this.start_date} ${this.stop_date}.csv`);
+        },
     },
     computed:{
         groups(){
