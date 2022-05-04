@@ -38,7 +38,7 @@
                 <template slot="thead-top">
                     <tr>
                         <th v-for="field in fields" :key="field.key">
-                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                            <b-form-input type="text" @input="filtersUpdated" v-model="filters[field.key]" v-if="filters[field.key] !== undefined "></b-form-input>
                         </th>  
                     </tr>
                 </template>
@@ -68,12 +68,13 @@
 <script>
 import TopMenu from './TopMenu';
 import LogicNode from '../common/LogicNode.js';
-import { mapState } from 'vuex';
+import filtersMixin from '../mixins/Filters.js';
 export default {
     name: 'ViewBackflowAssemblies',
     components: {
         'TopMenu': TopMenu,
     },
+    mixins: [filtersMixin],
     data() {
         return {
             backflow_assemblies: [],
@@ -203,13 +204,14 @@ export default {
         }
     },
     created() {
+        this.filtersInit('assets', this.fields.map(f => (f.key)));
         this.getBackflowAssemblies();
     },
     methods: {
         getBackflowAssemblies(){
             this.$http.get('/backflow_assemblies?includes=contact,property,backflow_water_system,backflow_size,backflow_type,backflow_manufacturer,backflow_model,backflow_test_reports,property_unit,property.client,contact.emails,contact.phoneNumbers').then(response => {
                 this.backflow_assemblies = response.data.data;
-                this.filterColumns(false);
+                this.filtersUpdated();
             });
         },
         saveActive(item){
@@ -218,51 +220,11 @@ export default {
             }
             this.$http.patch('/backflow_assembly/' + item.id, ba);
         },
-        filterColumns(store=true){
-            this.filtered_backflow_assemblies = this.backflow_assemblies;
-            let filters = {};
-            for(var x = 0;x < this.fields.length; x++){
-                filters[this.fields[x].key] = this.fields[x].filter;
-                if(this.fields[x].filter){
-                    var regex = new RegExp(this.fields[x].filter, "i");
-                    this.filtered_backflow_assemblies = this.filtered_backflow_assemblies.filter(t => {
-                        var keys = this.fields[x].key.split('.');
-                        var value = t;
-                        for(var key_num = 0; key_num < keys.length; key_num++){
-                            if(value){
-                                value = value[keys[key_num]];
-                            }
-                        }
-                        if(typeof(value) == 'boolean'){
-                            if(((this.fields[x].filter == "yes")&&(value == false))||((this.fields[x].filter == "no")&&(value == true))){
-                                return false;
-                            }
-                            return true;
-                        }
-                        if(!value){
-                            value = "";
-                        }
-                        return value.match(regex) !== null
-                    })
-                }
-            }
-            if(store!==false){
-                this.$store.dispatch('saveFilters',{filters,name:'backflows'});
-            }
-        },
-        clearFilters(){
-            let filters = {};
-            for(var x = 0;x < this.fields.length; x++){
-                this.fields[x].filter = '';
-                filters[this.fields[x].key] = this.fields[x].filter;
-            }
-            this.filterColumns(true);
+        filtersUpdated(){
+            this.filtered_backflow_assemblies=this.filterColumns(this.backflow_assemblies);
         },
     },
     computed: {
-        ...mapState({
-            stored_filters: state => state.filters.backflows
-        }),
         month_match_state () {
             return this.month_match ? this.month_logic.valid : null;
         },
@@ -271,14 +233,6 @@ export default {
         month_match(value){
             this.month_logic = new LogicNode(value,true);
         },
-        stored_filters:{
-            deep: true,
-            handler(){
-                for(var x = 0;x < this.fields.length; x++){
-                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
-                }
-            }
-        }
     }
 }
 </script>

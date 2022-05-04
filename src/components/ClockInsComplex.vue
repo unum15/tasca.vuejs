@@ -380,7 +380,7 @@ export default {
                     });
                     text += '\n';
                 });
-            };
+            }
             var blob = new Blob([text], {type: "text/csv;charset=utf-8"});
             let group_by = this.group_by.charAt(0).toUpperCase() + this.group_by.slice(1);
             let contacts = this.contacts.filter(c => (c.id == this.contact_id));

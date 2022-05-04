@@ -5,12 +5,11 @@
                     <b-col>
                         <b-form-group label="Crew">
                             <b-form-select
-                                @change="filterColumns"
+                                @change="filtersUpdated"
                                 :options="crews"
                                 value-field="id"
                                 text-field="name"
                                 v-model="crew_id"
-                                @input="getTasks()"
                             >
                             </b-form-select>
                         </b-form-group>
@@ -43,7 +42,7 @@
                     </b-col>
                     <b-col>
                        <br />
-                       <b-button @click="clearFilters()">Clear Filters</b-button>
+                       <b-button @click="filtersClear()">Clear Filters</b-button>
                     </b-col>
                 </b-row>
             </b-container>
@@ -64,7 +63,7 @@
                 <template slot="thead-top">
                     <tr>
                         <th v-for="field in fields" :key="field.key">
-                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                            <b-form-input type="text" @input="filtersUpdated" v-model="filters[field.key]" v-if="filters[field.key] !== undefined "></b-form-input>
                         </th>  
                     </tr>
                 </template>
@@ -198,12 +197,14 @@
 <script>
 import moment from 'moment';
 import ViewAppointment from './ViewAppointment';
-import { mapState } from 'vuex';
+import sortingMixin from '../mixins/Sorting.js';
+import filtersMixin from '../mixins/Filters.js';
 export default {
     name: 'ViewScheduleTab',
     components: {
         'ViewAppointment': ViewAppointment
     },
+    mixins: [filtersMixin, sortingMixin],
     props: {
         tab: {required: true},
         task_actions: {required: true},
@@ -228,13 +229,11 @@ export default {
                     key: 'start_date',
                     label: 'Start Date',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'service_window',
                     label: 'Service Window',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'order_name',
@@ -246,77 +245,70 @@ export default {
                     key: 'appointment_status',
                     label: 'C',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'client',
                     label: 'Client',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'property',
                     label: 'Property',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'name',
                     label: 'Name',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'order_priority',
                     label: 'Pri',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'labor_assignment',
                     label: 'Assignment',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'day',
                     label: 'Day',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'date',
                     label: 'Date',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'sort_order',
                     label: 'Order',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'crew_hours',
                     label: 'Crew Hours',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'time',
                     label: 'Time',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'actions',
-                    label: 'Actions'
+                    label: 'Actions',
                 }
             ]
                 
         }
     },
     created() {
+        let filters = this.fields.map(f => (f.key));
+        filters.pop();
+        filters.push('crew_id');
+        this.filtersInit('schedule ' + this.tab, filters);
         this.$http.get('/crews').then(response => {
             this.crews = response.data;
             this.crews.unshift({id: '*', name: 'All'});
@@ -335,7 +327,7 @@ export default {
                     t.sort_order_tmp = t.sort_order;
                     t.date_tmp = t.date;
                 });
-                this.filterColumns(false);
+                this.filtersUpdated();
             });
         },
          previousDate(){
@@ -428,109 +420,9 @@ export default {
             }
             return classes;
         },
-        sortCompare(a, b, key) {
-            switch(key){
-                case 'time':
-                case 'date':
-                    var value = 0;
-                    if(a.date && b.date){
-                        var first_date = moment(a.date);
-                        var second_date = moment(b.date);
-                        value = first_date.diff(second_date, 'days');
-                    }
-                    else{
-                        if(a.date){
-                            value = 1;
-                        }
-                        else{
-                            if(b.date){
-                                value = -1;
-                            }
-                        }
-                    }
-                    if(value == 0){
-                        value = this.sortCompare(a, b, 'sort_order');
-                        if(value == 0){
-                            if(a.time == b.time){
-                                return this.sortCompare(a, b, 'start_date');
-                            }
-                            else{
-                                return a.time < b.time;
-                            }
-                        }
-                        else{
-                            return value;
-                        }
-                    }
-                    else{
-                        return value;
-                    }
-                default:
-                    if (typeof a[key] === 'number' && typeof b[key] === 'number') {
-                      return a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0
-                    } else {
-                      return this.toString(a[key]).localeCompare(this.toString(b[key]), undefined, {
-                        numeric: true
-                      })
-                    }
-            }
-        },
-        toString(value) {
-            if (!value) {
-              return ''
-            } else if (value instanceof Object) {
-              return Array.keys(value)
-                .sort()
-                .map(key => toString(value[key]))
-                .join(' ')
-            }
-            return String(value)
-        },
-        filterColumns(store=true){
-            this.filtered_tasks = this.tasks;
-            let filters = {};
-            for(var x = 0;x < this.fields.length; x++){
-                filters[this.fields[x].key] = this.fields[x].filter;
-                if(this.fields[x].filter){
-                    var regex = new RegExp(this.fields[x].filter, "i");
-                    this.filtered_tasks = this.filtered_tasks.filter(t => {
-                        var value = t[this.fields[x].key]
-                        if(!value){
-                            value = "";
-                        }
-                        return value.match(regex) !== null
-                    })
-                }
-            }
-            if(store!==false){
-                this.$store.dispatch('saveFilters',{filters,name:'current'});
-            }
-        },
-        clearFilters(){
-            let filters = {};
-            for(var x = 0;x < this.fields.length; x++){
-                this.fields[x].filter = '';
-                filters[this.fields[x].key] = this.fields[x].filter;
-            }
-            this.filterColumns(true);
-        },
-
-    },
-    computed: {
-        ...mapState({
-            stored_filters: state => state.filters.current
-        }),
-    },
-    watch: {
-        stored_filters:{
-            deep: true,
-            handler(){
-                for(var x = 0;x < this.fields.length; x++){
-                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
-                }
-                this.filterColumns(false);
-            }
+        filtersUpdated(){
+            this.filtered_tasks=this.filterColumns(this.tasks);
         }
-    }
+    },
 }
 </script>
