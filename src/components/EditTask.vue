@@ -125,7 +125,7 @@
             </b-col>
         </b-row>
         <b-row>
-           <EditAppointments :task_id="my_task.id"></EditAppointments>
+           <EditAppointments v-if="my_task.id" :task_id="my_task.id"></EditAppointments>
         </b-row>
         <b-row>
             <b-col>
@@ -189,6 +189,7 @@ import EditAppointments from './EditAppointments';
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import treeNormalizer from '../common/TreeNormalizer.js';
+import { mapState } from 'vuex';
 export default {
     name: 'EditTask',
 	components: {
@@ -203,7 +204,6 @@ export default {
 		labor_assignments: {required: true},
 		crews: {required: true},
 		project_close_date: {default: null},
-		settings: {required: true},
 		allow_delete: {default: true},
 	},
 	data: function() {
@@ -271,7 +271,10 @@ export default {
                 }
 				return false;
 			})
-		}
+		},
+		...mapState({
+             settings: state => state.settings.backflows,
+        }),
 	},
     watch:{
         project_close_date(date){

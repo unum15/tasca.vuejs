@@ -37,7 +37,6 @@
 						:labor_assignments="labor_assignments"
 						:crews="crews"
 						:project_close_date="project_close_date"
-						:settings="settings"
 						@remove-task="removeTask"
 					></EditTask>
 				</b-tab>
@@ -53,15 +52,14 @@
 						:labor_assignments="labor_assignments"
 						:crews="crews"
 						:project_close_date="project_close_date"
-						:settings="settings"
 						:allow_delete="false"
 					></EditTask>
       </b-modal>
 		</div>
 </template>
 <script>
-import EditTask from './EditTask'
-import moment from 'moment'
+import EditTask from './EditTask';
+import moment from 'moment';
 export default {
     name: 'EditTasks',
     components: {

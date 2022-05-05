@@ -1,5 +1,5 @@
 <template>
-    <div v-if="order">
+    <div v-if="order" @click="clearTaskMenu();">
         <b-container style="padding-left:0px;">
             <b-row>
                 <b-col class="data">
@@ -109,7 +109,18 @@
             <b-row>
                 <b-col>
                     <b-tabs :key="tasks.length">
-                        <b-tab v-for="task in tasks" :key="'task_' + task.id" :title="task.name" :active="task.id == task_id">
+                        <b-tab v-for="task in tasks" :key="'task_' + task.id" :active="task.id == task_id">
+                            <template slot="title" style="text-align:left">
+                                <div class="text-left" @contextmenu="showTabContextMenu($event,task.id)">
+                                	<span v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
+                                		{{ task.name }}
+                                    </span>
+                                    <b-list-group :ref="'context-' + task.id" class="popup">
+                                    	<b-list-group-item @click="copy(task.id)">Copy</b-list-group-item>
+                                        <b-list-group-item @click="edit(task.id)">Edit</b-list-group-item>
+                                    </b-list-group>
+                                </div>
+                            </template>
                             <b-container>
                                 <ViewTaskHours :task_id="task.id" :appointment_id="task.id == task_id ? appointment_id : null" :labor_activities="labor_activities">
                                 </ViewTaskHours>
@@ -119,16 +130,31 @@
                 </b-col>
             </b-row>
         </b-container>
+        <b-modal size="xl" scrollable ref="modalEditTask" title="Copy Task" @ok="modalEditTask">
+            <EditTask
+                :order="order"
+                :task="edit_task"
+                :allow_delete="false"
+                :labor_types="labor_types"
+                :task_statuses="task_statuses"
+                :task_actions="task_actions"
+                :labor_assignments="labor_assignments"
+                :crews="crews"
+            >
+            </EditTask>
+      </b-modal>
     </div>
 </template>
 <script>
-import ViewTaskHours from './ViewTaskHours'
-import ViewHours from './ViewHours'
+import ViewTaskHours from './ViewTaskHours';
+import ViewHours from './ViewHours';
+import EditTask from './EditTask';
 export default {
     name: 'ViewTaskDate',
     components: {
-        'ViewTaskHours': ViewTaskHours,
-        'ViewHours': ViewHours,
+        ViewTaskHours,
+        ViewHours,
+        EditTask
     },
     props: {
         appointment_id : { default: null },
@@ -143,10 +169,31 @@ export default {
             billed: false,
             invoiced: false,
             completed: false,
-            tasks: []
+            tasks: [],
+            edit_task: {},
+            crews: [],
+			labor_assignments: [],
+			task_statuses: [],
+			task_actions: [],
+			labor_types: [],
         };
     },
     created() {
+        this.$http.get('/crews').then(response => {
+			this.crews = response.data;
+		});
+    	this.$http.get('/labor_assignments').then(response => {
+			this.labor_assignments = response.data.data;
+		});
+		this.$http.get('/task_statuses').then(response => {
+			this.task_statuses = response.data;
+		});
+		this.$http.get('/task_actions').then(response => {
+			this.task_actions = response.data;
+		});
+		this.$http.get('/labor_types').then(response => {
+			this.labor_types = response.data.data;
+		});
         this.getOrder();
     },
     methods: {
@@ -182,6 +229,35 @@ export default {
                 return value.substring(0,length);
             }
             return '';
+        },
+        showTabContextMenu(event,id){
+			event.preventDefault();
+            let tasks = this.tasks.filter(t => (id == t.id));
+            this.edit_task = Object.assign({}, tasks[0]);;
+			if(this.$refs['context-'+id].length){
+				this.$refs['context-'+id][0].style.visibility = 'visible';
+			}
+		},
+		copy(id){
+			this.edit_task.id = null;
+			this.edit_task.group = null;
+			this.edit_task.completion_date = null;
+			this.edit_task.invoiced_date = null;
+			this.edit_task.billed_date = null;
+			this.edit_task.closed_date = null;			
+			this.$refs['modalEditTask'].show();
+		},
+        edit(id){
+			this.$refs['modalEditTask'].show();
+		},
+		modalEditTask(){
+			this.$http.post('/task',this.edit_task).then(response => {
+					this.getTasks();
+			});
+			this.edit_task = {};
+		},
+        clearTaskMenu(){
+            this.$refs['context-'+this.edit_task.id][0].style.visibility = 'hidden';
         }
     },
     computed: {
@@ -212,11 +288,9 @@ export default {
     font-weight: bold;
     white-space: nowrap;
 }
-
 .header {
     font-weight: bold;
 }
-
 .data {
     text-align: left;
     white-space: nowrap;
@@ -229,5 +303,18 @@ export default {
 }
 .col-10 {
     padding-right: 0 px;
+}
+.popup {
+    visibility: hidden;
+    width: 160px;
+    background-color: #fff;
+    color: #000;
+    text-align: left;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute;
+    z-index: 1;
+    left: 50%;
+	margin-left: -350px;
 }
 </style>
