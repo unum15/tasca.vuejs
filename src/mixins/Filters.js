@@ -44,6 +44,9 @@ export default {
                         if(!value){
                             value = "";
                         }
+                        if(typeof value === 'number'){
+                           value = value.toString();
+                        }
                         return value.match(regex) !== null;
                     });
                 }

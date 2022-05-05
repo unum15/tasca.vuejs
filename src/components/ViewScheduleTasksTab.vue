@@ -9,7 +9,7 @@
                                 :options="crews"
                                 value-field="id"
                                 text-field="name"
-                                v-model="crew_id"
+                                v-model="filters.crew_id"
                             >
                             </b-form-select>
                         </b-form-group>
@@ -222,7 +222,6 @@ export default {
             date: moment().format('YYYY-MM-DD'),
             view_days: 14,
             crews: [],
-            crew_id: '*',
             sortBy: 'date',
             fields: [
                 {
@@ -309,16 +308,17 @@ export default {
         filters.pop();
         filters.push('crew_id');
         this.filtersInit('schedule ' + this.tab, filters);
+        this.filters.crew_id='.*';
         this.$http.get('/crews').then(response => {
             this.crews = response.data;
-            this.crews.unshift({id: '*', name: 'All'});
-            this.crews.unshift({id: '', name: 'None'});
+            this.crews.unshift({id: '.*', name: 'All'});
+            this.crews.unshift({id: '^$', name: 'None'});
         });
         this.getTasks();
     },
     methods: {
         getTasks(){
-            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&crew_id=' + this.crew_id + '&view_days=' + this.view_days).then((results) => {
+            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&view_days=' + this.view_days).then((results) => {
                 if(['Pending', 'On Hold', 'All'].includes(this.tab)){
                     this.sortBy='start_date';
                 }
