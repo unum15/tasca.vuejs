@@ -188,6 +188,7 @@
                     :appointment_id="modalInfo.appointment_id"
                     :task_id="modalInfo.task_id"
                     :order_id="modalInfo.order_id"
+                    :labor_activities="labor_activities"
                 >
                 </ViewAppointment>
             </b-modal>
@@ -211,7 +212,8 @@ export default {
         labor_assignments: {required: true},
         task_statuses: {required: true},
         labor_types: {required: true},
-        appointment_statuses: {required: true}
+        appointment_statuses: {required: true},
+        labor_activities: { default: (() => ([]))}
     },
     data() {
         return {

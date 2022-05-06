@@ -66,6 +66,7 @@
                 v-if="modalInfo.order_id"
                 :order_id="modalInfo.order_id"
                 :task_id="modalInfo.task_id"
+                :labor_activities="labor_activities"
             >
             </ViewAppointment>
         </b-modal>
@@ -87,7 +88,8 @@ export default {
     },
     mixins: [filtersMixin],
     props: {
-        tab: { required: true}
+        tab: { required: true},
+        labor_activities: { default: (() => ([]))}
     },
     data() {
         return {

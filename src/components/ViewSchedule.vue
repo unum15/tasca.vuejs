@@ -15,6 +15,7 @@
                         :task_statuses="task_statuses"
                         :labor_types="labor_types"
                         :appointment_statuses="appointment_statuses"
+                        :labor_activities="labor_activities"
                     >
                     </ViewScheduleTasksTab>
                 </b-tab>
@@ -22,6 +23,7 @@
                     <ViewScheduleOrdersTab
                         v-if="tab_index == tab_data.index"
                         :tab="tab"
+                        :labor_activities="labor_activities"
                     >
                     </ViewScheduleOrdersTab>
                 </b-tab>
@@ -47,6 +49,7 @@ export default {
             order_status_types: [],
             appointment_statuses: [],
             labor_assignments: [],
+            labor_activities: [],
             task_statuses: [],
             task_actions: [],
             labor_types: [],
@@ -59,6 +62,9 @@ export default {
 		});
         this.$http.get('/appointment_statuses').then(response => {
 			this.appointment_statuses = response.data;
+		});
+        this.$http.get('/labor_activities').then(response => {
+			this.labor_activities = response.data.data;
 		});
         this.$http.get('/labor_assignments').then(response => {
 			this.labor_assignments = response.data.data;

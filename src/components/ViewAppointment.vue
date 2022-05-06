@@ -130,7 +130,11 @@
                                 </div>
                             </template>
                             <b-container>
-                                <ViewTaskHours :task_id="task.id" :appointment_id="task.id == task_id ? appointment_id : null" :labor_activities="labor_activities">
+                                <ViewTaskHours
+                                    :task_id="task.id"
+                                    :appointment_id="task.id == task_id ? appointment_id : null"
+                                    :labor_activities="labor_activities"
+                                    >
                                 </ViewTaskHours>
                             </b-container>
                         </b-tab>
