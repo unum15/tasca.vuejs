@@ -46,13 +46,10 @@
                     <a :href="'/backflow_assembly/' + data.value"> {{ data.value }} </a>
                 </template>
                 <template v-slot:cell(property)="data">
-                    <span v-b-popover.hover="data.item.property_unit ? data.item.property_unit.name : ''" :id="'property_' + data.item.id">{{ data.item.property ? data.item.property.name : '' }}</span>
+                    <span v-b-popover.hover="data.item.property_unit ? data.item.property_unit.name : ''" :id="'property_' + data.item.id">{{ data.value }}</span>
                 </template>
                 <template v-slot:cell(contact)="data">
-                    <span v-b-popover.hover="data.item.contact ? (data.item.contact.phone_numbers.length > 0 ? data.item.contact.phone_numbers[0].phone_number + ' ' : '') + (data.item.contact.emails.length > 0 ? data.item.contact.emails[0].email : '') : ''" :id="'property_' + data.item.id">{{ data.item.contact ? data.item.contact.name : '' }}</span>
-                </template>
-                <template v-slot:cell(backflow_test_reports)="data">
-                    {{ data.value.length > 0 ? data.value[0].report_date : null }}
+                    <span v-b-popover.hover="data.item.contact ? (data.item.contact.phone_numbers.length > 0 ? data.item.contact.phone_numbers[0].phone_number + ' ' : '') + (data.item.contact.emails.length > 0 ? data.item.contact.emails[0].email : '') : ''" :id="'property_' + data.item.id">{{ data.value }}</span>
                 </template>
                 <template v-slot:cell(updated_at)="data">
                     {{ data.value.substr(0,10) }}
@@ -99,13 +96,15 @@ export default {
                         key: 'property',
                         label: 'Property',
                         sortable: true,
-                        filter: null
+                        filter: null,
+                        formatter: 'formatProperty'
                     },
                     {
                         key: 'contact',
                         label: 'Contact',
                         sortable: true,
-                        filter: null
+                        filter: null,
+                        formatter: 'formatContact'
                     },
                     {
                         key: 'backflow_water_system.name',
@@ -177,7 +176,8 @@ export default {
                         key: 'backflow_test_reports',
                         label: 'Last Test',
                         sortable: true,
-                        filter: null
+                        filter: null,
+                        formatter: 'formatTests'
                     },
                     {
                         key: 'updated_at',
@@ -223,6 +223,15 @@ export default {
         filtersUpdated(){
             this.filtered_backflow_assemblies=this.filterColumns(this.backflow_assemblies);
         },
+        formatTests(value){
+            return value.length > 0 ? value[0].report_date : null;
+        },
+        formatProperty(value,field,item){
+            return item.property ? item.property.name : ''
+        },
+        formatContact(value,field,item){
+            return item.contact ? item.contact.name : ''
+        }
     },
     computed: {
         month_match_state () {
