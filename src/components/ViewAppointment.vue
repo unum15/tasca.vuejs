@@ -130,7 +130,7 @@
                 </b-col>
             </b-row>
         </b-container>
-        <b-modal size="xl" scrollable ref="modalEditTask" title="Copy Task" @ok="modalEditTask">
+        <b-modal size="xl" scrollable ref="modalEditTask" title="Copy Task" @ok="modalEditTask" ok-only>
             <EditTask
                 :order="order"
                 :task="edit_task"
@@ -239,6 +239,7 @@ export default {
 			}
 		},
 		copy(id){
+            this.clearTaskMenu();
 			this.edit_task.id = null;
 			this.edit_task.group = null;
 			this.edit_task.completion_date = null;
@@ -248,16 +249,17 @@ export default {
 			this.$refs['modalEditTask'].show();
 		},
         edit(id){
+            this.clearTaskMenu();
 			this.$refs['modalEditTask'].show();
 		},
 		modalEditTask(){
-			this.$http.post('/task',this.edit_task).then(response => {
-					this.getTasks();
-			});
+            this.getTasks();
 			this.edit_task = {};
 		},
         clearTaskMenu(){
-            this.$refs['context-'+this.edit_task.id][0].style.visibility = 'hidden';
+            if(this.edit_task && this.edit_task.id && this.$refs['context-'+this.edit_task.id]){
+                this.$refs['context-'+this.edit_task.id][0].style.visibility = 'hidden';
+            }
         }
     },
     computed: {

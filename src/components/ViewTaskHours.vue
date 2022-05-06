@@ -18,7 +18,7 @@
                 <b-col class="label">Crew Time</b-col>
                 <b-col class="data">{{ task.crew_hours }}</b-col>
                 <b-col class="label">Assignment</b-col>
-                <b-col class="data">{{ task.labor_assignment.name }}</b-col>
+                <b-col class="data">{{ task.labor_assignment ? task.labor_assignment.name : '' }}</b-col>
                 <b-col class="label">Labor Type</b-col>
                 <b-col class="data">{{ task.labor_type.name }}</b-col>
             </b-row>
