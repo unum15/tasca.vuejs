@@ -241,7 +241,7 @@ export default {
         text(number){
             number = number.replace(/\D/g,'');
             window.open('https://voice.google.com/u/0/messages?itemId=t.%2B' + number,'gvoice',"height=300,width=600");
-        }
+        },
         showTabContextMenu(event,id){
 			event.preventDefault();
             let tasks = this.tasks.filter(t => (id == t.id));
