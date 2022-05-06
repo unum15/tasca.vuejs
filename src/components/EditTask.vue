@@ -125,7 +125,7 @@
             </b-col>
         </b-row>
         <b-row>
-           <EditAppointments :task_id="my_task.id"></EditAppointments>
+           <EditAppointments v-if="my_task.id" :task_id="my_task.id"></EditAppointments>
         </b-row>
         <b-row>
             <b-col>
@@ -180,7 +180,7 @@
             </b-col>
         </b-row>
         <b-row>
-			<b-button variant="danger" size="sm" @click="deleteTask(task)">Delete Task</b-button>
+			<b-button v-if="allow_delete" variant="danger" size="sm" @click="deleteTask(task)">Delete Task</b-button>
         </b-row>
 	</b-container>
 </template>
@@ -189,6 +189,7 @@ import EditAppointments from './EditAppointments';
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import treeNormalizer from '../common/TreeNormalizer.js';
+import { mapState } from 'vuex';
 export default {
     name: 'EditTask',
 	components: {
@@ -203,7 +204,7 @@ export default {
 		labor_assignments: {required: true},
 		crews: {required: true},
 		project_close_date: {default: null},
-		settings: {required: true}
+		allow_delete: {default: true},
 	},
 	data: function() {
 		return {
@@ -230,7 +231,7 @@ export default {
 			if(this.my_task.id === null){
 				this.$http.post('/task',this.my_task).then(response => {
 					this.my_task.id = response.data.data.id;
-				})
+				});
 			}
 			else{
 				this.$http.patch('/task/'+this.my_task.id,this.my_task);
@@ -270,7 +271,10 @@ export default {
                 }
 				return false;
 			})
-		}
+		},
+		...mapState({
+             settings: state => state.settings.backflows,
+        }),
 	},
     watch:{
         project_close_date(date){
