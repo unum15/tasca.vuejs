@@ -42,7 +42,7 @@
 				</b-tab>
 			</b-tabs>
 			<b-button variant="secondary" @click="newTask(null)">Add New Task</b-button>
-			<b-modal size="xl" scrollable ref="modalCopyTask" title="Copy Task" @ok="modalCopyTask" @cancel="modalCancelCopy">
+			<b-modal size="xl" scrollable ref="modalCopyTask" title="Copy Task" @ok="modalCopyTask" ok-only>
 				<EditTask
 						:order="order"
 						:task="copy_task"
@@ -189,14 +189,9 @@ export default {
 			this.$refs['modalCopyTask'].show();
 		},
 		modalCopyTask(){
-			this.$http.post('/task',this.copy_task).then(response => {
-					this.getTasks();
-			});
+			this.getTasks();
 			this.copy_task = {};
 		},
-		modalCancelCopy(){
-			this.copy_task = {};
-		}
   },
 	computed: {
 		filtered_tasks(){
