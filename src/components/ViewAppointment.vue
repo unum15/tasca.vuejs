@@ -120,11 +120,11 @@
                         <b-tab v-for="task in tasks" :key="'task_' + task.id" :active="task.id == task_id">
                             <template slot="title" style="text-align:left">
                                 <div class="text-left" @contextmenu="showTabContextMenu($event,task.id)">
-                                	<span v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
-                                		{{ task.name }}
+                                    <span v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
+                                        {{ task.name }}
                                     </span>
                                     <b-list-group :ref="'context-' + task.id" class="popup">
-                                    	<b-list-group-item @click="copy(task.id)">Copy</b-list-group-item>
+                                        <b-list-group-item @click="copy(task.id)">Copy</b-list-group-item>
                                         <b-list-group-item @click="edit(task.id)">Edit</b-list-group-item>
                                     </b-list-group>
                                 </div>
@@ -184,28 +184,28 @@ export default {
             tasks: [],
             edit_task: {},
             crews: [],
-			labor_assignments: [],
-			task_statuses: [],
-			task_actions: [],
-			labor_types: [],
+                labor_assignments: [],
+                task_statuses: [],
+                task_actions: [],
+                labor_types: [],
         };
     },
     created() {
         this.$http.get('/crews').then(response => {
-			this.crews = response.data;
-		});
-    	this.$http.get('/labor_assignments').then(response => {
-			this.labor_assignments = response.data.data;
-		});
-		this.$http.get('/task_statuses').then(response => {
-			this.task_statuses = response.data;
-		});
-		this.$http.get('/task_actions').then(response => {
-			this.task_actions = response.data;
-		});
-		this.$http.get('/labor_types').then(response => {
-			this.labor_types = response.data.data;
-		});
+                this.crews = response.data;
+        });
+        this.$http.get('/labor_assignments').then(response => {
+            this.labor_assignments = response.data.data;
+        });
+        this.$http.get('/task_statuses').then(response => {
+            this.task_statuses = response.data;
+        });
+        this.$http.get('/task_actions').then(response => {
+            this.task_actions = response.data;
+        });
+        this.$http.get('/labor_types').then(response => {
+            this.labor_types = response.data.data;
+        });
         this.getOrder();
     },
     methods: {
@@ -247,31 +247,31 @@ export default {
             window.open('https://voice.google.com/u/0/messages?itemId=t.%2B' + number,'gvoice',"height=300,width=600");
         },
         showTabContextMenu(event,id){
-			event.preventDefault();
+            event.preventDefault();
             let tasks = this.tasks.filter(t => (id == t.id));
-            this.edit_task = Object.assign({}, tasks[0]);;
-			if(this.$refs['context-'+id].length){
-				this.$refs['context-'+id][0].style.visibility = 'visible';
-			}
-		},
-		copy(id){
+            this.edit_task = Object.assign({}, tasks[0]);
+            if(this.$refs['context-'+id].length){
+                this.$refs['context-'+id][0].style.visibility = 'visible';
+            }
+        },
+        copy(){
             this.clearTaskMenu();
-			this.edit_task.id = null;
-			this.edit_task.group = null;
-			this.edit_task.completion_date = null;
-			this.edit_task.invoiced_date = null;
-			this.edit_task.billed_date = null;
-			this.edit_task.closed_date = null;			
-			this.$refs['modalEditTask'].show();
-		},
-        edit(id){
+            this.edit_task.id = null;
+            this.edit_task.group = null;
+            this.edit_task.completion_date = null;
+            this.edit_task.invoiced_date = null;
+            this.edit_task.billed_date = null;
+            this.edit_task.closed_date = null;
+            this.$refs['modalEditTask'].show();
+        },
+        edit(){
             this.clearTaskMenu();
-			this.$refs['modalEditTask'].show();
-		},
-		modalEditTask(){
+            this.$refs['modalEditTask'].show();
+        },
+        modalEditTask(){
             this.getTasks();
-			this.edit_task = {};
-		},
+            this.edit_task = {};
+        },
         clearTaskMenu(){
             if(this.edit_task && this.edit_task.id && this.$refs['context-'+this.edit_task.id]){
                 this.$refs['context-'+this.edit_task.id][0].style.visibility = 'hidden';
@@ -333,6 +333,6 @@ export default {
     position: absolute;
     z-index: 1;
     left: 50%;
-	margin-left: -350px;
+     margin-left: -350px;
 }
 </style>
