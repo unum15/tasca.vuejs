@@ -42,6 +42,7 @@
                     </b-col>
                     <b-col>
                        <br />
+                       <b-button @click="getTasks()" style="margin-right:5px;">Refresh</b-button>
                        <b-button @click="filtersClear()">Clear Filters</b-button>
                     </b-col>
                 </b-row>
@@ -306,6 +307,76 @@ export default {
         }
     },
     created() {
+        switch (this.tab){
+             case 'All':
+                this.fields = [
+                {
+                    key: 'start_date',
+                    label: 'Start Date',
+                    sortable: true,
+                },
+                {
+                    key: 'service_window',
+                    label: 'Service Window',
+                    sortable: true,
+                },
+                {
+                    key: 'hold_date',
+                    label: 'Hold Date',
+                    sortable: true,
+                },
+                {
+                    key: 'order_name',
+                    label: 'Work Order Name',
+                    sortable: true,
+                    filter: null
+                },
+                {
+                    key: 'client',
+                    label: 'Client',
+                    sortable: true,
+                },
+                {
+                    key: 'property',
+                    label: 'Property',
+                    sortable: true,
+                },
+                {
+                    key: 'name',
+                    label: 'Name',
+                    sortable: true,
+                },
+                {
+                    key: 'labor_assignment',
+                    label: 'Assignment',
+                    sortable: true,
+                },
+                {
+                    key: 'appointment_status',
+                    label: 'Status',
+                    sortable: true,
+                },
+                {
+                    key: 'date',
+                    label: 'Date',
+                    sortable: true,
+                },
+                {
+                    key: 'crew',
+                    label: 'Crew',
+                    sortable: true,
+                },
+                {
+                    key: 'crew_hours',
+                    label: 'Crew Hours',
+                    sortable: true,
+                },
+                {
+                    key: 'actions',
+                    label: 'Actions',
+                }
+            ];
+        }
         let filters = this.fields.map(f => (f.key));
         filters.pop();
         filters.push('crew_id');
@@ -340,19 +411,19 @@ export default {
             this.date = moment(this.date).add(1, 'day').format('YYYY-MM-DD');
             this.getTasks();
         },
-        info (item) {
+        info(item) {
             this.modalInfo.title = `${item.order_name} -- ${item.name}`;
             this.modalInfo.appointment_id = item.id;
             this.modalInfo.task_id = item.task_id;
             this.modalInfo.order_id = item.order_id;
             this.$refs['modalInfo'].show();
         },
-        resetModal () {
+        resetModal() {
             this.modalInfo.title = ''
             this.modalInfo.content = ''
             this.modalInfo.id = null
         },
-        addTask (task){
+        addTask(task){
             var new_task = {
                 order_id: task.id,
                 billable: true

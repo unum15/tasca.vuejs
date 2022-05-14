@@ -12,6 +12,10 @@
                   </b-input-group>
                 </b-form-group>
               </b-col>
+              <b-col>
+                <br />
+                <b-button @click="getOrders()">Refresh</b-button>
+              </b-col>
             </b-row>
         </b-container>
         <b-table
