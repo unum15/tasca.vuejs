@@ -137,6 +137,11 @@
                         :fields="fields"
                         style="text-align:right"
                     >
+                        <template v-slot:cell(contact.name)="data">
+                            <a href="/scheduler" @click.stop.prevent="editClockIn(data.item, data.index, $event.target)">
+                                {{ data.value }}
+                            </a>
+                        </template>
                         <template v-slot:cell(id)="data">
                             <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
                         </template>
@@ -163,6 +168,13 @@
                 </b-row>
             </b-container>
         </main>
+        <b-modal size="xl" scrollable ref="modalEditClockIn" title="Edit Clock In" @ok="modalEditClockIn" >
+            <ClockInComplex
+                :clock_in="edit_clock_in"
+                @remove-clock-in="removeClockIn"
+            >
+            </ClockInComplex>
+        </b-modal>
     </div>
 </template>
 <script>
@@ -170,13 +182,16 @@ import moment from 'moment';
 import TopMenu from './TopMenu';
 import FileSaver from 'file-saver';
 import { mapState } from 'vuex';
+import ClockInComplex from './ClockInComplex';
 export default {
     name: 'ViewClockIns',
     components: {
-        'TopMenu': TopMenu,
+        TopMenu,
+        ClockInComplex
     },
     data() {
         return {
+            edit_clock_in: {},
             clock_ins: [],
             contact_id: null,
             contacts: [],
@@ -390,6 +405,17 @@ export default {
             }
             FileSaver.saveAs(blob, `Time Card ${group_by} ${contact} ${this.start_date} ${this.stop_date}.csv`);
         },
+        editClockIn(clock_in){
+            console.log();
+            this.edit_clock_in = clock_in;
+            this.$refs['modalEditClockIn'].show();
+        },
+        removeClockIn(){
+            alert('not implemented');
+        },
+        modalEditClockIn(){
+            alert('not implemented');
+        }
     },
     computed:{
         groups(){
