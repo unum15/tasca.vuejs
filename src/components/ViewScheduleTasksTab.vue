@@ -259,7 +259,7 @@ export default {
                 },
                 {
                     key: 'service_window',
-                    label: 'Service Window',
+                    label: 'SW',
                     sortable: true,
                 },
                 {
