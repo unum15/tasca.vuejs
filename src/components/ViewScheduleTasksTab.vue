@@ -42,6 +42,7 @@
                     </b-col>
                     <b-col>
                        <br />
+                       <b-button @click="getTasks()" style="margin-right:5px;">Refresh</b-button>
                        <b-button @click="filtersClear()">Clear Filters</b-button>
                     </b-col>
                 </b-row>
@@ -51,6 +52,7 @@
                 striped
                 hover
                 foot-clone
+                responsive
                 :items="filtered_tasks"
                 :fields="fields"
                 :filter="filter"
@@ -67,8 +69,38 @@
                         </th>  
                     </tr>
                 </template>
+                <template v-slot:cell(service_window)="data">
+                    <b-form-input
+                        v-if="['On Hold','All'].filter(t => (t == tab)).length"
+                        type="number"
+                        @change="save(data.item)"
+                        v-model="data.item.service_window"
+                    >
+                    </b-form-input>
+                    <span v-else>{{data.value}}</span>
+                </template>
+                <template v-slot:cell(hold_date)="data">
+                    <b-form-input
+                        type="date"
+                        @change="save(data.item)"
+                        v-model="data.item.hold_date"
+                    >
+                    </b-form-input>
+                </template>
                 <template v-slot:cell(start_date)="data">
-                    <span v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id">{{ data.value }}</span>
+                    <span
+                        v-if="['Pending','Current'].filter(t => (t == tab)).length && data.item.hold_date"
+                        v-b-popover.hover="data.item.order_date + ' ' + data.value" :id="'start_date_' + data.item.id"
+                        style="color:purple"
+                    >
+                        {{ data.item.hold_date }}
+                    </span>
+                    <span
+                        v-else
+                        v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id"
+                    >
+                        {{ data.value }}
+                    </span>
                 </template>
                 <template v-slot:cell(order_name)="data">
                     <span v-b-popover.hover="data.item.order_description" :id="'order_name_' + data.item.id">
@@ -101,14 +133,7 @@
                     </b-form-select>
                 </template>
                 <template v-slot:cell(labor_assignment)="data">
-                    <b-form-select
-                        :options="labor_assignments"
-                        @input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.labor_assignment_id"
-                        >
-                    </b-form-select>
+                    <Treeselect style="width: 10rem" :options="labor_assignments" :normalizer="treeNormalizer" v-model="data.item.labor_assignment_id" @input="save(data.item)"/>
                 </template>
                 <template v-slot:cell(task_status)="data">
                     <b-form-select
@@ -127,6 +152,16 @@
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_action_id"
+                        >
+                    </b-form-select>
+                </template>
+                <template v-slot:cell(crew)="data">
+                    <b-form-select
+                        :options="crews"
+                        @input="save(data.item)"
+                        value-field="id"
+                        text-field="name"
+                        v-model="data.item.crew_id"
                         >
                     </b-form-select>
                 </template>
@@ -200,10 +235,14 @@ import moment from 'moment';
 import ViewAppointment from './ViewAppointment';
 import sortingMixin from '../mixins/Sorting.js';
 import filtersMixin from '../mixins/Filters.js';
+import Treeselect from '@riophae/vue-treeselect';
+import treeFilter from '../common/TreeFilter.js';
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
     name: 'ViewScheduleTab',
     components: {
-        'ViewAppointment': ViewAppointment
+        ViewAppointment,
+        Treeselect
     },
     mixins: [filtersMixin, sortingMixin],
     props: {
@@ -222,9 +261,9 @@ export default {
             filter: null,
             modalInfo: { title: '', appointment_id: null, task_id: null, order_id: null },
             date: moment().format('YYYY-MM-DD'),
-            view_days: 14,
             crews: [],
             sortBy: 'date',
+            view_days: 14,
             fields: [
                 {
                     key: 'start_date',
@@ -233,7 +272,7 @@ export default {
                 },
                 {
                     key: 'service_window',
-                    label: 'Service Window',
+                    label: 'SW',
                     sortable: true,
                 },
                 {
@@ -306,6 +345,77 @@ export default {
         }
     },
     created() {
+        switch (this.tab){
+             case 'All':
+             case 'On Hold':
+                this.fields = [
+                {
+                    key: 'start_date',
+                    label: 'Start Date',
+                    sortable: true,
+                },
+                {
+                    key: 'service_window',
+                    label: 'SW',
+                    sortable: true,
+                },
+                {
+                    key: 'hold_date',
+                    label: 'Hold Date',
+                    sortable: true,
+                },
+                {
+                    key: 'order_name',
+                    label: 'Work Order Name',
+                    sortable: true,
+                    filter: null
+                },
+                {
+                    key: 'client',
+                    label: 'Client',
+                    sortable: true,
+                },
+                {
+                    key: 'property',
+                    label: 'Property',
+                    sortable: true,
+                },
+                {
+                    key: 'name',
+                    label: 'Name',
+                    sortable: true,
+                },
+                {
+                    key: 'labor_assignment',
+                    label: 'Assignment',
+                    sortable: true,
+                },
+                {
+                    key: 'task_status',
+                    label: 'Status',
+                    sortable: true,
+                },
+                {
+                    key: 'date',
+                    label: 'Date',
+                    sortable: true,
+                },
+                {
+                    key: 'crew',
+                    label: 'Crew',
+                    sortable: true,
+                },
+                {
+                    key: 'crew_hours',
+                    label: 'Crew Hours',
+                    sortable: true,
+                },
+                {
+                    key: 'actions',
+                    label: 'Actions',
+                }
+            ];
+        }
         let filters = this.fields.map(f => (f.key));
         filters.pop();
         filters.push('crew_id');
@@ -319,6 +429,8 @@ export default {
         this.getTasks();
     },
     methods: {
+        treeFilter,
+        treeNormalizer,
         getTasks(){
             this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&view_days=' + this.view_days).then((results) => {
                 if(['Pending', 'On Hold', 'All'].includes(this.tab)){
@@ -340,19 +452,19 @@ export default {
             this.date = moment(this.date).add(1, 'day').format('YYYY-MM-DD');
             this.getTasks();
         },
-        info (item) {
+        info(item) {
             this.modalInfo.title = `${item.order_name} -- ${item.name}`;
             this.modalInfo.appointment_id = item.id;
             this.modalInfo.task_id = item.task_id;
             this.modalInfo.order_id = item.order_id;
             this.$refs['modalInfo'].show();
         },
-        resetModal () {
+        resetModal() {
             this.modalInfo.title = ''
             this.modalInfo.content = ''
             this.modalInfo.id = null
         },
-        addTask (task){
+        addTask(task){
             var new_task = {
                 order_id: task.id,
                 billable: true
@@ -395,10 +507,17 @@ export default {
                 labor_assignment_id: item.labor_assignment_id,
                 task_status_id: item.task_status_id,
                 task_action_id: item.task_action_id,
-                crew_hours: item.crew_hours
+                crew_hours: item.crew_hours,
+                crew_id: item.crew_id,
+                hold_date: item.hold_date
             
             }
             this.$http.patch('/task/' + item.task_id, task);
+            var order = {
+                service_window: item.service_window
+            
+            }
+            this.$http.patch('/order/' + item.order_id, order);
         },
         rowClass(item){
             var today = moment();
