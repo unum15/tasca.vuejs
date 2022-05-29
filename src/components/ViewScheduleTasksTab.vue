@@ -309,6 +309,7 @@ export default {
     created() {
         switch (this.tab){
              case 'All':
+             case 'On Hold':
                 this.fields = [
                 {
                     key: 'start_date',
