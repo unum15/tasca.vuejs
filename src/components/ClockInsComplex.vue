@@ -53,6 +53,7 @@
                   <b-col>
                         <b-button @click="getClockIns">Submit Dates</b-button><br />
                         <b-button @click="exportClockIns">Export</b-button>
+                        <b-button @click="newClockIn">Add Clock In</b-button>
                   </b-col>
                 </b-row>
                 <b-row>
@@ -148,6 +149,9 @@
                         <template v-slot:cell(clock_out)="data">
                             <div :style="clockOutColor(data.item)"> {{ data.value }} </div>
                         </template>
+                        <template v-slot:cell(actions)="data">
+                            <img src="@/assets/delete.png" @click.stop="removeClockIn(data.item)" fluid alt="-" style="width:20px;cursor:pointer;"/>
+                        </template>
                     </b-table>
                 </b-row>
                 <b-row>
@@ -168,9 +172,10 @@
                 </b-row>
             </b-container>
         </main>
-        <b-modal size="xl" scrollable ref="modalEditClockIn" title="Edit Clock In" @ok="modalEditClockIn" >
+        <b-modal size="xl" scrollable ref="modalEditClockIn" id="modalEditClockIn" title="Edit Clock In" @ok="modalEditClockIn" >
             <ClockInComplex
                 :clock_in="edit_clock_in"
+                :contacts="contacts"
                 @remove-clock-in="removeClockIn"
             >
             </ClockInComplex>
@@ -268,7 +273,11 @@ export default {
                         formatter: 'timeColumn',
                         sortByFormatted : true
                     },
-                    
+                    {
+                        key:'actions',
+                        label: '',
+                        sortable: false
+                    }
             ],
             settings: {}
         }
@@ -406,15 +415,20 @@ export default {
             FileSaver.saveAs(blob, `Time Card ${group_by} ${contact} ${this.start_date} ${this.stop_date}.csv`);
         },
         editClockIn(clock_in){
-            console.log();
             this.edit_clock_in = clock_in;
             this.$refs['modalEditClockIn'].show();
         },
-        removeClockIn(){
-            alert('not implemented');
+        newClockIn(){
+           this.edit_clock_in = {};
+           this.$refs['modalEditClockIn'].show();
+        },
+        removeClockIn(clock_in){
+            this.$http.delete('/clock_in/' + clock_in.id).then(()=> {
+                this.getClockIns();
+            });
         },
         modalEditClockIn(){
-            alert('not implemented');
+            this.getClockIns();
         }
     },
     computed:{
