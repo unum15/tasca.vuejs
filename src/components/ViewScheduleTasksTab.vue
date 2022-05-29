@@ -52,6 +52,7 @@
                 striped
                 hover
                 foot-clone
+                responsive
                 :items="filtered_tasks"
                 :fields="fields"
                 :filter="filter"
@@ -87,7 +88,19 @@
                     </b-form-input>
                 </template>
                 <template v-slot:cell(start_date)="data">
-                    <span v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id">{{ data.value }}</span>
+                    <span
+                        v-if="['Pending','Current'].filter(t => (t == tab)).length && data.item.hold_date"
+                        v-b-popover.hover="data.item.order_date + ' ' + data.value" :id="'start_date_' + data.item.id"
+                        style="color:purple"
+                    >
+                        {{ data.item.hold_date }}
+                    </span>
+                    <span
+                        v-else
+                        v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id"
+                    >
+                        {{ data.value }}
+                    </span>
                 </template>
                 <template v-slot:cell(order_name)="data">
                     <span v-b-popover.hover="data.item.order_description" :id="'order_name_' + data.item.id">
