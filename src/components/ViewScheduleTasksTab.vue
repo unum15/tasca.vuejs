@@ -36,7 +36,7 @@
                     <b-col v-if="['Current', 'Pending'].includes(tab)">
                         <b-form-group label="View Days" class="mb-0">
                           <b-input-group>
-                            <b-form-input type="number" v-model="filters.view_days" @input="getTasks()" />
+                            <b-form-input type="number" v-model="view_days" @input="getTasks()" />
                           </b-input-group>
                         </b-form-group>
                     </b-col>
@@ -248,6 +248,7 @@ export default {
             date: moment().format('YYYY-MM-DD'),
             crews: [],
             sortBy: 'date',
+            view_days: 14,
             fields: [
                 {
                     key: 'start_date',
@@ -375,7 +376,7 @@ export default {
                     sortable: true,
                 },
                 {
-                    key: 'appointment_status',
+                    key: 'task_status',
                     label: 'Status',
                     sortable: true,
                 },
@@ -403,10 +404,8 @@ export default {
         let filters = this.fields.map(f => (f.key));
         filters.pop();
         filters.push('crew_id');
-        filters.push('view_days');
         this.filtersInit('schedule ' + this.tab, filters);
         this.filters.crew_id='.*';
-        this.filters.view_days = 14;
         this.$http.get('/crews').then(response => {
             this.crews = response.data;
             this.crews.unshift({id: '.*', name: 'All'});
@@ -418,7 +417,7 @@ export default {
         treeFilter,
         treeNormalizer,
         getTasks(){
-            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&view_days=' + this.filters.view_days).then((results) => {
+            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&view_days=' + this.view_days).then((results) => {
                 if(['Pending', 'On Hold', 'All'].includes(this.tab)){
                     this.sortBy='start_date';
                 }
