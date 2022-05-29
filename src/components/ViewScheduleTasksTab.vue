@@ -36,7 +36,7 @@
                     <b-col v-if="['Current', 'Pending'].includes(tab)">
                         <b-form-group label="View Days" class="mb-0">
                           <b-input-group>
-                            <b-form-input type="number" v-model="view_days" @input="getTasks()" />
+                            <b-form-input type="number" v-model="filters.view_days" @input="getTasks()" />
                           </b-input-group>
                         </b-form-group>
                     </b-col>
@@ -67,6 +67,22 @@
                             <b-form-input type="text" @input="filtersUpdated" v-model="filters[field.key]" v-if="filters[field.key] !== undefined "></b-form-input>
                         </th>  
                     </tr>
+                </template>
+                <template v-slot:cell(service_window)="data">
+                    <b-form-input
+                        type="number"
+                        @change="save(data.item)"
+                        v-model="data.item.service_window"
+                    >
+                    </b-form-input>
+                </template>
+                <template v-slot:cell(hold_date)="data">
+                    <b-form-input
+                        type="date"
+                        @change="save(data.item)"
+                        v-model="data.item.hold_date"
+                    >
+                    </b-form-input>
                 </template>
                 <template v-slot:cell(start_date)="data">
                     <span v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id">{{ data.value }}</span>
@@ -102,14 +118,7 @@
                     </b-form-select>
                 </template>
                 <template v-slot:cell(labor_assignment)="data">
-                    <b-form-select
-                        :options="labor_assignments"
-                        @input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.labor_assignment_id"
-                        >
-                    </b-form-select>
+                    <Treeselect style="width: 10rem" :options="labor_assignments" :normalizer="treeNormalizer" v-model="data.item.labor_assignment_id" @input="save(data.item)"/>
                 </template>
                 <template v-slot:cell(task_status)="data">
                     <b-form-select
@@ -128,6 +137,16 @@
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_action_id"
+                        >
+                    </b-form-select>
+                </template>
+                <template v-slot:cell(crew)="data">
+                    <b-form-select
+                        :options="crews"
+                        @input="save(data.item)"
+                        value-field="id"
+                        text-field="name"
+                        v-model="data.item.crew_id"
                         >
                     </b-form-select>
                 </template>
@@ -201,10 +220,14 @@ import moment from 'moment';
 import ViewAppointment from './ViewAppointment';
 import sortingMixin from '../mixins/Sorting.js';
 import filtersMixin from '../mixins/Filters.js';
+import Treeselect from '@riophae/vue-treeselect';
+import treeFilter from '../common/TreeFilter.js';
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
     name: 'ViewScheduleTab',
     components: {
-        'ViewAppointment': ViewAppointment
+        ViewAppointment,
+        Treeselect
     },
     mixins: [filtersMixin, sortingMixin],
     props: {
@@ -223,7 +246,6 @@ export default {
             filter: null,
             modalInfo: { title: '', appointment_id: null, task_id: null, order_id: null },
             date: moment().format('YYYY-MM-DD'),
-            view_days: 14,
             crews: [],
             sortBy: 'date',
             fields: [
@@ -318,7 +340,7 @@ export default {
                 },
                 {
                     key: 'service_window',
-                    label: 'Service Window',
+                    label: 'SW',
                     sortable: true,
                 },
                 {
@@ -381,8 +403,10 @@ export default {
         let filters = this.fields.map(f => (f.key));
         filters.pop();
         filters.push('crew_id');
+        filters.push('view_days');
         this.filtersInit('schedule ' + this.tab, filters);
         this.filters.crew_id='.*';
+        this.filters.view_days = 14;
         this.$http.get('/crews').then(response => {
             this.crews = response.data;
             this.crews.unshift({id: '.*', name: 'All'});
@@ -391,8 +415,10 @@ export default {
         this.getTasks();
     },
     methods: {
+        treeFilter,
+        treeNormalizer,
         getTasks(){
-            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&view_days=' + this.view_days).then((results) => {
+            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&view_days=' + this.filters.view_days).then((results) => {
                 if(['Pending', 'On Hold', 'All'].includes(this.tab)){
                     this.sortBy='start_date';
                 }
@@ -467,10 +493,17 @@ export default {
                 labor_assignment_id: item.labor_assignment_id,
                 task_status_id: item.task_status_id,
                 task_action_id: item.task_action_id,
-                crew_hours: item.crew_hours
+                crew_hours: item.crew_hours,
+                crew_id: item.crew_id,
+                hold_date: item.hold_date
             
             }
             this.$http.patch('/task/' + item.task_id, task);
+            var order = {
+                service_window: item.service_window
+            
+            }
+            this.$http.patch('/order/' + item.order_id, order);
         },
         rowClass(item){
             var today = moment();
