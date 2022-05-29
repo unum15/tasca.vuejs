@@ -8,7 +8,6 @@
             <b-tabs :key="order_status_types.length" v-model="tab_index">
                 <b-tab v-for="(index,tab) in tabs" :key="tab" :title="tab + ' Tasks'">
                     <ViewScheduleTasksTab
-                        v-if="tab_index == index"
                         :tab="tab"
                         :task_actions="task_actions"
                         :labor_assignments="labor_assignments"
@@ -21,7 +20,6 @@
                 </b-tab>
                 <b-tab v-for="(tab_data,tab) in order_tabs" :key="tab" :title="tab_data.title">
                     <ViewScheduleOrdersTab
-                        v-if="tab_index == tab_data.index"
                         :tab="tab"
                         :labor_activities="labor_activities"
                     >

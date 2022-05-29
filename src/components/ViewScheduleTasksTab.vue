@@ -70,11 +70,13 @@
                 </template>
                 <template v-slot:cell(service_window)="data">
                     <b-form-input
+                        v-if="['On Hold','All'].filter(t => (t == tab)).length"
                         type="number"
                         @change="save(data.item)"
                         v-model="data.item.service_window"
                     >
                     </b-form-input>
+                    <span v-else>{{data.value}}</span>
                 </template>
                 <template v-slot:cell(hold_date)="data">
                     <b-form-input
