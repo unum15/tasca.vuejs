@@ -59,6 +59,7 @@
                 :tbody-tr-class="rowClass"
                 primary-key="row"
                 class="text-left"
+                :sort-compare="sortCompare"
                 :sort-by.sync="sortBy"
                 >
                 <template slot="thead-top">

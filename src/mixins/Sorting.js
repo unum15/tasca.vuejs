@@ -2,6 +2,8 @@ import moment from 'moment';
 export default {
     methods: {
         sortCompare(a, b, key, sortDesc, formatter) {
+            const valueA = formatter ? formatter(a[key], key, a) : a[key];
+            const valueB = formatter ? formatter(b[key], key, b) : b[key];
             switch(key){
                 case 'time':
                 case 'date':
@@ -39,8 +41,6 @@ export default {
                         return value;
                     }
                 default:
-                    const valueA = formatter(a);
-                    const valueB = formatter(b);
                     if (typeof valueA === 'number' && typeof valueB === 'number') {
                       return valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
                     } else {
