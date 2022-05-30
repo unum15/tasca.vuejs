@@ -1,7 +1,7 @@
 import moment from 'moment';
 export default {
     methods: {
-        sortCompare(a, b, key) {
+        sortCompare(a, b, key, sortDesc, formatter) {
             switch(key){
                 case 'time':
                 case 'date':
@@ -39,10 +39,12 @@ export default {
                         return value;
                     }
                 default:
-                    if (typeof a[key] === 'number' && typeof b[key] === 'number') {
-                      return a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0;
+                    const valueA = formatter(a);
+                    const valueB = formatter(b);
+                    if (typeof valueA === 'number' && typeof valueB === 'number') {
+                      return valueA < valueB ? -1 : valueA > valueB ? 1 : 0;
                     } else {
-                      return this.toString(a[key]).localeCompare(this.toString(b[key]), undefined, {
+                      return this.toString(valueA).localeCompare(this.toString(valueB), undefined, {
                         numeric: true
                       });
                     }

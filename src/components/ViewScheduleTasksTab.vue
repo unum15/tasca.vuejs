@@ -59,7 +59,6 @@
                 :tbody-tr-class="rowClass"
                 primary-key="row"
                 class="text-left"
-                :sort-compare="sortCompare"
                 :sort-by.sync="sortBy"
                 >
                 <template slot="thead-top">
@@ -89,11 +88,11 @@
                 </template>
                 <template v-slot:cell(start_date)="data">
                     <span
-                        v-if="['Pending','Current'].filter(t => (t == tab)).length && data.item.hold_date"
+                        v-if="data.value != data.item.start_date"
                         v-b-popover.hover="data.item.order_date + ' ' + data.value" :id="'start_date_' + data.item.id"
                         style="color:purple"
                     >
-                        {{ data.item.hold_date }}
+                        {{ data.value }}
                     </span>
                     <span
                         v-else
@@ -269,6 +268,8 @@ export default {
                     key: 'start_date',
                     label: 'Start Date',
                     sortable: true,
+                    formatter: 'startDateFormatter',
+                    sortByFormatted : true
                 },
                 {
                     key: 'service_window',
@@ -543,6 +544,9 @@ export default {
         },
         filtersUpdated(){
             this.filtered_tasks=this.filterColumns(this.tasks);
+        },
+        startDateFormatter(value, key, item){
+            return item.hold_date ?? value;
         }
     },
 }
