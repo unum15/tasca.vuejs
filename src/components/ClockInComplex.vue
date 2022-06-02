@@ -202,6 +202,8 @@ export default {
   },
   mounted() {
     this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
+            console.log(bvEvent);
+            console.log(modalId);
       if((modalId == "modalEditClockIn")&&(bvEvent.trigger == "ok")){
         console.log(this.my_clock_in);
         if(this.my_clock_in.id){
@@ -213,6 +215,9 @@ export default {
         }
       }
     })
+  },
+  beforeDestroy(){
+    this.$root.$off();
   },
   created() {
     if(this.clock_in.id){

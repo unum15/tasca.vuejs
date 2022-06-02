@@ -138,9 +138,9 @@
                         :fields="fields"
                         style="text-align:right"
                     >
-                        <template v-slot:cell(contact.name)="data">
+                        <template v-slot:cell(contact)="data">
                             <a href="/scheduler" @click.stop.prevent="editClockIn(data.item, data.index, $event.target)">
-                                {{ data.value }}
+                                {{ data.value.name }}
                             </a>
                         </template>
                         <template v-slot:cell(id)="data">
@@ -213,7 +213,7 @@ export default {
             sort_ascending: true,
             fields: [
                     {
-                        key: 'contact.name',
+                        key: 'contact',
                         label: 'Employee',
                         sortable: true
                     },
