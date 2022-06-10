@@ -202,15 +202,11 @@ export default {
   },
   mounted() {
     this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
-            console.log(bvEvent);
-            console.log(modalId);
       if((modalId == "modalEditClockIn")&&(bvEvent.trigger == "ok")){
-        console.log(this.my_clock_in);
         if(this.my_clock_in.id){
           this.$http.patch('/clock_in/' + this.clock_in.id,this.my_clock_in);
         }
         else{
-        console.log('post');
           this.$http.post('/clock_in',this.my_clock_in);
         }
       }
@@ -251,30 +247,57 @@ export default {
     getProjects(){
       this.$http.get('/projects?client_id=' + this.my_clock_in.appointment.task.order.project.client_id).then(response => {
         this.projects = response.data;
+        let projects = this.projects.filter(t => (t.id==this.my_clock_in.appointment.task.order.project_id));
+        if(!projects.length){
+          this.my_clock_in.appointment.task.order.project_id = null;
+          this.my_clock_in.appointment.task.order_id = null;
+          this.my_clock_in.appointment.task_id = null;
+          this.my_clock_in.appointment_id = null;
+          this.appointments = [];
+        }
       });
     },
     getOrders(){
       this.$http.get('/orders?project_id=' + this.my_clock_in.appointment.task.order.project_id).then(response => {
         this.orders = response.data;
+        let orders = this.orders.filter(t => (t.id==this.my_clock_in.appointment.task.order_id));
+        if(!orders.length){
+          this.my_clock_in.appointment.task.order_id = null;
+          this.my_clock_in.appointment.task_id = null;
+          this.my_clock_in.appointment_id = null;
+          this.appointments = [];
+        }
       });
     },
     getTasks(){
       this.$http.get('/tasks?order_id=' + this.my_clock_in.appointment.task.order_id).then(response => {
         this.tasks = response.data;
+        let tasks = this.tasks.filter(t => (t.id==this.my_clock_in.appointment.task_id));
+        if(!tasks.length){
+          this.my_clock_in.appointment.task_id = null;
+          this.my_clock_in.appointment_id = null;
+          this.appointments = [];
+        }
       });
     },
     getAppointments(){
       this.$http.get('/appointments?task_id=' + this.my_clock_in.appointment.task_id).then(response => {
         this.appointments = response.data;
+        let appointments = this.appointments.filter(t => (t.id==this.my_clock_in.appointment_id));
+        if(!appointments.length){
+          this.my_clock_in.appointment_id = null;
+        }
       });
     },    
   },
   computed: {
     filtered_labor_activities(){
+        console.log(this.my_clock_in.appointment.task.labor_assignment_id);
+        console.log(this.my_clock_in.appointment);
         if(this.my_clock_in.appointment.task.labor_assignment_id){
             return this.treeFilter(this.my_clock_in.appointment.task.labor_assignment_id,this.labor_activities);
         }
-        return [];
+        return this.labor_activities;
     },
   }
 }
