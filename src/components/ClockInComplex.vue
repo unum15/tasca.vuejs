@@ -116,6 +116,7 @@
         filterable
         default-first-option
         placeholder="Select Type"
+        @change="my_clock_in.appointment.task.labor_assignment_id=null;my_clock_in.labor_activity_id=null;"
         >
           <el-option
             v-for="type in labor_types"
@@ -128,7 +129,7 @@
     </b-col>
     <b-col>
       <b-form-group label="Labor Assignment">
-              <Treeselect :options="labor_assignments" :normalizer="treeNormalizer" v-model="my_clock_in.appointment.task.labor_assignment_id"/>
+              <Treeselect :options="labor_assignments" :normalizer="treeNormalizer" v-model="my_clock_in.appointment.task.labor_assignment_id" @select="my_clock_in.labor_activity_id=null;"/>
           </b-form-group>
       </b-col>
       <b-col>
@@ -292,8 +293,6 @@ export default {
   },
   computed: {
     filtered_labor_activities(){
-        console.log(this.my_clock_in.appointment.task.labor_assignment_id);
-        console.log(this.my_clock_in.appointment);
         if(this.my_clock_in.appointment.task.labor_assignment_id){
             return this.treeFilter(this.my_clock_in.appointment.task.labor_assignment_id,this.labor_activities);
         }
