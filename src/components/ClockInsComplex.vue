@@ -172,11 +172,12 @@
                 </b-row>
             </b-container>
         </main>
-        <b-modal size="xl" scrollable ref="modalEditClockIn" id="modalEditClockIn" title="Edit Clock In" @ok="modalEditClockIn" >
+        <b-modal size="xl" scrollable ref="modalEditClockIn" id="modalEditClockIn" title="Edit Clock In" >
             <ClockInComplex
                 :clock_in="edit_clock_in"
                 :contacts="contacts"
                 @remove-clock-in="removeClockIn"
+                @saved="modalEditClockIn"
             >
             </ClockInComplex>
         </b-modal>

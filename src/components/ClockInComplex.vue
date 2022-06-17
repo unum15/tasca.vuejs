@@ -140,13 +140,23 @@
   </b-row>
   <b-row>
     <b-col class="data">
+      <b-form-group label="Clock In Date">
+        <b-form-input type="date" v-model="clock_in_date"></b-form-input>
+      </b-form-group>
+    </b-col>
+    <b-col class="data">
       <b-form-group label="Clock In Time">
-        <b-form-input v-model="my_clock_in.clock_in"></b-form-input>
+        <b-form-input type="time" v-model="clock_in_time"></b-form-input>
+      </b-form-group>
+    </b-col>
+    <b-col class="data">
+      <b-form-group label="Clock Out Date">
+        <b-form-input type="date" v-model="clock_out_date"></b-form-input>
       </b-form-group>
     </b-col>
     <b-col class="data">
       <b-form-group label="Clock Out Time">
-        <b-form-input v-model="my_clock_in.clock_out"></b-form-input>
+        <b-form-input type="time" v-model="clock_out_time"></b-form-input>
       </b-form-group>
     </b-col>
   </b-row>
@@ -160,6 +170,7 @@
 </div>
 </template>
 <script>
+import moment from 'moment';
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import treeNormalizer from '../common/TreeNormalizer.js';
@@ -188,6 +199,10 @@ export default {
       client_id: null,
       project_id: null,
       order_id: null,
+      clock_in_date: null,
+      clock_in_time: null,
+      clock_out_date: null,
+      clock_out_time: null,
       my_clock_in: {
         appointment: {
           task: {
@@ -204,11 +219,14 @@ export default {
   mounted() {
     this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
       if((modalId == "modalEditClockIn")&&(bvEvent.trigger == "ok")){
+        this.my_clock_in.clock_in = this.clock_in_date + ' ' + this.clock_in_time;
+        this.my_clock_in.clock_out = this.clock_out_date + ' ' + this.clock_out_time;
         if(this.my_clock_in.id){
-          this.$http.patch('/clock_in/' + this.clock_in.id,this.my_clock_in);
+          this.$http.patch('/clock_in/' + this.clock_in.id,this.my_clock_in).then(()=>{this.$emit('saved');});
+          
         }
         else{
-          this.$http.post('/clock_in',this.my_clock_in);
+          this.$http.post('/clock_in',this.my_clock_in).then(()=>{this.$emit('saved');});
         }
       }
     })
@@ -220,6 +238,10 @@ export default {
     if(this.clock_in.id){
       this.$http.get('/clock_in/' + this.clock_in.id ).then(response => {
         this.my_clock_in = response.data
+        this.clock_in_date = moment(this.my_clock_in.clock_in).format('YYYY-MM-DD');
+        this.clock_in_time = moment(this.my_clock_in.clock_in).format('HH:mm:ss');
+        this.clock_out_date = moment(this.my_clock_in.clock_out).format('YYYY-MM-DD');
+        this.clock_out_time = moment(this.my_clock_in.clock_out).format('HH:mm:ss');
         this.getProjects();
         this.getOrders();
         this.getTasks();
