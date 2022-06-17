@@ -53,6 +53,7 @@
                   <b-col>
                         <b-button @click="getClockIns">Submit Dates</b-button><br />
                         <b-button @click="exportClockIns">Export</b-button>
+                        <b-button @click="newClockIn">Add Clock In</b-button>
                   </b-col>
                 </b-row>
                 <b-row>
@@ -137,11 +138,19 @@
                         :fields="fields"
                         style="text-align:right"
                     >
+                        <template v-slot:cell(contact)="data">
+                            <a href="/scheduler" @click.stop.prevent="editClockIn(data.item, data.index, $event.target)">
+                                {{ data.value.name }}
+                            </a>
+                        </template>
                         <template v-slot:cell(id)="data">
                             <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
                         </template>
                         <template v-slot:cell(clock_out)="data">
                             <div :style="clockOutColor(data.item)"> {{ data.value }} </div>
+                        </template>
+                        <template v-slot:cell(actions)="data">
+                            <img src="@/assets/delete.png" @click.stop="removeClockIn(data.item)" fluid alt="-" style="width:20px;cursor:pointer;"/>
                         </template>
                     </b-table>
                 </b-row>
@@ -163,6 +172,15 @@
                 </b-row>
             </b-container>
         </main>
+        <b-modal size="xl" scrollable ref="modalEditClockIn" id="modalEditClockIn" title="Edit Clock In" >
+            <ClockInComplex
+                :clock_in="edit_clock_in"
+                :contacts="contacts"
+                @remove-clock-in="removeClockIn"
+                @saved="modalEditClockIn"
+            >
+            </ClockInComplex>
+        </b-modal>
     </div>
 </template>
 <script>
@@ -170,13 +188,16 @@ import moment from 'moment';
 import TopMenu from './TopMenu';
 import FileSaver from 'file-saver';
 import { mapState } from 'vuex';
+import ClockInComplex from './ClockInComplex';
 export default {
     name: 'ViewClockIns',
     components: {
-        'TopMenu': TopMenu,
+        TopMenu,
+        ClockInComplex
     },
     data() {
         return {
+            edit_clock_in: {},
             clock_ins: [],
             contact_id: null,
             contacts: [],
@@ -193,7 +214,7 @@ export default {
             sort_ascending: true,
             fields: [
                     {
-                        key: 'contact.name',
+                        key: 'contact',
                         label: 'Employee',
                         sortable: true
                     },
@@ -253,7 +274,11 @@ export default {
                         formatter: 'timeColumn',
                         sortByFormatted : true
                     },
-                    
+                    {
+                        key:'actions',
+                        label: '',
+                        sortable: false
+                    }
             ],
             settings: {}
         }
@@ -390,6 +415,22 @@ export default {
             }
             FileSaver.saveAs(blob, `Time Card ${group_by} ${contact} ${this.start_date} ${this.stop_date}.csv`);
         },
+        editClockIn(clock_in){
+            this.edit_clock_in = clock_in;
+            this.$refs['modalEditClockIn'].show();
+        },
+        newClockIn(){
+           this.edit_clock_in = {};
+           this.$refs['modalEditClockIn'].show();
+        },
+        removeClockIn(clock_in){
+            this.$http.delete('/clock_in/' + clock_in.id).then(()=> {
+                this.getClockIns();
+            });
+        },
+        modalEditClockIn(){
+            this.getClockIns();
+        }
     },
     computed:{
         groups(){
