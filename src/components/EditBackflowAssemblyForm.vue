@@ -510,10 +510,8 @@ export default {
         this.$http.get('/clients').then(response => {
             this.clients = response.data;
             if(this.default_client_id){
-                this.$nextTick(() => {
-                    this.client_id = this.default_client_id;
-                    this.getProperties();
-                });
+                this.client_id = parseInt(this.default_client_id);
+                this.getProperties();
             }
         });
         this.$http.get('/backflow_types').then(response => {

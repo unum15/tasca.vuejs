@@ -106,7 +106,7 @@ export default {
     methods: {
         getClients(){
             if(this.activity_level_id){
-                this.$http.get('/clients?maximium_activity_level_id=' + this.activity_level_id).then((results) => {
+                this.$http.get('/clients?includes=activityLevel,billingContact,billingProperty,clientType,contactMethod,contacts,properties,linkedProperties,contacts.phoneNumbers&maximium_activity_level_id=' + this.activity_level_id).then((results) => {
                     this.clients = results.data;
                 });
             }
