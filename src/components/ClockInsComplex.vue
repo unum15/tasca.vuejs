@@ -137,6 +137,7 @@
                         :items="groups[key]"
                         :fields="fields"
                         style="text-align:right"
+                        :tbody-tr-class="clockInClass"
                     >
                         <template v-slot:cell(contact)="data">
                             <a href="/scheduler" @click.stop.prevent="editClockIn(data.item, data.index, $event.target)">
@@ -145,9 +146,6 @@
                         </template>
                         <template v-slot:cell(id)="data">
                             <a :href="'/clock_in/' + data.value"> {{ data.value }} </a>
-                        </template>
-                        <template v-slot:cell(clock_out)="data">
-                            <div :style="clockOutColor(data.item)"> {{ data.value }} </div>
                         </template>
                         <template v-slot:cell(actions)="data">
                             <img src="@/assets/delete.png" @click.stop="removeClockIn(data.item)" fluid alt="-" style="width:20px;cursor:pointer;"/>
@@ -368,18 +366,6 @@ export default {
         reverseSort(){
             this.sort_ascending = ! this.sort_ascending;
         },
-        clockOutColor(clock_in){
-            if(clock_in.clock_out){
-                return;
-            }            
-            var start = moment(clock_in.clock_in);
-            var stop = moment();
-            var minutes = Math.round(stop.diff(start)/60000);
-            if(minutes > this.clock_in_reminder_minutes){
-                return 'background:' + this.clock_in_reminder_color;
-            }
-            return 'background:' + this.clock_in_current_color;
-        },
         exportClockIns(){
             let text = "";
             for (let group in this.groups) {
@@ -430,6 +416,26 @@ export default {
         },
         modalEditClockIn(){
             this.getClockIns();
+        },
+        clockInClass(clock_in){
+            let classes = '';
+            if(!clock_in.clock_out){
+                classes += 'open ';
+            }
+            let clock_in_time = new moment(clock_in.clock_in);
+            let clock_out_time = new moment(clock_in.clock_out);
+            if(clock_out_time.diff(clock_in_time, 'hours') > 4){
+                classes += 'over ';
+            }
+            if(clock_in_time.format('YYY-MM-DD') != clock_in_time.format('YYY-MM-DD')){
+                classes += 'dates';
+            }
+            this.clock_ins.map(c =>{
+                if((clock_in.employee_id = c.employee_id)&&((clock_in.clock_in < c.clock_out) && (clock_in.clock_out > c.clock_in))){
+                    classes += 'overlap';
+                }
+            })
+            return classes;
         }
     },
     computed:{
@@ -496,3 +502,17 @@ export default {
     }
 }
 </script>
+<style>
+.open{
+    background-color: yellow;
+}
+.over{
+    color: red;
+}
+.dates{
+    background-color: blue;
+}
+.overlap{
+    background-color: purple;
+}
+</style>
