@@ -9,5 +9,6 @@ module.exports = {
         }
       },
     },
+    host: 'tascalocal.waterscontracting.com'
   },
 };

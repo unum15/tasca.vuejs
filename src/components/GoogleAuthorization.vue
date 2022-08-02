@@ -2,7 +2,7 @@
   <div>
     <TopMenu></TopMenu>
     <header>
-        Google Calendar
+        Google Authorization
     </header>
     <main>
       <b-container>
@@ -36,22 +36,18 @@ export default {
   },
   created () {
     if(this.$route.query.code !== undefined){
-      this.$http.post('/calendar/callback', {code: this.$route.query.code}).then(response => {
+      this.$http.post('/google/callback', {code: this.$route.query.code}).then(response => {
         this.status = response.data.status
       })
     }
     else{
-      this.$http.get('/calendar/status').then(response => {
+      this.$http.get('/google/status').then(response => {
         this.status = response.data.status
       })
     }
-    this.$http.get('/calendar/url').then(response => {
+    this.$http.get('/google/url').then(response => {
         this.url = response.data.url
     })
   },
-  methods: {
-    save () {
-    }
-  }
 }
 </script>
