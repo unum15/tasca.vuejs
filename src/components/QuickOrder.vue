@@ -64,7 +64,7 @@
                       </b-form-select>
                     </b-form-group>
                     <div v-for="number in contact_numbers" :key="number.id">
-                      {{ number.phone_number }}
+                      {{ number.phone_number_type.name }}: {{ number.phone_number }}
                     </div>
                 </b-col>
               </b-row>
@@ -609,6 +609,7 @@ export default {
       }
     },
     saveProject() {
+        console.log('project');
       if(this.order.name === null){
         return;
       }
@@ -633,6 +634,7 @@ export default {
       }
     },
     saveOrder() {
+    console.log('order');
       if(this.order.name === null){
         return;
       }
@@ -653,6 +655,7 @@ export default {
       }
     },
     saveTask() {
+    console.log('task');
       this.task.order_id = this.order.id;
 //			this.task.name = this.order.name;
 			this.task.description = this.task.name;
@@ -669,6 +672,7 @@ export default {
       }
     },
     saveAppointment() {
+    console.log('appointment');
       this.appointment.task_id = this.task.id;
       if(this.appointment.id === null){
         this.$http.post('/appointment',this.appointment)
@@ -683,6 +687,7 @@ export default {
       }
     },
     nextTask(){
+    console.log('next');
       if(this.reroute){
         this.$router.push('/client/' + this.client_id + '/project/' + this.project.id + '/order/' + this.order.id);
       }
@@ -691,6 +696,7 @@ export default {
       }
     },
     resetForm(first=false){
+    console.log('cleared');
       this.order = {
         id: null,
         name: null,
@@ -702,22 +708,19 @@ export default {
         order_action_id: parseInt(this.settings.default_order_action_id),
         date: this.today,
         approval_date: this.today,
-        start_date: this.today,
+        start_date: first ? this.today : this.order.start_date,
         service_window: this.$store.state.user.default_service_window
       };
       this.task = {
         id: null,
         labor_type_id: parseInt(this.settings.default_labor_type_id),
-        labor_assignment_id: parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]),
         task_status_id: parseInt(this.settings['default_task_status_id-labor_type_id-' + this.settings.default_labor_type_id]),
         task_action_id: parseInt(this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id]),
         name: null,
         description: null,
-        crew_id: parseInt(this.settings.default_crew_id)
+        crew_id: first ? parseInt(this.settings.default_crew_id) : this.task.crew_id,
+        labor_assignment_id: first ? parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]) : this.task.labor_assignment_id
       };
-      if(first){
-        this.task.labor_assignment_id = parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id])
-      }
       this.appointment = {
         id: null,
         date: null,
@@ -727,6 +730,7 @@ export default {
         id: null,
         contact_id: null
       };
+      console.log('cleared');
       this.client_id = null;
     },
     orderNameChanged(){
@@ -786,7 +790,7 @@ export default {
       if(!properties.length){
         return '';
       }
-      return properties[0].address1;
+      return properties[0].address1 + ' - ' + properties[0].city;
     },
     contact_numbers() {
       if(!this.project.contact_id){
