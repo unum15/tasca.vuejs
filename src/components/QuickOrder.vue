@@ -64,7 +64,7 @@
                       </b-form-select>
                     </b-form-group>
                     <div v-for="number in contact_numbers" :key="number.id">
-                      {{ number.phone_number_type.name }}: {{ number.phone_number }}
+                      {{ number.phone_number_type ? number.phone_number_type.name : 'Unknown'}}: {{ number.phone_number }}
                     </div>
                 </b-col>
               </b-row>
