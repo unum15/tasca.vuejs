@@ -801,6 +801,8 @@ export default {
       if(!contacts.length){
         return '';
       }
+      console.log(contacts[0].phone_numbers);
+      console.log(contacts[0].phone_numbers());
       return contacts[0].phone_numbers;
     }
   },
