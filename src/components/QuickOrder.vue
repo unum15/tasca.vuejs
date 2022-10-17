@@ -610,7 +610,7 @@ export default {
     },
     saveProject() {
         console.log('project');
-      if(this.order.name === null){
+      if(!this.order || this.order.name === null){
         return;
       }
       if(this.project.id){
@@ -635,7 +635,7 @@ export default {
     },
     saveOrder() {
     console.log('order');
-      if(this.order.name === null){
+      if(!this.order || this.order.name === null){
         return;
       }
       this.order.project_id = this.project.id;
@@ -734,12 +734,12 @@ export default {
       this.client_id = null;
     },
     orderNameChanged(){
-      if(this.order.description === null){
+      if(this.order && this.order.description === null){
         this.order.description = this.order.name;
       }
     },
     taskNameChanged(){
-      if(this.task.description === null){
+      if(this.task && this.task.description === null){
         this.task.description = this.task.name;
       }
     },
