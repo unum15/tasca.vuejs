@@ -1,5 +1,13 @@
 <template>
     <div>
+        <b-alert
+            :show="sms_status_countdown"
+            dismissible
+            @dismissed="sms_status_countdown=0"
+            @dismiss-count-down="countDownChanged"
+        >
+            {{ sms_status }}
+        </b-alert>
             <b-container fluid>
                 <b-row>
                     <b-col>
@@ -207,7 +215,9 @@
                 <template v-slot:cell(actions)="row">
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Details" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
                     <img src="@/assets/add.png" v-b-tooltip.hover title="Add Task To Order" @click.stop="addTask(row.item)" fluid alt="+" style="width:20px;" />
+                    <br />
                     <img src="../assets/clear.png" v-b-tooltip.hover title="Clear Scheduling Data" @click.stop="clearScheduleData(row.item)" fluid alt="CS" style="width:20px;" />
+                    <img src="../assets/sms.png" v-b-tooltip.hover title="Send Text Message" @click.stop="showSMSModal(row.item)" fluid alt="CS" style="width:20px;" />
                   </template>
                   <template slot="row-details" slot-scope="row">
                     <b-card>
@@ -227,7 +237,44 @@
                 >
                 </ViewAppointment>
             </b-modal>
-        
+            <b-modal size="sm" scrollable ref="modalSMS" id="modalSMS" title="Send Text Message" @ok="sendSMS">
+                <b-form>
+                    <b-form-row>
+                        <b-col>
+                            <b-form-group label="Send Text To">
+                                <b-form-radio-group
+                                    v-model="sms.to"
+                                    :options="sms_numbers"
+                                    stacked
+                                >
+                                </b-form-radio-group>
+                            </b-form-group>
+                        </b-col>
+                    </b-form-row>
+                    <b-form-row>
+                        <b-col>
+                            <b-button v-b-modal.modalSMSMessages>Select Message</b-button>
+                        </b-col>
+                    </b-form-row>
+                    <b-modal size="sm" scrollable ref="modalSMSMessages" id="modalSMSMessages" title="Select Message" :hide-footer="true">
+                        <b-form-row v-for="message in sms_messages" :key="message.id" class="select-message" @click="selectMessage(message.id)">
+                            <b-col>
+                                {{ message.message}} 
+                            </b-col>
+                        </b-form-row>
+                    </b-modal>
+                    <b-form-row>
+                        <b-col >
+                            <b-form-group label="Message">
+                                <b-form-textarea
+                                    v-model="sms.message"
+                                >                        
+                                </b-form-textarea>
+                            </b-form-group>
+                        </b-col>
+                    </b-form-row>
+                </b-form>
+            </b-modal>
     </div>
 </template>
 <script>
@@ -238,6 +285,7 @@ import filtersMixin from '../mixins/Filters.js';
 import Treeselect from '@riophae/vue-treeselect';
 import treeFilter from '../common/TreeFilter.js';
 import treeNormalizer from '../common/TreeNormalizer.js';
+import { mapState } from 'vuex';
 export default {
     name: 'ViewScheduleTab',
     components: {
@@ -264,6 +312,10 @@ export default {
             crews: [],
             sortBy: 'date',
             view_days: 14,
+            sms_status_countdown: 0,
+            sms_status: 'N/A',
+            sms_numbers: [],
+            sms: {},
             fields: [
                 {
                     key: 'start_date',
@@ -342,9 +394,11 @@ export default {
                     key: 'actions',
                     label: 'Actions',
                 }
-            ]
-                
-        }
+            ],
+            sms_messages: [],       
+            sms_task: {},
+            sms_message_id: null,
+        }        
     },
     created() {
         switch (this.tab){
@@ -428,6 +482,10 @@ export default {
             this.crews.unshift({id: '.*', name: 'All'});
             this.crews.unshift({id: '^$', name: 'None'});
         });
+        this.$http.get('/stock_text_messages').then(response => {
+            this.sms_messages = response.data.data;
+            this.sms_message_id = this.default_stock_text_message_id;
+        });
         this.getTasks();
     },
     methods: {
@@ -481,6 +539,54 @@ export default {
             task.time = null;
             task.sort_order = null;
             this.save(task);
+        },
+        showSMSModal(task){
+            this.sms_task = task;
+            this.sms_numbers = [];
+            this.sms = { to: null, message: null};
+            this.selectMessage(this.sms_message_id);
+            this.$http.get('/contacts?client_id=' + task.client_id).then(response => {
+                response.data.forEach(contact => {
+                    contact.phone_numbers.forEach(number => {
+                        this.sms_numbers.push({
+                            value: number.phone_number,
+                            text: contact.name + " - " + number.phone_number_type.name + " - " + number.phone_number
+                        });
+                        if(!this.sms.to){
+                            this.sms.to = number.phone_number;
+                        }
+                    });
+                });
+            });
+            this.$refs['modalSMS'].show();
+        },
+        sendSMS(){
+            let sms = this.sms;
+            const regex = /\D/g;
+            sms.to = sms.to.replace(regex,'');
+            if(sms.to[0] != '1'){
+                sms.to = '1' + sms.to;
+            }
+            this.$http.post('/did/send', this.sms).then(response => {
+                this.sms_status = response.data.sms_status;
+                this.sms_status_countdown = 5;
+            });
+        },
+        selectMessage(message_id){
+            let message = this.sms_messages.filter(m => m.id == message_id);
+            if(message.length){
+                this.sms_message_id = message_id;
+                this.sms.message = message[0].message;
+                for (const [key, value] of Object.entries(this.sms_task)) {
+                    this.sms.message = this.sms.message.replace(`{${key}}`,value);                
+                }
+                if(this.$refs['modalSMSMessages']){
+                    this.$refs['modalSMSMessages'].hide();
+                }
+            }
+        },
+        countDownChanged(dismissCountDown) {
+            this.dismissCountDown = dismissCountDown;
         },
         copyOrderTmp(item){
             item.sort_order = item.sort_order_tmp;
@@ -550,5 +656,25 @@ export default {
             return item.hold_date ?? value;
         }
     },
+    computed:{
+        ...mapState({
+          default_stock_text_message_id: state => state.settings.default_stock_text_message_id
+        })
+    },
+    watch:{
+        default_stock_text_message_id(){
+            this.sms_message_id = this.default_stock_text_message_id;
+        }
+    }
 }
 </script>
+<style>
+    .select-message {
+        padding:10px;
+        border:1px solid black;
+    }
+    .select-message:hover {
+        background-color: #999999;
+        cursor: pointer;
+    }
+</style>
