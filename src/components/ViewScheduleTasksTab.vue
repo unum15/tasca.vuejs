@@ -257,7 +257,11 @@
                         </b-col>
                     </b-form-row>
                     <b-modal size="sm" scrollable ref="modalSMSMessages" id="modalSMSMessages" title="Select Message" :hide-footer="true">
-                        <b-form-row v-for="message in sms_messages" :key="message.id" class="select-message" @click="selectMessage(message.id)">
+                        <b-form-radio-group v-model="message_type">
+                            <b-form-radio value="appointment">Appointment</b-form-radio>
+                            <b-form-radio value="work">Work</b-form-radio>
+                        </b-form-radio-group>
+                        <b-form-row v-for="message in filtered_sms_messages" :key="message.id" class="select-message" @click="selectMessage(message.id)">
                             <b-col>
                                 {{ message.message}} 
                             </b-col>
@@ -398,6 +402,8 @@ export default {
             sms_messages: [],       
             sms_task: {},
             sms_message_id: null,
+            message_type: 'appointment',
+            contacts: [],
         }        
     },
     created() {
@@ -546,7 +552,8 @@ export default {
             this.sms = { to: null, message: null};
             this.selectMessage(this.sms_message_id);
             this.$http.get('/contacts?client_id=' + task.client_id).then(response => {
-                response.data.forEach(contact => {
+                this.contacts = response.data;
+                this.contacts.forEach(contact => {
                     contact.phone_numbers.forEach(number => {
                         this.sms_numbers.push({
                             value: number.phone_number,
@@ -578,7 +585,12 @@ export default {
                 this.sms_message_id = message_id;
                 this.sms.message = message[0].message;
                 for (const [key, value] of Object.entries(this.sms_task)) {
-                    this.sms.message = this.sms.message.replace(`{${key}}`,value);                
+                    this.sms.message = this.sms.message.replace(`{${key}}`,value);
+                }
+                let contacts = this.contacts.filter(c => c.phone_numbers.filter(n => n == this.sms.to).length);
+                console.log(contacts)
+                if(contacts.length){
+                    this.sms.message = this.sms.message.replace(`{contact.name}`,contacts[0].name);
                 }
                 if(this.$refs['modalSMSMessages']){
                     this.$refs['modalSMSMessages'].hide();
@@ -659,7 +671,10 @@ export default {
     computed:{
         ...mapState({
           default_stock_text_message_id: state => state.settings.default_stock_text_message_id
-        })
+        }),
+        filtered_sms_messages(){
+            return this.sms_messages.filter(m => m.message_type==this.message_type)
+        }
     },
     watch:{
         default_stock_text_message_id(){
