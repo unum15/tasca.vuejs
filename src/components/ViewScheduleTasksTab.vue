@@ -587,10 +587,10 @@ export default {
                 for (const [key, value] of Object.entries(this.sms_task)) {
                     this.sms.message = this.sms.message.replace(`{${key}}`,value);
                 }
-                let contacts = this.contacts.filter(c => c.phone_numbers.filter(n => n == this.sms.to).length);
-                console.log(contacts)
+                let contacts = this.contacts.filter(c => c.phone_numbers.filter(n => n.phone_number == this.sms.to).length);
                 if(contacts.length){
-                    this.sms.message = this.sms.message.replace(`{contact.name}`,contacts[0].name);
+                    const names = contacts[0].name.split(' ')
+                    this.sms.message = this.sms.message.replace(`{contact.name}`,names[0]);
                 }
                 if(this.$refs['modalSMSMessages']){
                     this.$refs['modalSMSMessages'].hide();
