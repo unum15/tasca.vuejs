@@ -612,7 +612,7 @@ export default {
                             replace = moment(this.sms_task.date+ ' ' + value).format('LT')
                             break;
                         case 'date':
-                            replace = moment(this.sms_task.date+ ' ' + value).format('ddd mm-DD')
+                            replace = moment(value).format('ddd MM-DD')
                             break;
                             
                     }
