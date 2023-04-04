@@ -277,6 +277,12 @@
                             </b-form-group>
                         </b-col>
                     </b-form-row>
+                    <b-form-row>
+                        <b-col>
+                            <b-button @click="copyNumber()">Copy Number</b-button>
+                            <b-button @click="copyMessage()">Copy Message</b-button>
+                        </b-col>
+                    </b-form-row>
                 </b-form>
             </b-modal>
     </div>
@@ -561,6 +567,7 @@ export default {
                         });
                         if(!this.sms.to){
                             this.sms.to = number.phone_number;
+                            this.replaceMessage()
                         }
                     });
                 });
@@ -584,17 +591,29 @@ export default {
             if(message.length){
                 this.sms_message_id = message_id;
                 this.sms.message = message[0].message;
-                for (const [key, value] of Object.entries(this.sms_task)) {
-                    this.sms.message = this.sms.message.replace(`{${key}}`,value);
-                }
-                let contacts = this.contacts.filter(c => c.phone_numbers.filter(n => n.phone_number == this.sms.to).length);
-                if(contacts.length){
-                    const names = contacts[0].name.split(' ')
-                    this.sms.message = this.sms.message.replace(`{contact.name}`,names[0]);
-                }
+                this.replaceMessage()
                 if(this.$refs['modalSMSMessages']){
                     this.$refs['modalSMSMessages'].hide();
                 }
+            }
+        },
+        replaceMessage(){
+            if(!this.sms.message){
+                return
+            }
+            for (const [key, value] of Object.entries(this.sms_task)) {
+                if(key!='time'){
+                    this.sms.message = this.sms.message.replace(`{${key}}`,value);
+                }
+                else{
+                    const time = moment(this.sms_task.date+ ' ' + value).format('LT')
+                    this.sms.message = this.sms.message.replace(`{${key}}`,time);
+                }
+            }
+            let contacts = this.contacts.filter(c => c.phone_numbers.filter(n => n.phone_number == this.sms.to).length);
+            if(contacts.length){
+                const names = contacts[0].name.split(' ')
+                this.sms.message = this.sms.message.replace(`{contact.name}`,names[0]);
             }
         },
         countDownChanged(dismissCountDown) {
@@ -666,6 +685,12 @@ export default {
         },
         startDateFormatter(value, key, item){
             return item.hold_date ?? value;
+        },
+        copyNumber(){
+            navigator.clipboard.writeText(this.sms.to);
+        },
+        copyMessage(){
+            navigator.clipboard.writeText(this.sms.message);
         }
     },
     computed:{
@@ -679,7 +704,7 @@ export default {
     watch:{
         default_stock_text_message_id(){
             this.sms_message_id = this.default_stock_text_message_id;
-        }
+        },
     }
 }
 </script>
