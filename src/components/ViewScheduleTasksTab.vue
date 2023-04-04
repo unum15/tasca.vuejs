@@ -257,9 +257,7 @@
                         </b-col>
                     </b-form-row>
                     <b-modal size="sm" scrollable ref="modalSMSMessages" id="modalSMSMessages" title="Select Message" :hide-footer="true">
-                        <b-form-radio-group v-model="message_type">
-                            <b-form-radio value="appointment">Appointment</b-form-radio>
-                            <b-form-radio value="work">Work</b-form-radio>
+                        <b-form-radio-group v-model="message_type_id" :options="filtered_message_types" value-field="id" text-field="name">
                         </b-form-radio-group>
                         <b-form-row v-for="message in filtered_sms_messages" :key="message.id" class="select-message" @click="selectMessage(message.id)">
                             <b-col>
@@ -408,7 +406,8 @@ export default {
             sms_messages: [],       
             sms_task: {},
             sms_message_id: null,
-            message_type: 'appointment',
+            message_type_id: null,
+            message_types: [],
             contacts: [],
         }        
     },
@@ -493,6 +492,10 @@ export default {
             this.crews = response.data;
             this.crews.unshift({id: '.*', name: 'All'});
             this.crews.unshift({id: '^$', name: 'None'});
+        });
+        this.$http.get('/sms_message_types').then(response => {
+            this.message_types = response.data.data;
+            this.message_type_id = this.default_message_type_id;
         });
         this.$http.get('/stock_text_messages').then(response => {
             this.sms_messages = response.data.data;
@@ -602,13 +605,22 @@ export default {
                 return
             }
             for (const [key, value] of Object.entries(this.sms_task)) {
-                if(key!='time'){
-                    this.sms.message = this.sms.message.replace(`{${key}}`,value);
+                let replace = value;
+                if(replace){
+                    switch(key){
+                        case 'time':
+                            replace = moment(this.sms_task.date+ ' ' + value).format('LT')
+                            break;
+                        case 'date':
+                            replace = moment(this.sms_task.date+ ' ' + value).format('ddd mm-DD')
+                            break;
+                            
+                    }
                 }
                 else{
-                    const time = moment(this.sms_task.date+ ' ' + value).format('LT')
-                    this.sms.message = this.sms.message.replace(`{${key}}`,time);
+                    replace = 'N/A'
                 }
+                this.sms.message = this.sms.message.replace(`{${key}}`,replace);
             }
             let contacts = this.contacts.filter(c => c.phone_numbers.filter(n => n.phone_number == this.sms.to).length);
             if(contacts.length){
@@ -695,15 +707,21 @@ export default {
     },
     computed:{
         ...mapState({
-          default_stock_text_message_id: state => state.settings.default_stock_text_message_id
+          default_date_message_type_id: state => state.settings.default_date_message_type_id,
+          default_nondate_message_type_id: state => state.settings.default_nondate_message_type_id,
         }),
         filtered_sms_messages(){
-            return this.sms_messages.filter(m => m.message_type==this.message_type)
+            return this.sms_messages.filter(m => m.message_type_id==this.message_type_id)
+        },
+        filtered_message_types(){
+            const has_date = !!this.sms_task.date;
+            return this.message_types.filter(m => m.uses_date==has_date)
         }
     },
     watch:{
-        default_stock_text_message_id(){
-            this.sms_message_id = this.default_stock_text_message_id;
+        filtered_message_types(){
+            const has_date = !!this.sms_task.date;
+            this.message_type_id = has_date ? this.default_date_message_type_id : this.default_nondate_message_type_id;
         },
     }
 }
