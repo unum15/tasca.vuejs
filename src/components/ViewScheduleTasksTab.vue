@@ -707,8 +707,8 @@ export default {
     },
     computed:{
         ...mapState({
-          default_date_message_type_id: state => state.settings.default_date_message_type_id,
-          default_nondate_message_type_id: state => state.settings.default_nondate_message_type_id,
+          default_date_sms_message_type_id: state => state.settings.default_date_sms_message_type_id,
+          default_nondate_sms_message_type_id: state => state.settings.default_nondate_sms_message_type_id,
         }),
         filtered_sms_messages(){
             return this.sms_messages.filter(m => m.message_type_id==this.message_type_id)
@@ -721,7 +721,7 @@ export default {
     watch:{
         filtered_message_types(){
             const has_date = !!this.sms_task.date;
-            this.message_type_id = has_date ? this.default_date_message_type_id : this.default_nondate_message_type_id;
+            this.message_type_id = has_date ? this.default_date_sms_message_type_id : this.default_nondate_sms_message_type_id;
         },
     }
 }
