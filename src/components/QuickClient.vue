@@ -608,6 +608,10 @@
         </b-row>
       </b-container>
     </main>
+    <text-form
+      ref="textForm"
+      :sms_task="sms_task"
+    ></text-form>
   </div>
 </template>
 <script>
@@ -616,6 +620,7 @@ import TopMenu from './TopMenu'
 import EditEmails from './EditEmails'
 import EditPhoneNumbers from './EditPhoneNumbers'
 import { mapState } from 'vuex';
+import TextForm from './TextForm';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import treeNormalizer from '../common/TreeNormalizer.js';
@@ -625,7 +630,8 @@ export default {
     TopMenu,
     EditEmails,
     EditPhoneNumbers,
-    Treeselect
+    Treeselect,
+    TextForm,
   },
   data () {
     return {
@@ -688,7 +694,10 @@ export default {
       },
       appointment: {
         id: null
-      }
+      },
+      sms_messages: [],       
+      sms_task: {},
+      message_types: [],
     }
   },
   created () {
@@ -1018,6 +1027,27 @@ export default {
 			this.task.task_status_id = this.settings['default_task_status_id-labor_type_id-' + this.task.labor_type_id];
 			this.task.task_action_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id];
 		},
+    showTextModal(){
+      this.saveClient();
+      this.sms_task = {
+        client_id: this.client_id,
+        start_date: this.order.start_date,
+        service_window: this.order.service_window,
+        order_name: this.order.name,
+        order_description: this.order.description,
+        order_date: this.order.date,     
+        approval_date: this.order.approval_date,
+        name: this.task.name,
+        description: this.task.description,
+        property: this.property.name, 
+        address: this.property.address1 + ' - ' + this.property.city,
+        date:this.appointment.date,
+        sort_order:this.appointment.sort_order,
+        time:this.appointment.time,
+        notes:this.appointment.notes,
+      };
+      this.$refs.textForm.showSMSModal();
+    }
   },
   computed: {
     today() {

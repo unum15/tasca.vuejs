@@ -231,9 +231,7 @@
             </b-modal>
             <text-form
                 ref="textForm"
-                :sms_messages="sms_messages"
                 :sms_task="sms_task"
-                :message_types="message_types"
             ></text-form>
     </div>
 </template>
@@ -352,9 +350,7 @@ export default {
                     label: 'Actions',
                 }
             ],
-            sms_messages: [],       
             sms_task: {},
-            message_types: [],
         }        
     },
     created() {
@@ -438,12 +434,6 @@ export default {
             this.crews = response.data;
             this.crews.unshift({id: '.*', name: 'All'});
             this.crews.unshift({id: '^$', name: 'None'});
-        });
-        this.$http.get('/sms_message_types').then(response => {
-            this.message_types = response.data.data;
-        });
-        this.$http.get('/stock_text_messages').then(response => {
-            this.sms_messages = response.data.data;
         });
         this.getTasks();
     },

@@ -456,9 +456,7 @@
     </main>
     <text-form
       ref="textForm"
-      :sms_messages="sms_messages"
       :sms_task="sms_task"
-      :message_types="message_types"
     ></text-form>
   </div>
 </template>
@@ -527,9 +525,7 @@ export default {
       used_tasks: [],
       used_orders: [],
       used_referred_bys: [],
-      sms_messages: [],       
       sms_task: {},
-      message_types: [],
     }
   },
   created () {
@@ -766,7 +762,7 @@ export default {
     showTextModal(){
       const properties = this.properties.filter(p => (p.id == this.order.property));
       this.sms_task = {
-        client_id: this.project.client_id,
+        client_id: this.client_id,
         start_date: this.order.start_date,
         service_window: this.order.service_window,
         order_name: this.order.name,

@@ -27,22 +27,6 @@
                         <b-button v-b-modal.modalSMSMessages>Select Message</b-button>
                     </b-col>
                 </b-form-row>
-                <b-modal size="sm" scrollable ref="modalSMSMessages" id="modalSMSMessages" title="Select Message" :hide-footer="true">
-                    <b-form-radio-group v-model="message_type_id" :options="filtered_message_types" value-field="id" text-field="name">
-                    </b-form-radio-group>
-                    <div v-for="message in filtered_sms_messages" :key="message.id" class="select-message" @click="selectMessage(message.id)">
-                        <b-form-row style="border-bottom: 1px solid gray">
-                            <b-col>
-                                {{ message.name}} 
-                            </b-col>
-                        </b-form-row>
-                        <b-form-row>
-                            <b-col>
-                                {{ message.message}} 
-                            </b-col>
-                        </b-form-row>
-                    </div>
-                </b-modal>
                 <b-form-row>
                     <b-col >
                         <b-form-group label="Message">
@@ -59,6 +43,39 @@
                         <b-button @click="copyMessage()">Copy Message</b-button>
                     </b-col>
                 </b-form-row>
+                <b-modal size="sm" scrollable ref="modalSMSMessages" id="modalSMSMessages" title="Select Message" :hide-footer="true">
+                    <b-form-radio-group v-model="message_type_id" :options="filtered_message_types" value-field="id" text-field="name">
+                    </b-form-radio-group>
+                    <div v-for="message in filtered_sms_messages" :key="message.id" class="select-message" @click="selectMessage(message.id)">
+                        <b-form-row style="border-bottom: 1px solid gray">
+                            <b-col>
+                                {{ message.name}} 
+                            </b-col>
+                        </b-form-row>
+                        <b-form-row>
+                            <b-col>
+                                {{ message.message}} 
+                            </b-col>
+                        </b-form-row>
+                    </div>
+                </b-modal>
+                <b-modal size="sm" scrollable ref="modalPartialTextMessages" id="modalPartialTextMessages" title="Select Partial Messages" :ok-only="true" @ok="replaceMessage">
+                    <div v-for="message_type in filtered_partial_text_message_types" :key="message_type.id">
+                        <b-form-row style="border-bottom: 1px solid gray">
+                            <b-col>
+                                <b-form-group :label="message_type.name">
+                                    <b-form-select
+                                        v-model="partials[message_type.id]"
+                                        :options="getPartialMessages(message_type.id)"
+                                        value-field="id"
+                                        text-field="message"
+                                    >
+                                    </b-form-select>
+                                </b-form-group>
+                            </b-col>
+                        </b-form-row>
+                    </div>
+                </b-modal>
             </b-form>
         </b-modal>
 </div>
@@ -69,22 +86,37 @@ import moment from 'moment';
 export default {
     name: 'TextForm',
     props: {
-        sms_messages: {required: true},
         sms_task: {required: true},
-        message_types: {required: true},
     },
     data() {
         return {
+            sms_messages: [],
+            message_types: [],            
             sms_status_countdown: 0,
             sms_status: 'N/A',
             sms_numbers: [],
-            sms: {},
+            sms: { message: null, to: null},
             sms_message_id: null,
             message_type_id: null,
             contacts: [],
+            partial_message_types: [],
+            partials: [],
+            partial_messages: []
         }
     },
     created() {
+        this.$http.get('/sms_message_types').then(response => {
+            this.message_types = response.data.data;
+        });
+        this.$http.get('/stock_text_messages').then(response => {
+            this.sms_messages = response.data.data;
+        });
+        this.$http.get('/partial_text_message_types').then(response => {
+            this.partial_message_types = response.data.data;
+        });
+        this.$http.get('/partial_text_messages').then(response => {
+            this.partial_messages = response.data.data;
+        });
         const has_date = !!this.sms_task.date;
         this.message_type_id = has_date ? this.default_date_sms_message_type_id : this.default_nondate_sms_message_type_id;
     },
@@ -112,9 +144,14 @@ export default {
             if(message.length){
                 this.sms_message_id = message_id;
                 this.sms.message = message[0].message;
-                this.replaceMessage()
                 if(this.$refs['modalSMSMessages']){
                     this.$refs['modalSMSMessages'].hide();
+                }
+                if(this.filtered_partial_text_message_types.length){
+                    this.$refs['modalPartialTextMessages'].show();
+                }
+                else{
+                    this.replaceMessage();
                 }
             }
         },
@@ -122,6 +159,7 @@ export default {
             if(!this.sms.message){
                 return
             }
+            let message  = this.sms.message;
             for (const [key, value] of Object.entries(this.sms_task)) {
                 let replace = value;
                 if(replace){
@@ -138,13 +176,21 @@ export default {
                 else{
                     replace = 'N/A'
                 }
-                this.sms.message = this.sms.message.replace(`{${key}}`,replace);
+                message = message.replace(`{${key}}`,replace);
             }
             let contacts = this.contacts.filter(c => c.phone_numbers.filter(n => n.phone_number == this.sms.to).length);
             if(contacts.length){
                 const names = contacts[0].name.split(' ')
-                this.sms.message = this.sms.message.replace(`{contact.name}`,names[0]);
+                message = message.replace(`{contact.name}`,names[0]);
             }
+            const partial_types = this.filtered_partial_text_message_types;
+            for(let x=0;x<partial_types.length;x++){
+                const replace = this.partial_messages.filter(m => (m.id = this.partials[partial_types[x].id]));
+                if(replace.length){
+                    message = message.replace(`{partials.${partial_types[x].name}}`,replace[0].message);
+                }
+            }
+            this.sms.message = message;
         },
         showSMSModal(){
             this.$refs['modalSMS'].show();
@@ -152,6 +198,9 @@ export default {
         countDownChanged(dismissCountDown) {
             this.dismissCountDown = dismissCountDown;
         },
+        getPartialMessages(message_type_id){
+            return this.partial_messages.filter(m => m.partial_text_message_type_id == message_type_id);
+        }
     },
     computed:{
         ...mapState({
@@ -165,6 +214,17 @@ export default {
             const has_date = !!this.sms_task.date;
             return this.message_types.filter(m => m.uses_date==has_date)
         },
+        filtered_partial_text_message_types(){
+            if(!this.sms.message){
+                return [];
+            }
+            let matches = this.sms.message.match(/{partials\.(.*?)}/);
+            if(!matches){
+                return [];
+            }
+            matches = matches.splice(1);
+            return this.partial_message_types.filter(m => (matches.includes(m.name)));
+        }
     },
     watch:{
         filtered_message_types(){
