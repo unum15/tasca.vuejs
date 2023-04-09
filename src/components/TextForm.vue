@@ -21,6 +21,20 @@
                             </b-form-radio-group>
                         </b-form-group>
                     </b-col>
+                    <b-col>
+                        <div v-for="message_type in filtered_partial_text_message_types" :key="message_type.id">
+                        <b-form-group :label="message_type.name">
+                            <b-form-select
+                                v-model="partials[message_type.id]"
+                                :options="getPartialMessages(message_type.id)"
+                                value-field="id"
+                                text-field="message"
+                                @change="replaceMessage"
+                            >
+                            </b-form-select>
+                        </b-form-group>
+                        </div>
+                    </b-col>
                 </b-form-row>
                 <b-form-row>
                     <b-col>
@@ -43,42 +57,25 @@
                         <b-button @click="copyMessage()">Copy Message</b-button>
                     </b-col>
                 </b-form-row>
-                <b-modal size="sm" scrollable ref="modalSMSMessages" id="modalSMSMessages" title="Select Message" :hide-footer="true">
-                    <b-form-radio-group v-model="message_type_id" :options="filtered_message_types" value-field="id" text-field="name">
-                    </b-form-radio-group>
-                    <div v-for="message in filtered_sms_messages" :key="message.id" class="select-message" @click="selectMessage(message.id)">
-                        <b-form-row style="border-bottom: 1px solid gray">
-                            <b-col>
-                                {{ message.name}} 
-                            </b-col>
-                        </b-form-row>
-                        <b-form-row>
-                            <b-col>
-                                {{ message.message}} 
-                            </b-col>
-                        </b-form-row>
-                    </div>
-                </b-modal>
-                <b-modal size="sm" scrollable ref="modalPartialTextMessages" id="modalPartialTextMessages" title="Select Partial Messages" :ok-only="true" @ok="replaceMessage">
-                    <div v-for="message_type in filtered_partial_text_message_types" :key="message_type.id">
-                        <b-form-row style="border-bottom: 1px solid gray">
-                            <b-col>
-                                <b-form-group :label="message_type.name">
-                                    <b-form-select
-                                        v-model="partials[message_type.id]"
-                                        :options="getPartialMessages(message_type.id)"
-                                        value-field="id"
-                                        text-field="message"
-                                    >
-                                    </b-form-select>
-                                </b-form-group>
-                            </b-col>
-                        </b-form-row>
-                    </div>
-                </b-modal>
             </b-form>
+            <b-modal size="sm" scrollable ref="modalSMSMessages" id="modalSMSMessages" title="Select Message" :hide-footer="true">
+                <b-form-radio-group v-model="message_type_id" :options="filtered_message_types" value-field="id" text-field="name">
+                </b-form-radio-group>
+                <div v-for="message in filtered_sms_messages" :key="message.id" class="select-message" @click="selectMessage(message.id)">
+                    <b-form-row style="border-bottom: 1px solid gray">
+                        <b-col>
+                            {{ message.name}} 
+                        </b-col>
+                    </b-form-row>
+                    <b-form-row>
+                        <b-col>
+                            {{ message.message}} 
+                        </b-col>
+                    </b-form-row>
+                </div>
+            </b-modal>
         </b-modal>
-</div>
+    </div>
 </template>
 <script>
 import { mapState } from 'vuex';
@@ -95,7 +92,7 @@ export default {
             sms_status_countdown: 0,
             sms_status: 'N/A',
             sms_numbers: [],
-            sms: { message: null, to: null},
+            sms: { message: null, to: null, stock: null},
             sms_message_id: null,
             message_type_id: null,
             contacts: [],
@@ -143,23 +140,26 @@ export default {
             let message = this.sms_messages.filter(m => m.id == message_id);
             if(message.length){
                 this.sms_message_id = message_id;
+                this.sms.stock_message = message[0].message;
                 this.sms.message = message[0].message;
                 if(this.$refs['modalSMSMessages']){
                     this.$refs['modalSMSMessages'].hide();
                 }
-                if(this.filtered_partial_text_message_types.length){
-                    this.$refs['modalPartialTextMessages'].show();
+                const partial_types = this.filtered_partial_text_message_types;
+                for(let x=0;x<partial_types.length;x++){
+                    const replace = this.getPartialMessages(partial_types[x].id);
+                    if(replace.length){
+                        this.partials[partial_types[x].id] = replace[0].id;
+                    }
                 }
-                else{
-                    this.replaceMessage();
-                }
+                this.replaceMessage();
             }
         },
         replaceMessage(){
-            if(!this.sms.message){
+            if(!this.sms.stock_message){
                 return
             }
-            let message  = this.sms.message;
+            let message  = this.sms.stock_message;
             for (const [key, value] of Object.entries(this.sms_task)) {
                 let replace = value;
                 if(replace){
@@ -185,9 +185,11 @@ export default {
             }
             const partial_types = this.filtered_partial_text_message_types;
             for(let x=0;x<partial_types.length;x++){
-                const replace = this.partial_messages.filter(m => (m.id = this.partials[partial_types[x].id]));
-                if(replace.length){
-                    message = message.replace(`{partials.${partial_types[x].name}}`,replace[0].message);
+                if(this.partials[partial_types[x].id]){
+                    const replace = this.partial_messages.filter(m => (m.id == this.partials[partial_types[x].id]));
+                    if(replace.length){
+                        message = message.replace(`{partials.${partial_types[x].name}}`,replace[0].message);
+                    }
                 }
             }
             this.sms.message = message;
@@ -215,15 +217,17 @@ export default {
             return this.message_types.filter(m => m.uses_date==has_date)
         },
         filtered_partial_text_message_types(){
-            if(!this.sms.message){
+            if(!this.sms.stock_message){
                 return [];
             }
-            let matches = this.sms.message.match(/{partials\.(.*?)}/);
-            if(!matches){
-                return [];
+            const partialMatch = /{partials\.(.*?)}/gi;
+            let matches, partials = [];
+            matches = partialMatch.exec(this.sms.stock_message);
+            while (matches){
+                partials.push(matches[1]);
+                matches = partialMatch.exec(this.sms.stock_message);
             }
-            matches = matches.splice(1);
-            return this.partial_message_types.filter(m => (matches.includes(m.name)));
+            return this.partial_message_types.filter(m => (partials.includes(m.name)));
         }
     },
     watch:{
@@ -235,7 +239,7 @@ export default {
             deep: true,
             handler(){
                 this.sms_numbers = [];
-                this.sms = { to: null, message: null};
+                this.sms = { to: null, message: null, stock_message: null};
                 this.selectMessage(this.sms_message_id);
                 if(!this.sms_task.client_id){
                     return;
