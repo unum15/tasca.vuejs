@@ -17,6 +17,7 @@
                                 v-model="sms.to"
                                 :options="sms_numbers"
                                 stacked
+                                @change="replaceMessage"
                             >
                             </b-form-radio-group>
                         </b-form-group>
