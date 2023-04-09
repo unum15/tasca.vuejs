@@ -168,6 +168,17 @@ export default {
                         case 'date':
                             replace = moment(value).format('ddd MM-DD')
                             break;
+                        case 'start_date':
+                        case 'order_date':
+                        case 'approval_date':
+                        case 'expiration_date':
+                        case 'order_close_date':
+                        case 'completion_date':                            
+                        case 'closed_date':
+                        case 'billed_date':
+                        case 'hold_date':
+                            replace = moment(value).format('MM-DD')
+                            break;
                             
                     }
                 }
