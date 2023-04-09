@@ -78,7 +78,6 @@
     </div>
 </template>
 <script>
-import { mapState } from 'vuex';
 import moment from 'moment';
 export default {
     name: 'TextForm',
@@ -114,8 +113,6 @@ export default {
         this.$http.get('/partial_text_messages').then(response => {
             this.partial_messages = response.data.data;
         });
-        const has_date = !!this.sms_task.date;
-        this.message_type_id = has_date ? this.default_date_sms_message_type_id : this.default_nondate_sms_message_type_id;
     },
     methods: {
         copyNumber(){
@@ -195,6 +192,29 @@ export default {
             this.sms.message = message;
         },
         showSMSModal(){
+            this.sms_numbers = [];
+            this.sms = { to: null, message: null, stock_message: null};
+            this.message_type_id = this.filtered_message_types[0].id;
+            this.sms_message_id = this.filtered_sms_messages[0].id;
+            this.selectMessage(this.sms_message_id);
+            if(!this.sms_task.client_id){
+                return;
+            }
+            this.$http.get('/contacts?client_id=' + this.sms_task.client_id).then(response => {
+                this.contacts = response.data;
+                this.contacts.forEach(contact => {
+                    contact.phone_numbers.forEach(number => {
+                        this.sms_numbers.push({
+                            value: number.phone_number,
+                            text: contact.name + " - " + number.phone_number_type.name + " - " + number.phone_number
+                        });
+                        if(!this.sms.to){
+                            this.sms.to = number.phone_number;
+                            this.replaceMessage()
+                        }
+                    });
+                });
+            });
             this.$refs['modalSMS'].show();
         },
         countDownChanged(dismissCountDown) {
@@ -205,10 +225,6 @@ export default {
         }
     },
     computed:{
-        ...mapState({
-          default_date_sms_message_type_id: state => state.settings.default_date_sms_message_type_id,
-          default_nondate_sms_message_type_id: state => state.settings.default_nondate_sms_message_type_id,
-        }),
         filtered_sms_messages(){
             return this.sms_messages.filter(m => m.message_type_id==this.message_type_id)
         },
@@ -230,38 +246,5 @@ export default {
             return this.partial_message_types.filter(m => (partials.includes(m.name)));
         }
     },
-    watch:{
-        filtered_message_types(){
-            const has_date = !!this.sms_task.date;
-            this.message_type_id = has_date ? this.default_date_sms_message_type_id : this.default_nondate_sms_message_type_id;
-        },
-        sms_task:{
-            deep: true,
-            handler(){
-                this.sms_numbers = [];
-                this.sms = { to: null, message: null, stock_message: null};
-                this.selectMessage(this.sms_message_id);
-                if(!this.sms_task.client_id){
-                    return;
-                }
-                this.$http.get('/contacts?client_id=' + this.sms_task.client_id).then(response => {
-                    this.contacts = response.data;
-                    this.contacts.forEach(contact => {
-                        contact.phone_numbers.forEach(number => {
-                            this.sms_numbers.push({
-                                value: number.phone_number,
-                                text: contact.name + " - " + number.phone_number_type.name + " - " + number.phone_number
-                            });
-                            if(!this.sms.to){
-                                this.sms.to = number.phone_number;
-                                this.replaceMessage()
-                            }
-                        });
-                    });
-                });
-            }
-        }
-    }
-
 }
 </script>
