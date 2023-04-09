@@ -1027,7 +1027,7 @@ export default {
 			this.task.task_status_id = this.settings['default_task_status_id-labor_type_id-' + this.task.labor_type_id];
 			this.task.task_action_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id];
 		},
-    showTextModal(){
+    async showTextModal(){
       this.saveClient();
       this.sms_task = {
         client_id: this.client_id,
@@ -1046,6 +1046,7 @@ export default {
         time:this.appointment.time,
         notes:this.appointment.notes,
       };
+      await this.$nextTick()
       this.$refs.textForm.showSMSModal();
     }
   },

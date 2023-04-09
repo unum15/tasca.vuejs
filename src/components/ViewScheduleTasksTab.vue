@@ -556,8 +556,9 @@ export default {
         startDateFormatter(value, key, item){
             return item.hold_date ?? value;
         },
-        showSMSModal(task){
+        async showSMSModal(task){
             this.sms_task = task;
+            await this.$nextTick()
             this.$refs.textForm.showSMSModal();
         }
     },

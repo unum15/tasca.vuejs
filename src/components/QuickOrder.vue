@@ -759,7 +759,7 @@ export default {
     selectText(ref){
       this.$refs[ref].select()
     },
-    showTextModal(){
+    async showTextModal(){
       const properties = this.properties.filter(p => (p.id == this.order.property));
       this.sms_task = {
         client_id: this.client_id,
@@ -778,6 +778,7 @@ export default {
         time:this.appointment.time,
         notes:this.appointment.notes,
       };
+      await this.$nextTick()
       this.$refs.textForm.showSMSModal();
     }
 
