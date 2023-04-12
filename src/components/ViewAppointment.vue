@@ -64,7 +64,7 @@
                             <b-row v-for="phone_number in contact.phone_numbers" :key="phone_number.id">
                                 <b-col class="label" cols="2">{{ phone_number.phone_number_type.name }}</b-col>
                                 <b-col class="data" cols="3">
-                                    <a :href="'tel:' + phone_number.phone_number">{{ phone_number.phone_number }}</a>
+                                    <a :href="'tel:+1' + phone_number.phone_number">{{ phone_number.phone_number }}</a>
                                 </b-col>
                                 <b-col class="data" cols="5">
                                     <a href="/scheduler" @click.stop.prevent="text(phone_number.phone_number)">Text</a>

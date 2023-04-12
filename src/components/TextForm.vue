@@ -143,7 +143,7 @@ export default {
         sendFromDevice(){
             let sms = this.sms;
             sms.to = this.cleanNumber(sms.to)
-            window.open(`sms:+${sms.to}&body=` + encodeURI(sms.message));
+            window.open(`sms:+${sms.to}?&body=` + encodeURI(sms.message));
         },
         selectMessage(message_id){
             let message = this.sms_messages.filter(m => m.id == message_id);
