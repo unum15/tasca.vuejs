@@ -45,7 +45,7 @@
                 <b-form-row>
                     <b-col >
                         <b-form-group label="Message">
-                            <b-form-textarea
+                            <b-form-textarea rows="9"
                                 v-model="sms.message"
                             >                        
                             </b-form-textarea>

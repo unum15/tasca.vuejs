@@ -121,6 +121,7 @@
                       v-model="client.client_type_id"
                       filterable
                       placeholder="Select Client Type"
+                      required
                       default-first-option>
                       <el-option
                         v-for="client_type in client_types"
@@ -597,9 +598,10 @@
                       </b-form-textarea>
                       </b-form-group>
                   </b-col>
-                </b-row>
-              <b-button @click="saveClient();">New</b-button>
-              <b-button @click="reroute=true;saveClient();">Edit</b-button>
+                </b-row>\
+              <b-button @click="whatNext='text';saveClient();">Text</b-button>
+              <b-button @click="whatNext='new';saveClient();">New</b-button>
+              <b-button @click="whatNext='edit';saveClient();">Edit</b-button>
             </b-container>
           </b-col>
           <b-col v-if="settings.help_show == 'true'">
@@ -608,10 +610,7 @@
         </b-row>
       </b-container>
     </main>
-    <text-form
-      ref="textForm"
-      :sms_task="sms_task"
-    ></text-form>
+    <text-form ref="textForm" :sms_task="sms_task"></text-form>
   </div>
 </template>
 <script>
@@ -655,7 +654,7 @@ export default {
       billing_contact: true,
       showSaveFailed: false,
       showSaveSuccess: false,
-      reroute: false,
+      whatNext: null,
       lastContactName: null,
       used_projects: [],
       used_tasks: [],
@@ -766,7 +765,6 @@ export default {
       }
       this.$http.get('/contacts?name=' + this.contact.name)
         .then((response) => {
-          console.log(response.data);
           if(response.data.length){
             alert('Contact named ' + this.contact.name + ' already exists for client ' + response.data[0].clients[0].name + '.');
           }
@@ -888,7 +886,7 @@ export default {
       else{
         this.$http.patch('/order/' + this.order.id,this.order)
           .then(() => {
-            this.saveOrder();
+            this.saveTask();
           })
       }
     },
@@ -927,11 +925,16 @@ export default {
       this.client.main_mailing_property_id = this.property.id;
       this.client.billing_contact_id = this.contact.id;
       this.$http.patch('/client/' + this.client.id,this.client).then(() => {
-        if(this.reroute){
-          this.$router.push('/client/' + this.client.id);
-        }
-        else{
-          this.resetForm();
+        switch(this.whatNext){
+          case 'text':
+            this.showTextModal();
+            break;
+          case 'edit': 
+            this.$router.push('/client/' + this.client.id);
+            break;
+          case 'new':
+            this.resetForm();
+            break;
         }
       });
     },
@@ -1028,9 +1031,8 @@ export default {
 			this.task.task_action_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id];
 		},
     async showTextModal(){
-      this.saveClient();
       this.sms_task = {
-        client_id: this.client_id,
+        client_id: this.client.id,
         start_date: this.order.start_date,
         service_window: this.order.service_window,
         order_name: this.order.name,
@@ -1086,11 +1088,6 @@ export default {
       this.resetForm();
     }
   },
-  updated() {
-    if(!this.first_update){
-      return;
-    }
-  }
 }
 
 </script>
