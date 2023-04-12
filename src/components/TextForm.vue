@@ -8,7 +8,7 @@
         >
             {{ sms_status }}
         </b-alert>
-        <b-modal size="sm" scrollable ref="modalSMS" id="modalSMS" title="Send Text Message" @ok="sendSMS">
+        <b-modal size="sm" scrollable ref="modalSMS" id="modalSMS" title="Text Message" ok-only>
             <b-form>
                 <b-form-row>
                     <b-col>
@@ -56,6 +56,8 @@
                     <b-col>
                         <b-button @click="copyNumber()">Copy Number</b-button>
                         <b-button @click="copyMessage()">Copy Message</b-button>
+                        <b-button @click="sendFromDevice()">Send From Device</b-button>
+                        <b-button @click="sendFromServer()" v-show="false">Send From Server</b-button>
                     </b-col>
                 </b-form-row>
             </b-form>
@@ -122,17 +124,26 @@ export default {
         copyMessage(){
             navigator.clipboard.writeText(this.sms.message);
         },
-        sendSMS(){
-            let sms = this.sms;
+        cleanNumber(to){
             const regex = /\D/g;
-            sms.to = sms.to.replace(regex,'');
-            if(sms.to[0] != '1'){
-                sms.to = '1' + sms.to;
+            to = to.replace(regex,'');
+            if(to[0] != '1'){
+                to = '1' + to;
             }
+            return to;
+        },
+        sendFromServer(){
+            let sms = this.sms;
+            sms.to = this.cleanNumber(sms.to)
             this.$http.post('/did/send', this.sms).then(response => {
                 this.sms_status = response.data.sms_status;
                 this.sms_status_countdown = 5;
             });
+        },
+        sendFromDevice(){
+            let sms = this.sms;
+            sms.to = this.cleanNumber(sms.to)
+            window.open(`sms:+${sms.to}&body=` + encodeURI(sms.message));
         },
         selectMessage(message_id){
             let message = this.sms_messages.filter(m => m.id == message_id);
