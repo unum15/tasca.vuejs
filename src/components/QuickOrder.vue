@@ -705,7 +705,6 @@ export default {
       }
     },
     resetForm(first=false){
-
       this.order = {
         id: null,
         name: null,
@@ -718,7 +717,7 @@ export default {
         date: this.today,
         approval_date: this.today,
         start_date: first ? this.today : this.order.start_date,
-        service_window: this.$store.state.user.default_service_window
+        service_window: this.user.default_service_window
       };
       this.task = {
         id: null,
@@ -788,7 +787,8 @@ export default {
 			return moment().format('YYYY-MM-DD');
 		},
     ...mapState({
-      settings: state => state.settings
+      settings: state => state.settings,
+      user: state => state.user
     }),
     current_assignments() {
 			return this.labor_assignments.filter(a =>(a.labor_type_id == this.task.labor_type_id));
@@ -836,6 +836,9 @@ export default {
   },
   watch:{
     settings(){
+      this.resetForm(true);
+    },
+    user(){
       this.resetForm(true);
     }
   },

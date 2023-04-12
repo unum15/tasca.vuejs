@@ -977,7 +977,7 @@ export default {
         order_action_id: parseInt(this.settings.default_order_action_id),
         approval_date: this.order.approval_date ? this.order.approval_date : this.today,
         start_date: this.order.start_date ? this.order.start_date : this.today,
-        service_window: this.$store.state.user.default_service_window,
+        service_window: this.user.default_service_window,
         budget: null,
         budget_plus_minus: null
       };
@@ -1057,7 +1057,8 @@ export default {
 			return moment().format('YYYY-MM-DD');
 		},
     ...mapState({
-      settings: state => state.settings
+      settings: state => state.settings,
+      user: state => state.user,
     }),
     current_assignments() {
 			return this.labor_assignments.filter(a =>(a.labor_type_id == this.task.labor_type_id));
@@ -1085,6 +1086,9 @@ export default {
   },
   watch:{
     settings(){
+      this.resetForm();
+    },
+    user(){
       this.resetForm();
     }
   },
