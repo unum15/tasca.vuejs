@@ -74,7 +74,7 @@ export default {
     'EditClockInsModule': EditClockInsModule
   },
   props: {
-    date: {required: true}
+    date: {default: null}
   },
   data: function () {
     return {
@@ -87,7 +87,9 @@ export default {
     }
   },
   created() {
-    Object.assign(this.my_date, this.date);
+    if(this.date){
+      Object.assign(this.my_date, this.date);
+    }
   },
   mounted(){
     if(this.focus){

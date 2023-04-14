@@ -19,8 +19,13 @@
 					:active="isActive(index)"
 				>
 					<template slot="title" style="text-align:left">
-						<div class="text-left" v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
-							{{ task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New') }}
+						<div class="text-left" @contextmenu="showTabContextMenu($event,task.id)">
+							<span v-bind:class="{'text-danger': task.closed_date, 'billed': task.billed_date || task.completion_date}">
+								{{ task.name !== null ? task.name : 'Task ' + (task.id !== null ? task.id : 'New') }}
+							</span>
+							<b-list-group :ref="'context-' + task.id" class="popup">
+								<b-list-group-item @click="copy(task.id)">Copy</b-list-group-item>
+							</b-list-group>
 						</div>
 					</template>
 					<EditTask
@@ -32,17 +37,29 @@
 						:labor_assignments="labor_assignments"
 						:crews="crews"
 						:project_close_date="project_close_date"
-						:settings="settings"
 						@remove-task="removeTask"
 					></EditTask>
 				</b-tab>
 			</b-tabs>
 			<b-button variant="secondary" @click="newTask(null)">Add New Task</b-button>
+			<b-modal size="xl" scrollable ref="modalCopyTask" title="Copy Task" @ok="modalCopyTask" ok-only>
+				<EditTask
+						:order="order"
+						:task="copy_task"
+						:labor_types="labor_types"
+						:task_statuses="task_statuses"
+						:task_actions="task_actions"
+						:labor_assignments="labor_assignments"
+						:crews="crews"
+						:project_close_date="project_close_date"
+						:allow_delete="false"
+					></EditTask>
+      </b-modal>
 		</div>
 </template>
 <script>
-import EditTask from './EditTask'
-import moment from 'moment'
+import EditTask from './EditTask';
+import moment from 'moment';
 export default {
     name: 'EditTasks',
     components: {
@@ -66,21 +83,25 @@ export default {
 			change_tab: false,
 			filter: {
 				completed: false
-			}
+			},
+			copy_task: {}
 		}
 	},
 	created() {
-     this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
-      this.tasks = response.data
-			if(this.tasks.length == 0){
-				this.newTask(this.order.name);
-			}
-			else{
-				this.sortTasks();
-			}
-    })
+     this.getTasks();
   },
 	methods: {
+		getTasks(){
+			this.$http.get('/tasks?order_id=' + this.order.id).then(response => {
+				this.tasks = response.data
+				if(this.tasks.length == 0){
+					this.newTask(this.order.name);
+				}
+				else{
+					this.sortTasks();
+				}
+			});
+		},
 		newTask(name=null){
 			var task = {
 				id: null,
@@ -148,7 +169,29 @@ export default {
 				}
 				return 0;
 			});
-		}
+		},
+		showTabContextMenu(event,id){
+			event.preventDefault();
+			if(this.$refs['context-'+id].length){
+				this.$refs['context-'+id][0].style.visibility = 'visible';
+			}
+		},
+		copy(id){
+			this.$refs['context-'+id][0].style.visibility = 'hidden';
+			let tasks = this.tasks.filter(t => (id == t.id));
+			tasks[0].id = null;
+			tasks[0].group = null;
+			tasks[0].completion_date = null;
+			tasks[0].invoiced_date = null;
+			tasks[0].billed_date = null;
+			tasks[0].closed_date = null;
+			this.copy_task = tasks[0];
+			this.$refs['modalCopyTask'].show();
+		},
+		modalCopyTask(){
+			this.getTasks();
+			this.copy_task = {};
+		},
   },
 	computed: {
 		filtered_tasks(){
@@ -166,5 +209,18 @@ export default {
 <style>
 	.billed {
 		color: #9b59b6;
+	}
+	.popup {
+		visibility: hidden;
+		width: 160px;
+		background-color: #fff;
+		color: #000;
+		text-align: left;
+		border-radius: 6px;
+		padding: 8px 0;
+		position: absolute;
+		z-index: 1;
+		left: 50%;
+		margin-left: -80px;
 	}
 </style>

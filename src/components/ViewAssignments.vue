@@ -17,7 +17,7 @@
                     <b-container fluid>
                         <b-row v-if="clock_in">
                             <b-col style="text-align:center;font-weight:bold;">
-                                Clock Out
+                                Current Clock In
                             </b-col>
                         </b-row>
                         <b-row v-if="clock_in">
@@ -51,7 +51,7 @@
                         </b-row>
                         <b-row v-if="modal_overhead.clock_in">
                             <b-col style="text-align:center;font-weight:bold;">
-                                Clock In
+                                New Clock In
                             </b-col>
                         </b-row>
                         <b-row v-if="!modal_overhead.clock_in">
@@ -511,7 +511,9 @@ export default {
         clockInToCurrent(){
             this.modal_overhead.current.date = moment(this.clock_in.clock_in).format('YYYY-MM-DD');
             this.modal_overhead.current.time = moment(this.clock_in.clock_in).format('HH:mm');
-            this.modal_overhead.current.labor_assignment_id = this.clock_in.appointment.task.labor_assignment_id;
+            if(this.clock_in.appointment){
+                this.modal_overhead.current.labor_assignment_id = this.clock_in.appointment.task.labor_assignment_id;
+            }
             this.modal_overhead.current.labor_activity_id = this.clock_in.labor_activity_id;
         },
         getAssignmentName(id){

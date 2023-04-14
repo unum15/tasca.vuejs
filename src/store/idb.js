@@ -156,7 +156,7 @@ export default {
 	
 	},
 	
-	async getFilters() {
+	async getFilters(name) {
 
 		let db = await this.getDb();
 
@@ -168,16 +168,10 @@ export default {
 			};
 			let filters = {};
 			let store = trans.objectStore('filters');
-			store.openKeyCursor().onsuccess = (event) => {
-				let cursor = event.target.result;
-				if (cursor) {
-					let request = store.get(cursor.key);
-					request.onsuccess = e => {
-						filters[cursor.key] = e.target.result;
-					}
-					cursor.continue();
-				}
-			};
+			let request = store.get(name);
+            request.onsuccess = e => {
+                filters = e.target.result;
+            }
 		});
 	
 	},

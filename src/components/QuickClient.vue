@@ -121,6 +121,7 @@
                       v-model="client.client_type_id"
                       filterable
                       placeholder="Select Client Type"
+                      required
                       default-first-option>
                       <el-option
                         v-for="client_type in client_types"
@@ -482,6 +483,15 @@
                            </b-form-input>
                         </b-form-group>
                   </b-col>
+                  <b-col lg="2">
+                        <b-form-group label="Service Window">
+                           <b-form-input
+                               type="number"
+                               v-model="order.service_window"
+                           >
+                           </b-form-input>
+                        </b-form-group>
+                    </b-col>
                </b-row>
                <b-row>
                <b-col>
@@ -511,6 +521,7 @@
                       </b-form-input>
                       </b-form-group>
                   </b-col>
+                  <b-col />
                 </b-row>
                 <b-row>
                   <b-col>
@@ -597,9 +608,10 @@
                       </b-form-textarea>
                       </b-form-group>
                   </b-col>
-                </b-row>
-              <b-button @click="saveClient();">New</b-button>
-              <b-button @click="reroute=true;saveClient();">Edit</b-button>
+                </b-row>\
+              <b-button @click="whatNext='text';saveClient();">Text</b-button>
+              <b-button @click="whatNext='new';saveClient();">New</b-button>
+              <b-button @click="whatNext='edit';saveClient();">Edit</b-button>
             </b-container>
           </b-col>
           <b-col v-if="settings.help_show == 'true'">
@@ -608,6 +620,7 @@
         </b-row>
       </b-container>
     </main>
+    <text-form ref="textForm" :sms_task="sms_task"></text-form>
   </div>
 </template>
 <script>
@@ -616,6 +629,7 @@ import TopMenu from './TopMenu'
 import EditEmails from './EditEmails'
 import EditPhoneNumbers from './EditPhoneNumbers'
 import { mapState } from 'vuex';
+import TextForm from './TextForm';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import treeNormalizer from '../common/TreeNormalizer.js';
@@ -625,7 +639,8 @@ export default {
     TopMenu,
     EditEmails,
     EditPhoneNumbers,
-    Treeselect
+    Treeselect,
+    TextForm,
   },
   data () {
     return {
@@ -649,7 +664,7 @@ export default {
       billing_contact: true,
       showSaveFailed: false,
       showSaveSuccess: false,
-      reroute: false,
+      whatNext: null,
       lastContactName: null,
       used_projects: [],
       used_tasks: [],
@@ -688,7 +703,10 @@ export default {
       },
       appointment: {
         id: null
-      }
+      },
+      sms_messages: [],       
+      sms_task: {},
+      message_types: [],
     }
   },
   created () {
@@ -757,7 +775,6 @@ export default {
       }
       this.$http.get('/contacts?name=' + this.contact.name)
         .then((response) => {
-          console.log(response.data);
           if(response.data.length){
             alert('Contact named ' + this.contact.name + ' already exists for client ' + response.data[0].clients[0].name + '.');
           }
@@ -879,7 +896,7 @@ export default {
       else{
         this.$http.patch('/order/' + this.order.id,this.order)
           .then(() => {
-            this.saveOrder();
+            this.saveTask();
           })
       }
     },
@@ -918,11 +935,16 @@ export default {
       this.client.main_mailing_property_id = this.property.id;
       this.client.billing_contact_id = this.contact.id;
       this.$http.patch('/client/' + this.client.id,this.client).then(() => {
-        if(this.reroute){
-          this.$router.push('/client/' + this.client.id);
-        }
-        else{
-          this.resetForm();
+        switch(this.whatNext){
+          case 'text':
+            this.showTextModal();
+            break;
+          case 'edit': 
+            this.$router.push('/client/' + this.client.id);
+            break;
+          case 'new':
+            this.resetForm();
+            break;
         }
       });
     },
@@ -965,7 +987,7 @@ export default {
         order_action_id: parseInt(this.settings.default_order_action_id),
         approval_date: this.order.approval_date ? this.order.approval_date : this.today,
         start_date: this.order.start_date ? this.order.start_date : this.today,
-        service_window: this.$store.state.user.default_service_window,
+        service_window: this.user.default_service_window,
         budget: null,
         budget_plus_minus: null
       };
@@ -1018,13 +1040,35 @@ export default {
 			this.task.task_status_id = this.settings['default_task_status_id-labor_type_id-' + this.task.labor_type_id];
 			this.task.task_action_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id];
 		},
+    async showTextModal(){
+      this.sms_task = {
+        client_id: this.client.id,
+        start_date: this.order.start_date,
+        service_window: this.order.service_window,
+        order_name: this.order.name,
+        order_description: this.order.description,
+        order_date: this.order.date,     
+        approval_date: this.order.approval_date,
+        name: this.task.name,
+        description: this.task.description,
+        property: this.property.name, 
+        address: this.property.address1 + ' - ' + this.property.city,
+        date:this.appointment.date,
+        sort_order:this.appointment.sort_order,
+        time:this.appointment.time,
+        notes:this.appointment.notes,
+      };
+      await this.$nextTick()
+      this.$refs.textForm.showSMSModal();
+    }
   },
   computed: {
     today() {
 			return moment().format('YYYY-MM-DD');
 		},
     ...mapState({
-      settings: state => state.settings
+      settings: state => state.settings,
+      user: state => state.user,
     }),
     current_assignments() {
 			return this.labor_assignments.filter(a =>(a.labor_type_id == this.task.labor_type_id));
@@ -1053,13 +1097,11 @@ export default {
   watch:{
     settings(){
       this.resetForm();
+    },
+    user(){
+      this.resetForm();
     }
   },
-  updated() {
-    if(!this.first_update){
-      return;
-    }
-  }
 }
 
 </script>

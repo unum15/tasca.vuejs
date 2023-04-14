@@ -6,7 +6,7 @@
         </head>
         <main>
             <b-tabs :key="order_status_types.length" v-model="tab_index">
-                <b-tab v-for="tab in tabs" :key="tab" :title="tab + ' Tasks'">
+                <b-tab v-for="(index,tab) in tabs" :key="tab" :title="tab + ' Tasks'">
                     <ViewScheduleTasksTab
                         :tab="tab"
                         :task_actions="task_actions"
@@ -14,11 +14,15 @@
                         :task_statuses="task_statuses"
                         :labor_types="labor_types"
                         :appointment_statuses="appointment_statuses"
+                        :labor_activities="labor_activities"
                     >
                     </ViewScheduleTasksTab>
                 </b-tab>
-                <b-tab v-for="(title,tab) in order_tabs" :key="tab" :title="title">
-                    <ViewScheduleOrdersTab :tab="tab">
+                <b-tab v-for="(tab_data,tab) in order_tabs" :key="tab" :title="tab_data.title">
+                    <ViewScheduleOrdersTab
+                        :tab="tab"
+                        :labor_activities="labor_activities"
+                    >
                     </ViewScheduleOrdersTab>
                 </b-tab>
             </b-tabs>
@@ -38,11 +42,12 @@ export default {
     },
     data() {
         return {
-            tabs: ['Service', 'On Hold', 'All',  'Pending', 'Current'],
-            order_tabs: {'Non-Completed' : 'Partly Completed Orders', 'Completed' : 'Completed Orders'},
+            tabs: {'Service': 0, 'On Hold' : 1, 'All' : 2,  'Pending' : 3, 'Current' : 4},
+            order_tabs: {'Non-Completed' : {title: 'Partly Completed Orders', index: 5}, 'Completed' : {title: 'Completed Orders', index: 6}},
             order_status_types: [],
             appointment_statuses: [],
             labor_assignments: [],
+            labor_activities: [],
             task_statuses: [],
             task_actions: [],
             labor_types: [],
@@ -55,6 +60,9 @@ export default {
 		});
         this.$http.get('/appointment_statuses').then(response => {
 			this.appointment_statuses = response.data;
+		});
+        this.$http.get('/labor_activities').then(response => {
+			this.labor_activities = response.data.data;
 		});
         this.$http.get('/labor_assignments').then(response => {
 			this.labor_assignments = response.data.data;

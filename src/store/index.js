@@ -23,22 +23,20 @@ const store = new Vuex.Store({
       await idb.saveUser(user);
     },
     async saveFilters(context, {filters, name}) {
-      context.state.filters[name] = filters;
       await idb.saveFilters(filters, name);
+    },
+    async getFilters(context, {name}) {
+      return await idb.getFilters(name);
     },
     async restoreData(context) {
       let settings = await idb.getSettings();
       context.state.settings = settings;
       let user = await idb.getUser();
-      context.state.user = user;
-      let filters = await idb.getFilters();
-      context.state.filters = filters;
-      
+      context.state.user = user;    
     },
     async clearData(context) {
       context.state.settings = {};
       context.state.user = {};
-      context.state.filters.assets = {};
       await idb.deleteSettings();
       await idb.deleteUser();
       await idb.deleteFilters();

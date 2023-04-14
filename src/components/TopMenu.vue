@@ -133,7 +133,7 @@
                       <em>User</em>
                     </template>
                     <b-dropdown-item href="/profile">Profile</b-dropdown-item>
-                    <b-dropdown-item href="/calendar">Calendar</b-dropdown-item>
+                    <b-dropdown-item href="/google/authorization">Google Authorization</b-dropdown-item>
                     <b-dropdown-item @click="signOut">Sign Out</b-dropdown-item>
                 </b-nav-item-dropdown>
             </b-navbar-nav>

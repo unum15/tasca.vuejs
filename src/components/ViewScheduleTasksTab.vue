@@ -5,12 +5,11 @@
                     <b-col>
                         <b-form-group label="Crew">
                             <b-form-select
-                                @change="filterColumns"
+                                @change="filtersUpdated"
                                 :options="crews"
                                 value-field="id"
                                 text-field="name"
-                                v-model="crew_id"
-                                @input="getTasks()"
+                                v-model="filters.crew_id"
                             >
                             </b-form-select>
                         </b-form-group>
@@ -43,7 +42,8 @@
                     </b-col>
                     <b-col>
                        <br />
-                       <b-button @click="clearFilters()">Clear Filters</b-button>
+                       <b-button @click="getTasks()" style="margin-right:5px;">Refresh</b-button>
+                       <b-button @click="filtersClear()">Clear Filters</b-button>
                     </b-col>
                 </b-row>
             </b-container>
@@ -52,6 +52,7 @@
                 striped
                 hover
                 foot-clone
+                responsive
                 :items="filtered_tasks"
                 :fields="fields"
                 :filter="filter"
@@ -64,12 +65,42 @@
                 <template slot="thead-top">
                     <tr>
                         <th v-for="field in fields" :key="field.key">
-                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                            <b-form-input type="text" @input="filtersUpdated" v-model="filters[field.key]" v-if="filters[field.key] !== undefined "></b-form-input>
                         </th>  
                     </tr>
                 </template>
+                <template v-slot:cell(service_window)="data">
+                    <b-form-input
+                        v-if="['On Hold','All'].filter(t => (t == tab)).length"
+                        type="number"
+                        @change="save(data.item)"
+                        v-model="data.item.service_window"
+                    >
+                    </b-form-input>
+                    <span v-else>{{data.value}}</span>
+                </template>
+                <template v-slot:cell(hold_date)="data">
+                    <b-form-input
+                        type="date"
+                        @change="save(data.item)"
+                        v-model="data.item.hold_date"
+                    >
+                    </b-form-input>
+                </template>
                 <template v-slot:cell(start_date)="data">
-                    <span v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id">{{ data.value }}</span>
+                    <span
+                        v-if="data.value != data.item.start_date"
+                        v-b-popover.hover="data.item.order_date + ' ' + data.value" :id="'start_date_' + data.item.id"
+                        style="color:purple"
+                    >
+                        {{ data.value }}
+                    </span>
+                    <span
+                        v-else
+                        v-b-popover.hover="data.item.order_date" :id="'start_date_' + data.item.id"
+                    >
+                        {{ data.value }}
+                    </span>
                 </template>
                 <template v-slot:cell(order_name)="data">
                     <span v-b-popover.hover="data.item.order_description" :id="'order_name_' + data.item.id">
@@ -102,14 +133,7 @@
                     </b-form-select>
                 </template>
                 <template v-slot:cell(labor_assignment)="data">
-                    <b-form-select
-                        :options="labor_assignments"
-                        @input="save(data.item)"
-                        value-field="id"
-                        text-field="name"
-                        v-model="data.item.labor_assignment_id"
-                        >
-                    </b-form-select>
+                    <Treeselect style="width: 10rem" :options="labor_assignments" :normalizer="treeNormalizer" v-model="data.item.labor_assignment_id" @input="save(data.item)"/>
                 </template>
                 <template v-slot:cell(task_status)="data">
                     <b-form-select
@@ -128,6 +152,16 @@
                         value-field="id"
                         text-field="name"
                         v-model="data.item.task_action_id"
+                        >
+                    </b-form-select>
+                </template>
+                <template v-slot:cell(crew)="data">
+                    <b-form-select
+                        :options="crews"
+                        @input="save(data.item)"
+                        value-field="id"
+                        text-field="name"
+                        v-model="data.item.crew_id"
                         >
                     </b-form-select>
                 </template>
@@ -173,7 +207,9 @@
                 <template v-slot:cell(actions)="row">
                     <img src="@/assets/details.png" v-b-tooltip.hover title="Show Details" @click.stop="row.toggleDetails" :pressed="row.detailsShowing" fluid alt="DTS" style="width:20px;" />
                     <img src="@/assets/add.png" v-b-tooltip.hover title="Add Task To Order" @click.stop="addTask(row.item)" fluid alt="+" style="width:20px;" />
+                    <br />
                     <img src="../assets/clear.png" v-b-tooltip.hover title="Clear Scheduling Data" @click.stop="clearScheduleData(row.item)" fluid alt="CS" style="width:20px;" />
+                    <img src="../assets/sms.png" v-b-tooltip.hover title="Send Text Message" @click.stop="showSMSModal(row.item)" fluid alt="CS" style="width:20px;" />
                   </template>
                   <template slot="row-details" slot-scope="row">
                     <b-card>
@@ -189,28 +225,41 @@
                     :appointment_id="modalInfo.appointment_id"
                     :task_id="modalInfo.task_id"
                     :order_id="modalInfo.order_id"
+                    :labor_activities="labor_activities"
                 >
                 </ViewAppointment>
             </b-modal>
-        
+            <text-form
+                ref="textForm"
+                :sms_task="sms_task"
+            ></text-form>
     </div>
 </template>
 <script>
 import moment from 'moment';
 import ViewAppointment from './ViewAppointment';
-import { mapState } from 'vuex';
+import TextForm from './TextForm';
+import sortingMixin from '../mixins/Sorting.js';
+import filtersMixin from '../mixins/Filters.js';
+import Treeselect from '@riophae/vue-treeselect';
+import treeFilter from '../common/TreeFilter.js';
+import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
     name: 'ViewScheduleTab',
     components: {
-        'ViewAppointment': ViewAppointment
+        TextForm,
+        ViewAppointment,
+        Treeselect
     },
+    mixins: [filtersMixin, sortingMixin],
     props: {
         tab: {required: true},
         task_actions: {required: true},
         labor_assignments: {required: true},
         task_statuses: {required: true},
         labor_types: {required: true},
-        appointment_statuses: {required: true}
+        appointment_statuses: {required: true},
+        labor_activities: { default: (() => ([]))}
     },
     data() {
         return {
@@ -219,22 +268,21 @@ export default {
             filter: null,
             modalInfo: { title: '', appointment_id: null, task_id: null, order_id: null },
             date: moment().format('YYYY-MM-DD'),
-            view_days: 14,
             crews: [],
-            crew_id: '*',
             sortBy: 'date',
+            view_days: 14,
             fields: [
                 {
                     key: 'start_date',
                     label: 'Start Date',
                     sortable: true,
-                    filter: null
+                    formatter: 'startDateFormatter',
+                    sortByFormatted : true
                 },
                 {
                     key: 'service_window',
-                    label: 'Service Window',
+                    label: 'SW',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'order_name',
@@ -246,87 +294,154 @@ export default {
                     key: 'appointment_status',
                     label: 'C',
                     sortable: true,
+                },
+                {
+                    key: 'client',
+                    label: 'Client',
+                    sortable: true,
+                },
+                {
+                    key: 'property',
+                    label: 'Property',
+                    sortable: true,
+                },
+                {
+                    key: 'name',
+                    label: 'Name',
+                    sortable: true,
+                },
+                {
+                    key: 'order_priority',
+                    label: 'Pri',
+                    sortable: true,
+                },
+                {
+                    key: 'labor_assignment',
+                    label: 'Assignment',
+                    sortable: true,
+                },
+                {
+                    key: 'day',
+                    label: 'Day',
+                    sortable: true,
+                },
+                {
+                    key: 'date',
+                    label: 'Date',
+                    sortable: true,
+                },
+                {
+                    key: 'sort_order',
+                    label: 'Order',
+                    sortable: true,
+                },
+                {
+                    key: 'crew_hours',
+                    label: 'Crew Hours',
+                    sortable: true,
+                },
+                {
+                    key: 'time',
+                    label: 'Time',
+                    sortable: true,
+                },
+                {
+                    key: 'actions',
+                    label: 'Actions',
+                }
+            ],
+            sms_task: {},
+        }        
+    },
+    created() {
+        switch (this.tab){
+             case 'All':
+             case 'On Hold':
+                this.fields = [
+                {
+                    key: 'start_date',
+                    label: 'Start Date',
+                    sortable: true,
+                },
+                {
+                    key: 'service_window',
+                    label: 'SW',
+                    sortable: true,
+                },
+                {
+                    key: 'hold_date',
+                    label: 'Hold Date',
+                    sortable: true,
+                },
+                {
+                    key: 'order_name',
+                    label: 'Work Order Name',
+                    sortable: true,
                     filter: null
                 },
                 {
                     key: 'client',
                     label: 'Client',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'property',
                     label: 'Property',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'name',
                     label: 'Name',
                     sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'order_priority',
-                    label: 'Pri',
-                    sortable: true,
-                    filter: null
                 },
                 {
                     key: 'labor_assignment',
                     label: 'Assignment',
                     sortable: true,
-                    filter: null
                 },
                 {
-                    key: 'day',
-                    label: 'Day',
+                    key: 'task_status',
+                    label: 'Status',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'date',
                     label: 'Date',
                     sortable: true,
-                    filter: null
                 },
                 {
-                    key: 'sort_order',
-                    label: 'Order',
+                    key: 'crew',
+                    label: 'Crew',
                     sortable: true,
-                    filter: null
                 },
                 {
                     key: 'crew_hours',
                     label: 'Crew Hours',
                     sortable: true,
-                    filter: null
-                },
-                {
-                    key: 'time',
-                    label: 'Time',
-                    sortable: true,
-                    filter: null
                 },
                 {
                     key: 'actions',
-                    label: 'Actions'
+                    label: 'Actions',
                 }
-            ]
-                
+            ];
         }
-    },
-    created() {
+        let filters = this.fields.map(f => (f.key));
+        filters.pop();
+        filters.push('crew_id');
+        this.filtersInit('schedule ' + this.tab, filters);
+        this.filters.crew_id='.*';
         this.$http.get('/crews').then(response => {
             this.crews = response.data;
-            this.crews.unshift({id: '*', name: 'All'});
-            this.crews.unshift({id: '', name: 'None'});
+            this.crews.unshift({id: '.*', name: 'All'});
+            this.crews.unshift({id: '^$', name: 'None'});
         });
         this.getTasks();
     },
     methods: {
+        treeFilter,
+        treeNormalizer,
         getTasks(){
-            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&crew_id=' + this.crew_id + '&view_days=' + this.view_days).then((results) => {
+            this.$http.get('/schedule?status=' + escape(this.tab) + '&date=' + this.date + '&view_days=' + this.view_days).then((results) => {
                 if(['Pending', 'On Hold', 'All'].includes(this.tab)){
                     this.sortBy='start_date';
                 }
@@ -335,10 +450,10 @@ export default {
                     t.sort_order_tmp = t.sort_order;
                     t.date_tmp = t.date;
                 });
-                this.filterColumns(false);
+                this.filtersUpdated();
             });
         },
-         previousDate(){
+        previousDate(){
             this.date = moment(this.date).subtract(1, 'day').format('YYYY-MM-DD');
             this.getTasks();
         },
@@ -346,19 +461,19 @@ export default {
             this.date = moment(this.date).add(1, 'day').format('YYYY-MM-DD');
             this.getTasks();
         },
-        info (item) {
+        info(item) {
             this.modalInfo.title = `${item.order_name} -- ${item.name}`;
-            this.modalInfo.appointment_id = item.appointment_id;
+            this.modalInfo.appointment_id = item.id;
             this.modalInfo.task_id = item.task_id;
             this.modalInfo.order_id = item.order_id;
             this.$refs['modalInfo'].show();
         },
-        resetModal () {
+        resetModal() {
             this.modalInfo.title = ''
             this.modalInfo.content = ''
             this.modalInfo.id = null
         },
-        addTask (task){
+        addTask(task){
             var new_task = {
                 order_id: task.id,
                 billable: true
@@ -401,10 +516,17 @@ export default {
                 labor_assignment_id: item.labor_assignment_id,
                 task_status_id: item.task_status_id,
                 task_action_id: item.task_action_id,
-                crew_hours: item.crew_hours
+                crew_hours: item.crew_hours,
+                crew_id: item.crew_id,
+                hold_date: item.hold_date
             
             }
             this.$http.patch('/task/' + item.task_id, task);
+            var order = {
+                service_window: item.service_window
+            
+            }
+            this.$http.patch('/order/' + item.order_id, order);
         },
         rowClass(item){
             var today = moment();
@@ -428,109 +550,28 @@ export default {
             }
             return classes;
         },
-        sortCompare(a, b, key) {
-            switch(key){
-                case 'time':
-                case 'date':
-                    var value = 0;
-                    if(a.date && b.date){
-                        var first_date = moment(a.date);
-                        var second_date = moment(b.date);
-                        value = first_date.diff(second_date, 'days');
-                    }
-                    else{
-                        if(a.date){
-                            value = 1;
-                        }
-                        else{
-                            if(b.date){
-                                value = -1;
-                            }
-                        }
-                    }
-                    if(value == 0){
-                        value = this.sortCompare(a, b, 'sort_order');
-                        if(value == 0){
-                            if(a.time == b.time){
-                                return this.sortCompare(a, b, 'start_date');
-                            }
-                            else{
-                                return a.time < b.time;
-                            }
-                        }
-                        else{
-                            return value;
-                        }
-                    }
-                    else{
-                        return value;
-                    }
-                default:
-                    if (typeof a[key] === 'number' && typeof b[key] === 'number') {
-                      return a[key] < b[key] ? -1 : a[key] > b[key] ? 1 : 0
-                    } else {
-                      return this.toString(a[key]).localeCompare(this.toString(b[key]), undefined, {
-                        numeric: true
-                      })
-                    }
-            }
+        filtersUpdated(){
+            this.filtered_tasks=this.filterColumns(this.tasks);
         },
-        toString(value) {
-            if (!value) {
-              return ''
-            } else if (value instanceof Object) {
-              return Array.keys(value)
-                .sort()
-                .map(key => toString(value[key]))
-                .join(' ')
-            }
-            return String(value)
+        startDateFormatter(value, key, item){
+            return item.hold_date ?? value;
         },
-        filterColumns(store=true){
-            this.filtered_tasks = this.tasks;
-            let filters = {};
-            for(var x = 0;x < this.fields.length; x++){
-                filters[this.fields[x].key] = this.fields[x].filter;
-                if(this.fields[x].filter){
-                    var regex = new RegExp(this.fields[x].filter, "i");
-                    this.filtered_tasks = this.filtered_tasks.filter(t => {
-                        var value = t[this.fields[x].key]
-                        if(!value){
-                            value = "";
-                        }
-                        return value.match(regex) !== null
-                    })
-                }
-            }
-            if(store!==false){
-                this.$store.dispatch('saveFilters',{filters,name:'current'});
-            }
-        },
-        clearFilters(){
-            let filters = {};
-            for(var x = 0;x < this.fields.length; x++){
-                this.fields[x].filter = '';
-                filters[this.fields[x].key] = this.fields[x].filter;
-            }
-            this.filterColumns(true);
-        },
-
-    },
-    computed: {
-        ...mapState({
-            stored_filters: state => state.filters.current
-        }),
-    },
-    watch: {
-        stored_filters:{
-            deep: true,
-            handler(){
-                for(var x = 0;x < this.fields.length; x++){
-                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
-                }
-                this.filterColumns(false);
-            }
+        async showSMSModal(task){
+            this.sms_task = task;
+            await this.$nextTick()
+            this.$refs.textForm.showSMSModal();
         }
-    }
+    },
+
 }
 </script>
+<style>
+    .select-message {
+        padding:10px;
+        border:1px solid black;
+    }
+    .select-message:hover {
+        background-color: #999999;
+        cursor: pointer;
+    }
+</style>

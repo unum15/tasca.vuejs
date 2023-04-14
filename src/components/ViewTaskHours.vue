@@ -3,11 +3,12 @@
         <b-container>
             <b-row>
                 <b-col class="label">Task Description</b-col>
-                <b-col class="data" cols="9">{{ task.description }}</b-col>
+                <b-col class="data" cols="8">{{ task.description }}</b-col>
+                <b-col><b-button @click="showTextModal(task)">Text</b-button></b-col>
             </b-row>
             <b-row>
-                <b-col cols="3" v-for="appointment in filtered_appointments" :key="appointment.id" :class="{highlight: appointment.date == today, blue: appointment.date != today}">
-                    {{ formatAppointmentTime(appointment) }}
+                <b-col cols="3" v-for="appointment in filtered_appointments" :key="appointment.id" :class="getAppointmentClass(appointment)">
+                    <span @click="showTextModal(task, appointment)" style="cursor: pointer;">{{ formatAppointmentTime(appointment) }}</span>
                 </b-col>
             </b-row>
             <b-row>
@@ -18,7 +19,7 @@
                 <b-col class="label">Crew Time</b-col>
                 <b-col class="data">{{ task.crew_hours }}</b-col>
                 <b-col class="label">Assignment</b-col>
-                <b-col class="data">{{ task.labor_assignment.name }}</b-col>
+                <b-col class="data">{{ task.labor_assignment ? task.labor_assignment.name : '' }}</b-col>
                 <b-col class="label">Labor Type</b-col>
                 <b-col class="data">{{ task.labor_type.name }}</b-col>
             </b-row>
@@ -122,11 +123,13 @@
                 </b-row>
             </b-container>
         </b-modal>
+        <text-form ref="textForm" :sms_task="sms_task"></text-form>
     </div>
 </template>
 <script>
 import moment from 'moment';
 import ViewHours from './ViewHours';
+import TextForm from './TextForm';
 import { mapState } from 'vuex';
 import Treeselect from '@riophae/vue-treeselect';
 import treeFilter from '../common/TreeFilter.js';
@@ -134,8 +137,9 @@ import treeNormalizer from '../common/TreeNormalizer.js';
 export default {
     name: 'ViewTaskHours',
     components: {
-        'ViewHours': ViewHours,
-        'Treeselect': Treeselect
+        ViewHours,
+        Treeselect,
+        TextForm,
     },
     props: {
         task_id : { required:true },
@@ -169,6 +173,7 @@ export default {
                     notes: null
                 },
             },
+            sms_task: {},
         };
     },
     created() {
@@ -335,6 +340,40 @@ export default {
         saveNotes(clock_in){
             this.$http.patch('/clock_in/' + clock_in.id, {notes : clock_in.notes})
         },
+        async showTextModal(task, appointment){
+            this.sms_task = {
+                client_id: task.order.project.client_id,
+                start_date: task.order.start_date,
+                service_window: task.order.service_window,
+                order_name: task.order.name,
+                order_description: task.order.description,
+                order_date: task.order.date,     
+                approval_date: task.order.approval_date,
+                name: task.name,
+                description: task.description,
+                property: task.order.properties.length ? task.order.properties[0].name : '', 
+                address: task.order.properties.length ? task.order.properties[0].address1 + ' - ' + task.order.properties[0].city : '',
+                date:task.appointment?.date,
+                sort_order:appointment?.sort_order,
+                time:appointment?.time,
+                notes:appointment?.notes,
+            };
+            await this.$nextTick()
+            this.$refs.textForm.showSMSModal();
+        },
+        getAppointmentClass(appointment){
+            if(!appointment || !appointment.date){
+                return '';
+            }
+            if(appointment.date < this.today){
+                return "blue"
+            }
+            if(appointment.date > this.today){
+                return "green"
+            }
+            return "highlight"
+        }
+
     },
     computed: {
         clock_in() {
@@ -384,5 +423,9 @@ export default {
 
 .blue {
     background-color: #AAEEFF;
+}
+
+.green {
+    background-color: #84ec84;
 }
 </style>

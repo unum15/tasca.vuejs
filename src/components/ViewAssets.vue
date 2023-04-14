@@ -13,7 +13,7 @@
                   </b-col>
                   <b-col md="6" class="my-1">
                        <br />
-                       <b-button @click="clearFilters()">Clear Filters</b-button>
+                       <b-button @click="filtersClear()">Clear Filters</b-button>
                   </b-col>
                 </b-row>
             </b-container>
@@ -30,7 +30,7 @@
                 <template slot="thead-top">
                     <tr>
                         <th v-for="field in fields" :key="field.key">
-                            <b-form-input type="text" @input="filterColumns" v-model="field.filter" v-if="field.filter !== undefined "></b-form-input>
+                            <b-form-input type="text" @input="filtersUpdated" v-model="filters[field.key]" v-if="filters[field.key] !== undefined "></b-form-input>
                         </th>  
                     </tr>
                 </template>
@@ -92,12 +92,13 @@
 import TopMenu from './TopMenu';
 import moment from 'moment';
 import FileSaver from 'file-saver';
-import { mapState } from 'vuex';
+import filtersMixin from '../mixins/Filters.js';
 export default {
     name: 'ViewAssets',
     components: {
         'TopMenu': TopMenu,
     },
+    mixins: [filtersMixin],
     data() {
         return {
             assets: [],
@@ -275,6 +276,7 @@ export default {
         }
     },
     created() {
+        this.filtersInit('assets', this.fields.map(f => (f.key)));
         this.getAssets();
     },
     methods: {
@@ -285,10 +287,7 @@ export default {
                     a.export = false;
                 });
                 this.assets = assets;
-                for(var x = 0;x < this.fields.length; x++){
-                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
-                }
-                this.filterColumns(false);
+                this.filtersUpdated();
             });
         },
         formatExport(value,field,asset){
@@ -299,52 +298,6 @@ export default {
                 return '';
             }
             return moment(time).format('MM-YY');
-        },
-        filterColumns(store=true){
-            this.filtered_assets = this.assets;
-            let filters = {};
-            for(var x = 0;x < this.fields.length; x++){
-                filters[this.fields[x].key] = this.fields[x].filter;
-                if(this.fields[x].filter){
-                    var regex = new RegExp(this.fields[x].filter, "i");
-                    this.filtered_assets = this.filtered_assets.filter(t => {
-                        var keys = this.fields[x].key.split('.');
-                        var value = t;
-                        for(var key_num = 0; key_num < keys.length; key_num++){
-                            if(value){
-                                value = value[keys[key_num]];
-                            }
-                        }
-                        if(typeof(value) == 'boolean'){
-                            if(((this.fields[x].filter == "yes")&&(value == false))||((this.fields[x].filter == "no")&&(value == true))){
-                                return false;
-                            }
-                            return true;
-                        }
-                        if(!value){
-                            value = "";
-                        }
-                        if(this.fields[x].key == 'number'){
-                            value=this.assetNumber(t);
-                        }
-                        if(this.fields[x].key == 'exported_at'){
-                            value=t.asset_exports.length ? t.asset_exports[0].exported_at : 'N/A';
-                        }
-                        return value.match(regex) !== null
-                    })
-                }
-            }
-            if(store!==false){
-                this.$store.dispatch('saveFilters',{filters,name:'assets'});
-            }
-        },
-        clearFilters(){
-            let filters = {};
-            for(var x = 0;x < this.fields.length; x++){
-                this.fields[x].filter = '';
-                filters[this.fields[x].key] = this.fields[x].filter;
-            }
-            this.filterColumns(true);
         },
         numberFormatter(value,key,item){
             return this.assetNumber(item);
@@ -430,23 +383,11 @@ export default {
             this.filtered_assets.map(a => {
                 a.export = true;
             });
-        }
+        },
+        filtersUpdated(){
+            this.filtered_assets=this.filterColumns(this.assets);
+        },
     },
-    computed: {
-        ...mapState({
-            stored_filters: state => state.filters.assets
-        }),
-    },
-    watch: {
-        stored_filters:{
-            deep: true,
-            handler(){
-                for(var x = 0;x < this.fields.length; x++){
-                    this.fields[x].filter = this.stored_filters[this.fields[x].key];
-                }
-            }
-        }
-    }
 }
 </script>
 
