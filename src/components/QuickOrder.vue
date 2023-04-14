@@ -326,7 +326,16 @@
                            >
                            </b-form-input>
                         </b-form-group>
-                  </b-col>                   
+                    </b-col>
+                    <b-col lg="2">
+                        <b-form-group label="Service Window">
+                           <b-form-input
+                               type="number"
+                               v-model="order.service_window"
+                           >
+                           </b-form-input>
+                        </b-form-group>
+                    </b-col>
                </b-row>
                <b-row>
                <b-col>
@@ -356,6 +365,7 @@
                       </b-form-input>
                       </b-form-group>
                   </b-col>
+                  <b-col></b-col>
                 </b-row>
                 <b-row>
                   <b-col>

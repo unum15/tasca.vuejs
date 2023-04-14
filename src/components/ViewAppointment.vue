@@ -32,6 +32,9 @@
                 <b-col class="data">{{ order.description }}</b-col>
             </b-row>
             <b-row>
+                <b-col><a href="/scheduler" @click.stop.prevent="showIrrigation">Irrigation</a></b-col>
+            </b-row>
+            <b-row>
                 <b-col style="padding:0px;border: 1px solid black;">
                     <b-container>
                         <b-row>
@@ -155,18 +158,24 @@
             >
             </EditTask>
       </b-modal>
+      <b-modal size="xl" scrollable ref="modalPropertyIrrigationSystems" title="Irrigation Systems" ok-only>
+        <ViewPropertyIrrigationSystemsTab :property_id="order.property.id" :property_name="order.property.name">
+        </ViewPropertyIrrigationSystemsTab>
+      </b-modal>
     </div>
 </template>
 <script>
 import ViewTaskHours from './ViewTaskHours';
 import ViewHours from './ViewHours';
 import EditTask from './EditTask';
+import ViewPropertyIrrigationSystemsTab from './ViewPropertyIrrigationSystemsTab';
 export default {
     name: 'ViewTaskDate',
     components: {
         ViewTaskHours,
         ViewHours,
-        EditTask
+        EditTask,
+        ViewPropertyIrrigationSystemsTab,
     },
     props: {
         appointment_id : { default: null },
@@ -276,7 +285,10 @@ export default {
             if(this.edit_task && this.edit_task.id && this.$refs['context-'+this.edit_task.id]){
                 this.$refs['context-'+this.edit_task.id][0].style.visibility = 'hidden';
             }
-        }
+        },
+        showIrrigation(){
+            this.$refs['modalPropertyIrrigationSystems'].show();
+        },
     },
     computed: {
         task_hours(){
