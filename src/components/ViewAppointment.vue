@@ -63,7 +63,7 @@
                         <div v-for="contact in order.property.contacts" :key="contact.id">
                             <b-row v-b-popover.hover.top="contact.notes">
                                 <b-col class="label" cols="2">Contact</b-col>
-                                <b-col class="data" cols="10">{{ contact.name }} - {{ getContactType(order.project.client.id, contact) }}</b-col>
+                                <b-col class="data" cols="10">{{ contact.name }} - {{ getContactType(order.project.client_id, contact) }}</b-col>
                             </b-row>
                             <b-row v-for="phone_number in contact.phone_numbers" :key="phone_number.id">
                                 <b-col class="label" cols="2">{{ phone_number.phone_number_type.name }}</b-col>
@@ -164,7 +164,7 @@
         </ViewPropertyIrrigationSystemsTab>
       </b-modal>
       <b-modal size="xl" scrollable ref="modalPropertyBackflows" title="Backflows" ok-only>
-        <ViewPropertyBackflowsTab :client_id="order.client_id" :property_id="order.property.id">
+        <ViewPropertyBackflowsTab :client_id="order.project.client_id" :property_id="order.property.id">
         </ViewPropertyBackflowsTab>
       </b-modal>
     </div>

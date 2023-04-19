@@ -794,7 +794,7 @@ export default {
         },
         backflow_assembly_id(){
             this.getBackflowAssembly();
-        }
+        },
     }
 };
 </script>
