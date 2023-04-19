@@ -31,8 +31,20 @@
                     </b-form-group>
                   </b-col>
                 </b-row>
+                <b-row>
+                    <b-col md="6">
+                        <b-pagination
+                            v-model="current_page"
+                            :total-rows="total_rows"
+                            :per-page="per_page"
+                            align="fill"
+                            size="sm"
+                            class="my-0"
+                            ></b-pagination>
+                    </b-col>
+                </b-row>
             </b-container>
-            <b-table small striped hover :filter="filter" :items="clients" :fields="fields">
+            <b-table small striped hover :filter="filter" :items="clients" :fields="fields" :current-page="current_page" :per-page="per_page" @filtered="onFiltered">
                 <template v-slot:cell(name)="data">
                     <a :href="'/client/' + data.item.id"> {{ data.value }} </a>
                 </template>
@@ -93,7 +105,10 @@ export default {
                     label: 'Notes',
                     sortable: false
                 }
-            ]
+            ],
+            current_page: 1,
+            per_page: 100,
+            total_rows: 1,
         }
     },
     created() {
@@ -106,10 +121,15 @@ export default {
     methods: {
         getClients(){
             if(this.activity_level_id){
-                this.$http.get('/clients?maximium_activity_level_id=' + this.activity_level_id).then((results) => {
+                this.$http.get('/clients?includes=clientType,activityLevel,billingContact,billingProperty&maximium_activity_level_id=' + this.activity_level_id).then((results) => {
                     this.clients = results.data;
+                    this.total_rows = this.clients.length;
                 });
             }
+        },
+        onFiltered(filteredItems) {
+            this.total_rows = filteredItems.length
+            this.current_page = 1
         }
     },
     computed: {
