@@ -917,7 +917,7 @@ export default {
     },
     saveAppointment() {
       this.appointment.task_id = this.task.id;
-      if(this.appointment.id === null){
+      if(!this.appointment.id){
         this.$http.post('/appointment',this.appointment)
           .then((results) => {
             this.appointment.id = results.data?.data?.id;
