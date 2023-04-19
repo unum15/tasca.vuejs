@@ -351,6 +351,7 @@ export default {
                 }
             ],
             sms_task: {},
+            creating_appointment_task: null,
         }        
     },
     created() {
@@ -495,7 +496,9 @@ export default {
         copyDateTmp(item){
             item.date = item.date_tmp;
         },
-        save(item){
+        async save(item){
+            console.log(this.creating_appointment_task)
+            await this.creating_appointment_task;
             var appointment = {
                 appointment_status_id: item.appointment_status_id,
                 task_id: item.task_id,
@@ -508,9 +511,17 @@ export default {
                 this.$http.patch('/appointment/' + item.id, appointment);
             }
             else{
-                this.$http.post('/appointment', appointment).then(response =>{
-                    item.id = response.data.id;
-                })
+                try {
+                    this.creating_task_task = this.$http.post('/appointment', appointment);
+                    console.log(this.creating_task_task);
+                    const response = await this.creating_appointment_task;
+                    console.log(response);
+                    if(response && response.status == 201){
+                        item.id = response.data.id;
+                    }
+                } catch (error) {
+                    alert('Failed saving appointment')
+                }
             }
             var task = {
                 labor_assignment_id: item.labor_assignment_id,
