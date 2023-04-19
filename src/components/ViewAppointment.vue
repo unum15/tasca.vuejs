@@ -33,6 +33,7 @@
             </b-row>
             <b-row>
                 <b-col><a href="/scheduler" @click.stop.prevent="showIrrigation">Irrigation</a></b-col>
+                <b-col><a href="/scheduler" @click.stop.prevent="showBackflows">Backflows</a></b-col>
             </b-row>
             <b-row>
                 <b-col style="padding:0px;border: 1px solid black;">
@@ -162,6 +163,10 @@
         <ViewPropertyIrrigationSystemsTab :property_id="order.property.id" :property_name="order.property.name">
         </ViewPropertyIrrigationSystemsTab>
       </b-modal>
+      <b-modal size="xl" scrollable ref="modalPropertyBackflows" title="Backflows" ok-only>
+        <ViewPropertyBackflowsTab :client_id="order.client_id" :property_id="order.property.id">
+        </ViewPropertyBackflowsTab>
+      </b-modal>
     </div>
 </template>
 <script>
@@ -169,6 +174,7 @@ import ViewTaskHours from './ViewTaskHours';
 import ViewHours from './ViewHours';
 import EditTask from './EditTask';
 import ViewPropertyIrrigationSystemsTab from './ViewPropertyIrrigationSystemsTab';
+import ViewPropertyBackflowsTab from './ViewPropertyBackflowsTab';
 export default {
     name: 'ViewTaskDate',
     components: {
@@ -176,6 +182,7 @@ export default {
         ViewHours,
         EditTask,
         ViewPropertyIrrigationSystemsTab,
+        ViewPropertyBackflowsTab,
     },
     props: {
         appointment_id : { default: null },
@@ -288,6 +295,9 @@ export default {
         },
         showIrrigation(){
             this.$refs['modalPropertyIrrigationSystems'].show();
+        },
+        showBackflows(){
+            this.$refs['modalPropertyBackflows'].show();
         },
     },
     computed: {
