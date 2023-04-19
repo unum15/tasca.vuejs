@@ -920,9 +920,7 @@ export default {
       if(this.appointment.id === null){
         this.$http.post('/appointment',this.appointment)
           .then((results) => {
-            if(results.data){
-              this.appointment.id = results.data.data.id;
-            }
+            this.appointment.id = results.data?.data?.id;
             this.nextTask();
           });
       }
