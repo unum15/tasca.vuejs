@@ -772,6 +772,7 @@ export default {
       const properties = this.properties.filter(p => (p.id == this.order.property));
       this.sms_task = {
         client_id: this.client_id,
+        contact_id: this.project.contact_id,
         start_date: this.order.start_date,
         service_window: this.order.service_window,
         order_name: this.order.name,
