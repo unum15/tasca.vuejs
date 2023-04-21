@@ -1,101 +1,115 @@
 <template>
   <div>
     <TopMenu></TopMenu>
-    <b-alert variant="danger"
-             dismissible
-             max="5"
-             @dismissed="showSaveFailed=false">
+    <b-alert
+      variant="danger"
+      dismissible
+      max="5"
+      @dismissed="showSaveFailed = false"
+    >
       Save Failed!
     </b-alert>
-    <b-alert variant="success"
-             dismissible
-             :show="showSaveSuccess"
-             @dismissed="showSaveSuccess=false">
+    <b-alert
+      variant="success"
+      dismissible
+      :show="showSaveSuccess"
+      @dismissed="showSaveSuccess = false"
+    >
       Saved!
     </b-alert>
     <header>
-        New Order
+      New Order
     </header>
     <main>
-            <b-container :fluid="true">
-            <b-row>
-            <b-col cols="8">
+      <b-container :fluid="true">
+        <b-row>
+          <b-col cols="8">
             <b-container>
               <b-row>
                 <b-col>
-                    <b-form-group label="Client">
-                     <el-select
+                  <b-form-group label="Client">
+                    <el-select
                       v-model="client_id"
                       filterable
                       default-first-option
                       placeholder="Select Client"
-                      @change="getProperties();getContacts();getProjects();">
-                        <el-option
-                          v-for="client in clients"
-                          :key="client.id"
-                          :label="client.name"
-                          :value="client.id">
-                        </el-option>
-                      </el-select>
-                    </b-form-group>
+                      @change="
+                        getProperties();
+                        getContacts();
+                        getProjects();
+                      "
+                    >
+                      <el-option
+                        v-for="client in clients"
+                        :key="client.id"
+                        :label="client.name"
+                        :value="client.id"
+                      >
+                      </el-option>
+                    </el-select>
+                  </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Property">
-                      <b-form-select
-                        :options="properties"
-                        value-field="id"
-                        text-field="name"
-                        required
-                        :state="order.property != null"
-                        v-model="order.property">
-                      </b-form-select>
-                    </b-form-group>
-                    {{ property_address }}
+                    <b-form-select
+                      :options="properties"
+                      value-field="id"
+                      text-field="name"
+                      required
+                      :state="order.property != null"
+                      v-model="order.property"
+                    >
+                    </b-form-select>
+                  </b-form-group>
+                  {{ property_address }}
                 </b-col>
                 <b-col>
                   <b-form-group label="Contact">
-                      <b-form-select
-                        :options="contacts"
-                        value-field="id"
-                        text-field="name"
-                        required
-                        :state="project.contact_id != null"
-                        v-model="project.contact_id">
-                      </b-form-select>
-                    </b-form-group>
-                    <div v-for="number in contact_numbers" :key="number.id">
-                      {{ number.phone_number_type.name }}: {{ number.phone_number }}
-                    </div>
+                    <b-form-select
+                      :options="property_contacts"
+                      value-field="id"
+                      text-field="name"
+                      required
+                      :state="order.contact_id != null"
+                      v-model="order.contact_id"
+                    >
+                    </b-form-select>
+                  </b-form-group>
+                  <div v-for="number in contact_numbers" :key="number.id">
+                    {{ number.phone_number_type.name }}:
+                    {{ number.phone_number }}
+                  </div>
                 </b-col>
               </b-row>
               <b-row>
                 <b-col>
                   <b-form-group label="Project">
-                      <b-form-select
-                        :options="projects"
-                        value-field="id"
-                        text-field="name"
-                        v-model="project.id">
-                      </b-form-select>
-                    </b-form-group>
+                    <b-form-select
+                      :options="projects"
+                      value-field="id"
+                      text-field="name"
+                      v-model="project.id"
+                    >
+                    </b-form-select>
+                  </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Project Name" v-if="!project.id">
                     <el-select
-                        v-model="project.name"
-                        filterable
-                        allow-create
-                        default-first-option
-                        placeholder="New Project Name"
-                        :state="project.name != null"
-                        required
+                      v-model="project.name"
+                      filterable
+                      allow-create
+                      default-first-option
+                      placeholder="New Project Name"
+                      :state="project.name != null"
+                      required
                     >
                       <el-option
                         v-for="name in used_projects"
                         :key="name"
                         :label="name"
                         :value="name"
-                        >
+                      >
                       </el-option>
                     </el-select>
                   </b-form-group>
@@ -105,21 +119,21 @@
                 <b-col>
                   <b-form-group label="Order Name">
                     <el-select
-                        v-model="order.name"
-                        filterable
-                        allow-create
-                        default-first-option
-                        placeholder="New Order Name"
-                        @change="orderNameChanged"
-                        :state="order.name != null"
-                        required
+                      v-model="order.name"
+                      filterable
+                      allow-create
+                      default-first-option
+                      placeholder="New Order Name"
+                      @change="orderNameChanged"
+                      :state="order.name != null"
+                      required
                     >
                       <el-option
                         v-for="name in used_orders"
                         :key="name"
                         :label="name"
                         :value="name"
-                        >
+                      >
                       </el-option>
                     </el-select>
                   </b-form-group>
@@ -127,335 +141,318 @@
                 <b-col>
                   <b-form-group label="Task Name">
                     <el-select
-                        v-model="task.name"
-                        filterable
-                        allow-create
-                        default-first-option
-                        placeholder="New Task Name"
-                        @change="taskNameChanged"
-                        :state="task.name != null"
-                        required
+                      v-model="task.name"
+                      filterable
+                      allow-create
+                      default-first-option
+                      placeholder="New Task Name"
+                      @change="taskNameChanged"
+                      :state="task.name != null"
+                      required
                     >
                       <el-option
                         v-for="name in used_tasks"
                         :key="name"
                         :label="name"
                         :value="name"
-                        >
+                      >
                       </el-option>
                     </el-select>
                   </b-form-group>
                 </b-col>
               </b-row>
-                <b-row>
-                   <b-col>
-                       <b-form-group label="Order Description">
-                           <b-form-textarea
-                               v-model="order.description"
-                               placeholder="What needs to be done?"
-                               required
-                               ref='order-description'
-                               :state="order.description != null"
-                               @focus.native="selectText('order-description')"
-                               >
-                           </b-form-textarea>
-                       </b-form-group>
-                   </b-col>
-                   <b-col>
-                       <b-form-group label="Task Description">
-                           <b-form-textarea
-                               v-model="task.description"
-                               placeholder="What needs to be done?"
-                               required
-                               ref='task-description'
-                               :state="task.description != null"
-                               @focus.native="selectText('task-description')"
-                               >
-                           </b-form-textarea>
-                       </b-form-group>
-                   </b-col>
-               </b-row>
-               <b-row>
+              <b-row>
                 <b-col>
-                  <b-container>
-               <b-row>
-                   <b-col>
-                      <b-form-group label="Category">
-                        <el-select
-                          v-model="order.order_category_id"
-                          filterable
-                          placeholder="Select Category"
-                          default-first-option>
-                          <el-option
-                            v-for="order_category in order_categories"
-                            :key="order_category.id"
-                            :label="order_category.name"
-                            :value="order_category.id">
-                          </el-option>
-                        </el-select>
-                      </b-form-group>
-                   </b-col>
-                   </b-row>
-               <b-row>
-                   <b-col>
-                       <b-form-group label="Priority">
-                        <el-select
-                          v-model="order.order_priority_id"
-                          filterable
-                          placeholder="Select Priority"
-                          default-first-option>
-                          <el-option
-                            v-for="order_priority in order_priorities"
-                            :key="order_priority.id"
-                            :label="order_priority.name"
-                            :value="order_priority.id">
-                          </el-option>
-                        </el-select>
-                       </b-form-group>
-                   </b-col>
-                   </b-row>
-               <b-row>
-                   <b-col>
-                       <b-form-group label="Type">
-                        <el-select
-                          v-model="order.order_type_id"
-                          filterable
-                          placeholder="Select Type"
-                          default-first-option>
-                          <el-option
-                            v-for="order_type in order_types"
-                            :key="order_type.id"
-                            :label="order_type.name"
-                            :value="order_type.id">
-                          </el-option>
-                        </el-select>
-                       </b-form-group>
-                   </b-col>
-               </b-row>
-               </b-container>
-               </b-col>
-               <b-col style="text-align:left;" md="auto">
-                 <b-form-group label="Labor Types" v-slot="{ ariaDescribedby }">
-                  <b-form-radio-group
-                    v-model="task.labor_type_id"
-                    :options="labor_types"
-                    :aria-describedby="ariaDescribedby"
-                    value-field="id"
-                    text-field="name"
-                    stacked
-                    @change="laborTypeChanged"
-                  ></b-form-radio-group>
-                </b-form-group>
-               </b-col>
-               <b-col>
-               <b-container>
-               <b-row>
-                  <b-col>
-                      <b-form-group label="Assignment">
-                        <Treeselect
-                          :options="current_assignments"
-                          :normalizer="treeNormalizer"
-                          v-model="task.labor_assignment_id"
-                        />
-                      </b-form-group>
-                  </b-col>
-                  </b-row>
-               <b-row>
-                  <b-col>
-                      <b-form-group label="Status">
-                        <el-select
-                          v-model="task.task_status_id"
-                          filterable
-                          placeholder="Select Status"
-                          default-first-option>
-                          <el-option
-                            v-for="task_status in current_statuses"
-                            :key="task_status.id"
-                            :label="task_status.name"
-                            :value="task_status.id">
-                          </el-option>
-                        </el-select>
-                      </b-form-group>
-                  </b-col>
-                  </b-row>
-               <b-row>
-                  <b-col>
-                      <b-form-group label="Action">
-                        <el-select
-                          v-model="task.task_action_id"
-                          filterable
-                          placeholder="Select Action"
-                          default-first-option>
-                          <el-option
-                            v-for="task_action in current_actions"
-                            :key="task_action.id"
-                            :label="task_action.name"
-                            :value="task_action.id">
-                          </el-option>
-                        </el-select>
-                      </b-form-group>
-                  </b-col>
-              </b-row>
-              </b-container>
-              </b-col>
+                  <b-form-group label="Order Description">
+                    <b-form-textarea
+                      v-model="order.description"
+                      placeholder="What needs to be done?"
+                      required
+                      ref="order-description"
+                      :state="order.description != null"
+                      @focus.native="selectText('order-description')"
+                    >
+                    </b-form-textarea>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Task Description">
+                    <b-form-textarea
+                      v-model="task.description"
+                      placeholder="What needs to be done?"
+                      required
+                      ref="task-description"
+                      :state="task.description != null"
+                      @focus.native="selectText('task-description')"
+                    >
+                    </b-form-textarea>
+                  </b-form-group>
+                </b-col>
               </b-row>
               <b-row>
                 <b-col>
-                   <b-form-group label="Order Date">
-                     <b-form-input
-                       type="date"
-                       v-model="order.date">
-                     </b-form-input>
-                   </b-form-group>
-                 </b-col>
-                   <b-col>
-                       <b-form-group label="Approval Date">
-                           <b-form-input
-                               type="date"
-                               v-model="order.approval_date"
-                           >
-                           </b-form-input>
-                       </b-form-group>
-                   </b-col>
-                   <b-col>
-                       <b-form-group label="Start Date">
-                           <b-form-input
-                               type="date"
-                               v-model="order.start_date"
-                               :disabled="order.approval_date == null"
-                           >
-                           </b-form-input>
+                  <b-container>
+                    <b-row>
+                      <b-col>
+                        <b-form-group label="Category">
+                          <el-select
+                            v-model="order.order_category_id"
+                            filterable
+                            placeholder="Select Category"
+                            default-first-option
+                          >
+                            <el-option
+                              v-for="order_category in order_categories"
+                              :key="order_category.id"
+                              :label="order_category.name"
+                              :value="order_category.id"
+                            >
+                            </el-option>
+                          </el-select>
                         </b-form-group>
-                    </b-col>
-                    <b-col lg="2">
-                        <b-form-group label="Service Window">
-                           <b-form-input
-                               type="number"
-                               v-model="order.service_window"
-                           >
-                           </b-form-input>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col>
+                        <b-form-group label="Priority">
+                          <el-select
+                            v-model="order.order_priority_id"
+                            filterable
+                            placeholder="Select Priority"
+                            default-first-option
+                          >
+                            <el-option
+                              v-for="order_priority in order_priorities"
+                              :key="order_priority.id"
+                              :label="order_priority.name"
+                              :value="order_priority.id"
+                            >
+                            </el-option>
+                          </el-select>
                         </b-form-group>
-                    </b-col>
-               </b-row>
-               <b-row>
-               <b-col>
-                  <b-form-group label="Appointment Date">
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col>
+                        <b-form-group label="Type">
+                          <el-select
+                            v-model="order.order_type_id"
+                            filterable
+                            placeholder="Select Type"
+                            default-first-option
+                          >
+                            <el-option
+                              v-for="order_type in order_types"
+                              :key="order_type.id"
+                              :label="order_type.name"
+                              :value="order_type.id"
+                            >
+                            </el-option>
+                          </el-select>
+                        </b-form-group>
+                      </b-col>
+                    </b-row>
+                  </b-container>
+                </b-col>
+                <b-col style="text-align:left;" md="auto">
+                  <b-form-group
+                    label="Labor Types"
+                    v-slot="{ ariaDescribedby }"
+                  >
+                    <b-form-radio-group
+                      v-model="task.labor_type_id"
+                      :options="labor_types"
+                      :aria-describedby="ariaDescribedby"
+                      value-field="id"
+                      text-field="name"
+                      stacked
+                      @change="laborTypeChanged"
+                    ></b-form-radio-group>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-container>
+                    <b-row>
+                      <b-col>
+                        <b-form-group label="Assignment">
+                          <Treeselect
+                            :options="current_assignments"
+                            :normalizer="treeNormalizer"
+                            v-model="task.labor_assignment_id"
+                          />
+                        </b-form-group>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col>
+                        <b-form-group label="Status">
+                          <el-select
+                            v-model="task.task_status_id"
+                            filterable
+                            placeholder="Select Status"
+                            default-first-option
+                          >
+                            <el-option
+                              v-for="task_status in current_statuses"
+                              :key="task_status.id"
+                              :label="task_status.name"
+                              :value="task_status.id"
+                            >
+                            </el-option>
+                          </el-select>
+                        </b-form-group>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col>
+                        <b-form-group label="Action">
+                          <el-select
+                            v-model="task.task_action_id"
+                            filterable
+                            placeholder="Select Action"
+                            default-first-option
+                          >
+                            <el-option
+                              v-for="task_action in current_actions"
+                              :key="task_action.id"
+                              :label="task_action.name"
+                              :value="task_action.id"
+                            >
+                            </el-option>
+                          </el-select>
+                        </b-form-group>
+                      </b-col>
+                    </b-row>
+                  </b-container>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <b-form-group label="Order Date">
+                    <b-form-input type="date" v-model="order.date">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Approval Date">
+                    <b-form-input type="date" v-model="order.approval_date">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Start Date">
                     <b-form-input
-                        type="date"
-                        v-model="appointment.date"
+                      type="date"
+                      v-model="order.start_date"
+                      :disabled="order.approval_date == null"
                     >
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col lg="2">
+                  <b-form-group label="Service Window">
+                    <b-form-input type="number" v-model="order.service_window">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <b-form-group label="Appointment Date">
+                    <b-form-input type="date" v-model="appointment.date">
                     </b-form-input>
                   </b-form-group>
                 </b-col>
                 <b-col>
                   <b-form-group label="Sort Order">
-                      <b-form-input
-                          type="text"
-                          v-model="appointment.sort_order"
-                      >
-                      </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                    <b-form-group label="Time">
-                      <b-form-input
-                          type="time"
-                          v-model="appointment.time"
-                      >
-                      </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col></b-col>
-                </b-row>
-                <b-row>
-                  <b-col>
-                    <b-form-group label="Crew">
-                        <b-form-select
-                            :options="crews"
-                            value-field="id"
-                            text-field="name"
-                            v-model="task.crew_id"
-                            >
-                        </b-form-select>
-                    </b-form-group>
-                  </b-col>
-                  <b-col>
-                    <b-form-group label="Crew Hours">
-                      <b-form-input
-                          type="text"
-                          v-model="task.crew_hours"
-                      >
-                      </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                    <b-form-group label="Man Hours">
-                      <b-form-input
-                          type="text"
-                          v-model="task.task_hours"
-                      >
-                      </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                    <b-form-group label="Budget">
-                      <b-form-input
-                          type="text"
-                          v-model="order.budget"
-                      >
-                      </b-form-input>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                    <b-form-group label="Budget +/-">
-                      <b-form-input
-                          type="number"
-                          v-model="order.budget_plus_minus"
-                      >
-                      </b-form-input>
-                    </b-form-group>
-                  </b-col>
-                </b-row>
-                <b-row>
+                    <b-form-input type="text" v-model="appointment.sort_order">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Time">
+                    <b-form-input type="time" v-model="appointment.time">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col></b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <b-form-group label="Crew">
+                    <b-form-select
+                      :options="crews"
+                      value-field="id"
+                      text-field="name"
+                      v-model="task.crew_id"
+                    >
+                    </b-form-select>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Crew Hours">
+                    <b-form-input type="text" v-model="task.crew_hours">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Man Hours">
+                    <b-form-input type="text" v-model="task.task_hours">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Budget">
+                    <b-form-input type="text" v-model="order.budget">
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Budget +/-">
+                    <b-form-input
+                      type="number"
+                      v-model="order.budget_plus_minus"
+                    >
+                    </b-form-input>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row>
                 <b-col>
                   <b-form-group label="Order Location">
-                      <b-form-textarea
-                          type="text"
-                          v-model="order.location"
-                      >
-                      </b-form-textarea>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                    <b-form-group label="Order Instructions">
-                      <b-form-textarea
-                          v-model="order.instructions"
-                      >
-                      </b-form-textarea>
-                      </b-form-group>
-                  </b-col>
-                  </b-row>
-                  <b-row>
-                  <b-col>
-                    <b-form-group label="Order Notes">
-                      <b-form-textarea
-                          v-model="order.notes"
-                      >
-                      </b-form-textarea>
-                      </b-form-group>
-                  </b-col>
-                  <b-col>
-                    <b-form-group label="Appointment Notes">
-                      <b-form-textarea
-                          v-model="appointment.notes"
-                      >
-                      </b-form-textarea>
-                      </b-form-group>
-                  </b-col>
-                </b-row>
-              <b-button @click="showTextModal();">Text</b-button>
-              <b-button @click="saveProject();">New</b-button>
-              <b-button @click="reroute=true;saveProject();">Edit</b-button>
+                    <b-form-textarea type="text" v-model="order.location">
+                    </b-form-textarea>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Order Instructions">
+                    <b-form-textarea v-model="order.instructions">
+                    </b-form-textarea>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col>
+                  <b-form-group label="Order Notes">
+                    <b-form-textarea v-model="order.notes"> </b-form-textarea>
+                  </b-form-group>
+                </b-col>
+                <b-col>
+                  <b-form-group label="Appointment Notes">
+                    <b-form-textarea v-model="appointment.notes">
+                    </b-form-textarea>
+                  </b-form-group>
+                </b-col>
+              </b-row>
+              <b-button @click="showTextModal()">Text</b-button>
+              <b-button @click="saveProject()">New</b-button>
+              <b-button
+                @click="
+                  reroute = true;
+                  saveProject();
+                "
+                >Edit</b-button
+              >
             </b-container>
           </b-col>
           <b-col v-if="settings.help_show == 'true'">
@@ -464,35 +461,32 @@
         </b-row>
       </b-container>
     </main>
-    <text-form
-      ref="textForm"
-      :sms_task="sms_task"
-    ></text-form>
+    <text-form ref="textForm" :sms_task="sms_task"></text-form>
   </div>
 </template>
 <script>
-import moment from 'moment';
-import TopMenu from './TopMenu';
-import { mapState } from 'vuex';
-import Treeselect from '@riophae/vue-treeselect';
-import '@riophae/vue-treeselect/dist/vue-treeselect.css';
-import treeNormalizer from '../common/TreeNormalizer.js';
-import TextForm from './TextForm';
+import moment from "moment";
+import TopMenu from "./TopMenu";
+import { mapState } from "vuex";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import treeNormalizer from "../common/TreeNormalizer.js";
+import TextForm from "./TextForm";
 export default {
-  name: 'QuickOrder',
+  name: "QuickOrder",
   components: {
     TopMenu,
     Treeselect,
     TextForm,
   },
-  data () {
+  data() {
     return {
       clients: [],
       contact_methods: [],
       activity_levels: [],
       properties: [],
       contacts: [],
-      projects: [ {id: null, name: 'New Project'}],
+      projects: [{ id: null, name: "New Project" }],
       order_categories: [],
       order_priorities: [],
       order_types: [],
@@ -509,7 +503,7 @@ export default {
         id: null,
         name: null,
         description: null,
-        property: null
+        proy: null,
       },
       task: {
         id: null,
@@ -520,201 +514,204 @@ export default {
         labor_assignment_id: null,
         task_status_id: null,
         task_action_id: null,
-        crew_id: null
+        crew_id: null,
       },
       appointment: {
         id: null,
         date: null,
-        sort_order: null
+        sort_order: null,
       },
       project: {
         id: null,
-        contact_id: null
       },
       used_projects: [],
       used_tasks: [],
       used_orders: [],
       used_referred_bys: [],
       sms_task: {},
-    }
+    };
   },
-  created () {
-    this.$http.get('/clients').then(response => {
-      this.clients = response.data
+  created() {
+    this.$http.get("/clients").then((response) => {
+      this.clients = response.data;
     });
-    this.$http.get('/order_categories').then(response => {
-      this.order_categories = response.data
+    this.$http.get("/order_categories").then((response) => {
+      this.order_categories = response.data;
     });
-    this.$http.get('/order_priorities').then(response => {
-      this.order_priorities = response.data
+    this.$http.get("/order_priorities").then((response) => {
+      this.order_priorities = response.data;
     });
-    this.$http.get('/order_types').then(response => {
-      this.order_types = response.data
+    this.$http.get("/order_types").then((response) => {
+      this.order_types = response.data;
     });
-    this.$http.get('/labor_assignments').then(response => {
-      this.labor_assignments = response.data.data
+    this.$http.get("/labor_assignments").then((response) => {
+      this.labor_assignments = response.data.data;
     });
-    this.$http.get('/labor_types').then(response => {
-      this.labor_types = response.data.data
+    this.$http.get("/labor_types").then((response) => {
+      this.labor_types = response.data.data;
     });
-    this.$http.get('/task_statuses').then(response => {
-      this.task_statuses = response.data
+    this.$http.get("/task_statuses").then((response) => {
+      this.task_statuses = response.data;
     });
-    this.$http.get('/task_actions').then(response => {
-      this.task_actions = response.data
+    this.$http.get("/task_actions").then((response) => {
+      this.task_actions = response.data;
     });
-    this.$http.get('/crews').then(response => {
-      this.crews = response.data
+    this.$http.get("/crews").then((response) => {
+      this.crews = response.data;
     });
-    this.$http.get('/activity_levels').then(response => {
-      this.activity_levels = response.data
-      this.activity_levels_loading = false
+    this.$http.get("/activity_levels").then((response) => {
+      this.activity_levels = response.data;
+      this.activity_levels_loading = false;
     });
-    this.$http.get('/projects/unique/name').then(response => {
+    this.$http.get("/projects/unique/name").then((response) => {
       this.used_projects = response.data.data;
     });
-    this.$http.get('/orders/unique/name').then(response => {
+    this.$http.get("/orders/unique/name").then((response) => {
       this.used_orders = response.data.data;
     });
-    this.$http.get('/tasks/unique/name').then(response => {
+    this.$http.get("/tasks/unique/name").then((response) => {
       this.used_tasks = response.data.data;
     });
-    this.$http.get('/clients/unique/referred_by').then(response => {
+    this.$http.get("/clients/unique/referred_by").then((response) => {
       this.used_referred_bys = response.data.data;
     });
-    this.$http.get('/sms_message_types').then(response => {
-        this.message_types = response.data.data;
+    this.$http.get("/sms_message_types").then((response) => {
+      this.message_types = response.data.data;
     });
-    this.$http.get('/stock_text_messages').then(response => {
-        this.sms_messages = response.data.data;
+    this.$http.get("/stock_text_messages").then((response) => {
+      this.sms_messages = response.data.data;
     });
   },
   methods: {
     treeNormalizer,
     getProperties() {
-      if(this.client_id){
-        this.$http.get('/properties?client_id=' + this.client_id).then(response => {
-          this.properties = response.data
-          if(this.properties.length == 1){
-             this.order.property = this.properties[0].id;
-          }
-        })
-      }
-      else{
-        this.properties = []
+      if (this.client_id) {
+        this.$http
+          .get("/properties?client_id=" + this.client_id)
+          .then((response) => {
+            this.properties = response.data;
+            if (this.properties.length == 1) {
+              this.order.property = this.properties[0].id;
+            }
+          });
+      } else {
+        this.properties = [];
       }
     },
     getContacts() {
-      if(this.client_id){
-        this.$http.get('/contacts?client_id=' + this.client_id).then(response => {
-          this.contacts = response.data
-          if(this.contacts.length == 1){
-             this.project.contact_id = this.contacts[0].id;
-          }
-          else{
-            var client = this.clients.filter(c => c.id == this.client_id);
-            this.project.contact_id = client[0].billing_contact_id;
-          }
-        })
-      }
-      else{
-        this.contacts = []
+      if (this.client_id) {
+        this.$http
+          .get("/contacts?includes=properties&client_id=" + this.client_id)
+          .then((response) => {
+            this.contacts = response.data;
+            if (this.contacts.length == 1) {
+              this.order.contact_id = this.contacts[0].id;
+            } else {
+              var client = this.clients.filter((c) => c.id == this.client_id);
+              this.order.contact_id = client[0].billing_contact_id;
+            }
+          });
+      } else {
+        this.contacts = [];
       }
     },
     getProjects() {
-      if(this.client_id){
-        this.$http.get('/projects?client_id=' + this.client_id + '&completed=false').then(response => {
-          this.projects = response.data
-          this.projects.unshift({id: null, name: 'New Project'})
-        })
-      }
-      else{
-        this.projects = [{id: null, name: 'New Project'}]
+      if (this.client_id) {
+        this.$http
+          .get("/projects?client_id=" + this.client_id + "&completed=false")
+          .then((response) => {
+            this.projects = response.data;
+            this.projects.unshift({ id: null, name: "New Project" });
+          });
+      } else {
+        this.projects = [{ id: null, name: "New Project" }];
       }
     },
     saveProject() {
-      if(this.order.name === null){
+      if (this.order.name === null) {
         return;
       }
-      if(this.project.id){
+      if (this.project.id) {
         this.saveOrder();
         return;
       }
       this.project.client_id = this.client_id;
       this.project.open_date = this.today;
-      if(this.project.id === null){
-        this.$http.post('/project',this.project)
-          .then((results) => {
-            this.project.id = results.data.id;
-            this.saveOrder();
-          })
-      }
-      else{
-        this.$http.patch('/project/' + this.project.id,this.project)
+      this.project.contact_id = this.order.contact_id;
+      if (this.project.id === null) {
+        this.$http.post("/project", this.project).then((results) => {
+          this.project.id = results.data.id;
+          this.saveOrder();
+        });
+      } else {
+        this.$http
+          .patch("/project/" + this.project.id, this.project)
           .then(() => {
             this.saveOrder();
-          })
+          });
       }
     },
     saveOrder() {
-
-      if(this.order.name === null){
+      if (this.order.name === null) {
         return;
       }
       this.order.project_id = this.project.id;
       this.order.date = this.today;
-      if(this.order.id === null){
-        this.$http.post('/order',this.order)
-          .then((results) => {
-            this.order.id = results.data.id;
-            this.saveTask();
-          })
-      }
-      else{
-        this.$http.patch('/order/' + this.order.id,this.order)
-          .then(() => {
-            this.saveOrder();
-          })
+      if (this.order.id === null) {
+        this.$http.post("/order", this.order).then((results) => {
+          this.order.id = results.data.id;
+          this.saveTask();
+        });
+      } else {
+        this.$http.patch("/order/" + this.order.id, this.order).then(() => {
+          this.saveOrder();
+        });
       }
     },
     saveTask() {
       this.task.order_id = this.order.id;
-			this.task.description = this.task.name;
-      if(this.task.id === null){
-        this.$http.post('/task',this.task)
-          .then((results) => {
-            this.task.id = results.data.data.id;
-            this.saveAppointment();
-          })
-      }
-      else{
-        this.$http.patch('/task/' + this.task.id,this.task)
-        .then(() => {this.nextTask()})
+      this.task.description = this.task.name;
+      if (this.task.id === null) {
+        this.$http.post("/task", this.task).then((results) => {
+          this.task.id = results.data.data.id;
+          this.saveAppointment();
+        });
+      } else {
+        this.$http.patch("/task/" + this.task.id, this.task).then(() => {
+          this.nextTask();
+        });
       }
     },
     saveAppointment() {
       this.appointment.task_id = this.task.id;
-      if(!this.appointment.id){
-        this.$http.post('/appointment',this.appointment)
-          .then((results) => {
-            this.appointment.id = results.data?.data?.id;
+      if (!this.appointment.id) {
+        this.$http.post("/appointment", this.appointment).then((results) => {
+          this.appointment.id = results.data?.data?.id;
+          this.nextTask();
+        });
+      } else {
+        this.$http
+          .patch("/appointment/" + this.appointment.id, this.appointment)
+          .then(() => {
             this.nextTask();
-          })
-      }
-      else{
-        this.$http.patch('/appointment/' + this.appointment.id,this.appointment)
-        .then(() => {this.nextTask()})
+          });
       }
     },
-    nextTask(){
-      if(this.reroute){
-        this.$router.push('/client/' + this.client_id + '/project/' + this.project.id + '/order/' + this.order.id);
-      }
-      else{
+    nextTask() {
+      if (this.reroute) {
+        this.$router.push(
+          "/client/" +
+            this.client_id +
+            "/project/" +
+            this.project.id +
+            "/order/" +
+            this.order.id
+        );
+      } else {
         this.resetForm();
       }
     },
-    resetForm(first=false){
+    resetForm(first = false) {
       this.order = {
         id: null,
         name: null,
@@ -724,135 +721,198 @@ export default {
         order_type_id: parseInt(this.settings.default_order_type_id),
         order_status_id: parseInt(this.settings.default_order_status_id),
         order_action_id: parseInt(this.settings.default_order_action_id),
+        contact_id: null,
         date: this.today,
         approval_date: this.today,
         start_date: first ? this.today : this.order.start_date,
-        service_window: this.user.default_service_window
+        service_window: this.user.default_service_window,
       };
       this.task = {
         id: null,
         labor_type_id: parseInt(this.settings.default_labor_type_id),
-        task_status_id: parseInt(this.settings['default_task_status_id-labor_type_id-' + this.settings.default_labor_type_id]),
-        task_action_id: parseInt(this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id]),
+        task_status_id: parseInt(
+          this.settings[
+            "default_task_status_id-labor_type_id-" +
+              this.settings.default_labor_type_id
+          ]
+        ),
+        task_action_id: parseInt(
+          this.settings[
+            "default_task_action_id-labor_type_id-" +
+              this.settings.default_labor_type_id
+          ]
+        ),
         name: null,
         description: null,
-        crew_id: first ? parseInt(this.settings.default_crew_id) : this.task.crew_id,
-        labor_assignment_id: first ? parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]) : this.task.labor_assignment_id
+        crew_id: first
+          ? parseInt(this.settings.default_crew_id)
+          : this.task.crew_id,
+        labor_assignment_id: first
+          ? parseInt(
+              this.settings[
+                "default_labor_assignment_id-labor_type_id-" +
+                  this.settings.default_labor_type_id
+              ]
+            )
+          : this.task.labor_assignment_id,
       };
       this.appointment = {
         id: null,
         date: null,
-        sort_order: null
+        sort_order: null,
       };
       this.project = {
         id: null,
-        contact_id: null
       };
       this.client_id = null;
     },
-    orderNameChanged(){
-      if(this.order.description === null){
+    orderNameChanged() {
+      if (this.order.description === null) {
         this.order.description = this.order.name;
       }
     },
-    taskNameChanged(){
-      if(this.task.description === null){
+    taskNameChanged() {
+      if (this.task.description === null) {
         this.task.description = this.task.name;
       }
     },
-    laborTypeChanged(){
-			this.task.labor_assignment_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id] ? parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.task.labor_type_id]) : null;
-			this.task.task_status_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id] ? parseInt(this.settings['default_task_status_id-labor_type_id-' + this.task.labor_type_id]) : null;
-			this.task.task_action_id = this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id] ? parseInt(this.settings['default_task_action_id-labor_type_id-' + this.task.labor_type_id]) : null;
-		},
-    selectText(ref){
-      this.$refs[ref].select()
+    laborTypeChanged() {
+      this.task.labor_assignment_id = this.settings[
+        "default_task_action_id-labor_type_id-" + this.task.labor_type_id
+      ]
+        ? parseInt(
+            this.settings[
+              "default_labor_assignment_id-labor_type_id-" +
+                this.task.labor_type_id
+            ]
+          )
+        : null;
+      this.task.task_status_id = this.settings[
+        "default_task_action_id-labor_type_id-" + this.task.labor_type_id
+      ]
+        ? parseInt(
+            this.settings[
+              "default_task_status_id-labor_type_id-" + this.task.labor_type_id
+            ]
+          )
+        : null;
+      this.task.task_action_id = this.settings[
+        "default_task_action_id-labor_type_id-" + this.task.labor_type_id
+      ]
+        ? parseInt(
+            this.settings[
+              "default_task_action_id-labor_type_id-" + this.task.labor_type_id
+            ]
+          )
+        : null;
     },
-    async showTextModal(){
-      const properties = this.properties.filter(p => (p.id == this.order.property));
+    selectText(ref) {
+      this.$refs[ref].select();
+    },
+    async showTextModal() {
+      const properties = this.properties.filter(
+        (p) => p.id == this.order.property
+      );
       this.sms_task = {
         client_id: this.client_id,
-        contact_id: this.project.contact_id,
+        contact_id: this.order.contact_id,
         start_date: this.order.start_date,
         service_window: this.order.service_window,
         order_name: this.order.name,
         order_description: this.order.description,
-        order_date: this.order.date,     
+        order_date: this.order.date,
         approval_date: this.order.approval_date,
         name: this.task.name,
         description: this.task.description,
-        property: properties.length ? properties[0].name : '', 
-        address: properties.length ? properties[0].address1 + ' - ' + properties[0].city : '',
-        date:this.appointment.date,
-        sort_order:this.appointment.sort_order,
-        time:this.appointment.time,
-        notes:this.appointment.notes,
+        property: properties.length ? properties[0].name : "",
+        address: properties.length
+          ? properties[0].address1 + " - " + properties[0].city
+          : "",
+        date: this.appointment.date,
+        sort_order: this.appointment.sort_order,
+        time: this.appointment.time,
+        notes: this.appointment.notes,
       };
-      await this.$nextTick()
+      await this.$nextTick();
       this.$refs.textForm.showSMSModal();
-    }
-
+    },
   },
   computed: {
     today() {
-			return moment().format('YYYY-MM-DD');
-		},
+      return moment().format("YYYY-MM-DD");
+    },
     ...mapState({
-      settings: state => state.settings,
-      user: state => state.user
+      settings: (state) => state.settings,
+      user: (state) => state.user,
     }),
     current_assignments() {
-			return this.labor_assignments.filter(a =>(a.labor_type_id == this.task.labor_type_id));
-		},
-		current_statuses() {
-			return this.task_statuses.filter(status => {
-                for (var i=0; i < status.labor_types.length; i++) {
-                    if (status.labor_types[i].id == this.task.labor_type_id) {
-                        return true;
-                    }
-                }
-				return false;
-			})
-		},
-		current_actions() {
-			return this.task_actions.filter(action => {
-                for (var i=0; i < action.labor_types.length; i++) {
-                    if (action.labor_types[i].id == this.task.labor_type_id) {
-                        return true;
-                    }
-                }
-				return false;
-			})
-		},
+      return this.labor_assignments.filter(
+        (a) => a.labor_type_id == this.task.labor_type_id
+      );
+    },
+    current_statuses() {
+      return this.task_statuses.filter((status) => {
+        for (var i = 0; i < status.labor_types.length; i++) {
+          if (status.labor_types[i].id == this.task.labor_type_id) {
+            return true;
+          }
+        }
+        return false;
+      });
+    },
+    current_actions() {
+      return this.task_actions.filter((action) => {
+        for (var i = 0; i < action.labor_types.length; i++) {
+          if (action.labor_types[i].id == this.task.labor_type_id) {
+            return true;
+          }
+        }
+        return false;
+      });
+    },
     property_address() {
-      if(!this.order.property){
-        return '';
+      if (!this.order.property) {
+        return "";
       }
-      let properties = this.properties.filter(p => (p.id == this.order.property));
-      if(!properties.length){
-        return '';
+      let properties = this.properties.filter(
+        (p) => p.id == this.order.property
+      );
+      if (!properties.length) {
+        return "";
       }
-      return properties[0].address1 + ' - ' + properties[0].city;
+      return properties[0].address1 + " - " + properties[0].city;
     },
     contact_numbers() {
-      if(!this.project.contact_id){
-        return '';
+      if (!this.order.contact_id) {
+        return "";
       }
-      let contacts = this.contacts.filter(c => (c.id == this.project.contact_id));
-      if(!contacts.length){
-        return '';
+      let contacts = this.contacts.filter((c) => c.id == this.order.contact_id);
+      if (!contacts.length) {
+        return "";
       }
       return contacts[0].phone_numbers;
-    }
+    },
+    property_contacts() {
+      if (!this.order.property) {
+        return this.contacts;
+      }
+      return this.contacts.filter(
+        (c) => c.properties.filter((p) => p.id == this.order.property).length
+      );
+    },
   },
-  watch:{
-    settings(){
+  watch: {
+    settings() {
       this.resetForm(true);
     },
-    user(){
+    user() {
       this.resetForm(true);
-    }
+    },
+    property_contacts(contacts) {
+      if (contacts.length == 1) {
+        this.order.contact_id = contacts[0].id;
+      }
+    },
   },
-}
-
+};
 </script>

@@ -1,287 +1,316 @@
 <template>
-	<b-container fluid-width>
-        <b-row>
-            <b-col>
-                <b-form-group label="Labor Type">
-                    <b-form-radio-group
-						@change="save();change_defaults();"
-						:options="labor_types"
-						value-field="id"
-                        text-field="name"
-						v-model="my_task.labor_type_id"
-						:state="my_task.labor_type_id != null"
-						required
-					>
-                    </b-form-radio-group>
-                </b-form-group>
-            </b-col>
-        </b-row>
-        <b-row>
-			<b-col>
-                <b-form-group label="Name">
-                    <b-form-input
-                        type="text"
-						@change="name_changed();save();"
-                        v-model="my_task.name"
-						:state="my_task.name != null"
-                        required
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-		</b-row>
-		<b-row>
-            <b-col>
-                <b-form-group label="Description">
-                    <b-form-input
-                        type="text"
-						@change="save"
-                        v-model="my_task.description"
-						:state="my_task.description != null"
-                        required
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-        </b-row>
-        <b-row>
-			<b-col>
-				<b-form-group label="Assignment">
-					<Treeselect
-						:options="current_assignments"
-						:normalizer="treeNormalizer"
-						v-model="my_task.labor_assignment_id"
-						@input="save"
-					/>
-				</b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Status">
-                    <b-form-select
-                        :options="current_statuses"
-						@change="save"
-                        value-field="id"
-                        text-field="name"
-                        v-model="my_task.task_status_id"
-                        >
-                    </b-form-select>
-                </b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Action">
-                    <b-form-select
-                        :options="current_actions"
-						@change="save"
-                        value-field="id"
-                        text-field="name"
-                        v-model="my_task.task_action_id"
-                        >
-                    </b-form-select>
-                </b-form-group>
-            </b-col>
-        </b-row>
-		<b-row>
-			<b-col>
-                <b-form-group label="Hold Date">
-                    <b-form-input
-                        type="date"
-						@change="save"
-                        v-model="my_task.hold_date"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-			<b-col>
-                <b-form-group label="Man Hours">
-                    <b-form-input
-                        type="text"
-						@change="save"
-                        v-model="my_task.task_hours"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-			<b-col>
-                <b-form-group label="Crew">
-                    <b-form-select
-                        :options="crews"
-						@change="save"
-                        value-field="id"
-                        text-field="name"
-                        v-model="my_task.crew_id"
-                        >
-                    </b-form-select>
-                </b-form-group>
-            </b-col>
-            <b-col>
-                <b-form-group label="Crew Hours">
-                    <b-form-input
-                        type="text"
-						@change="save"
-                        v-model="my_task.crew_hours"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-        </b-row>
-        <b-row>
-           <EditAppointments v-if="my_task.id" :task_id="my_task.id"></EditAppointments>
-        </b-row>
-        <b-row>
-            <b-col>
-                <b-form-group label="Group">
-                    <b-form-input
-						type="text"
-						@change="save"
-                        v-model="my_task.group"
-                        >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-			<b-col>
-                <b-form-group label="Completion Date">
-                    <b-form-input
-                        type="date"
-						@change="save"
-                        v-model="my_task.completion_date"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-			<b-col>
-                <b-form-group label="Invoiced Date">
-                    <b-form-input
-                        type="date"
-						@change="save"
-                        v-model="my_task.invoiced_date"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-			<b-col>
-                <b-form-group label="Billed Date">
-                    <b-form-input
-                        type="date"
-						@change="save"
-                        v-model="my_task.billed_date"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-			<b-col>
-                <b-form-group label="Close Date">
-                    <b-form-input
-                        type="date"
-						@change="save"
-                        v-model="my_task.closed_date"
-                    >
-                    </b-form-input>
-                </b-form-group>
-            </b-col>
-        </b-row>
-        <b-row>
-			<b-button v-if="allow_delete" variant="danger" size="sm" @click="deleteTask(task)">Delete Task</b-button>
-        </b-row>
-	</b-container>
+  <b-container fluid-width>
+    <b-row>
+      <b-col>
+        <b-form-group label="Labor Type">
+          <b-form-radio-group
+            @change="
+              save();
+              change_defaults();
+            "
+            :options="labor_types"
+            value-field="id"
+            text-field="name"
+            v-model="my_task.labor_type_id"
+            :state="my_task.labor_type_id != null"
+            required
+          >
+          </b-form-radio-group>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Contacts">
+          <el-select
+            v-model="task_contacts"
+            multiple
+            placeholder="Select task contacts"
+            @change="save"
+          >
+            <el-option
+              v-for="contact in contacts"
+              :key="contact.id"
+              :label="contact.name"
+              :value="contact.id"
+            >
+            </el-option>
+          </el-select>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-form-group label="Name">
+          <b-form-input
+            type="text"
+            @change="
+              name_changed();
+              save();
+            "
+            v-model="my_task.name"
+            :state="my_task.name != null"
+            required
+          >
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-form-group label="Description">
+          <b-form-input
+            type="text"
+            @change="save"
+            v-model="my_task.description"
+            :state="my_task.description != null"
+            required
+          >
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-form-group label="Assignment">
+          <Treeselect
+            :options="current_assignments"
+            :normalizer="treeNormalizer"
+            v-model="my_task.labor_assignment_id"
+            @input="save"
+          />
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Status">
+          <b-form-select
+            :options="current_statuses"
+            @change="save"
+            value-field="id"
+            text-field="name"
+            v-model="my_task.task_status_id"
+          >
+          </b-form-select>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Action">
+          <b-form-select
+            :options="current_actions"
+            @change="save"
+            value-field="id"
+            text-field="name"
+            v-model="my_task.task_action_id"
+          >
+          </b-form-select>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-form-group label="Hold Date">
+          <b-form-input type="date" @change="save" v-model="my_task.hold_date">
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Man Hours">
+          <b-form-input type="text" @change="save" v-model="my_task.task_hours">
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Crew">
+          <b-form-select
+            :options="crews"
+            @change="save"
+            value-field="id"
+            text-field="name"
+            v-model="my_task.crew_id"
+          >
+          </b-form-select>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Crew Hours">
+          <b-form-input type="text" @change="save" v-model="my_task.crew_hours">
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row>
+      <EditAppointments
+        v-if="my_task.id"
+        :task_id="my_task.id"
+      ></EditAppointments>
+    </b-row>
+    <b-row>
+      <b-col>
+        <b-form-group label="Group">
+          <b-form-input type="text" @change="save" v-model="my_task.group">
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Completion Date">
+          <b-form-input
+            type="date"
+            @change="save"
+            v-model="my_task.completion_date"
+          >
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Invoiced Date">
+          <b-form-input
+            type="date"
+            @change="save"
+            v-model="my_task.invoiced_date"
+          >
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Billed Date">
+          <b-form-input
+            type="date"
+            @change="save"
+            v-model="my_task.billed_date"
+          >
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+      <b-col>
+        <b-form-group label="Close Date">
+          <b-form-input
+            type="date"
+            @change="save"
+            v-model="my_task.closed_date"
+          >
+          </b-form-input>
+        </b-form-group>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-button
+        v-if="allow_delete"
+        variant="danger"
+        size="sm"
+        @click="deleteTask(task)"
+        >Delete Task</b-button
+      >
+    </b-row>
+  </b-container>
 </template>
 <script>
-import EditAppointments from './EditAppointments';
-import Treeselect from '@riophae/vue-treeselect'
-import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-import treeNormalizer from '../common/TreeNormalizer.js';
-import { mapState } from 'vuex';
+import EditAppointments from "./EditAppointments";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
+import treeNormalizer from "../common/TreeNormalizer.js";
+import { mapState } from "vuex";
 export default {
-    name: 'EditTask',
-	components: {
-		EditAppointments,
-		Treeselect
-	},	
-	props: {
-		task: {required: true},
-		labor_types: {required: true},
-		task_statuses: {required: true},
-		task_actions: {required: true},
-		labor_assignments: {required: true},
-		crews: {required: true},
-		project_close_date: {default: null},
-		allow_delete: {default: true},
-	},
-	data: function() {
-		return {
-			my_task: {}
-		};
-	},
-	created() {
-        this.my_task = this.task;
-		this.save();
+  name: "EditTask",
+  components: {
+    EditAppointments,
+    Treeselect,
+  },
+  props: {
+    allow_delete: { default: true },
+    crews: { required: true },
+    labor_assignments: { required: true },
+    labor_types: { required: true },
+    task: { required: true },
+    task_statuses: { required: true },
+    task_actions: { required: true },
+    project_close_date: { default: null },
+    contacts: { required: true },
+  },
+  data: function() {
+    return {
+      my_task: {},
+      task_contacts: [],
+    };
+  },
+  created() {
+    this.my_task = this.task;
+    this.task_contacts = this.task.contacts.map((c) => c.id);
+    this.save();
+  },
+  methods: {
+    treeNormalizer,
+    deleteTask() {
+      this.$http.delete("/task/" + this.my_task.id);
+      this.$emit("remove-task", this.my_task);
     },
-	methods: {
-		treeNormalizer,
-		deleteTask() {
-			this.$http.delete('/task/' + this.my_task.id);
-			this.$emit('remove-task', this.my_task);
-		},
-		save() {
-			if(this.my_task.billable === null){
-				return;
-			}
-			if(this.my_task.name === null){
-				return;
-			}
-			if(this.my_task.id === null){
-				this.$http.post('/task',this.my_task).then(response => {
-					this.my_task.id = response.data.data.id;
-				});
-			}
-			else{
-				this.$http.patch('/task/'+this.my_task.id,this.my_task);
-			}
-		},
-		change_defaults(){
-			this.my_task.labor_assignment_id = this.$store.state.settings['default_labor_assignment_id-labor_type_id-' + this.my_task.labor_type_id];
-			this.my_task.task_status_id = this.$store.state.settings['default_task_status_id-labor_type_id-' + this.my_task.labor_type_id];
-			this.my_task.task_action_id = this.$store.state.settings['default_task_action_id-labor_type_id-' + this.my_task.labor_type_id];
-		},
-		name_changed(){
-			if(this.my_task.description === null){
-				this.my_task.description = this.my_task.name;
-			}
-		}
-	},
-	computed: {
-		current_assignments() {
-			return this.labor_assignments.filter(a => (a.labor_type_id == this.my_task.labor_type_id));
-		},
-		current_statuses() {
-			return this.task_statuses.filter(status => {
-                for (var i=0; i < status.labor_types.length; i++) {
-                    if (status.labor_types[i].id == this.my_task.labor_type_id) {
-                        return true;
-                    }
-                }
-				return false;
-			})
-		},
-		current_actions() {
-			return this.task_actions.filter(action => {
-                for (var i=0; i < action.labor_types.length; i++) {
-                    if (action.labor_types[i].id == this.my_task.labor_type_id) {
-                        return true;
-                    }
-                }
-				return false;
-			})
-		},
-		...mapState({
-             settings: state => state.settings.backflows,
-        }),
-	},
-    watch:{
-        project_close_date(date){
-            if(!this.my_task.closed_date){
-                this.my_task.closed_date = date;
-            }
+    save() {
+      if (this.my_task.billable === null) {
+        return;
+      }
+      if (this.my_task.name === null) {
+        return;
+      }
+      this.my_task.contacts = this.task_contacts;
+      if (this.my_task.id === null) {
+        this.$http.post("/task", this.my_task).then((response) => {
+          this.my_task.id = response.data.data.id;
+        });
+      } else {
+        this.$http.patch("/task/" + this.my_task.id, this.my_task);
+      }
+    },
+    change_defaults() {
+      this.my_task.labor_assignment_id = this.$store.state.settings[
+        "default_labor_assignment_id-labor_type_id-" +
+          this.my_task.labor_type_id
+      ];
+      this.my_task.task_status_id = this.$store.state.settings[
+        "default_task_status_id-labor_type_id-" + this.my_task.labor_type_id
+      ];
+      this.my_task.task_action_id = this.$store.state.settings[
+        "default_task_action_id-labor_type_id-" + this.my_task.labor_type_id
+      ];
+    },
+    name_changed() {
+      if (this.my_task.description === null) {
+        this.my_task.description = this.my_task.name;
+      }
+    },
+  },
+  computed: {
+    current_assignments() {
+      return this.labor_assignments.filter(
+        (a) => a.labor_type_id == this.my_task.labor_type_id
+      );
+    },
+    current_statuses() {
+      return this.task_statuses.filter((status) => {
+        for (var i = 0; i < status.labor_types.length; i++) {
+          if (status.labor_types[i].id == this.my_task.labor_type_id) {
+            return true;
+          }
         }
-    }
-}
+        return false;
+      });
+    },
+    current_actions() {
+      return this.task_actions.filter((action) => {
+        for (var i = 0; i < action.labor_types.length; i++) {
+          if (action.labor_types[i].id == this.my_task.labor_type_id) {
+            return true;
+          }
+        }
+        return false;
+      });
+    },
+    ...mapState({
+      settings: (state) => state.settings.backflows,
+    }),
+  },
+  watch: {
+    project_close_date(date) {
+      if (!this.my_task.closed_date) {
+        this.my_task.closed_date = date;
+      }
+    },
+  },
+};
 </script>

@@ -29,14 +29,15 @@
 						</div>
 					</template>
 					<EditTask
-						:order="order"
-						:task="task"
+						:crews="crews"
 						:labor_types="labor_types"
+						:labor_assignments="labor_assignments"
+						:order="order"
+						:project_close_date="project_close_date"
+						:contacts="contacts"
+						:task="task"
 						:task_statuses="task_statuses"
 						:task_actions="task_actions"
-						:labor_assignments="labor_assignments"
-						:crews="crews"
-						:project_close_date="project_close_date"
 						@remove-task="removeTask"
 					></EditTask>
 				</b-tab>
@@ -44,15 +45,16 @@
 			<b-button variant="secondary" @click="newTask(null)">Add New Task</b-button>
 			<b-modal size="xl" scrollable ref="modalCopyTask" title="Copy Task" @ok="modalCopyTask" ok-only>
 				<EditTask
-						:order="order"
-						:task="copy_task"
+						:allow_delete="false"
+						:crews="crews"
 						:labor_types="labor_types"
+						:labor_assignments="labor_assignments"
+						:order="order"
+						:project_close_date="project_close_date"
+						:contacts="contacts"
+						:task="copy_task"						
 						:task_statuses="task_statuses"
 						:task_actions="task_actions"
-						:labor_assignments="labor_assignments"
-						:crews="crews"
-						:project_close_date="project_close_date"
-						:allow_delete="false"
 					></EditTask>
       </b-modal>
 		</div>
@@ -66,15 +68,16 @@ export default {
         'EditTask': EditTask
     },
 	props: {
-		order: {required: true},
+		crews: {required: true},		
 		labor_types: {required: true},
-		task_statuses: {required: true},
-		task_actions: {required: true},
 		labor_assignments: {required: true},
-		crews: {required: true},
+		order: {required: true},
 		project_close_date: {default: null},
+		contacts: {required: true},
+		settings: {required: true},
+		task_actions: {required: true},
 		task_id: {default: null},
-		settings: {required: true}
+		task_statuses: {required: true},
 	},
 	data: function() {
 		return {
