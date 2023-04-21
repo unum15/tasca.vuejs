@@ -409,6 +409,7 @@ export default {
     props: {
         backflow_assembly_id: {default: null},
         default_client_id: {default: null},
+        default_contact_id: {default: null},
         default_property_id: {default: null},
         show_next_options: {default: true}
     },
@@ -512,6 +513,7 @@ export default {
             if(this.default_client_id){
                 this.client_id = parseInt(this.default_client_id);
                 this.getProperties();
+                this.getContacts();
             }
         });
         this.$http.get('/backflow_types').then(response => {
@@ -630,6 +632,11 @@ export default {
               this.contacts = response.data
               if(this.contacts.length == 1){
                  this.backflow_assembly.contact_id = this.contacts[0].id;
+              }
+              else{
+                if(this.default_contact_id){
+                    this.backflow_assembly.contact_id = this.default_contact_id;
+                }
               }
             })
           }

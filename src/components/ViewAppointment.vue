@@ -164,7 +164,7 @@
         </ViewPropertyIrrigationSystemsTab>
       </b-modal>
       <b-modal size="xl" scrollable ref="modalPropertyBackflows" title="Backflows" ok-only>
-        <ViewPropertyBackflowsTab :client_id="order.project.client_id" :property_id="order.property.id">
+        <ViewPropertyBackflowsTab :client_id="order.project.client_id" :property_id="order.property.id" :contact_id="order.project.contact_id">
         </ViewPropertyBackflowsTab>
       </b-modal>
     </div>

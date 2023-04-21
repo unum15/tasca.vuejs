@@ -134,7 +134,7 @@
       </b-tab>
     </b-tabs>
     <b-modal ref="backflow-add-modal" title="Add Backflow" @ok="backflowAdded">
-      <EditBackflowAssemblyForm  :default_client_id="client_id" :default_property_id="property_id"></EditBackflowAssemblyForm>
+      <EditBackflowAssemblyForm  :default_client_id="client_id" :default_property_id="property_id" :default_contact_id="contact_id"></EditBackflowAssemblyForm>
     </b-modal>
   </div>
 </template>
@@ -149,7 +149,8 @@ export default {
   },
   props: {
     client_id: {required: true},
-    property_id: {required: true}
+    property_id: {required: true},
+    contact_id: {required: false, default: null},
   },
   data() {
     return {
