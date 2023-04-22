@@ -825,6 +825,7 @@ export default {
         name: this.task.name,
         description: this.task.description,
         property: properties.length ? properties[0].name : "",
+        property_id: properties.length ? properties[0].id : null,
         address: properties.length
           ? properties[0].address1 + " - " + properties[0].city
           : "",
