@@ -34,7 +34,7 @@
                                     <span
                                         :class="
                                             sms_number.task_contact
-                                                ? 'task_contact'
+                                                ? 'task-contact'
                                                 : ''
                                         "
                                     >
@@ -327,13 +327,14 @@ export default {
                                     ) {
                                         this.sms.to = number.phone_number
                                     }
-                                    this.sms_numbers.push(sms_number)
                                 }
+                                this.sms_numbers.push(sms_number)
                             })
                         }
                     })
+                    this.replaceMessage()
                 })
-            this.replaceMessage()
+
             this.$refs['modalSMS'].show()
         },
         countDownChanged(dismissCountDown) {
