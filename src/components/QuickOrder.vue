@@ -64,7 +64,7 @@
                       </b-form-select>
                     </b-form-group>
                     <div v-for="number in contact_numbers" :key="number.id">
-                      {{ number.phone_number }}
+                      {{ number.phone_number_type.name }}: {{ number.phone_number }}
                     </div>
                 </b-col>
               </b-row>
@@ -326,7 +326,16 @@
                            >
                            </b-form-input>
                         </b-form-group>
-                  </b-col>                   
+                    </b-col>
+                    <b-col lg="2">
+                        <b-form-group label="Service Window">
+                           <b-form-input
+                               type="number"
+                               v-model="order.service_window"
+                           >
+                           </b-form-input>
+                        </b-form-group>
+                    </b-col>
                </b-row>
                <b-row>
                <b-col>
@@ -356,6 +365,7 @@
                       </b-form-input>
                       </b-form-group>
                   </b-col>
+                  <b-col></b-col>
                 </b-row>
                 <b-row>
                   <b-col>
@@ -443,6 +453,7 @@
                       </b-form-group>
                   </b-col>
                 </b-row>
+              <b-button @click="showTextModal();">Text</b-button>
               <b-button @click="saveProject();">New</b-button>
               <b-button @click="reroute=true;saveProject();">Edit</b-button>
             </b-container>
@@ -453,6 +464,10 @@
         </b-row>
       </b-container>
     </main>
+    <text-form
+      ref="textForm"
+      :sms_task="sms_task"
+    ></text-form>
   </div>
 </template>
 <script>
@@ -462,11 +477,13 @@ import { mapState } from 'vuex';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import treeNormalizer from '../common/TreeNormalizer.js';
+import TextForm from './TextForm';
 export default {
   name: 'QuickOrder',
   components: {
     TopMenu,
-    Treeselect
+    Treeselect,
+    TextForm,
   },
   data () {
     return {
@@ -518,6 +535,7 @@ export default {
       used_tasks: [],
       used_orders: [],
       used_referred_bys: [],
+      sms_task: {},
     }
   },
   created () {
@@ -563,6 +581,12 @@ export default {
     });
     this.$http.get('/clients/unique/referred_by').then(response => {
       this.used_referred_bys = response.data.data;
+    });
+    this.$http.get('/sms_message_types').then(response => {
+        this.message_types = response.data.data;
+    });
+    this.$http.get('/stock_text_messages').then(response => {
+        this.sms_messages = response.data.data;
     });
   },
   methods: {
@@ -633,6 +657,7 @@ export default {
       }
     },
     saveOrder() {
+
       if(this.order.name === null){
         return;
       }
@@ -654,7 +679,6 @@ export default {
     },
     saveTask() {
       this.task.order_id = this.order.id;
-//			this.task.name = this.order.name;
 			this.task.description = this.task.name;
       if(this.task.id === null){
         this.$http.post('/task',this.task)
@@ -670,10 +694,10 @@ export default {
     },
     saveAppointment() {
       this.appointment.task_id = this.task.id;
-      if(this.appointment.id === null){
+      if(!this.appointment.id){
         this.$http.post('/appointment',this.appointment)
           .then((results) => {
-            this.appointment.id = results.data.id;
+            this.appointment.id = results.data?.data?.id;
             this.nextTask();
           })
       }
@@ -702,22 +726,19 @@ export default {
         order_action_id: parseInt(this.settings.default_order_action_id),
         date: this.today,
         approval_date: this.today,
-        start_date: this.today,
-        service_window: this.$store.state.user.default_service_window
+        start_date: first ? this.today : this.order.start_date,
+        service_window: this.user.default_service_window
       };
       this.task = {
         id: null,
         labor_type_id: parseInt(this.settings.default_labor_type_id),
-        labor_assignment_id: parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]),
         task_status_id: parseInt(this.settings['default_task_status_id-labor_type_id-' + this.settings.default_labor_type_id]),
         task_action_id: parseInt(this.settings['default_task_action_id-labor_type_id-' + this.settings.default_labor_type_id]),
         name: null,
         description: null,
-        crew_id: parseInt(this.settings.default_crew_id)
+        crew_id: first ? parseInt(this.settings.default_crew_id) : this.task.crew_id,
+        labor_assignment_id: first ? parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id]) : this.task.labor_assignment_id
       };
-      if(first){
-        this.task.labor_assignment_id = parseInt(this.settings['default_labor_assignment_id-labor_type_id-' + this.settings.default_labor_type_id])
-      }
       this.appointment = {
         id: null,
         date: null,
@@ -746,14 +767,39 @@ export default {
 		},
     selectText(ref){
       this.$refs[ref].select()
+    },
+    async showTextModal(){
+      const properties = this.properties.filter(p => (p.id == this.order.property));
+      this.sms_task = {
+        client_id: this.client_id,
+        contact_id: this.project.contact_id,
+        start_date: this.order.start_date,
+        service_window: this.order.service_window,
+        order_name: this.order.name,
+        order_description: this.order.description,
+        order_date: this.order.date,     
+        approval_date: this.order.approval_date,
+        name: this.task.name,
+        description: this.task.description,
+        property: properties.length ? properties[0].name : '', 
+        address: properties.length ? properties[0].address1 + ' - ' + properties[0].city : '',
+        date:this.appointment.date,
+        sort_order:this.appointment.sort_order,
+        time:this.appointment.time,
+        notes:this.appointment.notes,
+      };
+      await this.$nextTick()
+      this.$refs.textForm.showSMSModal();
     }
+
   },
   computed: {
     today() {
 			return moment().format('YYYY-MM-DD');
 		},
     ...mapState({
-      settings: state => state.settings
+      settings: state => state.settings,
+      user: state => state.user
     }),
     current_assignments() {
 			return this.labor_assignments.filter(a =>(a.labor_type_id == this.task.labor_type_id));
@@ -786,14 +832,13 @@ export default {
       if(!properties.length){
         return '';
       }
-      return properties[0].address1;
+      return properties[0].address1 + ' - ' + properties[0].city;
     },
     contact_numbers() {
       if(!this.project.contact_id){
         return '';
       }
       let contacts = this.contacts.filter(c => (c.id == this.project.contact_id));
-      console.log(contacts);
       if(!contacts.length){
         return '';
       }
@@ -802,6 +847,9 @@ export default {
   },
   watch:{
     settings(){
+      this.resetForm(true);
+    },
+    user(){
       this.resetForm(true);
     }
   },

@@ -32,7 +32,7 @@ import EditAssetRepair from '@/components/EditAssetRepair';
 import ViewAssetRepairs from '@/components/ViewAssetRepairs';
 import EditAssetMaintenance from '@/components/EditAssetMaintenance';
 import ViewAssetMaintenances from '@/components/ViewAssetMaintenances';
-import GoogleCalendar from '@/components/GoogleCalendar';
+import GoogleAuthorization from '@/components/GoogleAuthorization';
 import EditBackflowAssembly from '@/components/EditBackflowAssembly';
 import ViewBackflowAssemblies from '@/components/ViewBackflowAssemblies';
 import CreateBackflowTestReportProperty from '@/components/CreateBackflowTestReportProperty';
@@ -500,9 +500,9 @@ var router = new Router({
       }
     },
     {
-      path: '/calendar',
-      name: 'GoogleCalendar',
-      component: GoogleCalendar
+      path: '/google/authorization',
+      name: 'GoogleAuthorization',
+      component: GoogleAuthorization
     },
     {
         path: '/backflow_assembly',
