@@ -694,10 +694,10 @@ export default {
     },
     saveAppointment() {
       this.appointment.task_id = this.task.id;
-      if(this.appointment.id === null){
+      if(!this.appointment.id){
         this.$http.post('/appointment',this.appointment)
           .then((results) => {
-            this.appointment.id = results.data.id;
+            this.appointment.id = results.data?.data?.id;
             this.nextTask();
           })
       }
@@ -772,6 +772,7 @@ export default {
       const properties = this.properties.filter(p => (p.id == this.order.property));
       this.sms_task = {
         client_id: this.client_id,
+        contact_id: this.project.contact_id,
         start_date: this.order.start_date,
         service_window: this.order.service_window,
         order_name: this.order.name,
