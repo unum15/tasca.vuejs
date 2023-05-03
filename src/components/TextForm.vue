@@ -231,7 +231,7 @@ export default {
                             value: number.phone_number,
                             text: contact.name + " - " + number.phone_number_type.name + " - " + number.phone_number
                         });
-                        if(!this.sms.to){
+                        if((!this.sms.to)||(this.sms_task.contact_id == contact.id)){
                             this.sms.to = number.phone_number;
                             this.replaceMessage()
                         }
