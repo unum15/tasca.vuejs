@@ -408,6 +408,9 @@ export default {
     },
     props: {
         backflow_assembly_id: {default: null},
+        default_client_id: {default: null},
+        default_contact_id: {default: null},
+        default_property_id: {default: null},
         show_next_options: {default: true}
     },
     data () {
@@ -507,6 +510,11 @@ export default {
     created () {
         this.$http.get('/clients').then(response => {
             this.clients = response.data;
+            if(this.default_client_id){
+                this.client_id = parseInt(this.default_client_id);
+                this.getProperties();
+                this.getContacts();
+            }
         });
         this.$http.get('/backflow_types').then(response => {
             this.backflow_types = response.data.data;
@@ -576,7 +584,11 @@ export default {
                  this.backflow_assembly.property_id = this.properties[0].id;
                  this.getUnits();
               }
-            })
+              if(this.default_property_id){
+                this.backflow_assembly.property_id = this.default_property_id;
+                this.getUnits();
+              }
+            });
           }
           else{
             this.properties = []
@@ -620,6 +632,11 @@ export default {
               this.contacts = response.data
               if(this.contacts.length == 1){
                  this.backflow_assembly.contact_id = this.contacts[0].id;
+              }
+              else{
+                if(this.default_contact_id){
+                    this.backflow_assembly.contact_id = this.default_contact_id;
+                }
               }
             })
           }
@@ -784,7 +801,7 @@ export default {
         },
         backflow_assembly_id(){
             this.getBackflowAssembly();
-        }
+        },
     }
 };
 </script>

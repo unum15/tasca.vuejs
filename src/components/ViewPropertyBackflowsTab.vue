@@ -9,6 +9,7 @@
               :items="backflow_assemblies"
               :fields="fields"
               selectable
+              style="text-align:left;"
               @row-clicked="rowClicked"
           >
               <template v-slot:cell(placement)="data">
@@ -22,7 +23,10 @@
                 </span>
               </template>
               <template v-slot:cell(serial_number)="data">
-                  <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value ?  data.value : data.item.id }} </a>
+                  <a :href="'/backflow_assembly/' + data.item.id"> {{ data.value ?  data.value : 'None' }} </a>
+              </template>
+              <template v-slot:cell(active)="data">
+                <b-form-checkbox v-model="data.value" @change="saveBackflow(data.item)" />
               </template>
               <template v-slot:cell(include)="data">
                 <b-form-checkbox @change="include(data.item)" v-if="data.item.backflow_test_reports.length" />
@@ -129,17 +133,24 @@
         </b-tabs>
       </b-tab>
     </b-tabs>
+    <b-modal ref="backflow-add-modal" title="Add Backflow" @ok="backflowAdded">
+      <EditBackflowAssemblyForm  :default_client_id="client_id" :default_property_id="property_id" :default_contact_id="contact_id"></EditBackflowAssemblyForm>
+    </b-modal>
   </div>
 </template>
 <script>
 import ViewBackflowsReportsTab from './ViewBackflowsReportsTab';
+import EditBackflowAssemblyForm from './EditBackflowAssemblyForm'
 export default {
   name: 'ViewPropertyBackflowsTab',
   components: {
-    'ViewBackflowsReportsTab': ViewBackflowsReportsTab
+    ViewBackflowsReportsTab,
+    EditBackflowAssemblyForm
   },
   props: {
-    property_id: {required: true}
+    client_id: {required: true},
+    property_id: {required: true},
+    contact_id: {required: false, default: null},
   },
   data() {
     return {
@@ -152,6 +163,11 @@ export default {
           {
               key: 'use',
               label: 'Use',
+              sortable: true
+          },
+          {
+              key: 'property_unit.name',
+              label: 'Unit',
               sortable: true
           },
           {
@@ -182,6 +198,16 @@ export default {
           {
               key: 'serial_number',
               label: 'Serial',
+              sortable: true
+          },
+          {
+              key: 'active',
+              label: 'Active',
+              sortable: true
+          },
+          {
+              key: 'month',
+              label: 'Month',
               sortable: true
           },
           {
@@ -230,15 +256,17 @@ export default {
     }
   },
   created() {
-    this.$http.get('/backflow_assemblies?includes=backflow_manufacturer,backflow_type,backflow_size,backflow_model,backflow_water_system,contact,backflow_tests,backflow_test_reports,backflow_test_reports.backflow_tests,backflow_test_reports.backflow_tests.contact,backflow_test_reports.backflow_repairs,backflow_test_reports.backflow_repairs.backflow_valve_part&property_id=' + this.property_id).then(response => {
-      this.backflow_assemblies = response.data.data
-    });
-    
+    this.getBackflows();    
     this.$http.get('/property_accounts?property_id='+this.property_id).then(response => {
       this.accounts = response.data.data;
     });
   },
   methods: {
+    getBackflows(){
+      this.$http.get('/backflow_assemblies?includes=backflow_manufacturer,backflow_type,backflow_size,backflow_model,backflow_water_system,contact,backflow_tests,backflow_test_reports,backflow_test_reports.backflow_tests,backflow_test_reports.backflow_tests.contact,backflow_test_reports.backflow_repairs,backflow_test_reports.backflow_repairs.backflow_valve_part,property_unit&property_id=' + this.property_id).then(response => {
+        this.backflow_assemblies = response.data.data
+      });
+    },
     isActive(index) {
       if((this.change_tab)&&(index == this.properties.length -1)){
         return true;
@@ -271,12 +299,18 @@ export default {
     include(backflow){
       this.$emit('include-backflow',backflow);
     },
+    saveBackflow(backflow){
+      this.$http.patch('/backflow_assembly/' + backflow.id,{active:!backflow.active});
+    },
     addAccount(){
       this.accounts.push({id: null, property_id: this.property_id});
       this.account_change_tab = true;
     },
     addBackflow(){
-      
+      this.$refs['backflow-add-modal'].show();
+    },
+    backflowAdded(){
+      this.getBackflows();
     },
     saveAccount(account){
       if(account.number === null){

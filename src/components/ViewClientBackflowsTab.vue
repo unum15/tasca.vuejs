@@ -11,7 +11,7 @@
             {{ property.name }}
           </div>
         </template>
-        <ViewPropertyBackflowsTab v-if="property.id != null" :property_id="property.id" @include-backflow="includeBackflowAssembly">
+        <ViewPropertyBackflowsTab v-if="property.id != null" :client_id="client_id" :property_id="property.id" @include-backflow="includeBackflowAssembly">
         </ViewPropertyBackflowsTab>
       </b-tab>
     </b-tabs>
@@ -29,6 +29,7 @@ export default {
     'ViewPropertyBackflowsTab': ViewPropertyBackflowsTab
   },
   props: {
+    client_id: {required: true},
     properties: {required: true}
   },
   data() {
