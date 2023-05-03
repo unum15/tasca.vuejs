@@ -148,14 +148,15 @@
         </b-container>
         <b-modal size="xl" scrollable ref="modalEditTask" title="Copy Task" @ok="modalEditTask" ok-only>
             <EditTask
-                :order="order"
-                :task="edit_task"
                 :allow_delete="false"
+                :crews="crews"
+                :labor_assignments="labor_assignments"
                 :labor_types="labor_types"
+                :order="order"
+                :contacts="order.property.contacts"
+                :task="edit_task"
                 :task_statuses="task_statuses"
                 :task_actions="task_actions"
-                :labor_assignments="labor_assignments"
-                :crews="crews"
             >
             </EditTask>
       </b-modal>

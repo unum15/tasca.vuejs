@@ -79,11 +79,8 @@
                                         v-for="number in contact_numbers"
                                         :key="number.id"
                                     >
-                                        {{
-                                            number.phone_number_type
-                                                ? number.phone_number_type.name
-                                                : 'Unknown'
-                                        }}: {{ number.phone_number }}
+                                        {{ number.phone_number_type.name }}:
+                                        {{ number.phone_number }}
                                     </div>
                                 </b-col>
                             </b-row>
@@ -732,7 +729,7 @@ export default {
             }
         },
         saveProject() {
-            if (!this.order || this.order.name === null) {
+            if (this.order.name === null) {
                 return
             }
             if (this.project.id) {
@@ -755,7 +752,7 @@ export default {
             }
         },
         saveOrder() {
-            if (!this.order || this.order.name === null) {
+            if (this.order.name === null) {
                 return
             }
             this.order.project_id = this.project.id
@@ -887,12 +884,12 @@ export default {
             this.client_id = null
         },
         orderNameChanged() {
-            if (this.order && this.order.description === null) {
+            if (this.order.description === null) {
                 this.order.description = this.order.name
             }
         },
         taskNameChanged() {
-            if (this.task && this.task.description === null) {
+            if (this.task.description === null) {
                 this.task.description = this.task.name
             }
         },
@@ -1017,8 +1014,6 @@ export default {
             if (!contacts.length) {
                 return ''
             }
-            console.log(contacts[0].phone_numbers)
-            console.log(contacts[0].phone_numbers())
             return contacts[0].phone_numbers
         },
     },

@@ -72,6 +72,7 @@
                   :crews="crews"
                   :project="my_project"
                   :properties="my_properties"
+                  :contacts="my_contacts"
                   :settings="settings"
                   :order_status_type="status_type"
                   :actions="order_actions"

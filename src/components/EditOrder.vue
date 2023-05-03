@@ -26,6 +26,16 @@
                 >
             </b-form-select>
         </b-form-group>
+        <b-form-group label="Contact">
+            <b-form-select
+                @input="save();"
+                :options="property_contacts"
+                value-field="id"
+                text-field="name"
+                v-model="my_order.contact_id"
+            >
+            </b-form-select>
+        </b-form-group>
         <b-tabs @input="changedTabs" v-model="my_tab_index" :key="order.id">
             <b-tab title="Detail">
                 <b-container fluid>
@@ -253,6 +263,7 @@
                 <EditTasks
                     v-if="my_order.id != null"
                     :crews="crews"
+                    :contacts="property_contacts"
                     :order="my_order"
                     :labor_types="labor_types"
                     :task_statuses="task_statuses"
@@ -480,6 +491,7 @@ export default {
 	props: {
         crews: {required: true},
         properties: {required: true},
+        contacts: {required: true},
 		order: {required: true},
 		types: {required: true},
 		statuses: {required: true},
@@ -721,11 +733,24 @@ export default {
 				return false;
 			})
 		},
+        property_contacts(){
+            if(this.isServiceOrder){
+                return this.contacts.filter(c => c.properties.filter(p => this.my_order.properties.includes(p)).length);
+            }
+            else{
+                return this.contacts.filter(c => c.properties.includes(this.my_order.property));
+            }
+        }
 	},
     watch:{
         project_close_date(date){
             if(!this.my_order.close_date){
                 this.my_order.close_date = date;
+            }
+        },
+        property_contacts(contacts){
+            if(contacts.length == 1){
+                this.my_order.contact_id = contacts[0].id;
             }
         }
     }
