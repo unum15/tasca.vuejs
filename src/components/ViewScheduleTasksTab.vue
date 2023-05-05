@@ -79,6 +79,7 @@
                         >Refresh</b-button
                     >
                     <b-button @click="filtersClear()">Clear Filters</b-button>
+                    <b-button @click="copyAddresses()">Copy Addresses</b-button>
                 </b-col>
             </b-row>
         </b-container>
@@ -97,6 +98,9 @@
             :sort-compare="sortCompare"
             :sort-by.sync="sortBy"
         >
+            <template v-slot:cell(export)="data">
+                <b-form-checkbox v-model="data.item.export" />
+            </template>
             <template slot="thead-top">
                 <tr>
                     <th v-for="field in fields" :key="field.key">
@@ -410,6 +414,12 @@ export default {
             view_days: 14,
             fields: [
                 {
+                    key: 'export',
+                    label: 'Copy',
+                    sortable: true,
+                    filter: null,
+                },
+                {
                     key: 'start_date',
                     label: 'Start Date',
                     sortable: true,
@@ -496,6 +506,12 @@ export default {
             case 'All':
             case 'On Hold':
                 this.fields = [
+                    {
+                        key: 'export',
+                        label: 'Copy',
+                        sortable: true,
+                        filter: null,
+                    },
                     {
                         key: 'start_date',
                         label: 'Start Date',
@@ -596,6 +612,7 @@ export default {
                     this.tasks.forEach(t => {
                         t.sort_order_tmp = t.sort_order
                         t.date_tmp = t.date
+                        t.export = false
                     })
                     this.filtersUpdated()
                 })
@@ -725,6 +742,11 @@ export default {
             this.sms_task = task
             await this.$nextTick()
             this.$refs.textForm.showSMSModal()
+        },
+        copyAddresses() {
+            const selectedTasks = this.tasks.filter(t => t.export)
+            const addresses = selectedTasks.map(t => t.address)
+            navigator.clipboard.writeText(addresses.join('\n'))
         },
     },
 }
