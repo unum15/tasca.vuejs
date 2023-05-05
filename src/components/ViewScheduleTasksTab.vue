@@ -14,7 +14,7 @@
                         </b-form-select>
                     </b-form-group>
                 </b-col>
-                <b-col md="6" class="my-1">
+                <b-col md="3" class="my-1">
                     <b-form-group label="Filter" class="mb-0">
                         <b-input-group>
                             <b-form-input
@@ -78,8 +78,10 @@
                     <b-button @click="getTasks()" style="margin-right:5px;"
                         >Refresh</b-button
                     >
-                    <b-button @click="filtersClear()">Clear Filters</b-button>
-                    <b-button @click="copyAddresses()">Copy Addresses</b-button>
+                    <b-button @click="filtersClear()" style="margin-right:5px;"
+                        >Clear Filters</b-button
+                    >
+                    <b-button @click="copyAddresses()">Google Map</b-button>
                 </b-col>
             </b-row>
         </b-container>
@@ -746,7 +748,9 @@ export default {
         copyAddresses() {
             const selectedTasks = this.tasks.filter(t => t.export)
             const addresses = selectedTasks.map(t => t.address)
-            navigator.clipboard.writeText(addresses.join('\n'))
+            navigator.clipboard.writeText(
+                'https://www.google.com/maps/dir/' + addresses.join('/')
+            )
         },
     },
 }
