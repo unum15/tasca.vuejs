@@ -773,6 +773,7 @@ export default {
         saveTask() {
             this.task.order_id = this.order.id
             this.task.description = this.task.name
+            this.task.contacts = [this.project.contact_id]
             if (this.task.id === null) {
                 this.$http.post('/task', this.task).then(results => {
                     this.task.id = results.data.data.id
