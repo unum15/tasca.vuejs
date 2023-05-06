@@ -1018,7 +1018,7 @@ export default {
             this.task.order_id = this.order.id
             this.task.crew_id = this.settings.default_crew_id
             this.task.contacts = [this.project.contact_id]
-            if (this.task.id === null) {
+            if (!this.task.id) {
                 this.$http.post('/task', this.task).then(results => {
                     this.task.id = results.data.data.id
                     this.saveAppointment()
