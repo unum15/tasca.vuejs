@@ -1215,6 +1215,7 @@ export default {
         },
         async showTextModal() {
             this.sms_task = {
+                task_id: this.task.id,
                 client_id: this.client.id,
                 start_date: this.order.start_date,
                 service_window: this.order.service_window,

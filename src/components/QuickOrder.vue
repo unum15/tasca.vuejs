@@ -538,14 +538,8 @@
                                 </b-col>
                             </b-row>
                             <b-button @click="showTextModal()">Text</b-button>
-                            <b-button @click="saveProject()">New</b-button>
-                            <b-button
-                                @click="
-                                    reroute = true
-                                    saveProject()
-                                "
-                                >Edit</b-button
-                            >
+                            <b-button @click="newOrder()">New</b-button>
+                            <b-button @click="editOrder()">Edit</b-button>
                         </b-container>
                     </b-col>
                     <b-col v-if="settings.help_show == 'true'">
@@ -589,7 +583,6 @@ export default {
             labor_types: [],
             showSaveFailed: false,
             showSaveSuccess: false,
-            reroute: false,
             client_id: null,
             crews: [],
             order: {
@@ -728,98 +721,105 @@ export default {
                 this.projects = [{ id: null, name: 'New Project' }]
             }
         },
-        saveProject() {
+        async saveProject() {
             if (this.order.name === null) {
                 return
             }
             if (this.project.id) {
-                this.saveOrder()
+                await this.saveOrder()
                 return
             }
             this.project.client_id = this.client_id
             this.project.open_date = this.today
-            if (this.project.id === null) {
-                this.$http.post('/project', this.project).then(results => {
+            try {
+                if (this.project.id === null) {
+                    const results = await this.$http.post(
+                        '/project',
+                        this.project
+                    )
                     this.project.id = results.data.id
-                    this.saveOrder()
-                })
-            } else {
-                this.$http
-                    .patch('/project/' + this.project.id, this.project)
-                    .then(() => {
-                        this.saveOrder()
-                    })
+                } else {
+                    await this.$http.patch(
+                        '/project/' + this.project.id,
+                        this.project
+                    )
+                }
+            } catch (e) {
+                alert(e)
             }
+            await this.saveOrder()
         },
-        saveOrder() {
+        async saveOrder() {
             if (this.order.name === null) {
                 return
             }
             this.order.project_id = this.project.id
             this.order.date = this.today
-            if (this.order.id === null) {
-                this.$http.post('/order', this.order).then(results => {
+            try {
+                if (this.order.id === null) {
+                    const results = await this.$http.post('/order', this.order)
                     this.order.id = results.data.id
-                    this.saveTask()
-                })
-            } else {
-                this.$http
-                    .patch('/order/' + this.order.id, this.order)
-                    .then(() => {
-                        this.saveOrder()
-                    })
+                } else {
+                    await this.$http.patch(
+                        '/order/' + this.order.id,
+                        this.order
+                    )
+                }
+            } catch (e) {
+                alert(e)
             }
+            await this.saveTask()
         },
-        saveTask() {
+        async saveTask() {
             this.task.order_id = this.order.id
             this.task.description = this.task.name
             this.task.contacts = [this.project.contact_id]
-            if (!this.task.id) {
-                this.$http.post('/task', this.task).then(results => {
+            try {
+                if (!this.task.id) {
+                    const results = await this.$http.post('/task', this.task)
                     this.task.id = results.data.data.id
-                    this.saveAppointment()
-                })
-            } else {
-                this.$http
-                    .patch('/task/' + this.task.id, this.task)
-                    .then(() => {
-                        this.nextTask()
-                    })
+                } else {
+                    await this.$http.patch('/task/' + this.task.id, this.task)
+                }
+            } catch (e) {
+                alert(e)
             }
+            await this.saveAppointment()
         },
-        saveAppointment() {
+        async saveAppointment() {
             this.appointment.task_id = this.task.id
-            if (!this.appointment.id) {
-                this.$http
-                    .post('/appointment', this.appointment)
-                    .then(results => {
-                        this.appointment.id = results.data?.data?.id
-                        this.nextTask()
-                    })
-            } else {
-                this.$http
-                    .patch(
+            try {
+                if (!this.appointment.id) {
+                    const results = await this.$http.post(
+                        '/appointment',
+                        this.appointment
+                    )
+
+                    this.appointment.id = results.data?.data?.id
+                } else {
+                    await this.$http.patch(
                         '/appointment/' + this.appointment.id,
                         this.appointment
                     )
-                    .then(() => {
-                        this.nextTask()
-                    })
+                }
+            } catch (e) {
+                alert(e)
             }
         },
-        nextTask() {
-            if (this.reroute) {
-                this.$router.push(
-                    '/client/' +
-                        this.client_id +
-                        '/project/' +
-                        this.project.id +
-                        '/order/' +
-                        this.order.id
-                )
-            } else {
-                this.resetForm()
-            }
+        async editOrder() {
+            await this.saveProject()
+            this.$router.push(
+                '/client/' +
+                    this.client_id +
+                    '/project/' +
+                    this.project.id +
+                    '/order/' +
+                    this.order.id
+            )
+        },
+        async newOrder() {
+            await this.saveProject()
+            this.resetForm()
         },
         resetForm(first = false) {
             this.order = {
@@ -933,10 +933,15 @@ export default {
             this.$refs[ref].select()
         },
         async showTextModal() {
+            await this.saveProject()
+            if (!this.task.id) {
+                alert('Failed to save task. Do you have empty fields?')
+            }
             const properties = this.properties.filter(
                 p => p.id == this.order.property
             )
             this.sms_task = {
+                task_id: this.task.id,
                 client_id: this.client_id,
                 contact_id: this.project.contact_id,
                 start_date: this.order.start_date,
