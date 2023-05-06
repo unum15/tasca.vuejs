@@ -81,7 +81,7 @@
                     <b-button @click="filtersClear()" style="margin-right:5px;"
                         >Clear Filters</b-button
                     >
-                    <b-button @click="copyAddresses()">Google Map</b-button>
+                    <b-button @click="googleRoute()">Google Map</b-button>
                 </b-col>
             </b-row>
         </b-container>
@@ -417,7 +417,7 @@ export default {
             fields: [
                 {
                     key: 'export',
-                    label: 'Copy',
+                    label: 'Map',
                     sortable: true,
                     filter: null,
                 },
@@ -745,11 +745,15 @@ export default {
             await this.$nextTick()
             this.$refs.textForm.showSMSModal()
         },
-        copyAddresses() {
-            const selectedTasks = this.tasks.filter(t => t.export)
-            const addresses = selectedTasks.map(t => t.address)
-            navigator.clipboard.writeText(
-                'https://www.google.com/maps/dir/' + addresses.join('/')
+        googleRoute() {
+            window.open(
+                'https://www.google.com/maps/dir/' +
+                    this.tasks
+                        .filter(t => t.export)
+                        .map(t => t.address)
+                        .join('/'),
+                '_blank',
+                'popup=yes'
             )
         },
     },
