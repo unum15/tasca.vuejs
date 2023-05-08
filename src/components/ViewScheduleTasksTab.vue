@@ -14,7 +14,7 @@
                         </b-form-select>
                     </b-form-group>
                 </b-col>
-                <b-col md="3" class="my-1">
+                <b-col>
                     <b-form-group label="Filter" class="mb-0">
                         <b-input-group>
                             <b-form-input
@@ -78,10 +78,15 @@
                     <b-button @click="getTasks()" style="margin-right:5px;"
                         >Refresh</b-button
                     >
-                    <b-button @click="filtersClear()" style="margin-right:5px;"
-                        >Clear Filters</b-button
+                    <b-button @click="filtersClear()">Clear Filters</b-button>
+                </b-col>
+                <b-col>
+                    <br />
+                    <b-button @click="googleRoute()" style="margin-right:5px;"
+                        >Google Map</b-button
                     >
-                    <b-button @click="googleRoute()">Google Map</b-button>
+
+                    <b-button @click="routeXL()">RouteXL</b-button>
                 </b-col>
             </b-row>
         </b-container>
@@ -755,6 +760,18 @@ export default {
                 '_blank',
                 'popup=yes'
             )
+        },
+        routeXL() {
+            const selected_tasks = this.tasks
+                .filter(t => t.export)
+                .map(
+                    t =>
+                        `${t.address} @${t.client} - ${
+                            t.property
+                        }@ ${t.crew_hours * 60}`
+                )
+                .join('\n')
+            navigator.clipboard.writeText(selected_tasks)
         },
     },
 }
