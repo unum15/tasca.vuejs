@@ -764,12 +764,10 @@ export default {
         routeXL() {
             const selected_tasks = this.tasks
                 .filter(t => t.export)
-                .map(
-                    t =>
-                        `${t.address} @${t.client} - ${
-                            t.property
-                        }@ ${t.crew_hours * 60}`
-                )
+                .map(t => {
+                    const minutes = t.crew_hours > 0.5 ? t.crew_hours * 60 : 30
+                    return `${t.address} @${t.client} - ${t.property}@ (${minutes})`
+                })
                 .join('\n')
             navigator.clipboard.writeText(selected_tasks)
         },
