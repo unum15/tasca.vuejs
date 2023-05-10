@@ -14,7 +14,7 @@
                         </b-form-select>
                     </b-form-group>
                 </b-col>
-                <b-col md="6" class="my-1">
+                <b-col>
                     <b-form-group label="Filter" class="mb-0">
                         <b-input-group>
                             <b-form-input
@@ -80,6 +80,14 @@
                     >
                     <b-button @click="filtersClear()">Clear Filters</b-button>
                 </b-col>
+                <b-col>
+                    <br />
+                    <b-button @click="googleRoute()" style="margin-right:5px;"
+                        >Google Map</b-button
+                    >
+
+                    <b-button @click="routeXL()">RouteXL</b-button>
+                </b-col>
             </b-row>
         </b-container>
         <b-table
@@ -97,6 +105,9 @@
             :sort-compare="sortCompare"
             :sort-by.sync="sortBy"
         >
+            <template v-slot:cell(export)="data">
+                <b-form-checkbox v-model="data.item.export" />
+            </template>
             <template slot="thead-top">
                 <tr>
                     <th v-for="field in fields" :key="field.key">
@@ -410,6 +421,12 @@ export default {
             view_days: 14,
             fields: [
                 {
+                    key: 'export',
+                    label: 'Map',
+                    sortable: true,
+                    filter: null,
+                },
+                {
                     key: 'start_date',
                     label: 'Start Date',
                     sortable: true,
@@ -496,6 +513,12 @@ export default {
             case 'All':
             case 'On Hold':
                 this.fields = [
+                    {
+                        key: 'export',
+                        label: 'Copy',
+                        sortable: true,
+                        filter: null,
+                    },
                     {
                         key: 'start_date',
                         label: 'Start Date',
@@ -596,6 +619,7 @@ export default {
                     this.tasks.forEach(t => {
                         t.sort_order_tmp = t.sort_order
                         t.date_tmp = t.date
+                        t.export = false
                     })
                     this.filtersUpdated()
                 })
@@ -725,6 +749,27 @@ export default {
             this.sms_task = task
             await this.$nextTick()
             this.$refs.textForm.showSMSModal()
+        },
+        googleRoute() {
+            window.open(
+                'https://www.google.com/maps/dir/' +
+                    this.tasks
+                        .filter(t => t.export)
+                        .map(t => t.address)
+                        .join('/'),
+                '_blank',
+                'popup=yes'
+            )
+        },
+        routeXL() {
+            const selected_tasks = this.tasks
+                .filter(t => t.export)
+                .map(t => {
+                    const minutes = t.crew_hours > 0.5 ? t.crew_hours * 60 : 30
+                    return `${t.address} @${t.client} - ${t.property}@ (${minutes})`
+                })
+                .join('\n')
+            navigator.clipboard.writeText(selected_tasks)
         },
     },
 }
