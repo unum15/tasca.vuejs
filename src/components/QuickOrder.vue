@@ -754,6 +754,7 @@ export default {
                 return
             }
             this.order.project_id = this.project.id
+            this.order.contact_id = this.project.contact_id
             this.order.date = this.today
             try {
                 if (this.order.id === null) {
