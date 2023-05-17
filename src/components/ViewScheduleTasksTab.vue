@@ -753,8 +753,14 @@ export default {
         googleRoute() {
             window.open(
                 'https://www.google.com/maps/dir/' +
-                    this.tasks
+                    this.filtered_tasks
                         .filter(t => t.export)
+                        .sort(
+                            (a, b) =>
+                                a.date >= b.date &&
+                                a.sort_order >= b.sort_order &&
+                                a.time >= b.time
+                        )
                         .map(t => t.address)
                         .join('/'),
                 '_blank',
@@ -762,7 +768,7 @@ export default {
             )
         },
         routeXL() {
-            const selected_tasks = this.tasks
+            const selected_tasks = this.filtered_tasks
                 .filter(t => t.export)
                 .map(t => {
                     const minutes = t.crew_hours > 0.5 ? t.crew_hours * 60 : 30
