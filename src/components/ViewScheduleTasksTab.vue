@@ -755,12 +755,27 @@ export default {
                 'https://www.google.com/maps/dir/' +
                     this.filtered_tasks
                         .filter(t => t.export)
-                        .sort(
-                            (a, b) =>
-                                a.date >= b.date &&
-                                a.sort_order >= b.sort_order &&
-                                a.time >= b.time
-                        )
+                        .sort((a, b) => {
+                            if (a.date > b.date) {
+                                return 1
+                            }
+                            if (a.date < b.date) {
+                                return -1
+                            }
+                            if (a.sort_order > b.sort_order) {
+                                return 1
+                            }
+                            if (a.sort_order < b.sort_order) {
+                                return -1
+                            }
+                            if (a.time > b.time) {
+                                return 1
+                            }
+                            if (a.time < b.time) {
+                                return -1
+                            }
+                            return 0
+                        })
                         .map(t => t.address)
                         .join('/'),
                 '_blank',
