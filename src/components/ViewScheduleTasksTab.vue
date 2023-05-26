@@ -756,25 +756,41 @@ export default {
                     this.filtered_tasks
                         .filter(t => t.export)
                         .sort((a, b) => {
-                            if (a.date > b.date) {
-                                return 1
-                            }
-                            if (a.date < b.date) {
-                                return -1
-                            }
-                            if (a.sort_order > b.sort_order) {
-                                return 1
-                            }
-                            if (a.sort_order < b.sort_order) {
-                                return -1
-                            }
-                            if (a.time > b.time) {
-                                return 1
-                            }
-                            if (a.time < b.time) {
-                                return -1
-                            }
-                            return 0
+                            const dates = a['date']
+                                ? a['date'].localeCompare(
+                                      b['date'],
+                                      undefined,
+                                      {
+                                          numeric: true,
+                                          sensitivity: 'base',
+                                      }
+                                  )
+                                : b['date']
+                                ? 1
+                                : 0
+                            const sort = a['sort_order']
+                                ? a['sort_order'].localeCompare(
+                                      b['sort_order'],
+                                      undefined,
+                                      { numeric: true, sensitivity: 'base' }
+                                  )
+                                : b['sort_order']
+                                ? 1
+                                : 0
+
+                            const time = a['time']
+                                ? a['time'].localeCompare(b[time], undefined, {
+                                      numeric: true,
+                                      sensitivity: 'base',
+                                  })
+                                : b['time']
+                                ? 1
+                                : 0
+                            return dates !== 0
+                                ? dates
+                                : sort !== 0
+                                ? sort
+                                : time
                         })
                         .map(t => t.address)
                         .join('/'),
