@@ -108,9 +108,6 @@
             :sort-compare="sortCompare"
             :sort-by.sync="sortBy"
         >
-            <template v-slot:cell(export)="data">
-                <b-form-checkbox v-model="data.item.export" />
-            </template>
             <template slot="thead-top">
                 <tr>
                     <th v-for="field in fields" :key="field.key">
@@ -122,6 +119,9 @@
                         ></b-form-input>
                     </th>
                 </tr>
+            </template>
+            <template v-slot:cell(export)="data">
+                <b-form-checkbox v-model="data.item.export" />
             </template>
             <template v-slot:cell(service_window)="data">
                 <b-form-input
@@ -619,12 +619,13 @@ export default {
                     if (['Pending', 'On Hold', 'All'].includes(this.tab)) {
                         this.sortBy = 'start_date'
                     }
-                    this.tasks = results.data
-                    this.tasks.forEach(t => {
+                    const tasks = results.data
+                    for (let t of tasks) {
                         t.sort_order_tmp = t.sort_order
                         t.date_tmp = t.date
                         t.export = false
-                    })
+                    }
+                    this.tasks = tasks
                     this.filtersUpdated()
                 })
         },
@@ -813,8 +814,9 @@ export default {
             navigator.clipboard.writeText(selected_tasks)
         },
         checkAll() {
-            this.filtered_tasks.forEach(t => (t.export = !this.check_all))
-            console.log(this.filtered_tasks)
+            for (const task of this.filtered_tasks) {
+                task.export = this.check_all
+            }
         },
     },
 }
