@@ -87,6 +87,9 @@
                     >
 
                     <b-button @click="routeXL()">RouteXL</b-button>
+                    <b-form-checkbox v-model="check_all" @change="checkAll()"
+                        >Check All</b-form-checkbox
+                    >
                 </b-col>
             </b-row>
         </b-container>
@@ -506,6 +509,7 @@ export default {
             ],
             sms_task: {},
             creating_appointment_task: null,
+            check_all: false,
         }
     },
     created() {
@@ -807,6 +811,10 @@ export default {
                 })
                 .join('\n')
             navigator.clipboard.writeText(selected_tasks)
+        },
+        checkAll() {
+            this.filtered_tasks.forEach(t => (t.export = !this.check_all))
+            console.log(this.filtered_tasks)
         },
     },
 }
