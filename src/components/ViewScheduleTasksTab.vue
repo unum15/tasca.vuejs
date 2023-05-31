@@ -753,8 +753,45 @@ export default {
         googleRoute() {
             window.open(
                 'https://www.google.com/maps/dir/' +
-                    this.tasks
+                    this.filtered_tasks
                         .filter(t => t.export)
+                        .sort((a, b) => {
+                            const dates = a['date']
+                                ? a['date'].localeCompare(
+                                      b['date'],
+                                      undefined,
+                                      {
+                                          numeric: true,
+                                          sensitivity: 'base',
+                                      }
+                                  )
+                                : b['date']
+                                ? 1
+                                : 0
+                            const sort = a['sort_order']
+                                ? a['sort_order'].localeCompare(
+                                      b['sort_order'],
+                                      undefined,
+                                      { numeric: true, sensitivity: 'base' }
+                                  )
+                                : b['sort_order']
+                                ? 1
+                                : 0
+
+                            const time = a['time']
+                                ? a['time'].localeCompare(b[time], undefined, {
+                                      numeric: true,
+                                      sensitivity: 'base',
+                                  })
+                                : b['time']
+                                ? 1
+                                : 0
+                            return dates !== 0
+                                ? dates
+                                : sort !== 0
+                                ? sort
+                                : time
+                        })
                         .map(t => t.address)
                         .join('/'),
                 '_blank',
@@ -762,7 +799,7 @@ export default {
             )
         },
         routeXL() {
-            const selected_tasks = this.tasks
+            const selected_tasks = this.filtered_tasks
                 .filter(t => t.export)
                 .map(t => {
                     const minutes = t.crew_hours > 0.5 ? t.crew_hours * 60 : 30
