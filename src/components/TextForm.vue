@@ -241,6 +241,9 @@ export default {
                         case 'hold_date':
                             replace = moment(value).format('MM-DD')
                             break
+                        case 'address':
+                            replace = value.split(',')[0]
+                            break
                     }
                 } else {
                     replace = 'N/A'
