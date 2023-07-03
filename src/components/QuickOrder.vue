@@ -722,7 +722,7 @@ export default {
             }
         },
         async saveProject() {
-            if (this.order.name === null) {
+            if (!this.order.name) {
                 return
             }
             if (this.project.id) {
