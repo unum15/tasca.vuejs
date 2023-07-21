@@ -311,6 +311,7 @@
                                             allow-create
                                             default-first-option
                                             placeholder="New Task Name"
+                                            @change="taskNameChanged"
                                             :state="task.name != null"
                                             required
                                         >
@@ -602,7 +603,17 @@
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
-                                <b-col />
+                                <b-col>
+                                    <b-form-group label="Status">
+                                        <b-form-select
+                                            :options="appointment_statuses"
+                                            value-field="id"
+                                            text-field="name"
+                                            v-model="appointment.appointment_status_id"
+                                        >
+                                        </b-form-select>
+                                    </b-form-group>
+                                </b-col>
                             </b-row>
                             <b-row>
                                 <b-col>
@@ -863,6 +874,9 @@ export default {
         this.$http.get('/clients/unique/referred_by').then(response => {
             this.used_referred_bys = response.data.data
         })
+        this.$http.get('/appointment_statuses').then(response => {
+            this.appointment_statuses = response.data
+        })
     },
     methods: {
         treeNormalizer,
@@ -1017,7 +1031,6 @@ export default {
         },
         saveTask() {
             this.task.order_id = this.order.id
-            this.task.crew_id = this.settings.default_crew_id
             this.task.contacts = [this.project.contact_id]
             if (!this.task.id) {
                 this.$http.post('/task', this.task).then(results => {
@@ -1163,13 +1176,16 @@ export default {
                             this.settings.default_labor_type_id
                     ]
                 ),
-                task_hours: null,
+                task_hours: 1,
+                crew_hours: 1,
+                crew_id: this.settings.default_crew_id,
             }
             this.appointment = {
                 id: null,
                 date: null,
                 time: null,
                 sort_order: null,
+                appointment_status_id: null,
             }
             this.project = {
                 id: null,
@@ -1193,11 +1209,13 @@ export default {
             if (this.order.description === null) {
                 this.order.description = this.order.name
             }
-            if (this.task.name === null) {
-                this.task.name = this.order.name
-            }
             if (this.task.description === null) {
-                this.task.description = this.order.description
+                this.task.description = this.task.name
+            }
+        },
+        taskNameChanged() {
+            if (this.task.description === null) {
+                this.task.description = this.task.name
             }
         },
         laborTypeChanged() {

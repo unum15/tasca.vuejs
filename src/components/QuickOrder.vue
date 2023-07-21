@@ -463,7 +463,17 @@
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
-                                <b-col></b-col>
+                                <b-col>
+                                    <b-form-group label="Status">
+                                        <b-form-select
+                                            :options="appointment_statuses"
+                                            value-field="id"
+                                            text-field="name"
+                                            v-model="appointment.appointment_status_id"
+                                        >
+                                        </b-form-select>
+                                    </b-form-group>
+                                </b-col>
                             </b-row>
                             <b-row>
                                 <b-col>
@@ -580,6 +590,7 @@ export default {
     },
     data() {
         return {
+            appointment_statuses: [],
             clients: [],
             contact_methods: [],
             activity_levels: [],
@@ -680,6 +691,9 @@ export default {
         })
         this.$http.get('/stock_text_messages').then(response => {
             this.sms_messages = response.data.data
+        })
+        this.$http.get('/appointment_statuses').then(response => {
+            this.appointment_statuses = response.data
         })
     },
     methods: {
@@ -786,7 +800,6 @@ export default {
         },
         async saveTask() {
             this.task.order_id = this.order.id
-            this.task.description = this.task.name
             this.task.contacts = [this.project.contact_id]
             try {
                 if (!this.task.id) {
@@ -876,6 +889,8 @@ export default {
                 ),
                 name: null,
                 description: null,
+                task_hours: 1,
+                crew_hours: 1,
                 crew_id: first
                     ? parseInt(this.settings.default_crew_id)
                     : this.task.crew_id,
@@ -892,6 +907,8 @@ export default {
                 id: null,
                 date: null,
                 sort_order: null,
+                time: null,
+                appointment_status_id: null,
             }
             this.project = {
                 id: null,
