@@ -13,6 +13,16 @@
                 >
             </b-form-select>
         </b-form-group>
+        <b-form-group label="Property Unit"  v-if="!isServiceOrder && my_order.property">
+            <b-form-select
+                @input="save();"
+                :options="property_units"
+                value-field="id"
+                text-field="name"
+                v-model="my_order.property_unit_id"
+                >
+            </b-form-select>
+        </b-form-group>
         <b-form-group label="Properties"  v-if="isServiceOrder">
             <b-form-select
                 @input="save"
@@ -540,6 +550,7 @@ export default {
                     text: 'Years'
                 },
             ],
+            property_units: [],
 		};
 	},
 	created(){
@@ -564,6 +575,11 @@ export default {
         if(this.my_order.renewal_interval != null){
             [this.renewal_interval.count, this.renewal_interval.unit] = this.my_order.renewal_interval.split(' ');
             this.renewal_interval.unit = this.formatUnit(this.renewal_interval.unit);
+        }
+        if(this.my_order.property){
+            this.$http.get('/property_units?property_id=' + this.my_order.property).then(response => {
+                this.property_units = response.data.data
+            })
         }
 	},
 	methods: {
@@ -659,6 +675,14 @@ export default {
         },
         setProperties(){
             this.my_order.properties = [this.my_order.property];
+            if(this.my_order.property){
+                this.$http.get('/property_units?property_id=' + this.my_order.property).then(response => {
+                this.property_units = response.data.data
+                })
+            }
+            else{
+                this.property_units = []
+            }
         }
 
 	},

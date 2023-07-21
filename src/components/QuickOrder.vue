@@ -58,10 +58,22 @@
                                             required
                                             :state="order.property != null"
                                             v-model="order.property"
+                                            @change="getPropertyUnits()"
                                         >
                                         </b-form-select>
                                     </b-form-group>
                                     {{ property_address }}
+                                </b-col>
+                                <b-col>
+                                    <b-form-group label="Property Unit">
+                                        <b-form-select
+                                            :options="property_units"
+                                            value-field="id"
+                                            text-field="name"
+                                            v-model="order.property_unit"
+                                        >
+                                        </b-form-select>
+                                    </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Contact">
@@ -616,6 +628,7 @@ export default {
             used_orders: [],
             used_referred_bys: [],
             sms_task: {},
+            property_units: [],
         }
     },
     created() {
@@ -844,6 +857,7 @@ export default {
                 approval_date: this.today,
                 start_date: first ? this.today : this.order.start_date,
                 service_window: this.user.default_service_window,
+                property_unit_id: null,
             }
             this.task = {
                 id: null,
@@ -965,6 +979,16 @@ export default {
             await this.$nextTick()
             this.$refs.textForm.showSMSModal()
         },
+        getPropertyUnits() {
+          if(this.order.property){
+            this.$http.get('/property_units?property_id=' + this.order.property).then(response => {
+              this.property_units = response.data.data
+            })
+          }
+          else{
+            this.units = []
+          }
+        },
     },
     computed: {
         today() {
@@ -1000,6 +1024,7 @@ export default {
             })
         },
         property_address() {
+            console.log(this.order.property)
             if (!this.order.property) {
                 return ''
             }

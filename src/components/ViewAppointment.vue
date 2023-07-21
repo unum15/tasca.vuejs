@@ -83,6 +83,23 @@
                 </b-col>
                 <b-col style="padding:0px;border: 1px solid black;">
                     <b-container>
+                        <b-row>
+                            <b-col class="label" cols="2">Unit</b-col>
+                            <b-col v-if="order.property_unit" class="data" cols="10">
+                                <a :href="'http://maps.google.com/maps?q=' + order.property_unit.number + order.property.city + '+' + order.property.state + '+' + order.property.zip" target="tasca_address">
+                                    {{ order.property_unit.name }}<br />
+                                    {{ order.property_unit.number }}<br />
+                                    {{ order.property.city }},{{ order.property.state }} {{ order.property.zip }}
+                                </a>
+                            </b-col>
+                        </b-row>
+                        <b-row v-if="order.property_unit && order.property_unit.coordinates">
+                            <a :href="order.property_unit.coordinates" target="tasca_address">Map</a>
+                        </b-row>
+                        <b-row v-if="order.property_unit && order.property_unit.phone">
+                            <b-col class="label" cols="2"></b-col>
+                            <b-col class="data"><a :href="'tel:' + order.property_unit.phone">{{ order.property_unit.phone }}</a></b-col>
+                        </b-row>
                         <b-row v-b-popover.hover.top="order.location">
                             <b-col class="label" cols="2">Location</b-col>
                             <b-col class="long_data" cols="10" >{{ truncate(order.location,50) }}</b-col>
