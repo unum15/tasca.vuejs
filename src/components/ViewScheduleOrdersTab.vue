@@ -159,12 +159,15 @@ export default {
         let filters = this.fields.map(f => (f.key));
         filters.pop();
         this.filtersInit('schedule ' + this.tab, filters);
-        this.$http.get('/orders?status=' + this.tab + '&includes=tasks,task.appointments,task.appointments.clock_ins,properties').then((results) => {
-            this.orders = results.data;
-            this.filtersUpdated();
-        });
+        this.getOrders();
     },
     methods: {
+        getOrders(){
+            this.$http.get('/orders?status=' + this.tab + '&includes=tasks,task.appointments,task.appointments.clock_ins,properties').then((results) => {
+                this.orders = results.data;
+                this.filtersUpdated();
+            });
+        },
         save(item){
             var order = {
                 close_date: item.close_date,

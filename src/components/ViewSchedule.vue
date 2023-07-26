@@ -43,7 +43,7 @@ export default {
     data() {
         return {
             tabs: {'Service': 0, 'On Hold' : 1, 'All' : 2,  'Pending' : 3, 'Current' : 4},
-            order_tabs: {'Non-Completed' : {title: 'Partly Completed Orders', index: 5}, 'Completed' : {title: 'Completed Orders', index: 6}},
+            order_tabs: {'Non-Completed' : {title: 'Partly Completed Orders', index: 5}, 'Billing' : {title: 'Orders to Bill', index: 6}, 'Completed' : {title: 'Completed Orders', index: 7}},
             order_status_types: [],
             appointment_statuses: [],
             labor_assignments: [],
