@@ -70,10 +70,11 @@
                                             :options="property_units"
                                             value-field="id"
                                             text-field="name"
-                                            v-model="order.property_unit"
+                                            v-model="order.property_unit_id"
                                         >
                                         </b-form-select>
                                     </b-form-group>
+                                    {{ unit_address }}
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Contact">
@@ -699,6 +700,7 @@ export default {
     methods: {
         treeNormalizer,
         getProperties() {
+            this.order.property = null
             if (this.client_id) {
                 this.$http
                     .get('/properties?client_id=' + this.client_id)
@@ -1041,17 +1043,28 @@ export default {
             })
         },
         property_address() {
-            console.log(this.order.property)
             if (!this.order.property) {
-                return ''
+                return ' '
             }
             let properties = this.properties.filter(
                 p => p.id == this.order.property
             )
             if (!properties.length) {
-                return ''
+                return '  '
             }
             return properties[0].address1 + ' - ' + properties[0].city
+        },
+        unit_address() {
+            if (!this.order.property_unit_id) {
+                return ' '
+            }
+            let units = this.property_units.filter(
+                u => u.id == this.order.property_unit_id
+            )
+            if (!units.length) {
+                return '  '
+            }
+            return units[0].number
         },
         contact_numbers() {
             if (!this.project.contact_id) {
