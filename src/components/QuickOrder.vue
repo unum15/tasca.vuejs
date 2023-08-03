@@ -33,7 +33,8 @@
                                 <b-col>
                                     <b-form-group label="Property">
                                         <b-form-select :options="properties" value-field="id" text-field="name" required
-                                            :state="order.property" v-model="order.property" @change="getPropertyUnits()">
+                                            :state="order.property != undefined" v-model="order.property"
+                                            @change="getPropertyUnits()">
                                         </b-form-select>
                                     </b-form-group>
                                     {{ property_address }}
@@ -387,7 +388,7 @@ export default {
                 id: null,
                 name: null,
                 description: null,
-                property: null,
+                property: undefined,
             },
             task: {
                 id: null,
@@ -474,7 +475,7 @@ export default {
     methods: {
         treeNormalizer,
         getProperties() {
-            this.order.property = ''
+            this.order.property = 0
             if (this.client_id) {
                 this.$http
                     .get('/properties?client_id=' + this.client_id)
@@ -818,6 +819,7 @@ export default {
             })
         },
         property_address() {
+            console.log(this.order.property)
             if (!this.order.property) {
                 return ' '
             }
