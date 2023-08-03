@@ -34,7 +34,7 @@
                                     <b-form-group label="Property">
                                         <b-form-select :options="properties" value-field="id" text-field="name" required
                                             :state="order.property != undefined" v-model="order.property"
-                                            @change="getPropertyUnits()">
+                                            @change="getPropertyUnits(); updatePropertyAddress();">
                                         </b-form-select>
                                     </b-form-group>
                                     {{ property_address }}
@@ -42,10 +42,10 @@
                                 <b-col>
                                     <b-form-group label="Property Unit">
                                         <b-form-select :options="property_units" value-field="id" text-field="name"
-                                            v-model="order.property_unit_id">
+                                            v-model="order.property_unit_id" @change="updatePropertyUnitAddress();">
                                         </b-form-select>
                                     </b-form-group>
-                                    {{ unit_address }}
+                                    {{ property_unit_address }}
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Contact">
@@ -388,7 +388,6 @@ export default {
                 id: null,
                 name: null,
                 description: null,
-                property: undefined,
             },
             task: {
                 id: null,
@@ -416,6 +415,8 @@ export default {
             used_referred_bys: [],
             sms_task: {},
             property_units: [],
+            property_address: '',
+            property_unit_address: '',
         }
     },
     created() {
@@ -484,6 +485,7 @@ export default {
                         if (this.properties.length == 1) {
                             this.order.property = this.properties[0].id
                             this.getPropertyUnits()
+                            this.updatePropertyAddress()
                         }
                     })
             } else {
@@ -648,7 +650,6 @@ export default {
                 approval_date: this.today,
                 start_date: first ? this.today : this.order.start_date,
                 service_window: this.user.default_service_window,
-                property_unit_id: null,
             }
             this.task = {
                 id: null,
@@ -693,6 +694,8 @@ export default {
                 contact_id: null,
             }
             this.client_id = null
+            this.updatePropertyAddress();
+            this.updatePropertyUnitAddress();
         },
         orderNameChanged() {
             if (this.order.description === null) {
@@ -784,6 +787,33 @@ export default {
                 this.units = []
             }
         },
+        //computed properities apparantly don't like being based on undefined values
+        updatePropertyAddress() {
+            if (!this.order.property) {
+                this.property_address = ''
+            }
+            let properties = this.properties.filter(
+                p => p.id == this.order.property
+            )
+            if (!properties.length) {
+                this.property_address = ''
+            }
+            this.property_address = properties[0].address1 + ' - ' + properties[0].city
+        },
+        //computed properities apparantly don't like being based on undefined values
+        updatePropertyUnitAddress() {
+            if (!this.order.property_unit_id) {
+                this.property_unit_address = ''
+            }
+            let units = this.property_units.filter(
+                u => u.id == this.order.property_unit_id
+            )
+            if (!units.length) {
+                this.property_unit_address = ''
+            }
+            this.property_unit_address = units[0].number
+        },
+
     },
     computed: {
         today() {
@@ -817,31 +847,6 @@ export default {
                 }
                 return false
             })
-        },
-        property_address() {
-            console.log(this.order.property)
-            if (!this.order.property) {
-                return ' '
-            }
-            let properties = this.properties.filter(
-                p => p.id == this.order.property
-            )
-            if (!properties.length) {
-                return '  '
-            }
-            return properties[0].address1 + ' - ' + properties[0].city
-        },
-        unit_address() {
-            if (!this.order.property_unit_id) {
-                return ' '
-            }
-            let units = this.property_units.filter(
-                u => u.id == this.order.property_unit_id
-            )
-            if (!units.length) {
-                return '  '
-            }
-            return units[0].number
         },
         contact_numbers() {
             if (!this.project.contact_id) {
