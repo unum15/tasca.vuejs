@@ -1,20 +1,10 @@
 <template>
     <div>
         <TopMenu></TopMenu>
-        <b-alert
-            variant="danger"
-            dismissible
-            max="5"
-            @dismissed="showSaveFailed = false"
-        >
+        <b-alert variant="danger" dismissible max="5" @dismissed="showSaveFailed = false">
             Save Failed!
         </b-alert>
-        <b-alert
-            variant="success"
-            dismissible
-            :show="showSaveSuccess"
-            @dismissed="showSaveSuccess = false"
-        >
+        <b-alert variant="success" dismissible :show="showSaveSuccess" @dismissed="showSaveSuccess = false">
             Saved!
         </b-alert>
         <header>
@@ -28,70 +18,41 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Client">
-                                        <el-select
-                                            v-model="client_id"
-                                            filterable
-                                            default-first-option
-                                            placeholder="Select Client"
-                                            @change="
+                                        <el-select v-model="client_id" filterable default-first-option
+                                            placeholder="Select Client" @change="
                                                 getProperties()
-                                                getContacts()
-                                                getProjects()
-                                            "
-                                        >
-                                            <el-option
-                                                v-for="client in clients"
-                                                :key="client.id"
-                                                :label="client.name"
-                                                :value="client.id"
-                                            >
+                                            getContacts()
+                                            getProjects()
+                                                ">
+                                            <el-option v-for="client in clients" :key="client.id" :label="client.name"
+                                                :value="client.id">
                                             </el-option>
                                         </el-select>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Property">
-                                        <b-form-select
-                                            :options="properties"
-                                            value-field="id"
-                                            text-field="name"
-                                            required
-                                            :state="order.property != null"
-                                            v-model="order.property"
-                                            @change="getPropertyUnits()"
-                                        >
+                                        <b-form-select :options="properties" value-field="id" text-field="name" required
+                                            :state="order.property" v-model="order.property" @change="getPropertyUnits()">
                                         </b-form-select>
                                     </b-form-group>
                                     {{ property_address }}
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Property Unit">
-                                        <b-form-select
-                                            :options="property_units"
-                                            value-field="id"
-                                            text-field="name"
-                                            v-model="order.property_unit_id"
-                                        >
+                                        <b-form-select :options="property_units" value-field="id" text-field="name"
+                                            v-model="order.property_unit_id">
                                         </b-form-select>
                                     </b-form-group>
                                     {{ unit_address }}
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Contact">
-                                        <b-form-select
-                                            :options="contacts"
-                                            value-field="id"
-                                            text-field="name"
-                                            required
-                                            :state="project.contact_id != null"
-                                            v-model="project.contact_id"
-                                        >
+                                        <b-form-select :options="contacts" value-field="id" text-field="name" required
+                                            :state="project.contact_id != null" v-model="project.contact_id">
                                         </b-form-select>
                                     </b-form-group>
-                                    <div
-                                        v-for="number in contact_numbers"
-                                        :key="number.id"
-                                    >
+                                    <div v-for="number in contact_numbers" :key="number.id">
                                         {{ number.phone_number_type.name }}:
                                         {{ number.phone_number }}
                                     </div>
@@ -100,35 +61,17 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Project">
-                                        <b-form-select
-                                            :options="projects"
-                                            value-field="id"
-                                            text-field="name"
-                                            v-model="project.id"
-                                        >
+                                        <b-form-select :options="projects" value-field="id" text-field="name"
+                                            v-model="project.id">
                                         </b-form-select>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
-                                    <b-form-group
-                                        label="Project Name"
-                                        v-if="!project.id"
-                                    >
-                                        <el-select
-                                            v-model="project.name"
-                                            filterable
-                                            allow-create
-                                            default-first-option
-                                            placeholder="New Project Name"
-                                            :state="project.name != null"
-                                            required
-                                        >
-                                            <el-option
-                                                v-for="name in used_projects"
-                                                :key="name"
-                                                :label="name"
-                                                :value="name"
-                                            >
+                                    <b-form-group label="Project Name" v-if="!project.id">
+                                        <el-select v-model="project.name" filterable allow-create default-first-option
+                                            placeholder="New Project Name" :state="project.name != null" required>
+                                            <el-option v-for="name in used_projects" :key="name" :label="name"
+                                                :value="name">
                                             </el-option>
                                         </el-select>
                                     </b-form-group>
@@ -137,44 +80,20 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Order Name">
-                                        <el-select
-                                            v-model="order.name"
-                                            filterable
-                                            allow-create
-                                            default-first-option
-                                            placeholder="New Order Name"
-                                            @change="orderNameChanged"
-                                            :state="order.name != null"
-                                            required
-                                        >
-                                            <el-option
-                                                v-for="name in used_orders"
-                                                :key="name"
-                                                :label="name"
-                                                :value="name"
-                                            >
+                                        <el-select v-model="order.name" filterable allow-create default-first-option
+                                            placeholder="New Order Name" @change="orderNameChanged"
+                                            :state="order.name != null" required>
+                                            <el-option v-for="name in used_orders" :key="name" :label="name" :value="name">
                                             </el-option>
                                         </el-select>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Task Name">
-                                        <el-select
-                                            v-model="task.name"
-                                            filterable
-                                            allow-create
-                                            default-first-option
-                                            placeholder="New Task Name"
-                                            @change="taskNameChanged"
-                                            :state="task.name != null"
-                                            required
-                                        >
-                                            <el-option
-                                                v-for="name in used_tasks"
-                                                :key="name"
-                                                :label="name"
-                                                :value="name"
-                                            >
+                                        <el-select v-model="task.name" filterable allow-create default-first-option
+                                            placeholder="New Task Name" @change="taskNameChanged" :state="task.name != null"
+                                            required>
+                                            <el-option v-for="name in used_tasks" :key="name" :label="name" :value="name">
                                             </el-option>
                                         </el-select>
                                     </b-form-group>
@@ -183,31 +102,20 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Order Description">
-                                        <b-form-textarea
-                                            v-model="order.description"
-                                            placeholder="What needs to be done?"
-                                            required
-                                            ref="order-description"
-                                            :state="order.description != null"
+                                        <b-form-textarea v-model="order.description" placeholder="What needs to be done?"
+                                            required ref="order-description" :state="order.description != null"
                                             @focus.native="
                                                 selectText('order-description')
-                                            "
-                                        >
+                                                ">
                                         </b-form-textarea>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Task Description">
-                                        <b-form-textarea
-                                            v-model="task.description"
-                                            placeholder="What needs to be done?"
-                                            required
-                                            ref="task-description"
-                                            :state="task.description != null"
-                                            @focus.native="
+                                        <b-form-textarea v-model="task.description" placeholder="What needs to be done?"
+                                            required ref="task-description" :state="task.description != null" @focus.native="
                                                 selectText('task-description')
-                                            "
-                                        >
+                                                ">
                                         </b-form-textarea>
                                     </b-form-group>
                                 </b-col>
@@ -218,26 +126,13 @@
                                         <b-row>
                                             <b-col>
                                                 <b-form-group label="Category">
-                                                    <el-select
-                                                        v-model="
-                                                            order.order_category_id
-                                                        "
-                                                        filterable
-                                                        placeholder="Select Category"
-                                                        default-first-option
-                                                    >
-                                                        <el-option
-                                                            v-for="order_category in order_categories"
-                                                            :key="
-                                                                order_category.id
-                                                            "
-                                                            :label="
-                                                                order_category.name
-                                                            "
-                                                            :value="
-                                                                order_category.id
-                                                            "
-                                                        >
+                                                    <el-select v-model="order.order_category_id
+                                                        " filterable placeholder="Select Category"
+                                                        default-first-option>
+                                                        <el-option v-for="order_category in order_categories" :key="order_category.id
+                                                            " :label="order_category.name
+        " :value="order_category.id
+        ">
                                                         </el-option>
                                                     </el-select>
                                                 </b-form-group>
@@ -246,26 +141,13 @@
                                         <b-row>
                                             <b-col>
                                                 <b-form-group label="Priority">
-                                                    <el-select
-                                                        v-model="
-                                                            order.order_priority_id
-                                                        "
-                                                        filterable
-                                                        placeholder="Select Priority"
-                                                        default-first-option
-                                                    >
-                                                        <el-option
-                                                            v-for="order_priority in order_priorities"
-                                                            :key="
-                                                                order_priority.id
-                                                            "
-                                                            :label="
-                                                                order_priority.name
-                                                            "
-                                                            :value="
-                                                                order_priority.id
-                                                            "
-                                                        >
+                                                    <el-select v-model="order.order_priority_id
+                                                        " filterable placeholder="Select Priority"
+                                                        default-first-option>
+                                                        <el-option v-for="order_priority in order_priorities" :key="order_priority.id
+                                                            " :label="order_priority.name
+        " :value="order_priority.id
+        ">
                                                         </el-option>
                                                     </el-select>
                                                 </b-form-group>
@@ -274,24 +156,12 @@
                                         <b-row>
                                             <b-col>
                                                 <b-form-group label="Type">
-                                                    <el-select
-                                                        v-model="
-                                                            order.order_type_id
-                                                        "
-                                                        filterable
-                                                        placeholder="Select Type"
-                                                        default-first-option
-                                                    >
-                                                        <el-option
-                                                            v-for="order_type in order_types"
-                                                            :key="order_type.id"
-                                                            :label="
-                                                                order_type.name
-                                                            "
-                                                            :value="
-                                                                order_type.id
-                                                            "
-                                                        >
+                                                    <el-select v-model="order.order_type_id
+                                                        " filterable placeholder="Select Type" default-first-option>
+                                                        <el-option v-for="order_type in order_types" :key="order_type.id"
+                                                            :label="order_type.name
+                                                                " :value="order_type.id
+        ">
                                                         </el-option>
                                                     </el-select>
                                                 </b-form-group>
@@ -300,65 +170,33 @@
                                     </b-container>
                                 </b-col>
                                 <b-col style="text-align:left;" md="auto">
-                                    <b-form-group
-                                        label="Labor Types"
-                                        v-slot="{ ariaDescribedby }"
-                                    >
-                                        <b-form-radio-group
-                                            v-model="task.labor_type_id"
-                                            :options="labor_types"
-                                            :aria-describedby="ariaDescribedby"
-                                            value-field="id"
-                                            text-field="name"
-                                            stacked
-                                            @change="laborTypeChanged"
-                                        ></b-form-radio-group>
+                                    <b-form-group label="Labor Types" v-slot="{ ariaDescribedby }">
+                                        <b-form-radio-group v-model="task.labor_type_id" :options="labor_types"
+                                            :aria-describedby="ariaDescribedby" value-field="id" text-field="name" stacked
+                                            @change="laborTypeChanged"></b-form-radio-group>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-container>
                                         <b-row>
                                             <b-col>
-                                                <b-form-group
-                                                    label="Assignment"
-                                                >
-                                                    <Treeselect
-                                                        :options="
-                                                            current_assignments
-                                                        "
-                                                        :normalizer="
-                                                            treeNormalizer
-                                                        "
-                                                        v-model="
-                                                            task.labor_assignment_id
-                                                        "
-                                                    />
+                                                <b-form-group label="Assignment">
+                                                    <Treeselect :options="current_assignments
+                                                        " :normalizer="treeNormalizer
+        " v-model="task.labor_assignment_id
+        " />
                                                 </b-form-group>
                                             </b-col>
                                         </b-row>
                                         <b-row>
                                             <b-col>
                                                 <b-form-group label="Status">
-                                                    <el-select
-                                                        v-model="
-                                                            task.task_status_id
-                                                        "
-                                                        filterable
-                                                        placeholder="Select Status"
-                                                        default-first-option
-                                                    >
-                                                        <el-option
-                                                            v-for="task_status in current_statuses"
-                                                            :key="
-                                                                task_status.id
-                                                            "
-                                                            :label="
-                                                                task_status.name
-                                                            "
-                                                            :value="
-                                                                task_status.id
-                                                            "
-                                                        >
+                                                    <el-select v-model="task.task_status_id
+                                                        " filterable placeholder="Select Status" default-first-option>
+                                                        <el-option v-for="task_status in current_statuses" :key="task_status.id
+                                                            " :label="task_status.name
+        " :value="task_status.id
+        ">
                                                         </el-option>
                                                     </el-select>
                                                 </b-form-group>
@@ -367,26 +205,12 @@
                                         <b-row>
                                             <b-col>
                                                 <b-form-group label="Action">
-                                                    <el-select
-                                                        v-model="
-                                                            task.task_action_id
-                                                        "
-                                                        filterable
-                                                        placeholder="Select Action"
-                                                        default-first-option
-                                                    >
-                                                        <el-option
-                                                            v-for="task_action in current_actions"
-                                                            :key="
-                                                                task_action.id
-                                                            "
-                                                            :label="
-                                                                task_action.name
-                                                            "
-                                                            :value="
-                                                                task_action.id
-                                                            "
-                                                        >
+                                                    <el-select v-model="task.task_action_id
+                                                        " filterable placeholder="Select Action" default-first-option>
+                                                        <el-option v-for="task_action in current_actions" :key="task_action.id
+                                                            " :label="task_action.name
+        " :value="task_action.id
+        ">
                                                         </el-option>
                                                     </el-select>
                                                 </b-form-group>
@@ -398,40 +222,26 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Order Date">
-                                        <b-form-input
-                                            type="date"
-                                            v-model="order.date"
-                                        >
+                                        <b-form-input type="date" v-model="order.date">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Approval Date">
-                                        <b-form-input
-                                            type="date"
-                                            v-model="order.approval_date"
-                                        >
+                                        <b-form-input type="date" v-model="order.approval_date">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Start Date">
-                                        <b-form-input
-                                            type="date"
-                                            v-model="order.start_date"
-                                            :disabled="
-                                                order.approval_date == null
-                                            "
-                                        >
+                                        <b-form-input type="date" v-model="order.start_date" :disabled="order.approval_date == null
+                                            ">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col lg="2">
                                     <b-form-group label="Service Window">
-                                        <b-form-input
-                                            type="number"
-                                            v-model="order.service_window"
-                                        >
+                                        <b-form-input type="number" v-model="order.service_window">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
@@ -439,39 +249,26 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Appointment Date">
-                                        <b-form-input
-                                            type="date"
-                                            v-model="appointment.date"
-                                        >
+                                        <b-form-input type="date" v-model="appointment.date">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Sort Order">
-                                        <b-form-input
-                                            type="text"
-                                            v-model="appointment.sort_order"
-                                        >
+                                        <b-form-input type="text" v-model="appointment.sort_order">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Time">
-                                        <b-form-input
-                                            type="time"
-                                            v-model="appointment.time"
-                                        >
+                                        <b-form-input type="time" v-model="appointment.time">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Status">
-                                        <b-form-select
-                                            :options="appointment_statuses"
-                                            value-field="id"
-                                            text-field="name"
-                                            v-model="appointment.appointment_status_id"
-                                        >
+                                        <b-form-select :options="appointment_statuses" value-field="id" text-field="name"
+                                            v-model="appointment.appointment_status_id">
                                         </b-form-select>
                                     </b-form-group>
                                 </b-col>
@@ -479,48 +276,32 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Crew">
-                                        <b-form-select
-                                            :options="crews"
-                                            value-field="id"
-                                            text-field="name"
-                                            v-model="task.crew_id"
-                                        >
+                                        <b-form-select :options="crews" value-field="id" text-field="name"
+                                            v-model="task.crew_id">
                                         </b-form-select>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Crew Hours">
-                                        <b-form-input
-                                            type="text"
-                                            v-model="task.crew_hours"
-                                        >
+                                        <b-form-input type="text" v-model="task.crew_hours">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Man Hours">
-                                        <b-form-input
-                                            type="text"
-                                            v-model="task.task_hours"
-                                        >
+                                        <b-form-input type="text" v-model="task.task_hours">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Budget">
-                                        <b-form-input
-                                            type="text"
-                                            v-model="order.budget"
-                                        >
+                                        <b-form-input type="text" v-model="order.budget">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Budget +/-">
-                                        <b-form-input
-                                            type="number"
-                                            v-model="order.budget_plus_minus"
-                                        >
+                                        <b-form-input type="number" v-model="order.budget_plus_minus">
                                         </b-form-input>
                                     </b-form-group>
                                 </b-col>
@@ -528,18 +309,13 @@
                             <b-row>
                                 <b-col>
                                     <b-form-group label="Order Location">
-                                        <b-form-textarea
-                                            type="text"
-                                            v-model="order.location"
-                                        >
+                                        <b-form-textarea type="text" v-model="order.location">
                                         </b-form-textarea>
                                     </b-form-group>
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Order Instructions">
-                                        <b-form-textarea
-                                            v-model="order.instructions"
-                                        >
+                                        <b-form-textarea v-model="order.instructions">
                                         </b-form-textarea>
                                     </b-form-group>
                                 </b-col>
@@ -553,9 +329,7 @@
                                 </b-col>
                                 <b-col>
                                     <b-form-group label="Appointment Notes">
-                                        <b-form-textarea
-                                            v-model="appointment.notes"
-                                        >
+                                        <b-form-textarea v-model="appointment.notes">
                                         </b-form-textarea>
                                     </b-form-group>
                                 </b-col>
@@ -700,7 +474,7 @@ export default {
     methods: {
         treeNormalizer,
         getProperties() {
-            this.order.property = null
+            this.order.property = ''
             if (this.client_id) {
                 this.$http
                     .get('/properties?client_id=' + this.client_id)
@@ -708,6 +482,7 @@ export default {
                         this.properties = response.data
                         if (this.properties.length == 1) {
                             this.order.property = this.properties[0].id
+                            this.getPropertyUnits()
                         }
                     })
             } else {
@@ -739,8 +514,8 @@ export default {
                 this.$http
                     .get(
                         '/projects?client_id=' +
-                            this.client_id +
-                            '&completed=false'
+                        this.client_id +
+                        '&completed=false'
                     )
                     .then(response => {
                         this.projects = response.data
@@ -839,11 +614,11 @@ export default {
             await this.saveProject()
             this.$router.push(
                 '/client/' +
-                    this.client_id +
-                    '/project/' +
-                    this.project.id +
-                    '/order/' +
-                    this.order.id
+                this.client_id +
+                '/project/' +
+                this.project.id +
+                '/order/' +
+                this.order.id
             )
         },
         async newOrder() {
@@ -879,14 +654,14 @@ export default {
                 labor_type_id: parseInt(this.settings.default_labor_type_id),
                 task_status_id: parseInt(
                     this.settings[
-                        'default_task_status_id-labor_type_id-' +
-                            this.settings.default_labor_type_id
+                    'default_task_status_id-labor_type_id-' +
+                    this.settings.default_labor_type_id
                     ]
                 ),
                 task_action_id: parseInt(
                     this.settings[
-                        'default_task_action_id-labor_type_id-' +
-                            this.settings.default_labor_type_id
+                    'default_task_action_id-labor_type_id-' +
+                    this.settings.default_labor_type_id
                     ]
                 ),
                 name: null,
@@ -898,11 +673,11 @@ export default {
                     : this.task.crew_id,
                 labor_assignment_id: first
                     ? parseInt(
-                          this.settings[
-                              'default_labor_assignment_id-labor_type_id-' +
-                                  this.settings.default_labor_type_id
-                          ]
-                      )
+                        this.settings[
+                        'default_labor_assignment_id-labor_type_id-' +
+                        this.settings.default_labor_type_id
+                        ]
+                    )
                     : this.task.labor_assignment_id,
             }
             this.appointment = {
@@ -931,36 +706,36 @@ export default {
         laborTypeChanged() {
             this.task.labor_assignment_id = this.settings[
                 'default_task_action_id-labor_type_id-' +
-                    this.task.labor_type_id
+                this.task.labor_type_id
             ]
                 ? parseInt(
-                      this.settings[
-                          'default_labor_assignment_id-labor_type_id-' +
-                              this.task.labor_type_id
-                      ]
-                  )
+                    this.settings[
+                    'default_labor_assignment_id-labor_type_id-' +
+                    this.task.labor_type_id
+                    ]
+                )
                 : null
             this.task.task_status_id = this.settings[
                 'default_task_action_id-labor_type_id-' +
-                    this.task.labor_type_id
+                this.task.labor_type_id
             ]
                 ? parseInt(
-                      this.settings[
-                          'default_task_status_id-labor_type_id-' +
-                              this.task.labor_type_id
-                      ]
-                  )
+                    this.settings[
+                    'default_task_status_id-labor_type_id-' +
+                    this.task.labor_type_id
+                    ]
+                )
                 : null
             this.task.task_action_id = this.settings[
                 'default_task_action_id-labor_type_id-' +
-                    this.task.labor_type_id
+                this.task.labor_type_id
             ]
                 ? parseInt(
-                      this.settings[
-                          'default_task_action_id-labor_type_id-' +
-                              this.task.labor_type_id
-                      ]
-                  )
+                    this.settings[
+                    'default_task_action_id-labor_type_id-' +
+                    this.task.labor_type_id
+                    ]
+                )
                 : null
         },
         selectText(ref) {
@@ -999,14 +774,14 @@ export default {
             this.$refs.textForm.showSMSModal()
         },
         getPropertyUnits() {
-          if(this.order.property){
-            this.$http.get('/property_units?property_id=' + this.order.property).then(response => {
-              this.property_units = response.data.data
-            })
-          }
-          else{
-            this.units = []
-          }
+            if (this.order.property) {
+                this.$http.get('/property_units?property_id=' + this.order.property).then(response => {
+                    this.property_units = response.data.data
+                })
+            }
+            else {
+                this.units = []
+            }
         },
     },
     computed: {
