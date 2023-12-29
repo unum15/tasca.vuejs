@@ -1,8 +1,8 @@
 module.exports = {
   devServer: {
     proxy: {
-      '/api': {
-        target: 'http://tasca/',
+      '^/api': {
+        target: 'http://localhost/',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
