@@ -47,7 +47,7 @@
 <script>
 import EditProperty from './EditProperty';
 export default {
-  name: 'EditProperties',
+  name: 'EditLinkedProperties',
   components: {
     'EditProperty': EditProperty,
   },

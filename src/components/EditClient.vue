@@ -155,6 +155,9 @@
           <b-tab v-if="client.id" title="Properties" :active="property_id != null">
             <EditProperties :properties="client.properties" :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditProperties>
           </b-tab>
+          <b-tab v-if="client.id" title="Linked Properties" :active="linked_property_id != null">
+            <EditLinkedProperties :properties="client.linked_properties" :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditLinkedProperties>
+          </b-tab>
           <b-tab v-if="client.id && (client.contacts.length > 0) && (client.properties.length > 0)" title="Projects" :active="(project_id != null) || (order_id != null) || (task_id != null)">
             <EditProjects
               :client_id="client.id"
@@ -187,6 +190,7 @@
 </template>
 <script>
 import EditContacts from './EditContacts';
+import EditLinkedProperties from './EditLinkedProperties';
 import EditProperties from './EditProperties';
 import EditProjects from './EditProjects';
 import ViewClientBackflowsTab from './ViewClientBackflowsTab';
@@ -199,6 +203,7 @@ export default {
     'TopMenu': TopMenu,
     'EditContacts': EditContacts,
     'EditProperties': EditProperties,
+    'EditLinkedProperties': EditLinkedProperties,
     'EditProjects': EditProjects,
     'ViewClientBackflowsTab': ViewClientBackflowsTab,
     'ViewClientIrrigationSystemsTab': ViewClientIrrigationSystemsTab
@@ -207,6 +212,7 @@ export default {
     client_id: {default: null},
     contact_id: {default: null},
     property_id: {default: null},
+    linked_property_id: {default: null},
     project_id: {default: null},
     order_id: {default: null},
     task_id: {default: null},
