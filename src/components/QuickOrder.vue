@@ -20,7 +20,7 @@
                                     <b-form-group label="Client">
                                         <el-select v-model="client_id" filterable default-first-option
                                             placeholder="Select Client" @change="
-                                                getProperties()
+                                            getProperties()
                                             getContacts()
                                             getProjects()
                                                 ">
@@ -476,10 +476,10 @@ export default {
     methods: {
         treeNormalizer,
         getProperties() {
-            this.order.property = 0
+            this.order.property = undefined
             if (this.client_id) {
                 this.$http
-                    .get('/properties?client_id=' + this.client_id)
+                    .get('/properties?linked=true&client_id=' + this.client_id)
                     .then(response => {
                         this.properties = response.data
                         if (this.properties.length == 1) {
@@ -493,6 +493,7 @@ export default {
             }
         },
         getContacts() {
+            this.project.contact_id = null
             if (this.client_id) {
                 this.$http
                     .get('/contacts?client_id=' + this.client_id)
