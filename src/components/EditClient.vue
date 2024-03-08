@@ -153,10 +153,7 @@
             </EditContacts>
           </b-tab>
           <b-tab v-if="client.id" title="Properties" :active="property_id != null">
-            <EditProperties :properties="client.properties" :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditProperties>
-          </b-tab>
-          <b-tab v-if="client.id" title="Linked Properties" :active="linked_property_id != null">
-            <EditLinkedProperties :properties="client.linked_properties" :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditLinkedProperties>
+            <EditProperties :properties="combined_properties" :contacts="client.contacts" :client_id="client.id" :contact_methods="contact_methods" :activity_levels="activity_levels" :settings="settings"></EditProperties>
           </b-tab>
           <b-tab v-if="client.id && (client.contacts.length > 0) && (client.properties.length > 0)" title="Projects" :active="(project_id != null) || (order_id != null) || (task_id != null)">
             <EditProjects
@@ -305,6 +302,7 @@ export default {
       irrigation_systems: state => state.settings.irrigation_systems,
       show_help: state => state.user.show_help
     }),
+    combined_properties() { return ([...this.client.properties, ...this.client.linked_properties]) }
   }
 }
 
