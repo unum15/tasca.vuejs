@@ -138,6 +138,10 @@
                 <template v-slot:cell(client)="data">
                     <a :href="'/client/' + data.item.client_id + '/project/' + data.item.project_id + '/order/' + data.item.order_id"> {{ data.value }} </a>
                 </template>
+                <template v-slot:cell(property)="data">
+                    {{ data.value }}
+                    <img v-if="data.item.property_client_name != data.item.client" src="@/assets/linked.png" alt="linked" style="width:24px" v-b-popover.hover="data.item.property_client_name"/>
+                </template>
                 <template v-slot:cell(date)="data">
                     {{ formatDate(data.value) }}
                 </template>

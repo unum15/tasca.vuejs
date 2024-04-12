@@ -194,6 +194,7 @@
                     :id="'property_' + data.item.id"
                     >{{ data.value }}</span
                 >
+                <img v-if="data.item.property_client_name != data.item.client" src="@/assets/linked.png" alt="linked" style="width:24px" v-b-popover.hover="data.item.property_client_name"/>
             </template>
             <template v-slot:cell(name)="data">
                 <a

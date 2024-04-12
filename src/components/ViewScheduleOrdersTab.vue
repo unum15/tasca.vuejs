@@ -33,6 +33,10 @@
                     :href="'/client/' + data.item.project.client_id + '/project/' + data.item.project_id + '/order/' + data.item.id">
                     {{ data.value }} </a>
             </template>
+            <template v-slot:cell(property)="data">
+                    {{ data.value }}
+                    <img v-if="data.item.properties.length && data.item.properties[0].client.name != data.item.project.client.name" src="@/assets/linked.png" alt="linked" style="width:24px" v-b-popover.hover="data.item.properties[0].client.name"/>
+            </template>
             <template v-slot:cell(name)="data">
                 <a href="/scheduler" @click.stop.prevent="info(data.item, data.index, $event.target)"> {{ data.value }} </a>
             </template>
