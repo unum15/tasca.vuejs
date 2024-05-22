@@ -352,7 +352,7 @@ export default {
     },
     created() {
         this.$http.get('/clients').then(response => {
-            this.clients = response.data;
+            this.clients = response.data.data;
             if (this.default_client_id) {
                 this.client_id = parseInt(this.default_client_id);
                 this.getProperties();

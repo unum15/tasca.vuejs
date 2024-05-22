@@ -61,7 +61,7 @@ export default {
     },
     created () {
         this.$http.get('/clients?backflow_only=true').then(response => {
-            this.clients = response.data;
+            this.clients = response.data.data;
         });
     },
     methods: {

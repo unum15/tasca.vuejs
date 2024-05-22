@@ -119,7 +119,7 @@ export default {
                 },
                 {
                     key: 'billing_property.city',
-                    label: 'Address',
+                    label: 'City',
                     sortable: false,
                 },
                 {

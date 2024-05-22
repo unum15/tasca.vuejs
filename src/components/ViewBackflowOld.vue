@@ -203,7 +203,7 @@ export default {
              params = '?zip=' + this.zip;
             }
             this.$http.get('/clients' + params).then(response => {
-                this.clients = response.data;
+                this.clients = response.data.data;
             });
         },
         getBackflows(){

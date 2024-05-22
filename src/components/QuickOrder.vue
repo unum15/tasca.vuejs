@@ -421,7 +421,7 @@ export default {
     },
     created() {
         this.$http.get('/clients').then(response => {
-            this.clients = response.data
+            this.clients = response.data.data
         })
         this.$http.get('/order_categories').then(response => {
             this.order_categories = response.data

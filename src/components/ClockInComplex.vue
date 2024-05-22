@@ -249,10 +249,7 @@ export default {
       });
     }
     this.$http.get('/clients').then(response => {
-      this.clients = response.data
-    });
-    this.$http.get('/clients').then(response => {
-      this.clients = response.data
+      this.clients = response.data.data
     });
     this.$http.get('/labor_assignments').then(response => {
       this.labor_assignments = response.data.data
