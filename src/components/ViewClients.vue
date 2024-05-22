@@ -59,7 +59,7 @@
                 striped
                 hover
                 :filter="filter"
-                :items="clients"
+                :items="getClients"
                 :fields="fields"
                 :current-page="current_page"
                 :per-page="per_page"
@@ -137,22 +137,22 @@ export default {
         this.$http.get('/activity_levels').then(results => {
             this.activity_levels = results.data
             this.activity_level_id = this.$store.state.user.show_maximium_activity_level_id
-            this.getClients()
         })
     },
     methods: {
-        getClients() {
+        async getClients(ctx) {
+            let uri = `/clients?includes=activityLevel,billingContact,billingProperty,clientType,contactMethod,contacts,properties,linkedProperties,contacts.phoneNumbers&current_page=${ctx.currentPage}&per_page=${ctx.perPage}`
             if (this.activity_level_id) {
-                this.$http
-                    .get(
-                        '/clients?includes=activityLevel,billingContact,billingProperty,clientType,contactMethod,contacts,properties,linkedProperties,contacts.phoneNumbers&maximium_activity_level_id=' +
-                            this.activity_level_id
-                    )
-                    .then(results => {
-                        this.clients = results.data
-                        this.total_rows = this.clients.length
-                    })
+                uri += `&maximium_activity_level_id=${this.activity_level_id}`
             }
+            if (ctx.filter) {
+                uri += `&filter=${ctx.filter}`
+            }
+            const results = await this.$http.get(uri)
+            this.clients = results.data.data
+            this.total_rows = results.data.total
+            return this.clients
+
         },
         onFiltered(filteredItems) {
             this.total_rows = filteredItems.length

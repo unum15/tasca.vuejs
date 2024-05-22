@@ -241,7 +241,8 @@ export default {
         referred_by: '',
         notes: '',
         contacts: [],
-        properties: []
+        properties: [],
+        linked_properties: [],
       }
     }
   },
