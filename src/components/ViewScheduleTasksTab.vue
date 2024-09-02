@@ -683,6 +683,10 @@ export default {
                     item.id = response.data.data.id
                 }
             }
+            const current_status = this.appointment_statuses.find((as) => as.id == item.appointment_status_id)
+            if(current_status){
+                item.appointment_status = current_status.name
+            }
             var appointment = {
                 appointment_status_id: item.appointment_status_id,
                 task_id: item.task_id,
